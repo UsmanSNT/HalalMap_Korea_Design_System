@@ -8,6 +8,7 @@ import { AllOrders, LiveOperationsMap } from "./OrdersScreens";
 import { HalalDatabase, MosqueManagement, PromotionsManagement } from "./ContentScreens";
 import { PlatformAnalytics } from "./AnalyticsScreens";
 import { PlatformSettings, AdminUsers } from "./SettingsScreens";
+import PlaceSubmissionsScreen from "./PlaceSubmissionsScreen";
 
 // ── Screen registry ────────────────────────────────────────────────────────────
 export type AdminScreenId =
@@ -16,7 +17,7 @@ export type AdminScreenId =
   | "users" | "user-detail"
   | "couriers" | "courier-approval" | "courier-detail"
   | "orders" | "live-map"
-  | "halal-db" | "mosques" | "promotions"
+  | "halal-db" | "mosques" | "place-submissions" | "promotions"
   | "analytics"
   | "settings" | "admin-users";
 
@@ -82,6 +83,7 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { id: "halal-db", label: "할랄 데이터베이스", icon: ICONS.database },
       { id: "mosques", label: "모스크 관리", icon: ICONS.mosque },
+      { id: "place-submissions", label: "Joy takliflari", icon: ICONS.map },
       { id: "promotions", label: "프로모션 관리", icon: ICONS.promo },
     ],
   },
@@ -114,6 +116,7 @@ function renderAdminScreen(id: AdminScreenId, navigate: (id: AdminScreenId) => v
     case "live-map":            return <LiveOperationsMap />;
     case "halal-db":            return <HalalDatabase />;
     case "mosques":             return <MosqueManagement />;
+    case "place-submissions":   return <PlaceSubmissionsScreen />;
     case "promotions":          return <PromotionsManagement />;
     case "analytics":           return <PlatformAnalytics />;
     case "settings":            return <PlatformSettings />;

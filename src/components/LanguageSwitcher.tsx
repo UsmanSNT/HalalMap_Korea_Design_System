@@ -166,3 +166,22 @@ export const LanguageSwitcherFull = ({
     ))}
   </div>
 );
+
+export const LanguageAccordion = ({ lang, onChange, label }: { lang: Lang; onChange: (l: Lang) => void; label: string }) => {
+  const [open, setOpen] = useState(false);
+  const current = LANGUAGES.find((item) => item.id === lang)!;
+  return (
+    <div className="overflow-hidden rounded-xl border border-[var(--border)] bg-white">
+      <button type="button" onClick={() => setOpen((value) => !value)} className="flex w-full items-center gap-2 px-3 py-2.5 text-sm font-semibold text-[#1A1A18]">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>
+        <span className="flex-1 text-left">{label}</span><span>{current.flag}</span><span className="text-xs text-[var(--muted)]">{current.native}</span>
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.7" className={`transition-transform ${open ? "rotate-180" : ""}`}><path d="m2 4 4 4 4-4"/></svg>
+      </button>
+      {open && <div className="border-t border-[var(--border)] p-1.5">
+        {LANGUAGES.map((item) => <button type="button" key={item.id} onClick={() => { onChange(item.id); setOpen(false); }} className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm ${item.id === lang ? "bg-[var(--green-light)] font-semibold text-[var(--green)]" : "text-[#4A4A48] hover:bg-[var(--cream)]"}`}>
+          <span>{item.flag}</span><span className="flex-1">{item.native}</span>{item.id === lang && <span>✓</span>}
+        </button>)}
+      </div>}
+    </div>
+  );
+};

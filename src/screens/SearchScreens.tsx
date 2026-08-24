@@ -1,27 +1,26 @@
 import React, { useState } from "react";
 import { StatusBar, BottomNav, MapPin, RestaurantCardV, HalalBadge, BackButton, TabId } from "../components/Shared";
+import { type Lang } from "../components/LanguageSwitcher";
 
 // ── 14. Search Screen ──────────────────────────────────────────────────────────
-const recentSearches = ["이태원 할랄", "케밥", "모스크 근처 식당", "할랄 치킨"];
-const trending = ["신당 할랄 키친", "이스탄불 케밥", "비빔밥 할랄", "인도 커리", "삼계탕 할랄", "나시고렝", "피데", "팔라펠"];
-const quickCategories = [
-  { icon: "🍖", label: "한식 할랄" },
-  { icon: "🥙", label: "터키" },
-  { icon: "🍛", label: "인도" },
-  { icon: "🍜", label: "인도네시아" },
-  { icon: "🕌", label: "모스크" },
-  { icon: "🔍", label: "스캐너" },
-];
+const SEARCH_COPY: Record<Lang, { title: string; placeholder: string; voice: string; recent: string; clear: string; popular: string; badge: string; categories: string; recentItems: string[]; trendingItems: string[]; categoryItems: string[] }> = {
+  ko: { title: "검색", placeholder: "할랄 음식, 레스토랑, 모스크 검색...", voice: "음성 검색", recent: "최근 검색", clear: "전체 삭제", popular: "인기 검색어", badge: "인기", categories: "카테고리", recentItems: ["이태원 할랄", "케밥", "모스크 근처 식당", "할랄 치킨"], trendingItems: ["신당 할랄 키친", "이스탄불 케밥", "비빔밥 할랄", "인도 커리", "삼계탕 할랄", "나시고렝", "피데", "팔라펠"], categoryItems: ["한식 할랄", "터키", "인도", "인도네시아", "모스크", "스캐너"] },
+  en: { title: "Search", placeholder: "Search halal food, restaurants and mosques...", voice: "Voice search", recent: "Recent searches", clear: "Clear all", popular: "Popular searches", badge: "Hot", categories: "Categories", recentItems: ["Halal in Itaewon", "Kebab", "Restaurants near a mosque", "Halal chicken"], trendingItems: ["신당 할랄 키친", "이스탄불 케밥", "Halal bibimbap", "Indian curry", "Halal samgyetang", "Nasi goreng", "Pide", "Falafel"], categoryItems: ["Korean halal", "Turkish", "Indian", "Indonesian", "Mosques", "Scanner"] },
+  uz: { title: "Qidiruv", placeholder: "Halol taom, restoran va masjidlarni qidiring...", voice: "Ovozli qidiruv", recent: "So‘nggi qidiruvlar", clear: "Hammasini o‘chirish", popular: "Mashhur qidiruvlar", badge: "Mashhur", categories: "Kategoriyalar", recentItems: ["Itaewondagi halol joylar", "Kabob", "Masjid yaqinidagi restoranlar", "Halol tovuq"], trendingItems: ["신당 할랄 키친", "이스탄불 케밥", "Halol bibimbap", "Hind karri", "Halol samgyetang", "Nasi goreng", "Pide", "Falafel"], categoryItems: ["Koreys halol", "Turk", "Hind", "Indoneziya", "Masjidlar", "Skaner"] },
+  ru: { title: "Поиск", placeholder: "Поиск халяльной еды, ресторанов и мечетей...", voice: "Голосовой поиск", recent: "Недавние запросы", clear: "Очистить все", popular: "Популярные запросы", badge: "Топ", categories: "Категории", recentItems: ["Халяль в Итхэвоне", "Кебаб", "Рестораны рядом с мечетью", "Халяльная курица"], trendingItems: ["신당 할랄 키친", "이스탄불 케밥", "Халяльный пибимпап", "Индийское карри", "Халяльный самгетан", "Наси-горенг", "Пиде", "Фалафель"], categoryItems: ["Корейская халяль", "Турецкая", "Индийская", "Индонезийская", "Мечети", "Сканер"] },
+};
+const categoryIcons = ["🍖", "🥙", "🍛", "🍜", "🕌", "🔍"];
 
-export const SearchScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void }) => {
+export const SearchScreen = ({ onTabChange, lang }: { onTabChange?: (t: TabId) => void; lang: Lang }) => {
   const [query, setQuery] = useState("");
+  const copy = SEARCH_COPY[lang];
 
   return (
     <div className="flex flex-col h-full bg-[var(--cream)]">
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="px-4 pb-4">
-          <h1 className="font-bold text-xl text-[#1A1A18] mb-3">검색</h1>
+          <h1 className="font-bold text-xl text-[#1A1A18] mb-3">{copy.title}</h1>
           {/* Search bar */}
           <div className="flex items-center gap-2 bg-[var(--cream)] border border-[var(--border)] rounded-xl px-4 py-3">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--muted)" strokeWidth="1.8">
@@ -31,7 +30,7 @@ export const SearchScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="할랄 음식, 레스토랑, 모스크 검색..."
+              placeholder={copy.placeholder}
               className="flex-1 bg-transparent text-sm text-[#1A1A18] outline-none placeholder:text-[var(--muted)]"
             />
             {query && (
@@ -55,18 +54,18 @@ export const SearchScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void
                 <line x1="9" y1="21" x2="15" y2="21" strokeLinecap="round"/>
               </svg>
             </div>
-            <p className="text-xs font-medium text-[var(--muted)]">음성 검색</p>
+            <p className="text-xs font-medium text-[var(--muted)]">{copy.voice}</p>
           </button>
         </div>
 
         {/* Recent */}
         <div>
           <div className="flex items-center justify-between mb-2">
-            <h3 className="font-bold text-sm text-[#1A1A18]">최근 검색</h3>
-            <button className="text-xs font-medium" style={{ color: "var(--muted)" }}>전체 삭제</button>
+            <h3 className="font-bold text-sm text-[#1A1A18]">{copy.recent}</h3>
+            <button className="text-xs font-medium" style={{ color: "var(--muted)" }}>{copy.clear}</button>
           </div>
           <div className="space-y-1">
-            {recentSearches.map((s) => (
+            {copy.recentItems.map((s) => (
               <div key={s} className="flex items-center gap-3 py-2.5">
                 <div className="w-8 h-8 rounded-lg bg-[var(--cream)] flex items-center justify-center flex-shrink-0">
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--muted)" strokeWidth="1.5">
@@ -85,14 +84,14 @@ export const SearchScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void
 
         {/* Trending */}
         <div>
-          <h3 className="font-bold text-sm text-[#1A1A18] mb-2">🔥 인기 검색어</h3>
+          <h3 className="font-bold text-sm text-[#1A1A18] mb-2">🔥 {copy.popular}</h3>
           <div className="space-y-2">
-            {trending.map((t, i) => (
+            {copy.trendingItems.map((t, i) => (
               <div key={t} className="flex items-center gap-3 py-1.5">
                 <span className="text-sm font-bold w-5 text-center" style={{ color: i < 3 ? "var(--danger)" : "var(--muted)" }}>{i + 1}</span>
                 <span className="flex-1 text-sm text-[#1A1A18]">{t}</span>
                 {i < 3 && (
-                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ backgroundColor: "var(--danger)", color: "white" }}>인기</span>
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ backgroundColor: "var(--danger)", color: "white" }}>{copy.badge}</span>
                 )}
               </div>
             ))}
@@ -101,12 +100,12 @@ export const SearchScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void
 
         {/* Quick categories */}
         <div>
-          <h3 className="font-bold text-sm text-[#1A1A18] mb-2">카테고리</h3>
+          <h3 className="font-bold text-sm text-[#1A1A18] mb-2">{copy.categories}</h3>
           <div className="grid grid-cols-3 gap-2">
-            {quickCategories.map((c) => (
-              <button key={c.label} className="flex flex-col items-center gap-2 py-4 bg-white rounded-2xl border border-[var(--border)]">
-                <span className="text-2xl">{c.icon}</span>
-                <span className="text-xs font-semibold text-[#1A1A18]">{c.label}</span>
+            {copy.categoryItems.map((label, index) => (
+              <button key={label} className="flex flex-col items-center gap-2 py-4 bg-white rounded-2xl border border-[var(--border)]">
+                <span className="text-2xl">{categoryIcons[index]}</span>
+                <span className="text-xs font-semibold text-[#1A1A18]">{label}</span>
               </button>
             ))}
           </div>

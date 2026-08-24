@@ -289,7 +289,7 @@ export const OrderAcceptedScreen = ({ onArrive }: { onArrive?: () => void }) => 
         </div>
 
         {/* Navigate button */}
-        <button className="w-full py-4 rounded-2xl font-bold text-base flex items-center justify-center gap-2"
+        <button onClick={onArrive} className="w-full py-4 rounded-2xl font-bold text-base flex items-center justify-center gap-2"
           style={{ backgroundColor: C.blue, color: "white" }}>
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round">
             <path d="M3 17L17 3M17 3H9M17 3v8"/>

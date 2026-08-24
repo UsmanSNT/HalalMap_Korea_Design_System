@@ -39,33 +39,7 @@ export const GeometricPattern = ({
 );
 
 // ── Status Bar ───────────────────────────────────────────────────────────────
-export const StatusBar = ({ dark = false }: { dark?: boolean }) => {
-  const c = dark ? "text-white" : "text-[#1A1A18]";
-  return (
-    <div className={`flex items-center justify-between px-6 pt-3 pb-1 text-xs font-semibold ${c} flex-shrink-0`}>
-      <span>9:41</span>
-      <div className="flex items-center gap-1.5">
-        <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor">
-          <rect x="0" y="6" width="3" height="6" rx="0.5" opacity="0.4"/>
-          <rect x="4.5" y="4" width="3" height="8" rx="0.5" opacity="0.6"/>
-          <rect x="9" y="1.5" width="3" height="10.5" rx="0.5"/>
-          <rect x="13.5" y="0" width="2.5" height="12" rx="0.5"/>
-        </svg>
-        <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor">
-          <path d="M8 2.5C10.5 2.5 12.7 3.5 14.2 5.2L15.5 3.8C13.6 1.8 11 0.5 8 0.5C5 0.5 2.4 1.8 0.5 3.8L1.8 5.2C3.3 3.5 5.5 2.5 8 2.5Z" opacity="0.4"/>
-          <path d="M8 5C9.7 5 11.2 5.7 12.3 6.8L13.6 5.4C12.1 4 10.1 3 8 3C5.9 3 3.9 4 2.4 5.4L3.7 6.8C4.8 5.7 6.3 5 8 5Z" opacity="0.7"/>
-          <path d="M8 7.5C9 7.5 9.9 7.9 10.5 8.6L11.8 7.2C10.8 6.2 9.5 5.5 8 5.5C6.5 5.5 5.2 6.2 4.2 7.2L5.5 8.6C6.1 7.9 7 7.5 8 7.5Z"/>
-          <circle cx="8" cy="11" r="1.5"/>
-        </svg>
-        <div className="flex items-center gap-0.5">
-          <div className={`w-6 h-3 rounded-sm border ${dark ? "border-white/60" : "border-[#1A1A18]/60"} relative`}>
-            <div className="absolute inset-0.5 rounded-sm bg-current" style={{ width: "75%" }} />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+export const StatusBar = (_props: { dark?: boolean }) => null;
 
 // ── Bottom Navigation ────────────────────────────────────────────────────────
 type TabId = "home" | "search" | "orders" | "prayer" | "profile";
@@ -138,7 +112,7 @@ export const BottomNav = ({
   active: TabId;
   onTabChange?: (id: TabId) => void;
 }) => (
-  <div className="flex items-center border-t border-[#E8E6E1] bg-white px-1 pt-2 pb-5 flex-shrink-0">
+  <div className="customer-bottom-nav relative z-30 flex items-center border-t border-[#E8E6E1] bg-white px-1 pt-2 pb-5 flex-shrink-0 lg:hidden">
     {tabs.map((t) => (
       <button
         key={t.id}
@@ -204,6 +178,7 @@ export const RestaurantCardV = ({
   distance,
   eta,
   fee,
+  onClick,
 }: {
   name: string;
   imageId: string;
@@ -213,8 +188,9 @@ export const RestaurantCardV = ({
   distance: string;
   eta: string;
   fee: string;
+  onClick?: () => void;
 }) => (
-  <div className="bg-white rounded-2xl overflow-hidden shadow-sm flex-shrink-0 w-52">
+  <button onClick={onClick} className="bg-white rounded-2xl overflow-hidden shadow-sm flex-shrink-0 w-52 text-left">
     <div className="relative h-32 bg-[#E8E6E1]">
       <img
         src={`https://images.unsplash.com/photo-${imageId}?w=300&h=200&fit=crop&auto=format&q=80`}
@@ -234,7 +210,7 @@ export const RestaurantCardV = ({
         <span>{fee}</span>
       </div>
     </div>
-  </div>
+  </button>
 );
 
 // ── Restaurant Card (horizontal, for list) ───────────────────────────────────
@@ -248,6 +224,7 @@ export const RestaurantCardH = ({
   eta,
   fee,
   cuisine,
+  onClick,
 }: {
   name: string;
   imageId: string;
@@ -258,8 +235,9 @@ export const RestaurantCardH = ({
   eta: string;
   fee: string;
   cuisine?: string;
+  onClick?: () => void;
 }) => (
-  <div className="bg-white rounded-2xl overflow-hidden shadow-sm flex items-stretch">
+  <button onClick={onClick} className="bg-white rounded-2xl overflow-hidden shadow-sm flex items-stretch w-full text-left">
     <div className="w-24 h-24 flex-shrink-0 bg-[#E8E6E1]">
       <img
         src={`https://images.unsplash.com/photo-${imageId}?w=200&h=200&fit=crop&auto=format&q=80`}
@@ -282,7 +260,7 @@ export const RestaurantCardH = ({
         <span>{fee}</span>
       </div>
     </div>
-  </div>
+  </button>
 );
 
 // ── Mosque Card ──────────────────────────────────────────────────────────────
@@ -292,14 +270,16 @@ export const MosqueCard = ({
   distance,
   nextPrayer,
   walkTime,
+  onClick,
 }: {
   name: string;
   nameKo?: string;
   distance: string;
   nextPrayer: string;
   walkTime: string;
+  onClick?: () => void;
 }) => (
-  <div className="bg-white rounded-2xl p-4 shadow-sm flex items-center gap-3">
+  <button onClick={onClick} className="bg-white rounded-2xl p-4 shadow-sm flex items-center gap-3 w-full text-left">
     <div
       className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
       style={{ backgroundColor: "var(--gold-light)" }}
@@ -328,7 +308,7 @@ export const MosqueCard = ({
     >
       {nextPrayer}
     </div>
-  </div>
+  </button>
 );
 
 // ── Order Status Chip ────────────────────────────────────────────────────────
@@ -354,11 +334,11 @@ export const OrderStatusChip = ({ status }: { status: OrderStatus }) => {
 };
 
 // ── Section Header ────────────────────────────────────────────────────────────
-export const SectionHeader = ({ title, action }: { title: string; action?: string }) => (
+export const SectionHeader = ({ title, action, onAction }: { title: string; action?: string; onAction?: () => void }) => (
   <div className="flex items-center justify-between px-4 mb-3">
     <h3 className="font-bold text-base text-[#1A1A18]">{title}</h3>
     {action && (
-      <button className="text-sm font-medium" style={{ color: "var(--green)" }}>
+      <button onClick={onAction} className="text-sm font-medium" style={{ color: "var(--green)" }}>
         {action} →
       </button>
     )}
@@ -380,7 +360,7 @@ export const Toggle = ({ on, onToggle }: { on: boolean; onToggle?: () => void })
     style={{ backgroundColor: on ? "var(--green)" : "#D1D5DB" }}
   >
     <span
-      className="absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200"
+      className="absolute left-0 top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200"
       style={{ transform: on ? "translateX(26px)" : "translateX(2px)" }}
     />
   </button>
@@ -389,7 +369,7 @@ export const Toggle = ({ on, onToggle }: { on: boolean; onToggle?: () => void })
 // ── Back Button ────────────────────────────────────────────────────────────────
 export const BackButton = ({ onBack, dark = false }: { onBack?: () => void; dark?: boolean }) => (
   <button
-    onClick={onBack}
+    onClick={onBack ?? (() => window.dispatchEvent(new CustomEvent("halalmap:back")))}
     className="w-9 h-9 rounded-full flex items-center justify-center"
     style={{ backgroundColor: dark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.06)" }}
   >

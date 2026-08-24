@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { type Lang, LanguageAccordion } from "../components/LanguageSwitcher";
 import { GeometricPattern, StatusBar } from "../components/Shared";
 
 // ── 1. Splash Screen ──────────────────────────────────────────────────────────
@@ -347,7 +348,7 @@ export const SignUpScreen = () => {
 };
 
 // ── 4. Login Screen ────────────────────────────────────────────────────────────
-export const LoginScreen = ({ onLogin }: { onLogin?: (email: string, password: string) => Promise<boolean> }) => {
+export const LoginScreen = ({ onLogin, lang, onLanguageChange }: { onLogin?: (email: string, password: string) => Promise<string | null>; lang: Lang; onLanguageChange: (lang: Lang) => void }) => {
   const [email, setEmail] = useState("user@halalmap.test");
   const [pw, setPw] = useState("User123!");
   const [error, setError] = useState("");
@@ -358,17 +359,23 @@ export const LoginScreen = ({ onLogin }: { onLogin?: (email: string, password: s
     if (!onLogin || submitting) return;
     setSubmitting(true);
     setError("");
-    const success = await onLogin(email.trim().toLowerCase(), pw);
-    if (!success) setError("Email yoki parol noto‘g‘ri");
+    const loginError = await onLogin(email.trim().toLowerCase(), pw);
+    if (loginError) setError(loginError);
     setSubmitting(false);
   };
 
   const testAccounts = [
-    ["User", "user@halalmap.test", "User123!"],
-    ["Oshxona egasi", "owner@halalmap.test", "Owner123!"],
-    ["Kuryer", "courier@halalmap.test", "Courier123!"],
-    ["Admin", "admin@halalmap.test", "Admin123!"],
+    ["Oddiy akkaunt", "user@halalmap.test", "User123!"],
+    ["Customer + oshxona boshqaruvi", "owner@halalmap.test", "Owner123!"],
+    ["Customer + kuryer ish paneli", "courier@halalmap.test", "Courier123!"],
+    ["Customer + admin paneli", "admin@halalmap.test", "Admin123!"],
   ];
+  const copy = {
+    ko: { subtitle: "테스트 계정으로 로그인하세요", language: "언어", email: "이메일 또는 전화번호", password: "비밀번호", forgot: "비밀번호를 잊으셨나요?", login: "로그인", checking: "확인 중…", tests: "테스트 계정", or: "또는", kakao: "카카오로 로그인", google: "Google로 로그인", signup: "계정이 없으신가요? 회원가입" },
+    en: { subtitle: "Sign in with a test account", language: "Language", email: "Email or phone number", password: "Password", forgot: "Forgot your password?", login: "Sign in", checking: "Checking…", tests: "Test accounts", or: "or", kakao: "Continue with Kakao", google: "Continue with Google", signup: "No account? Sign up" },
+    uz: { subtitle: "Test akkauntingiz bilan kiring", language: "Til", email: "Email yoki telefon raqami", password: "Parol", forgot: "Parolni unutdingizmi?", login: "Kirish", checking: "Tekshirilmoqda…", tests: "Test akkauntlari", or: "yoki", kakao: "Kakao orqali kirish", google: "Google orqali kirish", signup: "Akkauntingiz yo‘qmi? Ro‘yxatdan o‘ting" },
+    ru: { subtitle: "Войдите с тестовым аккаунтом", language: "Язык", email: "Email или номер телефона", password: "Пароль", forgot: "Забыли пароль?", login: "Войти", checking: "Проверка…", tests: "Тестовые аккаунты", or: "или", kakao: "Войти через Kakao", google: "Войти через Google", signup: "Нет аккаунта? Регистрация" },
+  }[lang];
 
   return (
     <div className="flex flex-col h-full bg-[var(--cream)]">
@@ -384,24 +391,26 @@ export const LoginScreen = ({ onLogin }: { onLogin?: (email: string, password: s
           </div>
           <div className="text-center">
             <p className="font-bold text-xl text-[#1A1A18]">HalalMap Korea</p>
-            <p className="text-sm text-[var(--muted)] mt-0.5">Test akkauntingiz bilan kiring</p>
+            <p className="text-sm text-[var(--muted)] mt-0.5">{copy.subtitle}</p>
           </div>
         </div>
+
+        <LanguageAccordion lang={lang} onChange={onLanguageChange} label={copy.language} />
 
         {/* Inputs */}
         <div className="space-y-3">
           <div className="relative border rounded-xl px-4 pt-5 pb-2 bg-white border-[var(--green)] shadow-[0_0_0_2px_rgba(27,107,74,0.15)]">
-            <label className="absolute left-4 text-xs font-medium text-[var(--green)]" style={{ top: 8 }}>이메일 또는 전화번호</label>
+            <label className="absolute left-4 text-xs font-medium text-[var(--green)]" style={{ top: 8 }}>{copy.email}</label>
             <input className="w-full bg-transparent text-sm text-[#1A1A18] outline-none" value={email} onChange={e => setEmail(e.target.value)} />
           </div>
           <div className="relative border rounded-xl px-4 pt-5 pb-2 bg-white border-[var(--border)]">
-            <label className="absolute left-4 text-xs font-medium text-[var(--muted)]" style={{ top: 8 }}>비밀번호</label>
+            <label className="absolute left-4 text-xs font-medium text-[var(--muted)]" style={{ top: 8 }}>{copy.password}</label>
             <input type="password" className="w-full bg-transparent text-sm text-[#1A1A18] outline-none" value={pw} onChange={e => setPw(e.target.value)} />
           </div>
         </div>
 
         <div className="flex justify-end">
-          <button className="text-sm font-medium" style={{ color: "var(--green)" }}>비밀번호를 잊으셨나요?</button>
+          <button type="button" className="text-sm font-medium" style={{ color: "var(--green)" }}>{copy.forgot}</button>
         </div>
 
         <button
@@ -410,13 +419,13 @@ export const LoginScreen = ({ onLogin }: { onLogin?: (email: string, password: s
           className="w-full py-4 rounded-2xl font-bold text-white text-base shadow-sm disabled:opacity-60"
           style={{ backgroundColor: "var(--green)" }}
         >
-          {submitting ? "Tekshirilmoqda…" : "Kirish"}
+          {submitting ? copy.checking : copy.login}
         </button>
 
         {error && <p className="text-center text-sm font-semibold text-[var(--danger)]">{error}</p>}
 
         <div className="rounded-2xl border border-[var(--border)] bg-white p-3 space-y-2">
-          <p className="text-xs font-bold text-[#1A1A18]">Test akkauntlari</p>
+          <p className="text-xs font-bold text-[#1A1A18]">{copy.tests}</p>
           {testAccounts.map(([role, accountEmail, password]) => (
             <button
               type="button"
@@ -432,24 +441,23 @@ export const LoginScreen = ({ onLogin }: { onLogin?: (email: string, password: s
 
         <div className="flex items-center gap-3">
           <div className="flex-1 h-px bg-[var(--border)]" />
-          <span className="text-xs text-[var(--muted)]">또는</span>
+          <span className="text-xs text-[var(--muted)]">{copy.or}</span>
           <div className="flex-1 h-px bg-[var(--border)]" />
         </div>
 
         <div className="space-y-2.5">
           <button className="w-full flex items-center gap-3 py-3.5 px-5 rounded-2xl font-bold text-sm" style={{ backgroundColor: "#FEE500", color: "#1A1A18" }}>
             <svg width="20" height="20" viewBox="0 0 20 20" fill="#1A1A18"><path d="M10 2C5.8 2 2.5 4.7 2.5 8C2.5 10 3.6 11.7 5.4 12.8L4.7 15.7L7.9 13.7C8.6 13.9 9.3 14 10 14C14.2 14 17.5 11.3 17.5 8C17.5 4.7 14.2 2 10 2Z"/></svg>
-            카카오로 로그인
+            {copy.kakao}
           </button>
           <button className="w-full flex items-center gap-3 py-3.5 px-5 rounded-2xl font-semibold text-sm bg-white border border-[var(--border)] text-[#1A1A18]">
             <svg width="18" height="18" viewBox="0 0 18 18"><path d="M17.64 9.2a10 10 0 00-.16-1.7H9v3.22h4.84a4.14 4.14 0 01-1.8 2.72v2.26h2.9A8.78 8.78 0 0017.64 9.2z" fill="#4285F4"/><path d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26A5.43 5.43 0 019 14.4a5.4 5.4 0 01-5.07-3.73H.96v2.33A9 9 0 009 18z" fill="#34A853"/><path d="M3.93 10.67A5.41 5.41 0 013.65 9a5.41 5.41 0 01.28-1.67V5H.96A9 9 0 000 9a9 9 0 00.96 4l2.97-2.33z" fill="#FBBC05"/><path d="M9 3.58a4.86 4.86 0 013.44 1.35l2.58-2.58A8.64 8.64 0 009 0 9 9 0 00.96 5l2.97 2.33A5.4 5.4 0 019 3.58z" fill="#EA4335"/></svg>
-            Google로 로그인
+            {copy.google}
           </button>
         </div>
 
         <p className="text-center text-sm text-[var(--muted)]">
-          계정이 없으신가요?{" "}
-          <span className="font-semibold" style={{ color: "var(--green)" }}>회원가입</span>
+          <span className="font-semibold" style={{ color: "var(--green)" }}>{copy.signup}</span>
         </p>
       </form>
     </div>

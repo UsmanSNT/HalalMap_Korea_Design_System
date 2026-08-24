@@ -23,54 +23,46 @@ interface ScreenDef {
 
 const SCREEN_GROUPS: { section: string; screens: ScreenDef[] }[] = [
   {
-    section: "온보딩",
+    section: "Yetkazib berish",
     screens: [
-      { id: "registration", label: "1. 기사 등록" },
-      { id: "login", label: "2. 로그인" },
-      { id: "verification", label: "3. 서류 심사 중" },
+      { id: "go-online", label: "Ishni boshlash" },
+      { id: "order-feed", label: "Yangi buyurtmalar" },
+      { id: "order-accepted", label: "Oshxonaga borish" },
+      { id: "at-restaurant", label: "Buyurtmani olish" },
+      { id: "delivering", label: "Mijozga yetkazish" },
+      { id: "delivery-complete", label: "Yetkazildi" },
+      { id: "delivery-issue", label: "Muammo haqida xabar" },
     ],
   },
   {
-    section: "배달 플로우",
+    section: "Daromad",
     screens: [
-      { id: "go-online", label: "4. 온라인 전환" },
-      { id: "order-feed", label: "5. 주문 대기" },
-      { id: "order-accepted", label: "6. 주문 수락" },
-      { id: "at-restaurant", label: "7. 식당 도착" },
-      { id: "delivering", label: "8. 배달 중" },
-      { id: "delivery-complete", label: "9. 배달 완료" },
-      { id: "delivery-issue", label: "10. 배달 문제" },
+      { id: "earnings", label: "Daromad holati" },
+      { id: "history", label: "Yetkazish tarixi" },
+      { id: "payout", label: "To‘lovlar" },
     ],
   },
   {
-    section: "수익",
+    section: "Profil",
     screens: [
-      { id: "earnings", label: "11. 수익 현황" },
-      { id: "history", label: "12. 배달 내역" },
-      { id: "payout", label: "13. 정산 내역" },
-    ],
-  },
-  {
-    section: "프로필",
-    screens: [
-      { id: "courier-profile", label: "14. 내 프로필" },
-      { id: "courier-settings", label: "15. 설정" },
+      { id: "courier-profile", label: "Mening profilim" },
+      { id: "courier-settings", label: "Sozlamalar" },
     ],
   },
 ];
 
 // ── Render screen ──────────────────────────────────────────────────────────────
-const renderCourierScreen = (id: CourierScreenId) => {
+const renderCourierScreen = (id: CourierScreenId, navigate: (id: CourierScreenId) => void) => {
   switch (id) {
     case "registration":     return <CourierRegistrationScreen />;
     case "login":            return <CourierLoginScreen />;
     case "verification":     return <VerificationPendingScreen />;
-    case "go-online":        return <GoOnlineScreen />;
-    case "order-feed":       return <OrderFeedScreen />;
-    case "order-accepted":   return <OrderAcceptedScreen />;
-    case "at-restaurant":    return <AtRestaurantScreen />;
-    case "delivering":       return <DeliveringScreen />;
-    case "delivery-complete": return <DeliveryCompleteScreen />;
+    case "go-online":        return <GoOnlineScreen onGoOnline={() => navigate("order-feed")} />;
+    case "order-feed":       return <OrderFeedScreen onAccept={() => navigate("order-accepted")} />;
+    case "order-accepted":   return <OrderAcceptedScreen onArrive={() => navigate("at-restaurant")} />;
+    case "at-restaurant":    return <AtRestaurantScreen onPickedUp={() => navigate("delivering")} />;
+    case "delivering":       return <DeliveringScreen onComplete={() => navigate("delivery-complete")} />;
+    case "delivery-complete": return <DeliveryCompleteScreen onNext={() => navigate("order-feed")} />;
     case "delivery-issue":   return <DeliveryIssueScreen />;
     case "earnings":         return <EarningsDashboard />;
     case "history":          return <DeliveryHistory />;
@@ -87,7 +79,6 @@ const SIDEBAR_ACTIVE = "#0F2030";
 // ── App shell ──────────────────────────────────────────────────────────────────
 export default function CourierApp({ onSwitch }: { onSwitch: () => void }) {
   const [active, setActive] = useState<CourierScreenId>("go-online");
-  const [customerMode, setCustomerMode] = useState<"customer" | "owner">("customer");
 
   return (
     <div className="flex h-screen w-screen overflow-hidden" style={{ backgroundColor: "#04090F" }}>
@@ -108,7 +99,7 @@ export default function CourierApp({ onSwitch }: { onSwitch: () => void }) {
             </div>
           </div>
           <p className="text-[10px] mt-2 font-mono uppercase tracking-widest" style={{ color: C.dim }}>
-            배달 파트너 앱 · 15 screens
+            Yetkazib berish ish paneli
           </p>
         </div>
 
@@ -142,7 +133,7 @@ export default function CourierApp({ onSwitch }: { onSwitch: () => void }) {
           <button onClick={onSwitch}
             className="w-full py-3 rounded-xl text-xs font-bold transition-all"
             style={{ backgroundColor: C.card, color: C.muted, border: `1px solid ${C.border}` }}>
-            ← 고객 앱으로
+            ← Asosiy ilovaga qaytish
           </button>
           <p className="text-center text-[9px] font-mono" style={{ color: C.dim }}>
             HalalMap Korea · Courier v1.0
@@ -179,7 +170,7 @@ export default function CourierApp({ onSwitch }: { onSwitch: () => void }) {
           {/* Screen content */}
           <div className="absolute inset-[3px] rounded-[48px] overflow-hidden"
             style={{ backgroundColor: C.bg }}>
-            {renderCourierScreen(active)}
+            {renderCourierScreen(active, setActive)}
           </div>
 
           {/* Home indicator */}

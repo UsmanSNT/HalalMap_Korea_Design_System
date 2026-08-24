@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { GeometricPattern, StatusBar, BottomNav, BackButton, Toggle, TabId } from "../components/Shared";
 
 // ── 18. Mosque List ────────────────────────────────────────────────────────────
@@ -9,7 +9,7 @@ const mosques = [
   { name: "수원 이슬람 성원", nameEn: "Suwon Masjid", address: "매탄동 1316, 수원", distance: "28km", walk: "차량 40분", nextPrayer: "아스르 14:30", type: "mosque" as const },
 ];
 
-export const MosqueListScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void }) => {
+export const MosqueListScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabId) => void; onNavigate?: (screen: string) => void }) => {
   const [tab, setTab] = useState<"mosque" | "room">("mosque");
 
   return (
@@ -19,14 +19,7 @@ export const MosqueListScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => 
         <div className="px-5 pb-3">
           <div className="flex items-center justify-between mb-3">
             <h1 className="font-bold text-xl text-[#1A1A18]">모스크 · 기도실</h1>
-            <button className="w-9 h-9 rounded-xl bg-[var(--cream)] flex items-center justify-center">
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--charcoal)" strokeWidth="1.8">
-                <rect x="2" y="2" width="6" height="6" rx="1.5"/>
-                <rect x="10" y="2" width="6" height="6" rx="1.5"/>
-                <rect x="2" y="10" width="6" height="6" rx="1.5"/>
-                <rect x="10" y="10" width="6" height="6" rx="1.5"/>
-              </svg>
-            </button>
+            <button onClick={() => onNavigate?.("submit-place")} title="Joy qo‘shish" className="w-9 h-9 rounded-xl bg-[var(--green-light)] text-[var(--green)] flex items-center justify-center font-bold text-xl">+</button>
           </div>
           <div className="flex bg-[var(--cream)] rounded-xl p-1">
             {(["mosque", "room"] as const).map((t) => (
@@ -46,13 +39,13 @@ export const MosqueListScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => 
         </div>
       </div>
 
-      <div className="flex-1 phone-scroll px-4 py-4 space-y-3">
+      <div className="flex-1 phone-scroll px-4 py-4 space-y-3 lg:grid lg:grid-cols-2 xl:grid-cols-3 lg:content-start lg:gap-4 lg:space-y-0 lg:px-5 lg:py-5">
         {mosques
           .filter((m) => tab === "mosque" ? m.type === "mosque" : m.type === "room")
           .map((m) => (
-            <div key={m.name} className="bg-white rounded-2xl overflow-hidden shadow-sm">
+            <article key={m.name} className="overflow-hidden rounded-2xl border border-[var(--border)] bg-white shadow-sm transition-shadow hover:shadow-md">
               {/* Photo strip */}
-              <div className="h-28 bg-[#D8D4CC] relative">
+              <div className="relative h-28 bg-[#D8D4CC] lg:h-32">
                 <img
                   src="https://images.unsplash.com/photo-1519817650134-7780eb40b2fb?w=390&h=130&fit=crop&auto=format&q=80"
                   alt={m.name}
@@ -65,25 +58,25 @@ export const MosqueListScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => 
                   </span>
                 </div>
               </div>
-              <div className="p-4">
-                <h3 className="font-bold text-base text-[#1A1A18]">{m.name}</h3>
+              <div className="p-4 lg:p-3.5">
+                <h3 className="font-bold text-base text-[#1A1A18] lg:text-sm">{m.name}</h3>
                 <p className="text-xs text-[var(--muted)] mt-0.5">{m.nameEn}</p>
-                <p className="text-xs text-[var(--muted)] mt-1">📍 {m.address}</p>
-                <div className="flex items-center justify-between mt-3">
-                  <div className="flex items-center gap-3 text-xs text-[var(--muted)]">
+                <p className="mt-1 truncate text-xs text-[var(--muted)]">📍 {m.address}</p>
+                <div className="mt-3 flex items-center justify-between gap-2 lg:mt-2.5">
+                  <div className="flex min-w-0 items-center gap-2 text-xs text-[var(--muted)]">
                     <span>{m.distance}</span>
                     <span>·</span>
-                    <span>{m.walk}</span>
+                    <span className="truncate">{m.walk}</span>
                   </div>
                   <div
-                    className="text-xs font-semibold px-3 py-1.5 rounded-full"
+                    className="flex-shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold"
                     style={{ backgroundColor: "var(--green-light)", color: "var(--green)" }}
                   >
                     {m.nextPrayer}
                   </div>
                 </div>
               </div>
-            </div>
+            </article>
           ))}
       </div>
 
@@ -212,14 +205,10 @@ export const MosqueDetailScreen = () => (
 );
 
 // ── 20. Prayer Times ───────────────────────────────────────────────────────────
-const allPrayerTimes = [
-  { id: "fajr", name: "파즈르", nameEn: "Fajr", time: "04:47", passed: true, notif: true },
-  { id: "sunrise", name: "일출", nameEn: "Sunrise", time: "06:15", passed: true, notif: false },
-  { id: "dhuhr", name: "두흐르", nameEn: "Dhuhr", time: "12:15", passed: true, notif: false },
-  { id: "asr", name: "아스르", nameEn: "Asr", time: "14:32", passed: false, next: true, notif: true },
-  { id: "maghrib", name: "마그립", nameEn: "Maghrib", time: "17:48", passed: false, notif: true },
-  { id: "isha", name: "이샤", nameEn: "Isha", time: "19:21", passed: false, notif: false },
-];
+const prayerDefinitions = [
+  { id: "fajr", key: "Fajr", name: "파즈르", nameEn: "Fajr" }, { id: "sunrise", key: "Sunrise", name: "일출", nameEn: "Sunrise" }, { id: "dhuhr", key: "Dhuhr", name: "두흐르", nameEn: "Dhuhr" }, { id: "asr", key: "Asr", name: "아스르", nameEn: "Asr" }, { id: "maghrib", key: "Maghrib", name: "마그립", nameEn: "Maghrib" }, { id: "isha", key: "Isha", name: "이샤", nameEn: "Isha" },
+] as const;
+type PrayerResponse = { source: string; calculationMethod: string; timings: Record<string, string>; date: { readable: string; gregorian: { date: string }; hijri: { day: string; month: { en: string }; year: string } } };
 
 const calDays = [25, 26, 27, 28, 29, 30, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24];
 
@@ -227,6 +216,21 @@ export const PrayerTimesScreen = ({ onTabChange }: { onTabChange?: (t: TabId) =>
   const [notifState, setNotifState] = useState<Record<string, boolean>>({
     fajr: true, sunrise: false, dhuhr: false, asr: true, maghrib: true, isha: false,
   });
+  const [data, setData] = useState<PrayerResponse | null>(null);
+  const [location, setLocation] = useState("Seoul, Korea");
+  const [error, setError] = useState("");
+  const [clock, setClock] = useState(() => new Date());
+  const loadTimes = async (latitude = 37.5665, longitude = 126.9780, label = "Seoul, Korea") => { try { setError(""); const response = await fetch(`/api/prayer-times?latitude=${latitude}&longitude=${longitude}`); const body = await response.json(); if (!response.ok) throw new Error(body.error); setData(body); setLocation(label); } catch (reason) { setError(reason instanceof Error ? reason.message : "Namoz vaqtlarini olib bo‘lmadi"); } };
+  useEffect(() => { void loadTimes(); const timer = window.setInterval(() => setClock(new Date()), 1000); return () => window.clearInterval(timer); }, []);
+  const useCurrentLocation = () => navigator.geolocation?.getCurrentPosition((position) => void loadTimes(position.coords.latitude, position.coords.longitude, "Current location, Korea"), () => setError("Joylashuv ruxsati berilmadi"));
+  const nowMinutes = Number(new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Seoul", hour: "2-digit", minute: "2-digit", hour12: false }).format(clock).split(":")[0]) * 60 + Number(new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Seoul", hour: "2-digit", minute: "2-digit", hour12: false }).format(clock).split(":")[1]);
+  const allPrayerTimes = useMemo(() => prayerDefinitions.map((p) => { const time = data?.timings[p.key]?.slice(0, 5) ?? "--:--"; const [hour, minute] = time.split(":").map(Number); return { ...p, time, minutes: hour * 60 + minute }; }).map((p, index, rows) => ({ ...p, passed: Number.isFinite(p.minutes) && p.minutes < nowMinutes, next: index === rows.findIndex(row => row.minutes >= nowMinutes) })), [data, nowMinutes]);
+  const nextPrayer = allPrayerTimes.find((p) => p.next) ?? allPrayerTimes[0];
+  const remainingSeconds = nextPrayer.time === "--:--" ? 0 : Math.max(0, ((nextPrayer.minutes < nowMinutes ? nextPrayer.minutes + 1440 : nextPrayer.minutes) * 60) - (nowMinutes * 60 + clock.getSeconds()));
+  const remaining = `${String(Math.floor(remainingSeconds / 3600)).padStart(2,"0")}:${String(Math.floor((remainingSeconds % 3600) / 60)).padStart(2,"0")}:${String(remainingSeconds % 60).padStart(2,"0")}`;
+  const koreaDate = new Date(clock.toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
+  const calendarYear = koreaDate.getFullYear(), calendarMonth = koreaDate.getMonth(), calendarToday = koreaDate.getDate();
+  const calendarOffset = new Date(calendarYear, calendarMonth, 1).getDay(), calendarDays = new Date(calendarYear, calendarMonth + 1, 0).getDate();
 
   return (
     <div className="flex flex-col h-full bg-[var(--cream)]">
@@ -234,14 +238,17 @@ export const PrayerTimesScreen = ({ onTabChange }: { onTabChange?: (t: TabId) =>
         <StatusBar />
         <div className="px-5 pb-3">
           <h1 className="font-bold text-xl text-[#1A1A18]">기도 시간</h1>
-          <p className="text-xs text-[var(--muted)] mt-0.5">이태원동, 서울 · 2024년 11월 24일</p>
+          <div className="mt-0.5 flex items-center gap-2"><p className="text-xs text-[var(--muted)]">{location} · {data?.date.readable ?? "Loading…"}</p><button onClick={useCurrentLocation} className="rounded-lg bg-[var(--green-light)] px-2 py-1 text-[10px] font-bold text-[var(--green)]">현재 위치</button></div>
+          {error && <p className="mt-1 text-xs text-[var(--danger)]">{error}</p>}
         </div>
       </div>
 
       <div className="flex-1 phone-scroll">
+        <div className="lg:mx-auto lg:grid lg:max-w-[1040px] lg:grid-cols-[minmax(0,1.15fr)_minmax(360px,0.85fr)] lg:items-start lg:gap-5 lg:p-5">
+          <div className="min-w-0">
         {/* Hijri date + countdown */}
         <div
-          className="relative mx-4 mt-4 rounded-2xl p-5 overflow-hidden"
+          className="relative mx-4 mt-4 overflow-hidden rounded-2xl p-5 lg:mx-0 lg:mt-0 lg:p-6"
           style={{ background: "linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%)" }}
         >
           <GeometricPattern color="white" opacity={0.06} />
@@ -249,22 +256,23 @@ export const PrayerTimesScreen = ({ onTabChange }: { onTabChange?: (t: TabId) =>
             <div className="flex items-center justify-between mb-4">
               <div>
                 <p className="text-white/70 text-xs">هجري · 히즈리력</p>
-                <p className="text-white font-semibold text-sm mt-0.5">1446년 주마다 알아왈 22일</p>
+                <p className="text-white font-semibold text-sm mt-0.5">{data ? `${data.date.hijri.year} ${data.date.hijri.month.en} ${data.date.hijri.day}` : "Loading…"}</p>
               </div>
               <span className="text-3xl">🌙</span>
             </div>
             <p className="text-white/70 text-xs font-medium mb-1">다음 기도까지</p>
-            <p className="text-white font-bold text-lg mb-1">아스르 Asr</p>
-            <p className="text-white font-bold tabular-nums" style={{ fontSize: "36px", lineHeight: 1 }}>01:47:23</p>
+            <p className="text-white font-bold text-lg mb-1">{nextPrayer.name} {nextPrayer.nameEn}</p>
+            <p className="text-white font-bold tabular-nums" style={{ fontSize: "36px", lineHeight: 1 }}>{remaining}</p>
+            <p className="mt-2 text-[10px] text-white/60">{data?.source ?? ""} · {data?.calculationMethod ?? ""}</p>
           </div>
         </div>
 
         {/* Prayer list */}
-        <div className="bg-white mx-4 mt-3 rounded-2xl overflow-hidden shadow-sm">
+        <div className="mx-4 mt-3 overflow-hidden rounded-2xl bg-white shadow-sm lg:mx-0">
           {allPrayerTimes.map((p, i) => (
             <div
               key={p.id}
-              className={`flex items-center gap-3 px-4 py-3.5 ${i < allPrayerTimes.length - 1 ? "border-b border-[var(--border)]" : ""}`}
+              className={`grid grid-cols-[32px_minmax(0,1fr)_64px_48px] items-center gap-3 px-4 py-3.5 lg:px-5 ${i < allPrayerTimes.length - 1 ? "border-b border-[var(--border)]" : ""}`}
               style={{
                 backgroundColor: p.next ? "var(--green-light)" : "transparent",
                 opacity: p.passed ? 0.5 : 1,
@@ -287,14 +295,16 @@ export const PrayerTimesScreen = ({ onTabChange }: { onTabChange?: (t: TabId) =>
               {p.id !== "sunrise" && (
                 <Toggle on={notifState[p.id]} onToggle={() => setNotifState(s => ({ ...s, [p.id]: !s[p.id] }))} />
               )}
+              {p.id === "sunrise" && <span className="h-6 w-12" aria-hidden="true" />}
             </div>
           ))}
         </div>
+          </div>
 
         {/* Mini calendar */}
-        <div className="bg-white mx-4 mt-3 rounded-2xl p-4 shadow-sm">
+        <div className="mx-4 mt-3 rounded-2xl bg-white p-4 shadow-sm lg:mx-0 lg:mt-0 lg:p-5">
           <div className="flex items-center justify-between mb-3">
-            <p className="font-semibold text-sm text-[#1A1A18]">11월 2024</p>
+            <p className="font-semibold text-sm text-[#1A1A18]">{calendarYear}.{String(calendarMonth + 1).padStart(2, "0")}</p>
             <div className="flex gap-1">
               <button className="w-7 h-7 rounded-lg bg-[var(--cream)] flex items-center justify-center">
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="var(--charcoal)" strokeWidth="1.8"><path d="M8 9L5 6l3-3" strokeLinecap="round"/></svg>
@@ -304,20 +314,20 @@ export const PrayerTimesScreen = ({ onTabChange }: { onTabChange?: (t: TabId) =>
               </button>
             </div>
           </div>
-          <div className="grid grid-cols-7 gap-1 text-center">
+          <div className="grid grid-cols-7 gap-1 text-center lg:gap-1.5">
             {["일","월","화","수","목","금","토"].map((d) => (
               <p key={d} className="text-[10px] font-semibold text-[var(--muted)] py-1">{d}</p>
             ))}
             {/* Offset */}
-            {[0,1,2,3,4].map((i) => <div key={i} />)}
-            {Array.from({ length: 30 }, (_, i) => i + 1).map((d) => (
+            {Array.from({ length: calendarOffset }, (_, i) => <div key={i} />)}
+            {Array.from({ length: calendarDays }, (_, i) => i + 1).map((d) => (
               <button
                 key={d}
                 className="aspect-square rounded-full text-xs font-medium flex items-center justify-center transition-all"
                 style={{
-                  backgroundColor: d === 24 ? "var(--green)" : "transparent",
-                  color: d === 24 ? "white" : d === 1 || d === 8 || d === 15 || d === 22 || d === 29 ? "var(--danger)" : "var(--charcoal)",
-                  fontWeight: d === 24 ? "700" : "400",
+                  backgroundColor: d === calendarToday ? "var(--green)" : "transparent",
+                  color: d === calendarToday ? "white" : new Date(calendarYear, calendarMonth, d).getDay() === 0 ? "var(--danger)" : "var(--charcoal)",
+                  fontWeight: d === calendarToday ? "700" : "400",
                 }}
               >
                 {d}
@@ -325,8 +335,9 @@ export const PrayerTimesScreen = ({ onTabChange }: { onTabChange?: (t: TabId) =>
             ))}
           </div>
         </div>
+        </div>
 
-        <div className="h-6" />
+        <div className="h-6 lg:hidden" />
       </div>
 
       <BottomNav active="prayer" onTabChange={onTabChange} />

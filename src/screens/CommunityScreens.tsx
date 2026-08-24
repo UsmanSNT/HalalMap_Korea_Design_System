@@ -288,7 +288,7 @@ export const CommunityScreen = () => {
     <div className="flex flex-col h-full bg-[var(--cream)]">
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
-        <div className="px-5 pb-2">
+        <div className="mx-auto max-w-[1040px] px-5 pb-3">
           <div className="flex items-center justify-between mb-3">
             <div>
               <h1 className="font-bold text-xl text-[#1A1A18]">커뮤니티</h1>
@@ -315,16 +315,16 @@ export const CommunityScreen = () => {
         </div>
       </div>
 
-      <div className="flex-1 phone-scroll px-4 py-3 space-y-3">
+      <div className="flex-1 phone-scroll px-4 py-3 space-y-3 lg:mx-auto lg:grid lg:w-full lg:max-w-[1040px] lg:grid-cols-2 lg:content-start lg:gap-4 lg:space-y-0 lg:px-5 lg:py-4">
         {posts.map((post, i) => (
-          <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-sm">
+          <article key={i} className="self-start overflow-hidden rounded-2xl border border-[var(--border)] bg-white shadow-sm transition-shadow hover:shadow-md">
             {post.pinned && (
               <div className="px-4 pt-2.5 pb-0 flex items-center gap-1.5">
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="var(--gold)"><path d="M6 1l1.1 2.3L10 3.7 8 5.7l.5 3L6 7.5 3.5 8.7 4 5.7 2 3.7l2.9-.4L6 1z"/></svg>
                 <span className="text-[10px] font-bold text-[var(--gold)]">고정 게시글</span>
               </div>
             )}
-            <div className="p-4 space-y-3">
+            <div className="space-y-3 p-4 lg:p-4.5">
               {/* User */}
               <div className="flex items-center gap-2.5">
                 <div className="w-9 h-9 rounded-full bg-[var(--cream)] flex items-center justify-center text-lg flex-shrink-0">
@@ -352,13 +352,13 @@ export const CommunityScreen = () => {
 
               {/* Image */}
               {post.image && (
-                <div className="h-36 rounded-xl overflow-hidden bg-[#E8E6E1]">
+                <div className="h-36 overflow-hidden rounded-xl bg-[#E8E6E1] lg:h-44">
                   <img src={`https://images.unsplash.com/photo-${post.image}?w=360&h=180&fit=crop&auto=format&q=80`} alt="" className="w-full h-full object-cover" />
                 </div>
               )}
 
               {/* Actions */}
-              <div className="flex items-center gap-4 pt-1 border-t border-[var(--border)]">
+              <div className="flex min-h-8 items-center gap-4 border-t border-[var(--border)] pt-2">
                 <button
                   onClick={() => setLiked(l => ({ ...l, [i]: !l[i] }))}
                   className="flex items-center gap-1.5 text-xs font-semibold transition-colors"
@@ -384,9 +384,9 @@ export const CommunityScreen = () => {
                 </button>
               </div>
             </div>
-          </div>
+          </article>
         ))}
-        <div className="h-4" />
+        <div className="h-4 lg:hidden" />
       </div>
     </div>
   );

@@ -26,29 +26,7 @@ export const C = {
 };
 
 // ── Status bar ─────────────────────────────────────────────────────────────────
-export const CStatusBar = ({ online = false }: { online?: boolean }) => (
-  <div className="flex items-center justify-between px-6 pt-2 pb-1 flex-shrink-0" style={{ backgroundColor: C.bg }}>
-    <span className="font-mono text-xs font-bold tabular-nums" style={{ color: C.text }}>9:41</span>
-    <div className="flex items-center gap-2">
-      {online && (
-        <div className="flex items-center gap-1">
-          <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: C.green }} />
-          <span className="text-[10px] font-bold" style={{ color: C.green }}>GPS</span>
-        </div>
-      )}
-      <div className="flex gap-0.5 items-end">
-        {[3,4,5,6].map((h, i) => (
-          <div key={i} style={{ width: "3px", height: `${h * 2}px`, backgroundColor: i < 3 ? C.text : C.dim, borderRadius: "1px" }} />
-        ))}
-      </div>
-      <svg width="16" height="10" viewBox="0 0 16 10" fill="none">
-        <rect x="0.5" y="0.5" width="13" height="9" rx="2" stroke={C.muted} strokeWidth="1"/>
-        <rect x="14.5" y="3" width="1.5" height="4" rx="0.5" fill={C.muted}/>
-        <rect x="1.5" y="1.5" width="10" height="7" rx="1.5" fill={C.text}/>
-      </svg>
-    </div>
-  </div>
-);
+export const CStatusBar = (_props: { online?: boolean }) => null;
 
 // ── Bottom nav ─────────────────────────────────────────────────────────────────
 export type CourierTab = "home" | "deliveries" | "earnings" | "profile";

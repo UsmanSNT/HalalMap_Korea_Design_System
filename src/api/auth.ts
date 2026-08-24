@@ -19,9 +19,26 @@ const request = async <T>(path: string, init?: RequestInit): Promise<T> => {
       ...init?.headers,
     },
   });
-  const data = await response.json();
-  if (!response.ok) throw new Error(data.error || "So‘rov bajarilmadi");
-  return data;
+  const body = await response.text();
+  let data: unknown = null;
+
+  if (body) {
+    try {
+      data = JSON.parse(body);
+    } catch {
+      data = null;
+    }
+  }
+
+  if (!response.ok) {
+    const apiError = data && typeof data === "object" && "error" in data
+      ? String(data.error)
+      : `Backend javob bermadi (HTTP ${response.status})`;
+    throw new Error(apiError);
+  }
+
+  if (!data) throw new Error("Backend bo‘sh yoki noto‘g‘ri javob qaytardi");
+  return data as T;
 };
 
 export const login = async (email: string, password: string) => {
@@ -51,4 +68,3 @@ export const logout = async () => {
     localStorage.removeItem(TOKEN_KEY);
   }
 };
-
