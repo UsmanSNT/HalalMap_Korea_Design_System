@@ -1,0 +1,10 @@
+{
+  "description": "Discover halal restaurants, mosques, and prayer rooms in South Korea with ease, while enjoying seamless food delivery tailored for the Muslim community.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
