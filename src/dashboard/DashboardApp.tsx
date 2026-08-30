@@ -120,7 +120,7 @@ export default function DashboardApp({ onSwitch }: { onSwitch: () => void }) {
         {/* Brand */}
         <div className="relative overflow-hidden flex-shrink-0 px-5 pt-5 pb-4" style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
           {/* Geo pattern */}
-          <svg className="absolute inset-0 w-full h-full opacity-[0.04]" xmlns="http://www.w3.org/2000/svg">
+          <svg className="pointer-events-none absolute inset-0 w-full h-full opacity-[0.04]" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <pattern id="dash-geo" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
                 <g transform="translate(14,14)" stroke="white" strokeWidth="0.6" fill="none">

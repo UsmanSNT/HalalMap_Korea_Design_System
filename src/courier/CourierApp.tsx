@@ -150,9 +150,9 @@ export default function CourierApp({ onSwitch }: { onSwitch: () => void }) {
       </div>
 
       {/* Content */}
-      <div className="flex-1 flex items-center justify-center" style={{ backgroundColor: "#040810" }}>
+      <div className="relative flex-1 flex items-center justify-center" style={{ backgroundColor: "#040810" }}>
         {/* Dot grid background */}
-        <svg className="absolute inset-0 w-full h-full opacity-[0.04]" xmlns="http://www.w3.org/2000/svg">
+        <svg className="pointer-events-none absolute inset-0 w-full h-full opacity-[0.04]" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <pattern id="courier-dots" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
               <circle cx="1" cy="1" r="1" fill={C.text} />
