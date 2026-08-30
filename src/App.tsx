@@ -132,6 +132,7 @@ export default function App() {
   );
   const deviceType = useDeviceType();
   const [deviceOverride, setDeviceOverrideState] = useState<DeviceType | null>(() => getDeviceOverride());
+  const [devPanelOpen, setDevPanelOpen] = useState(false);
 
   useEffect(() => {
     if (bootStep !== "splash") return;
@@ -189,17 +190,27 @@ export default function App() {
   const isDesktopHome = current === "home" && effectiveDevice === "desktop";
 
   const devToolbar = (
-    <div className="fixed right-3 top-3 z-50 flex items-center gap-2 rounded-xl border border-[var(--border)] bg-white/95 p-2 shadow-lg backdrop-blur">
-      <select value={current} onChange={(event) => setCurrent(event.target.value as ScreenId)} aria-label="Ekranni tanlash" className="max-w-40 rounded-lg bg-[var(--cream)] px-2 py-1.5 text-xs font-semibold outline-none">
-        {SCREEN_GROUPS.map((group) => <optgroup key={group.section} label={group.section}>{group.screens.map((screen) => <option key={screen.id} value={screen.id}>{screen.label}</option>)}</optgroup>)}
-      </select>
-      <select value={deviceOverride ?? "auto"} onChange={(event) => handleDeviceOverride(event.target.value === "auto" ? null : (event.target.value as DeviceType))} aria-label="Qurilma turini tanlash" className="rounded-lg bg-[var(--cream)] px-2 py-1.5 text-xs font-semibold outline-none">
-        <option value="auto">Avto ({DEVICE_LABELS[deviceType]})</option>
-        <option value="desktop">{DEVICE_LABELS.desktop}</option>
-        <option value="android">{DEVICE_LABELS.android}</option>
-        <option value="ios">{DEVICE_LABELS.ios}</option>
-      </select>
-      <button onClick={handleLogout} className="rounded-lg bg-[var(--danger)] px-3 py-1.5 text-xs font-bold text-white">Chiqish</button>
+    <div className="fixed right-3 top-3 z-50">
+      {!devPanelOpen ? (
+        <button onClick={() => setDevPanelOpen(true)} aria-label="QA panelini ochish" title="QA panel (dizaynni Figma bilan solishtirish uchun)"
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border)] bg-white/95 text-base shadow-lg backdrop-blur">
+          🛠️
+        </button>
+      ) : (
+        <div className="flex items-center gap-2 rounded-xl border border-[var(--border)] bg-white/95 p-2 shadow-lg backdrop-blur">
+          <select value={current} onChange={(event) => setCurrent(event.target.value as ScreenId)} aria-label="Ekranni tanlash" className="max-w-40 rounded-lg bg-[var(--cream)] px-2 py-1.5 text-xs font-semibold outline-none">
+            {SCREEN_GROUPS.map((group) => <optgroup key={group.section} label={group.section}>{group.screens.map((screen) => <option key={screen.id} value={screen.id}>{screen.label}</option>)}</optgroup>)}
+          </select>
+          <select value={deviceOverride ?? "auto"} onChange={(event) => handleDeviceOverride(event.target.value === "auto" ? null : (event.target.value as DeviceType))} aria-label="Qurilma turini tanlash" className="rounded-lg bg-[var(--cream)] px-2 py-1.5 text-xs font-semibold outline-none">
+            <option value="auto">Avto ({DEVICE_LABELS[deviceType]})</option>
+            <option value="desktop">{DEVICE_LABELS.desktop}</option>
+            <option value="android">{DEVICE_LABELS.android}</option>
+            <option value="ios">{DEVICE_LABELS.ios}</option>
+          </select>
+          <button onClick={handleLogout} className="rounded-lg bg-[var(--danger)] px-3 py-1.5 text-xs font-bold text-white">Chiqish</button>
+          <button onClick={() => setDevPanelOpen(false)} aria-label="QA panelini yopish" className="rounded-lg border border-[var(--border)] px-2 py-1.5 text-xs font-bold text-[var(--muted)]">✕</button>
+        </div>
+      )}
     </div>
   );
 
