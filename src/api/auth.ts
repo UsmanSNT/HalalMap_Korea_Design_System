@@ -1,3 +1,5 @@
+import { apiUrl } from "./config";
+
 export type UserRole = "user" | "owner" | "courier" | "admin";
 
 export type AuthUser = {
@@ -11,7 +13,7 @@ const TOKEN_KEY = "halalmap_session_token";
 
 const request = async <T>(path: string, init?: RequestInit): Promise<T> => {
   const token = localStorage.getItem(TOKEN_KEY);
-  const response = await fetch(path, {
+  const response = await fetch(apiUrl(path), {
     ...init,
     headers: {
       "Content-Type": "application/json",

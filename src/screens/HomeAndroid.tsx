@@ -141,6 +141,8 @@ const TR = {
   walk: { ko: "도보", en: "walk", uz: "piyoda", ru: "пешком" },
   firstOrderPromo: { ko: "첫 주문 특별 혜택", en: "First order special offer", uz: "Birinchi buyurtma uchun maxsus taklif", ru: "Специальное предложение на первый заказ" },
   discountCoupon: { ko: "₩3,000 할인 쿠폰", en: "₩3,000 discount coupon", uz: "₩3,000 chegirma kuponi", ru: "Купон на скидку ₩3,000" },
+  addRestaurant: { ko: "식당 제보하기", en: "Add a restaurant", uz: "Restoran qo'shish", ru: "Добавить ресторан" },
+  addMosque: { ko: "모스크 제보하기", en: "Add a mosque", uz: "Masjid qo'shish", ru: "Добавить мечеть" },
 } satisfies Record<string, Record<Lang, string>>;
 
 // ── Main Component ────────────────────────────────────────────────────────────
@@ -299,6 +301,16 @@ export default function HomeAndroid({ onNavigate, onTabChange }: { onNavigate?: 
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Contribute CTAs */}
+        <div style={{ padding: "0 12px 4px", display: "flex", gap: 8 }}>
+          <button onClick={() => onNavigate?.("add-restaurant")} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 5, padding: "10px 0", borderRadius: M.radius, border: `1px dashed ${M.green}`, background: "none", color: M.green, fontSize: 11, fontWeight: 600, cursor: "pointer" }}>
+            <span style={{ fontSize: 14, lineHeight: 1 }}>+</span> {t("addRestaurant")}
+          </button>
+          <button onClick={() => onNavigate?.("add-mosque")} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 5, padding: "10px 0", borderRadius: M.radius, border: `1px dashed ${M.gold}`, background: "none", color: M.gold, fontSize: 11, fontWeight: 600, cursor: "pointer" }}>
+            <span style={{ fontSize: 14, lineHeight: 1 }}>+</span> {t("addMosque")}
+          </button>
         </div>
 
         {/* Promo banner */}

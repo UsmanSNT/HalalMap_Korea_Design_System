@@ -32,6 +32,8 @@ const TR_HOME = {
   firstOrderDiscount: { ko: "첫 주문 ₩3,000 할인", en: "₩3,000 off your first order", uz: "Birinchi buyurtmaga ₩3,000 chegirma", ru: "Скидка ₩3,000 на первый заказ" },
   code: { ko: "코드: HALAL3000", en: "Code: HALAL3000", uz: "Kod: HALAL3000", ru: "Код: HALAL3000" },
   orderNow: { ko: "지금 주문하기 →", en: "Order now →", uz: "Hozir buyurtma bering →", ru: "Заказать сейчас →" },
+  addRestaurant: { ko: "식당 제보하기", en: "Add a restaurant", uz: "Restoran qo'shish", ru: "Добавить ресторан" },
+  addMosque: { ko: "모스크 제보하기", en: "Add a mosque", uz: "Masjid qo'shish", ru: "Добавить мечеть" },
 } satisfies Record<string, Record<Lang, string>>;
 
 export const HomeScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabId) => void; onNavigate?: NavigateFn }) => {
@@ -137,6 +139,16 @@ export const HomeScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabI
           <MosqueCard name="서울중앙성원" nameKo="Seoul Central Mosque" distance="1.2km" nextPrayer="아스르 14:32" walkTime="도보 15분" />
           <MosqueCard name="이태원 마스지드" nameKo="Itaewon Masjid" distance="0.3km" nextPrayer="아스르 14:35" walkTime="도보 4분" />
         </div>
+      </div>
+
+      {/* Contribute CTAs */}
+      <div className="px-4 pt-4 flex gap-2.5">
+        <button onClick={() => onNavigate?.("add-restaurant")} className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl border border-dashed text-xs font-semibold" style={{ borderColor: "var(--green)", color: "var(--green)" }}>
+          <span className="text-base leading-none">+</span> {t("addRestaurant")}
+        </button>
+        <button onClick={() => onNavigate?.("add-mosque")} className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl border border-dashed text-xs font-semibold" style={{ borderColor: "var(--gold)", color: "var(--gold)" }}>
+          <span className="text-base leading-none">+</span> {t("addMosque")}
+        </button>
       </div>
 
       {/* Promo banner */}

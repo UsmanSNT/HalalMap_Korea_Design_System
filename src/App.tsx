@@ -20,6 +20,7 @@ import { TravelPlannerScreen, OfflinePrayerScreen } from "./screens/TravelScreen
 import { NotificationsScreen, RamadanScreen, EidScreen } from "./screens/EngagementScreens";
 import { LoyaltyScreen, ReferralScreen } from "./screens/RewardsScreens";
 import { TutorialScreen, MultilingualScreen } from "./screens/AccessibilityScreens";
+import { AddRestaurantScreen, AddMosqueScreen } from "./screens/ContributeScreens";
 
 type ScreenId =
   | "splash" | "onboarding" | "signup" | "language"
@@ -34,7 +35,8 @@ type ScreenId =
   | "travel-planner" | "offline-prayer"
   | "notifications" | "ramadan" | "eid"
   | "loyalty" | "referral"
-  | "tutorial" | "multilingual";
+  | "tutorial" | "multilingual"
+  | "add-restaurant" | "add-mosque";
 
 const SCREEN_GROUPS: { section: string; screens: { id: ScreenId; label: string }[] }[] = [
   { section: "Onboarding", screens: [{ id: "splash", label: "Splash" }, { id: "onboarding", label: "Onboarding" }, { id: "signup", label: "Sign Up" }, { id: "language", label: "Language" }] },
@@ -50,6 +52,7 @@ const SCREEN_GROUPS: { section: string; screens: { id: ScreenId; label: string }
   { section: "Events", screens: [{ id: "notifications", label: "Notifications" }, { id: "ramadan", label: "Ramadan" }, { id: "eid", label: "Eid" }] },
   { section: "Rewards", screens: [{ id: "loyalty", label: "Loyalty" }, { id: "referral", label: "Referral" }] },
   { section: "Accessibility", screens: [{ id: "tutorial", label: "Tutorial" }, { id: "multilingual", label: "Multilingual" }] },
+  { section: "Contribute", screens: [{ id: "add-restaurant", label: "Add Restaurant" }, { id: "add-mosque", label: "Add Mosque" }] },
 ];
 
 const TAB_SCREENS: Record<TabId, ScreenId> = {
@@ -106,6 +109,8 @@ function CustomerScreen({ id, deviceType, onTabChange, onLogout, onNavigate }: {
     case "referral": return <ReferralScreen />;
     case "tutorial": return <TutorialScreen />;
     case "multilingual": return <MultilingualScreen />;
+    case "add-restaurant": return <AddRestaurantScreen onNavigate={onNavigate} />;
+    case "add-mosque": return <AddMosqueScreen onNavigate={onNavigate} />;
   }
 }
 

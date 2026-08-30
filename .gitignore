@@ -14,6 +14,17 @@ server/data/
 .claude-replay.*
 .tmp-*
 
+# Android (Capacitor) build output — the android/ project itself is checked in,
+# only its generated build artifacts and local machine config are not.
+android/app/build/
+android/build/
+android/.gradle/
+android/capacitor-cordova-android-plugins/build/
+android/local.properties
+android/app/src/main/assets/public/
+*.keystore
+*.jks
+
 # Platform-managed agentplat state, not project source. In the
 # client-initiated single-repo workspace layout (make's `Path: "."` spec) the
 # repo root IS the workspace root, so these land inside this repo rather than
