@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { GeometricPattern, StatusBar, BottomNav, BackButton, Toggle, TabId } from "../components/Shared";
+import { useLanguage, type Lang } from "../components/LanguageSwitcher";
 
 // ── 18. Mosque List ────────────────────────────────────────────────────────────
 const mosques = [
@@ -9,8 +10,18 @@ const mosques = [
   { name: "수원 이슬람 성원", nameEn: "Suwon Masjid", address: "매탄동 1316, 수원", distance: "28km", walk: "차량 40분", nextPrayer: "아스르 14:30", type: "mosque" as const },
 ];
 
+const TR1 = {
+  screenTitle: { ko: "모스크 · 기도실", en: "Mosques & Prayer Rooms", uz: "Masjidlar va ibodat xonalari", ru: "Мечети и молельные комнаты" },
+  tabMosque: { ko: "🕌 모스크", en: "🕌 Mosques", uz: "🕌 Masjidlar", ru: "🕌 Мечети" },
+  tabRoom: { ko: "🙏 기도실", en: "🙏 Prayer rooms", uz: "🙏 Ibodat xonalari", ru: "🙏 Молельные комнаты" },
+  badgeMosque: { ko: "모스크", en: "Mosque", uz: "Masjid", ru: "Мечеть" },
+  badgeRoom: { ko: "기도실", en: "Prayer room", uz: "Ibodat xonasi", ru: "Молельная комната" },
+} satisfies Record<string, Record<Lang, string>>;
+
 export const MosqueListScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void }) => {
   const [tab, setTab] = useState<"mosque" | "room">("mosque");
+  const { lang } = useLanguage();
+  const t = (k: keyof typeof TR1) => TR1[k][lang];
 
   return (
     <div className="flex flex-col h-full bg-[var(--cream)]">
@@ -18,7 +29,7 @@ export const MosqueListScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => 
         <StatusBar />
         <div className="px-5 pb-3">
           <div className="flex items-center justify-between mb-3">
-            <h1 className="font-bold text-xl text-[#1A1A18]">모스크 · 기도실</h1>
+            <h1 className="font-bold text-xl text-[#1A1A18]">{t("screenTitle")}</h1>
             <button className="w-9 h-9 rounded-xl bg-[var(--cream)] flex items-center justify-center">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--charcoal)" strokeWidth="1.8">
                 <rect x="2" y="2" width="6" height="6" rx="1.5"/>
@@ -29,17 +40,17 @@ export const MosqueListScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => 
             </button>
           </div>
           <div className="flex bg-[var(--cream)] rounded-xl p-1">
-            {(["mosque", "room"] as const).map((t) => (
+            {(["mosque", "room"] as const).map((tb) => (
               <button
-                key={t}
-                onClick={() => setTab(t)}
+                key={tb}
+                onClick={() => setTab(tb)}
                 className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all"
                 style={{
-                  backgroundColor: tab === t ? "var(--green)" : "transparent",
-                  color: tab === t ? "white" : "var(--muted)",
+                  backgroundColor: tab === tb ? "var(--green)" : "transparent",
+                  color: tab === tb ? "white" : "var(--muted)",
                 }}
               >
-                {t === "mosque" ? "🕌 모스크" : "🙏 기도실"}
+                {t(tb === "mosque" ? "tabMosque" : "tabRoom")}
               </button>
             ))}
           </div>
@@ -61,7 +72,7 @@ export const MosqueListScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => 
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                 <div className="absolute bottom-3 left-3">
                   <span className="text-[10px] font-bold px-2 py-1 rounded-full text-white" style={{ backgroundColor: m.type === "mosque" ? "var(--gold)" : "var(--info)" }}>
-                    {m.type === "mosque" ? "모스크" : "기도실"}
+                    {t(m.type === "mosque" ? "badgeMosque" : "badgeRoom")}
                   </span>
                 </div>
               </div>
@@ -101,7 +112,27 @@ const prayerTimes = [
   { name: "이샤 Isha", time: "19:21", passed: false },
 ];
 
-export const MosqueDetailScreen = () => (
+const TR2 = {
+  jumaPrayer: { ko: "주마 예배", en: "Juma Prayer", uz: "Juma namozi", ru: "Пятничная молитва" },
+  jumaSchedule: { ko: "매주 금요일 12:30 PM · Juma Prayer", en: "Every Friday 12:30 PM · Juma Prayer", uz: "Har juma 12:30 · Juma namozi", ru: "Каждую пятницу в 12:30 · Пятничная молитва" },
+  todayPrayerTimes: { ko: "오늘의 기도 시간", en: "Today's prayer times", uz: "Bugungi namoz vaqtlari", ru: "Время намаза сегодня" },
+  facilities: { ko: "시설", en: "Facilities", uz: "Qulayliklar", ru: "Удобства" },
+  facilityWudu: { ko: "🚿 우두 시설", en: "🚿 Wudu facilities", uz: "🚿 Tahorat xonasi", ru: "🚿 Место для омовения" },
+  facilityWomen: { ko: "🚺 여성 기도실", en: "🚺 Women's prayer room", uz: "🚺 Ayollar ibodat xonasi", ru: "🚺 Женская молельная комната" },
+  facilityParking: { ko: "🅿️ 주차 가능", en: "🅿️ Parking available", uz: "🅿️ Avtoturargoh mavjud", ru: "🅿️ Есть парковка" },
+  facilityEnglish: { ko: "🌍 영어 가능", en: "🌍 English spoken", uz: "🌍 Inglizcha so'zlashadi", ru: "🌍 Говорят по-английски" },
+  facilityLibrary: { ko: "📚 이슬람 자료실", en: "📚 Islamic library", uz: "📚 Islom kutubxonasi", ru: "📚 Исламская библиотека" },
+  getDirections: { ko: "🗺️ 길 찾기", en: "🗺️ Directions", uz: "🗺️ Yo'nalish", ru: "🗺️ Маршрут" },
+  share: { ko: "공유하기", en: "Share", uz: "Ulashish", ru: "Поделиться" },
+  next: { ko: "다음", en: "Next", uz: "Keyingi", ru: "Далее" },
+} satisfies Record<string, Record<Lang, string>>;
+
+const facilityKeys: (keyof typeof TR2)[] = ["facilityWudu", "facilityWomen", "facilityParking", "facilityEnglish", "facilityLibrary"];
+
+export const MosqueDetailScreen = () => {
+  const { lang } = useLanguage();
+  const t = (k: keyof typeof TR2) => TR2[k][lang];
+  return (
   <div className="flex flex-col h-full bg-[var(--cream)]">
     {/* Hero */}
     <div className="relative flex-shrink-0">
@@ -149,8 +180,8 @@ export const MosqueDetailScreen = () => (
         >
           <span className="text-xl">🌟</span>
           <div>
-            <p className="font-bold text-sm" style={{ color: "#7A5220" }}>주마 예배</p>
-            <p className="text-xs" style={{ color: "#9A6830" }}>매주 금요일 12:30 PM · Juma Prayer</p>
+            <p className="font-bold text-sm" style={{ color: "#7A5220" }}>{t("jumaPrayer")}</p>
+            <p className="text-xs" style={{ color: "#9A6830" }}>{t("jumaSchedule")}</p>
           </div>
         </div>
       </div>
@@ -158,7 +189,7 @@ export const MosqueDetailScreen = () => (
       {/* Prayer times */}
       <div className="bg-white mt-2 px-5 py-4">
         <div className="flex items-center justify-between mb-3">
-          <p className="font-semibold text-sm text-[#1A1A18]">오늘의 기도 시간</p>
+          <p className="font-semibold text-sm text-[#1A1A18]">{t("todayPrayerTimes")}</p>
           <p className="text-xs text-[var(--muted)]">1446년 주마다 알아왈 22일</p>
         </div>
         <div className="space-y-1">
@@ -181,7 +212,7 @@ export const MosqueDetailScreen = () => (
               </div>
               <div className="flex items-center gap-2">
                 <p className={`text-sm font-bold tabular-nums ${p.next ? "text-[var(--green)]" : "text-[#1A1A18]"}`}>{p.time}</p>
-                {p.next && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full text-white" style={{ backgroundColor: "var(--green)" }}>다음</span>}
+                {p.next && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full text-white" style={{ backgroundColor: "var(--green)" }}>{t("next")}</span>}
               </div>
             </div>
           ))}
@@ -190,26 +221,27 @@ export const MosqueDetailScreen = () => (
 
       {/* Facilities */}
       <div className="bg-white mt-2 px-5 py-4">
-        <p className="font-semibold text-sm text-[#1A1A18] mb-3">시설</p>
+        <p className="font-semibold text-sm text-[#1A1A18] mb-3">{t("facilities")}</p>
         <div className="flex flex-wrap gap-2">
-          {["🚿 우두 시설", "🚺 여성 기도실", "🅿️ 주차 가능", "🌍 영어 가능", "📚 이슬람 자료실"].map((f) => (
-            <span key={f} className="text-xs font-medium px-3 py-2 rounded-xl bg-[var(--cream)] text-[#1A1A18]">{f}</span>
+          {facilityKeys.map((f) => (
+            <span key={f} className="text-xs font-medium px-3 py-2 rounded-xl bg-[var(--cream)] text-[#1A1A18]">{t(f)}</span>
           ))}
         </div>
       </div>
 
       <div className="px-4 py-4 flex gap-3">
         <button className="flex-1 py-4 rounded-2xl font-bold text-white" style={{ backgroundColor: "var(--green)" }}>
-          🗺️ 길 찾기
+          {t("getDirections")}
         </button>
         <button className="flex-1 py-4 rounded-2xl font-semibold border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>
-          공유하기
+          {t("share")}
         </button>
       </div>
       <div className="h-4" />
     </div>
   </div>
-);
+  );
+};
 
 // ── 20. Prayer Times ───────────────────────────────────────────────────────────
 const allPrayerTimes = [
@@ -223,17 +255,36 @@ const allPrayerTimes = [
 
 const calDays = [25, 26, 27, 28, 29, 30, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24];
 
+const TR3 = {
+  screenTitle: { ko: "기도 시간", en: "Prayer Times", uz: "Namoz vaqtlari", ru: "Время намаза" },
+  untilNextPrayer: { ko: "다음 기도까지", en: "Until next prayer", uz: "Keyingi namozgacha", ru: "До следующего намаза" },
+  next: { ko: "다음", en: "Next", uz: "Keyingi", ru: "Далее" },
+  hijriLabel: { ko: "هجري · 히즈리력", en: "هجري · Hijri calendar", uz: "هجري · Hijriy taqvim", ru: "هجري · Хиджра" },
+} satisfies Record<string, Record<Lang, string>>;
+
+const weekdayLabels: Record<string, Record<Lang, string>> = {
+  일: { ko: "일", en: "Su", uz: "Ya", ru: "Вс" },
+  월: { ko: "월", en: "Mo", uz: "Du", ru: "Пн" },
+  화: { ko: "화", en: "Tu", uz: "Se", ru: "Вт" },
+  수: { ko: "수", en: "We", uz: "Ch", ru: "Ср" },
+  목: { ko: "목", en: "Th", uz: "Pa", ru: "Чт" },
+  금: { ko: "금", en: "Fr", uz: "Ju", ru: "Пт" },
+  토: { ko: "토", en: "Sa", uz: "Sh", ru: "Сб" },
+};
+
 export const PrayerTimesScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void }) => {
   const [notifState, setNotifState] = useState<Record<string, boolean>>({
     fajr: true, sunrise: false, dhuhr: false, asr: true, maghrib: true, isha: false,
   });
+  const { lang } = useLanguage();
+  const t = (k: keyof typeof TR3) => TR3[k][lang];
 
   return (
     <div className="flex flex-col h-full bg-[var(--cream)]">
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="px-5 pb-3">
-          <h1 className="font-bold text-xl text-[#1A1A18]">기도 시간</h1>
+          <h1 className="font-bold text-xl text-[#1A1A18]">{t("screenTitle")}</h1>
           <p className="text-xs text-[var(--muted)] mt-0.5">이태원동, 서울 · 2024년 11월 24일</p>
         </div>
       </div>
@@ -248,12 +299,12 @@ export const PrayerTimesScreen = ({ onTabChange }: { onTabChange?: (t: TabId) =>
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <p className="text-white/70 text-xs">هجري · 히즈리력</p>
+                <p className="text-white/70 text-xs">{t("hijriLabel")}</p>
                 <p className="text-white font-semibold text-sm mt-0.5">1446년 주마다 알아왈 22일</p>
               </div>
               <span className="text-3xl">🌙</span>
             </div>
-            <p className="text-white/70 text-xs font-medium mb-1">다음 기도까지</p>
+            <p className="text-white/70 text-xs font-medium mb-1">{t("untilNextPrayer")}</p>
             <p className="text-white font-bold text-lg mb-1">아스르 Asr</p>
             <p className="text-white font-bold tabular-nums" style={{ fontSize: "36px", lineHeight: 1 }}>01:47:23</p>
           </div>
@@ -279,7 +330,7 @@ export const PrayerTimesScreen = ({ onTabChange }: { onTabChange?: (t: TabId) =>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <p className={`font-semibold text-sm truncate ${p.next ? "text-[var(--green)]" : "text-[#1A1A18]"}`}>{p.name}</p>
-                  {p.next && <span className="flex-shrink-0 text-[9px] font-bold px-1.5 py-0.5 rounded-full text-white" style={{ backgroundColor: "var(--green)" }}>다음</span>}
+                  {p.next && <span className="flex-shrink-0 text-[9px] font-bold px-1.5 py-0.5 rounded-full text-white" style={{ backgroundColor: "var(--green)" }}>{t("next")}</span>}
                 </div>
                 <p className="text-xs text-[var(--muted)] truncate">{p.nameEn}</p>
               </div>
@@ -306,7 +357,7 @@ export const PrayerTimesScreen = ({ onTabChange }: { onTabChange?: (t: TabId) =>
           </div>
           <div className="grid grid-cols-7 gap-1 text-center">
             {["일","월","화","수","목","금","토"].map((d) => (
-              <p key={d} className="text-[10px] font-semibold text-[var(--muted)] py-1">{d}</p>
+              <p key={d} className="text-[10px] font-semibold text-[var(--muted)] py-1">{weekdayLabels[d][lang]}</p>
             ))}
             {/* Offset */}
             {[0,1,2,3,4].map((i) => <div key={i} />)}
@@ -335,8 +386,21 @@ export const PrayerTimesScreen = ({ onTabChange }: { onTabChange?: (t: TabId) =>
 };
 
 // ── 21. Qibla Compass ─────────────────────────────────────────────────────────
+const TR4 = {
+  title: { ko: "키블라 Qibla", en: "Qibla", uz: "Qibla", ru: "Кибла" },
+  subtitle: { ko: "서울에서 메카 방향", en: "Direction to Mecca from Seoul", uz: "Seuldan Makkaga tomon", ru: "Направление на Мекку из Сеула" },
+  mecca: { ko: "메카 Mecca", en: "Mecca", uz: "Makka", ru: "Мекка" },
+  qiblaDirection: { ko: "키블라 방향", en: "Qibla direction", uz: "Qibla yo'nalishi", ru: "Направление киблы" },
+  currentDirectionPrefix: { ko: "현재 방향:", en: "Current heading:", uz: "Hozirgi yo'nalish:", ru: "Текущее направление:" },
+  southeast: { ko: "남동쪽", en: "southeast", uz: "janubi-sharq", ru: "юго-восток" },
+  calibrationTitle: { ko: "캘리브레이션 안내", en: "Calibration guide", uz: "Kalibrlash bo'yicha yo'riqnoma", ru: "Инструкция по калибровке" },
+  calibrationBody: { ko: "기기를 들고 8자 모양으로 천천히 움직여 나침반을 보정하세요", en: "Hold your device and slowly move it in a figure-8 to calibrate the compass", uz: "Qurilmani qo'lga olib, kompasni sozlash uchun sekin 8-shakl chizing", ru: "Держите устройство и медленно двигайте им по восьмёрке для калибровки компаса" },
+} satisfies Record<string, Record<Lang, string>>;
+
 export const QiblaScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void }) => {
   const qiblaAngle = 292.4;
+  const { lang } = useLanguage();
+  const t = (k: keyof typeof TR4) => TR4[k][lang];
 
   return (
     <div className="flex flex-col h-full" style={{ backgroundColor: "#0F1F17" }}>
@@ -351,8 +415,8 @@ export const QiblaScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void 
       <div className="relative z-10 flex items-center gap-3 px-5 pt-2 pb-4">
         <BackButton dark />
         <div>
-          <h1 className="font-bold text-lg text-white">키블라 Qibla</h1>
-          <p className="text-xs text-white/50">서울에서 메카 방향</p>
+          <h1 className="font-bold text-lg text-white">{t("title")}</h1>
+          <p className="text-xs text-white/50">{t("subtitle")}</p>
         </div>
       </div>
 
@@ -402,7 +466,7 @@ export const QiblaScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void 
                   <rect x="10" y="18" width="8" height="6" fill="rgba(196,136,58,0.8)"/>
                 </svg>
               </div>
-              <p className="text-white/60 text-[10px] font-medium">메카 Mecca</p>
+              <p className="text-white/60 text-[10px] font-medium">{t("mecca")}</p>
             </div>
 
             {/* Needle */}
@@ -422,17 +486,17 @@ export const QiblaScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void 
 
         {/* Info */}
         <div className="text-center space-y-2">
-          <p className="text-white/50 text-xs">키블라 방향</p>
+          <p className="text-white/50 text-xs">{t("qiblaDirection")}</p>
           <p className="text-white font-bold text-3xl">{qiblaAngle}°</p>
-          <p className="text-white/60 text-sm">현재 방향: 147° (남동쪽)</p>
+          <p className="text-white/60 text-sm">{t("currentDirectionPrefix")} 147° ({t("southeast")})</p>
         </div>
 
         <div
           className="w-full rounded-2xl px-5 py-4 text-center"
           style={{ backgroundColor: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }}
         >
-          <p className="text-white/50 text-xs mb-1">캘리브레이션 안내</p>
-          <p className="text-white/70 text-sm leading-relaxed">기기를 들고 8자 모양으로 천천히 움직여 나침반을 보정하세요</p>
+          <p className="text-white/50 text-xs mb-1">{t("calibrationTitle")}</p>
+          <p className="text-white/70 text-sm leading-relaxed">{t("calibrationBody")}</p>
         </div>
       </div>
 

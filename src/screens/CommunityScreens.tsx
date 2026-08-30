@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { GeometricPattern, StatusBar, BackButton, HalalBadge, StarRating } from "../components/Shared";
+import { useLanguage, type Lang } from "../components/LanguageSwitcher";
 
 // ── 1. Restaurant Reviews ──────────────────────────────────────────────────────
 const ratingCategories = [
@@ -53,9 +54,30 @@ const ratingDist = [
   { stars: 1, pct: 2 },
 ];
 
+const TR1 = {
+  reviews: { ko: "리뷰", en: "Reviews", uz: "Sharhlar", ru: "Отзывы" },
+  writeReview: { ko: "리뷰 쓰기", en: "Write Review", uz: "Sharh yozish", ru: "Написать отзыв" },
+  reviewCount: { ko: "3,241개 리뷰", en: "3,241 reviews", uz: "3,241 ta sharh", ru: "3 241 отзыв" },
+  categoryRating: { ko: "카테고리별 평가", en: "Ratings by category", uz: "Toifalar bo'yicha baho", ru: "Оценки по категориям" },
+  sortLatest: { ko: "최신순", en: "Latest", uz: "Yangi", ru: "Новые" },
+  sortRecommended: { ko: "추천순", en: "Recommended", uz: "Tavsiya etilgan", ru: "Рекомендуемые" },
+  sortPhotos: { ko: "사진만", en: "Photos only", uz: "Faqat rasmlar", ru: "Только с фото" },
+  sortHighRating: { ko: "높은 평점", en: "Highest rated", uz: "Yuqori baho", ru: "Высокий рейтинг" },
+  helpfulQuestion: { ko: "도움이 되었나요?", en: "Was this helpful?", uz: "Foydali bo'ldimi?", ru: "Отзыв был полезен?" },
+  helpfulCount: { ko: "도움됨", en: "Helpful", uz: "Foydali", ru: "Полезно" },
+} satisfies Record<string, Record<Lang, string>>;
+
 export const ReviewsScreen = () => {
+  const { lang } = useLanguage();
+  const t = (k: keyof typeof TR1) => TR1[k][lang];
   const [sortBy, setSortBy] = useState("최신순");
   const [helpful, setHelpful] = useState<Record<number, boolean>>({});
+  const sortOptions: { key: keyof typeof TR1; label: string }[] = [
+    { key: "sortLatest", label: "최신순" },
+    { key: "sortRecommended", label: "추천순" },
+    { key: "sortPhotos", label: "사진만" },
+    { key: "sortHighRating", label: "높은 평점" },
+  ];
 
   return (
     <div className="flex flex-col h-full bg-[var(--cream)]">
@@ -64,11 +86,11 @@ export const ReviewsScreen = () => {
         <div className="flex items-center gap-3 px-4 pb-3">
           <BackButton />
           <div className="flex-1">
-            <h1 className="font-bold text-lg">리뷰</h1>
+            <h1 className="font-bold text-lg">{t("reviews")}</h1>
             <p className="text-xs text-[var(--muted)]">신당 할랄 키친</p>
           </div>
           <button className="text-sm font-bold px-3 py-1.5 rounded-xl text-white" style={{ backgroundColor: "var(--green)" }}>
-            리뷰 쓰기
+            {t("writeReview")}
           </button>
         </div>
       </div>
@@ -87,7 +109,7 @@ export const ReviewsScreen = () => {
                   </svg>
                 ))}
               </div>
-              <p className="text-xs text-[var(--muted)] mt-1">3,241개 리뷰</p>
+              <p className="text-xs text-[var(--muted)] mt-1">{t("reviewCount")}</p>
             </div>
 
             {/* Distribution */}
@@ -106,7 +128,7 @@ export const ReviewsScreen = () => {
           </div>
 
           {/* Halal-specific categories */}
-          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide mb-3">카테고리별 평가</p>
+          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide mb-3">{t("categoryRating")}</p>
           <div className="grid grid-cols-2 gap-2">
             {ratingCategories.map((cat) => (
               <div key={cat.key} className="flex items-center justify-between p-3 rounded-xl" style={{ backgroundColor: "var(--cream)" }}>
@@ -129,15 +151,15 @@ export const ReviewsScreen = () => {
 
         {/* Sort + filter */}
         <div className="flex items-center gap-2 px-4 py-3">
-          {["최신순", "추천순", "사진만", "높은 평점"].map((s) => (
-            <button key={s} onClick={() => setSortBy(s)}
+          {sortOptions.map((s) => (
+            <button key={s.label} onClick={() => setSortBy(s.label)}
               className="flex-shrink-0 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all"
               style={{
-                backgroundColor: sortBy === s ? "var(--green)" : "white",
-                color: sortBy === s ? "white" : "var(--muted)",
-                borderColor: sortBy === s ? "var(--green)" : "var(--border)",
+                backgroundColor: sortBy === s.label ? "var(--green)" : "white",
+                color: sortBy === s.label ? "white" : "var(--muted)",
+                borderColor: sortBy === s.label ? "var(--green)" : "var(--border)",
               }}>
-              {s}
+              {t(s.key)}
             </button>
           ))}
         </div>
@@ -194,7 +216,7 @@ export const ReviewsScreen = () => {
 
               {/* Helpful */}
               <div className="flex items-center justify-between pt-1 border-t border-[var(--border)]">
-                <p className="text-xs text-[var(--muted)]">도움이 되었나요?</p>
+                <p className="text-xs text-[var(--muted)]">{t("helpfulQuestion")}</p>
                 <button
                   onClick={() => setHelpful(h => ({ ...h, [i]: !h[i] }))}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all"
@@ -207,7 +229,7 @@ export const ReviewsScreen = () => {
                   <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.6">
                     <path d="M4 5V10M4 5L7 2a1 1 0 011 1v1h2a1 1 0 011 1l-.5 4A1 1 0 019.5 10H4M4 5H2a1 1 0 00-1 1v3a1 1 0 001 1h2" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
-                  도움됨 {rev.helpful + (helpful[i] ? 1 : 0)}
+                  {t("helpfulCount")} {rev.helpful + (helpful[i] ? 1 : 0)}
                 </button>
               </div>
             </div>
@@ -280,7 +302,32 @@ const posts = [
 
 const categories = ["전체", "레스토랑 발견", "식료품 정보", "모스크 정보", "생활 팁", "할랄 스캔"];
 
+const TR2 = {
+  community: { ko: "커뮤니티", en: "Community", uz: "Jamiyat", ru: "Сообщество" },
+  subtitle: { ko: "한국 무슬림 할랄 생활 정보", en: "Halal life info for Muslims in Korea", uz: "Koreyadagi musulmonlar uchun halol hayot ma'lumotlari", ru: "Информация о халяльной жизни мусульман в Корее" },
+  write: { ko: "글쓰기", en: "Write", uz: "Yozish", ru: "Написать" },
+  catAll: { ko: "전체", en: "All", uz: "Barchasi", ru: "Все" },
+  catRestaurant: { ko: "레스토랑 발견", en: "Restaurant finds", uz: "Restoran topilmalari", ru: "Новые рестораны" },
+  catGrocery: { ko: "식료품 정보", en: "Grocery info", uz: "Oziq-ovqat ma'lumoti", ru: "Инфо о продуктах" },
+  catMosque: { ko: "모스크 정보", en: "Mosque info", uz: "Machit ma'lumoti", ru: "Инфо о мечетях" },
+  catTips: { ko: "생활 팁", en: "Life tips", uz: "Hayotiy maslahatlar", ru: "Советы для жизни" },
+  catScan: { ko: "할랄 스캔", en: "Halal scan", uz: "Halol skaner", ru: "Халяль-скан" },
+  pinned: { ko: "고정 게시글", en: "Pinned post", uz: "Mahkamlangan post", ru: "Закреплённый пост" },
+  share: { ko: "공유", en: "Share", uz: "Ulashish", ru: "Поделиться" },
+} satisfies Record<string, Record<Lang, string>>;
+
+const categoryKeyMap: Record<string, keyof typeof TR2> = {
+  "전체": "catAll",
+  "레스토랑 발견": "catRestaurant",
+  "식료품 정보": "catGrocery",
+  "모스크 정보": "catMosque",
+  "생활 팁": "catTips",
+  "할랄 스캔": "catScan",
+};
+
 export const CommunityScreen = () => {
+  const { lang } = useLanguage();
+  const t = (k: keyof typeof TR2) => TR2[k][lang];
   const [activeCategory, setActiveCategory] = useState("전체");
   const [liked, setLiked] = useState<Record<number, boolean>>({});
 
@@ -291,12 +338,12 @@ export const CommunityScreen = () => {
         <div className="px-5 pb-2">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <h1 className="font-bold text-xl text-[#1A1A18]">커뮤니티</h1>
-              <p className="text-xs text-[var(--muted)]">한국 무슬림 할랄 생활 정보</p>
+              <h1 className="font-bold text-xl text-[#1A1A18]">{t("community")}</h1>
+              <p className="text-xs text-[var(--muted)]">{t("subtitle")}</p>
             </div>
             <button className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-bold text-white" style={{ backgroundColor: "var(--green)" }}>
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round"><line x1="7" y1="2" x2="7" y2="12"/><line x1="2" y1="7" x2="12" y2="7"/></svg>
-              글쓰기
+              {t("write")}
             </button>
           </div>
           <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
@@ -308,7 +355,7 @@ export const CommunityScreen = () => {
                   color: activeCategory === c ? "white" : "var(--muted)",
                   borderColor: activeCategory === c ? "var(--green)" : "var(--border)",
                 }}>
-                {c}
+                {t(categoryKeyMap[c])}
               </button>
             ))}
           </div>
@@ -321,7 +368,7 @@ export const CommunityScreen = () => {
             {post.pinned && (
               <div className="px-4 pt-2.5 pb-0 flex items-center gap-1.5">
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="var(--gold)"><path d="M6 1l1.1 2.3L10 3.7 8 5.7l.5 3L6 7.5 3.5 8.7 4 5.7 2 3.7l2.9-.4L6 1z"/></svg>
-                <span className="text-[10px] font-bold text-[var(--gold)]">고정 게시글</span>
+                <span className="text-[10px] font-bold text-[var(--gold)]">{t("pinned")}</span>
               </div>
             )}
             <div className="p-4 space-y-3">
@@ -340,7 +387,7 @@ export const CommunityScreen = () => {
                   <p className="text-[10px] text-[var(--muted)]">{post.time}</p>
                 </div>
                 <span className="text-[10px] font-bold px-2 py-1 rounded-full" style={{ backgroundColor: "var(--green-light)", color: "var(--green)" }}>
-                  {post.category}
+                  {t(categoryKeyMap[post.category])}
                 </span>
               </div>
 
@@ -380,7 +427,7 @@ export const CommunityScreen = () => {
                     <circle cx="11" cy="3" r="1.5"/><circle cx="3" cy="7" r="1.5"/><circle cx="11" cy="11" r="1.5"/>
                     <line x1="9.5" y1="4" x2="4.5" y2="6"/><line x1="9.5" y1="10" x2="4.5" y2="8"/>
                   </svg>
-                  공유
+                  {t("share")}
                 </button>
               </div>
             </div>
@@ -394,15 +441,34 @@ export const CommunityScreen = () => {
 
 // ── 3. Share Restaurant / Mosque ───────────────────────────────────────────────
 const shareTargets = [
-  { icon: "💬", label: "카카오톡", color: "#FEE500", textColor: "#1A1A18" },
-  { icon: "📷", label: "인스타그램", color: "linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)", textColor: "white" },
-  { icon: "🟢", label: "WhatsApp", color: "#25D366", textColor: "white" },
-  { icon: "✉️", label: "이메일", color: "#6B7280", textColor: "white" },
-  { icon: "🔗", label: "링크 복사", color: "var(--cream)", textColor: "var(--charcoal)" },
-  { icon: "📨", label: "더보기", color: "var(--cream)", textColor: "var(--charcoal)" },
+  { icon: "💬", label: "카카오톡", key: "kakaotalk" as const, color: "#FEE500", textColor: "#1A1A18" },
+  { icon: "📷", label: "인스타그램", key: "instagram" as const, color: "linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)", textColor: "white" },
+  { icon: "🟢", label: "WhatsApp", key: null, color: "#25D366", textColor: "white" },
+  { icon: "✉️", label: "이메일", key: "email" as const, color: "#6B7280", textColor: "white" },
+  { icon: "🔗", label: "링크 복사", key: "copyLink" as const, color: "var(--cream)", textColor: "var(--charcoal)" },
+  { icon: "📨", label: "더보기", key: "more" as const, color: "var(--cream)", textColor: "var(--charcoal)" },
 ];
 
+const TR3 = {
+  shareTitle: { ko: "공유하기", en: "Share", uz: "Ulashish", ru: "Поделиться" },
+  cardPreview: { ko: "공유 카드 미리보기", en: "Share card preview", uz: "Ulashish kartasi ko'rinishi", ru: "Превью карточки для отправки" },
+  foundOnApp: { ko: "HalalMap Korea에서 찾은 할랄 식당", en: "Found this halal restaurant on HalalMap Korea", uz: "HalalMap Korea orqali topilgan halol restoran", ru: "Halal-ресторан найден в HalalMap Korea" },
+  instagramStory: { ko: "인스타그램 스토리", en: "Instagram Story", uz: "Instagram Stories", ru: "История в Instagram" },
+  shareToApp: { ko: "앱으로 공유", en: "Share to app", uz: "Ilova orqali ulashish", ru: "Поделиться через приложение" },
+  kakaotalk: { ko: "카카오톡", en: "KakaoTalk", uz: "KakaoTalk", ru: "KakaoTalk" },
+  instagram: { ko: "인스타그램", en: "Instagram", uz: "Instagram", ru: "Instagram" },
+  email: { ko: "이메일", en: "Email", uz: "Elektron pochta", ru: "Эл. почта" },
+  copyLink: { ko: "링크 복사", en: "Copy link", uz: "Havolani nusxalash", ru: "Скопировать ссылку" },
+  more: { ko: "더보기", en: "More", uz: "Ko'proq", ru: "Ещё" },
+  copied: { ko: "복사됨! ✓", en: "Copied! ✓", uz: "Nusxalandi! ✓", ru: "Скопировано! ✓" },
+  copiedShort: { ko: "복사됨!", en: "Copied!", uz: "Nusxalandi!", ru: "Скопировано!" },
+  copyAction: { ko: "복사", en: "Copy", uz: "Nusxalash", ru: "Копировать" },
+  directLink: { ko: "직접 링크", en: "Direct link", uz: "To'g'ridan-to'g'ri havola", ru: "Прямая ссылка" },
+} satisfies Record<string, Record<Lang, string>>;
+
 export const ShareScreen = () => {
+  const { lang } = useLanguage();
+  const t = (k: keyof typeof TR3) => TR3[k][lang];
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -416,14 +482,14 @@ export const ShareScreen = () => {
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
           <BackButton />
-          <h1 className="font-bold text-lg">공유하기</h1>
+          <h1 className="font-bold text-lg">{t("shareTitle")}</h1>
         </div>
       </div>
 
       <div className="flex-1 phone-scroll px-4 py-4 space-y-4">
         {/* Deep link card preview */}
         <div>
-          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide mb-2">공유 카드 미리보기</p>
+          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide mb-2">{t("cardPreview")}</p>
           {/* KakaoTalk card */}
           <div className="bg-white rounded-2xl overflow-hidden shadow-md border border-[var(--border)]">
             <div className="h-40 bg-[#D8D4CC] relative">
@@ -452,7 +518,7 @@ export const ShareScreen = () => {
                 <div className="w-5 h-5 rounded flex items-center justify-center" style={{ backgroundColor: "var(--green)" }}>
                   <p className="font-arabic text-[10px] font-bold text-white">ح</p>
                 </div>
-                <p className="text-xs text-[var(--muted)]">HalalMap Korea에서 찾은 할랄 식당</p>
+                <p className="text-xs text-[var(--muted)]">{t("foundOnApp")}</p>
               </div>
             </div>
           </div>
@@ -460,7 +526,7 @@ export const ShareScreen = () => {
 
         {/* Instagram Stories preview */}
         <div>
-          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide mb-2">인스타그램 스토리</p>
+          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide mb-2">{t("instagramStory")}</p>
           <div className="relative h-48 rounded-2xl overflow-hidden shadow-md" style={{ background: "linear-gradient(160deg, var(--green) 0%, #0A3D28 100%)" }}>
             <GeometricPattern color="white" opacity={0.06} />
             <div className="relative z-10 p-5 h-full flex flex-col justify-between">
@@ -486,18 +552,18 @@ export const ShareScreen = () => {
 
         {/* Share targets grid */}
         <div>
-          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide mb-3">앱으로 공유</p>
+          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide mb-3">{t("shareToApp")}</p>
           <div className="grid grid-cols-3 gap-3">
-            {shareTargets.map((t) => (
-              <button key={t.label} onClick={t.label === "링크 복사" ? handleCopy : undefined}
+            {shareTargets.map((target) => (
+              <button key={target.label} onClick={target.label === "링크 복사" ? handleCopy : undefined}
                 className="flex flex-col items-center gap-2 py-4 bg-white rounded-2xl border border-[var(--border)] transition-all active:scale-95">
                 <div
                   className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
-                  style={{ background: t.color, color: t.textColor }}
+                  style={{ background: target.color, color: target.textColor }}
                 >
-                  {t.icon}
+                  {target.icon}
                 </div>
-                <p className="text-xs font-semibold text-[#1A1A18]">{t.label === "링크 복사" && copied ? "복사됨! ✓" : t.label}</p>
+                <p className="text-xs font-semibold text-[#1A1A18]">{target.label === "링크 복사" && copied ? t("copied") : target.key ? t(target.key) : target.label}</p>
               </button>
             ))}
           </div>
@@ -505,11 +571,11 @@ export const ShareScreen = () => {
 
         {/* Deep link */}
         <div className="bg-white rounded-2xl p-4 border border-[var(--border)] space-y-2">
-          <p className="text-xs font-semibold text-[var(--muted)]">직접 링크</p>
+          <p className="text-xs font-semibold text-[var(--muted)]">{t("directLink")}</p>
           <div className="flex items-center gap-2 bg-[var(--cream)] rounded-xl px-3 py-2.5">
             <p className="flex-1 text-xs text-[#1A1A18] font-mono truncate">halalmap.kr/r/sindang-halal</p>
             <button onClick={handleCopy} className="text-xs font-bold flex-shrink-0" style={{ color: "var(--green)" }}>
-              {copied ? "복사됨!" : "복사"}
+              {copied ? t("copiedShort") : t("copyAction")}
             </button>
           </div>
         </div>

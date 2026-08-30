@@ -1,44 +1,70 @@
 import React, { useState } from "react";
 import { StatusBar, BackButton } from "../components/Shared";
+import { useLanguage, type Lang, LanguageSwitcherFull } from "../components/LanguageSwitcher";
 
 // ── 15. Onboarding Tutorial Overlay ───────────────────────────────────────────
+const STEP_TR: Record<string, { title: Record<Lang, string>; body: Record<Lang, string> }> = {
+  search: {
+    title: { ko: "할랄 식당 검색", en: "Search Halal Restaurants", uz: "Halol restoranlarni qidirish", ru: "Поиск халяль-ресторанов" },
+    body: { ko: "검색창을 눌러 주변 할랄 인증 식당을 찾아보세요. 음식 종류, 거리, 인증 유형으로 필터링할 수 있어요.", en: "Tap the search bar to find certified halal restaurants nearby. Filter by cuisine, distance, or certification type.", uz: "Yaqin atrofdagi sertifikatlangan halol restoranlarni topish uchun qidiruv panelini bosing. Taom turi, masofa yoki sertifikat turi bo'yicha filtrlashingiz mumkin.", ru: "Нажмите на строку поиска, чтобы найти сертифицированные халяль-рестораны поблизости. Фильтруйте по кухне, расстоянию или типу сертификации." },
+  },
+  prayer: {
+    title: { ko: "기도 시간 배너", en: "Prayer Time Banner", uz: "Namoz vaqti banneri", ru: "Баннер времени намаза" },
+    body: { ko: "홈 화면 상단에서 다음 기도까지 남은 시간을 확인하세요. 알림 설정으로 기도 시간을 놓치지 마세요.", en: "Check the time remaining until the next prayer at the top of the home screen. Set up notifications so you never miss a prayer.", uz: "Bosh sahifa yuqorisida keyingi namozgacha qolgan vaqtni tekshiring. Namozni o'tkazib yubormaslik uchun bildirishnomalarni sozlang.", ru: "Проверяйте время до следующего намаза вверху главного экрана. Настройте уведомления, чтобы не пропустить намаз." },
+  },
+  bottomnav: {
+    title: { ko: "하단 탭 바", en: "Bottom Tab Bar", uz: "Pastki tab paneli", ru: "Нижняя панель вкладок" },
+    body: { ko: "홈, 검색, 주문, 기도, 프로필 5개 탭으로 앱의 모든 기능에 빠르게 접근할 수 있습니다.", en: "Quickly access every feature of the app through 5 tabs: Home, Search, Orders, Prayer, and Profile.", uz: "Ilovaning barcha funksiyalariga 5 ta tab orqali tezda kirishingiz mumkin: Bosh sahifa, Qidiruv, Buyurtmalar, Namoz va Profil.", ru: "Быстрый доступ ко всем функциям приложения через 5 вкладок: Главная, Поиск, Заказы, Намаз и Профиль." },
+  },
+  scan: {
+    title: { ko: "할랄 스캐너", en: "Halal Scanner", uz: "Halol skaner", ru: "Халяль-сканер" },
+    body: { ko: "제품 바코드를 스캔해 할랄 여부를 즉시 확인하세요. 포장 식품 쇼핑 시 꼭 활용해 보세요!", en: "Scan a product barcode to instantly check if it's halal. Be sure to use it while shopping for packaged foods!", uz: "Mahsulot shtrix-kodini skanerlab, halolligini darhol tekshiring. Qadoqlangan oziq-ovqat sotib olayotganda albatta foydalaning!", ru: "Отсканируйте штрих-код продукта, чтобы мгновенно узнать, халяль ли он. Обязательно используйте при покупке упакованных продуктов!" },
+  },
+};
+
 const steps = [
   {
     id: "search",
-    title: "할랄 식당 검색",
-    body: "검색창을 눌러 주변 할랄 인증 식당을 찾아보세요. 음식 종류, 거리, 인증 유형으로 필터링할 수 있어요.",
     spotlight: { top: 160, left: 16, width: 358, height: 48, radius: 24 },
     callout: { top: 228, align: "center" as const },
     arrowDir: "up" as const,
   },
   {
     id: "prayer",
-    title: "기도 시간 배너",
-    body: "홈 화면 상단에서 다음 기도까지 남은 시간을 확인하세요. 알림 설정으로 기도 시간을 놓치지 마세요.",
     spotlight: { top: 108, left: 16, width: 358, height: 56, radius: 16 },
     callout: { top: 188, align: "center" as const },
     arrowDir: "up" as const,
   },
   {
     id: "bottomnav",
-    title: "하단 탭 바",
-    body: "홈, 검색, 주문, 기도, 프로필 5개 탭으로 앱의 모든 기능에 빠르게 접근할 수 있습니다.",
     spotlight: { top: 760, left: 0, width: 390, height: 84, radius: 0 },
     callout: { top: 666, align: "center" as const },
     arrowDir: "down" as const,
   },
   {
     id: "scan",
-    title: "할랄 스캐너",
-    body: "제품 바코드를 스캔해 할랄 여부를 즉시 확인하세요. 포장 식품 쇼핑 시 꼭 활용해 보세요!",
     spotlight: { top: 300, left: 120, width: 150, height: 150, radius: 75 },
     callout: { top: 470, align: "center" as const },
     arrowDir: "up" as const,
   },
 ];
 
+const TR_FAKEHOME = {
+  nextPrayer: { ko: "다음 기도: 아스르 Asr", en: "Next Prayer: Asr", uz: "Keyingi namoz: Asr", ru: "Следующий намаз: Аср" },
+  searchPlaceholder: { ko: "할랄 음식 검색...", en: "Search halal food...", uz: "Halol taom qidirish...", ru: "Поиск халяльной еды..." },
+  koreanHalal: { ko: "한식 할랄", en: "Korean Halal", uz: "Koreys halol", ru: "Корейская халяль" },
+  turkish: { ko: "터키", en: "Turkish", uz: "Turk", ru: "Турецкая" },
+  uzbek: { ko: "우즈베크", en: "Uzbek", uz: "O'zbek", ru: "Узбекская" },
+  indian: { ko: "인도", en: "Indian", uz: "Hind", ru: "Индийская" },
+  popularRestaurants: { ko: "인기 할랄 식당", en: "Popular Halal Restaurants", uz: "Mashhur halol restoranlar", ru: "Популярные халяль-рестораны" },
+  more: { ko: "더보기 ›", en: "More ›", uz: "Ko'proq ›", ru: "Еще ›" },
+} satisfies Record<string, Record<Lang, string>>;
+
 // Fake home screen to place spotlight over
-const FakeHomePreview = () => (
+const FakeHomePreview = () => {
+  const { lang } = useLanguage();
+  const tF = (k: keyof typeof TR_FAKEHOME) => TR_FAKEHOME[k][lang];
+  return (
   <div className="w-full h-full bg-[var(--cream)] relative pointer-events-none select-none overflow-hidden">
     {/* Status bar */}
     <div className="h-12 bg-[var(--green)] flex items-center justify-between px-6">
@@ -54,7 +80,7 @@ const FakeHomePreview = () => (
     <div className="mx-4 mt-3 rounded-xl p-3 flex items-center gap-2" style={{ background: "linear-gradient(90deg, var(--green-dark), var(--green))" }}>
       <span className="text-xl">🌙</span>
       <div className="flex-1">
-        <p className="text-white text-xs font-semibold">다음 기도: 아스르 Asr</p>
+        <p className="text-white text-xs font-semibold">{tF("nextPrayer")}</p>
         <div className="h-1.5 bg-white/20 rounded-full mt-1"><div className="h-full w-1/3 rounded-full bg-[var(--gold)]" /></div>
       </div>
       <p className="text-[var(--gold)] text-xs font-bold">2:14</p>
@@ -63,20 +89,20 @@ const FakeHomePreview = () => (
     {/* Search bar */}
     <div className="mx-4 mt-3 bg-white rounded-2xl h-12 flex items-center gap-2 px-4 shadow-sm border border-[var(--border)]">
       <span className="text-[var(--muted)] text-base">🔍</span>
-      <p className="text-[var(--muted)] text-sm">할랄 음식 검색...</p>
+      <p className="text-[var(--muted)] text-sm">{tF("searchPlaceholder")}</p>
     </div>
 
     {/* Category chips */}
     <div className="flex gap-2 px-4 mt-3 overflow-hidden">
-      {["한식 할랄", "터키", "우즈베크", "인도"].map((c) => (
+      {[tF("koreanHalal"), tF("turkish"), tF("uzbek"), tF("indian")].map((c) => (
         <div key={c} className="flex-shrink-0 bg-white rounded-full px-3 py-1.5 text-xs font-medium text-[#1A1A18] border border-[var(--border)]">{c}</div>
       ))}
     </div>
 
     {/* Section label */}
     <div className="flex justify-between items-center px-4 mt-4 mb-2">
-      <p className="font-bold text-sm text-[#1A1A18]">인기 할랄 식당</p>
-      <p className="text-xs" style={{ color: "var(--green)" }}>더보기 ›</p>
+      <p className="font-bold text-sm text-[#1A1A18]">{tF("popularRestaurants")}</p>
+      <p className="text-xs" style={{ color: "var(--green)" }}>{tF("more")}</p>
     </div>
 
     {/* Restaurant card previews */}
@@ -102,9 +128,19 @@ const FakeHomePreview = () => (
       ))}
     </div>
   </div>
-);
+  );
+};
+
+const TR_TUTORIAL = {
+  prev: { ko: "이전", en: "Previous", uz: "Orqaga", ru: "Назад" },
+  next: { ko: "다음", en: "Next", uz: "Keyingi", ru: "Далее" },
+  start: { ko: "시작하기 🎉", en: "Get Started 🎉", uz: "Boshlash 🎉", ru: "Начать 🎉" },
+  skip: { ko: "건너뛰기", en: "Skip", uz: "O'tkazib yuborish", ru: "Пропустить" },
+} satisfies Record<string, Record<Lang, string>>;
 
 export const TutorialScreen = () => {
+  const { lang } = useLanguage();
+  const tT = (k: keyof typeof TR_TUTORIAL) => TR_TUTORIAL[k][lang];
   const [step, setStep] = useState(0);
   const current = steps[step];
   const isLast = step === steps.length - 1;
@@ -154,8 +190,8 @@ export const TutorialScreen = () => {
           </div>
         )}
         <div className="bg-white rounded-2xl p-4 shadow-xl">
-          <p className="font-bold text-sm text-[#1A1A18] mb-1">{current.title}</p>
-          <p className="text-xs text-[var(--muted)] leading-relaxed">{current.body}</p>
+          <p className="font-bold text-sm text-[#1A1A18] mb-1">{STEP_TR[current.id].title[lang]}</p>
+          <p className="text-xs text-[var(--muted)] leading-relaxed">{STEP_TR[current.id].body[lang]}</p>
         </div>
         {current.arrowDir === "down" && (
           <div className="flex justify-center mt-1.5">
@@ -178,18 +214,18 @@ export const TutorialScreen = () => {
         <div className="flex gap-2">
           {step > 0 && (
             <button onClick={() => setStep(s => s - 1)} className="flex-1 py-3 rounded-2xl font-bold text-sm bg-white/20 text-white backdrop-blur">
-              이전
+              {tT("prev")}
             </button>
           )}
           <button onClick={() => !isLast && setStep(s => s + 1)}
             className="flex-1 py-3 rounded-2xl font-bold text-sm text-white"
             style={{ backgroundColor: isLast ? "var(--gold)" : "var(--green)" }}>
-            {isLast ? "시작하기 🎉" : "다음"}
+            {isLast ? tT("start") : tT("next")}
           </button>
         </div>
 
         {!isLast && (
-          <button className="w-full py-2 text-white/50 text-xs font-medium">건너뛰기</button>
+          <button className="w-full py-2 text-white/50 text-xs font-medium">{tT("skip")}</button>
         )}
       </div>
     </div>
@@ -221,7 +257,19 @@ const langs = [
   { code: "ar", label: "العربية", flag: "🇸🇦", dir: "rtl" as const },
 ];
 
+const TR_MULTILINGUAL = {
+  headerTitle: { ko: "다국어 콘텐츠 미리보기", en: "Multilingual Content Preview", uz: "Ko'p tilli kontent ko'rinishi", ru: "Предпросмотр многоязычного контента" },
+  splitView: { ko: "분할 보기", en: "Split View", uz: "Bo'lingan ko'rinish", ru: "Раздельный вид" },
+  appLanguage: { ko: "앱 표시 언어", en: "App Display Language", uz: "Ilova tili", ru: "Язык приложения" },
+  appLanguageDesc: { ko: "앱 전체 화면에 표시되는 언어를 선택하세요.", en: "Choose the language shown throughout the app.", uz: "Ilovaning barcha ekranlarida ko'rsatiladigan tilni tanlang.", ru: "Выберите язык, отображаемый во всём приложении." },
+  autoTranslateTitle: { ko: "다국어 자동 번역", en: "Automatic Translation", uz: "Avtomatik tarjima", ru: "Автоматический перевод" },
+  autoTranslateDesc: { ko: "식당 메뉴가 한국어, 영어, 아랍어, 우즈베크어, 인도네시아어로 자동 번역됩니다. 식당 관리자가 직접 등록한 번역이 있으면 AI 번역보다 우선 표시됩니다.", en: "Restaurant menus are automatically translated into Korean, English, Arabic, Uzbek, and Indonesian. If a restaurant owner has provided their own translation, it takes priority over the AI translation.", uz: "Restoran menyulari koreys, ingliz, arab, o'zbek va indonez tillariga avtomatik tarjima qilinadi. Agar restoran egasi o'z tarjimasini kiritgan bo'lsa, u AI tarjimasidan ustun ko'rsatiladi.", ru: "Меню ресторанов автоматически переводится на корейский, английский, арабский, узбекский и индонезийский языки. Если владелец ресторана добавил собственный перевод, он отображается вместо перевода ИИ." },
+  popularMenu: { ko: "🔥 인기메뉴", en: "🔥 Popular Menu", uz: "🔥 Mashhur menyu", ru: "🔥 Популярное меню" },
+} satisfies Record<string, Record<Lang, string>>;
+
 export const MultilingualScreen = () => {
+  const { lang, setLang } = useLanguage();
+  const tM = (k: keyof typeof TR_MULTILINGUAL) => TR_MULTILINGUAL[k][lang];
   const [activePreview, setActivePreview] = useState<"split" | "ko" | "en" | "ar">("split");
 
   return (
@@ -232,15 +280,15 @@ export const MultilingualScreen = () => {
         <div className="flex items-center gap-3 px-4 pb-3">
           <BackButton />
           <div className="flex-1">
-            <h1 className="font-bold text-base text-[#1A1A18]">다국어 콘텐츠 미리보기</h1>
-            <p className="text-[11px] text-[var(--muted)]">한국어 · English · العربية</p>
+            <h1 className="font-bold text-base text-[#1A1A18]">{tM("headerTitle")}</h1>
+            <p className="text-[11px] text-[var(--muted)]">한국어 · English · O'zbekcha · Русский</p>
           </div>
         </div>
 
         {/* View selector */}
         <div className="flex gap-1 px-4 pb-3 overflow-x-auto scrollbar-hide">
           {[
-            { id: "split", label: "분할 보기" },
+            { id: "split", label: tM("splitView") },
             ...langs.map(l => ({ id: l.code, label: `${l.flag} ${l.label}` })),
           ].map((v) => (
             <button key={v.id} onClick={() => setActivePreview(v.id as typeof activePreview)}
@@ -257,6 +305,15 @@ export const MultilingualScreen = () => {
       </div>
 
       <div className="flex-1 phone-scroll">
+        {/* Real app-wide language picker */}
+        <div className="px-4 pt-4">
+          <div className="bg-white rounded-2xl p-4 shadow-sm">
+            <p className="font-bold text-sm text-[#1A1A18] mb-0.5">{tM("appLanguage")}</p>
+            <p className="text-xs text-[var(--muted)] mb-3">{tM("appLanguageDesc")}</p>
+            <LanguageSwitcherFull lang={lang} onChange={setLang} />
+          </div>
+        </div>
+
         {/* Restaurant header */}
         <div className="relative">
           <div className="h-32 bg-[#C4C0B8]" style={{ backgroundImage: `url(https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=390&h=128&fit=crop&auto=format&q=80)`, backgroundSize: "cover", backgroundPosition: "center" }} />
@@ -279,7 +336,7 @@ export const MultilingualScreen = () => {
           {/* Section label */}
           <div className="flex items-center justify-between">
             <p className="font-bold text-sm text-[#1A1A18]">
-              {activePreview === "ar" ? "🔥 القائمة الشعبية" : activePreview === "en" ? "🔥 Popular Menu" : "🔥 인기메뉴"}
+              {activePreview === "ar" ? "🔥 القائمة الشعبية" : activePreview === "en" ? "🔥 Popular Menu" : activePreview === "ko" ? "🔥 인기메뉴" : tM("popularMenu")}
             </p>
           </div>
 
@@ -335,10 +392,9 @@ export const MultilingualScreen = () => {
           <div className="rounded-xl p-3 flex items-start gap-2" style={{ backgroundColor: "var(--green-light)" }}>
             <span className="text-base mt-0.5">🌐</span>
             <div>
-              <p className="font-bold text-xs text-[#1A1A18] mb-0.5">다국어 자동 번역</p>
+              <p className="font-bold text-xs text-[#1A1A18] mb-0.5">{tM("autoTranslateTitle")}</p>
               <p className="text-[11px] text-[var(--muted)] leading-relaxed">
-                식당 메뉴가 한국어, 영어, 아랍어, 우즈베크어, 인도네시아어로 자동 번역됩니다.
-                식당 관리자가 직접 등록한 번역이 있으면 AI 번역보다 우선 표시됩니다.
+                {tM("autoTranslateDesc")}
               </p>
             </div>
           </div>

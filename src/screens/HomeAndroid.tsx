@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { type TabId } from "../components/Shared";
+import { useLanguage, type Lang } from "../components/LanguageSwitcher";
 
 const TAB_ORDER: TabId[] = ["home", "search", "orders", "prayer", "profile"];
 
@@ -41,13 +42,13 @@ const ICONS = {
   map:     "M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z",
 };
 
-const CATEGORIES = [
-  { emoji: "🍖", label: "한식 할랄" },
-  { emoji: "🥙", label: "터키" },
-  { emoji: "🍽️", label: "우즈베크" },
-  { emoji: "🍛", label: "인도" },
-  { emoji: "🥗", label: "아랍" },
-  { emoji: "🍜", label: "파키스탄" },
+const CATEGORIES: { emoji: string; label: Record<Lang, string> }[] = [
+  { emoji: "🍖", label: { ko: "한식 할랄", en: "Korean Halal", uz: "Koreys halol", ru: "Корейская халяль" } },
+  { emoji: "🥙", label: { ko: "터키", en: "Turkish", uz: "Turk", ru: "Турецкая" } },
+  { emoji: "🍽️", label: { ko: "우즈베크", en: "Uzbek", uz: "O'zbek", ru: "Узбекская" } },
+  { emoji: "🍛", label: { ko: "인도", en: "Indian", uz: "Hind", ru: "Индийская" } },
+  { emoji: "🥗", label: { ko: "아랍", en: "Arab", uz: "Arab", ru: "Арабская" } },
+  { emoji: "🍜", label: { ko: "파키스탄", en: "Pakistani", uz: "Pokiston", ru: "Пакистанская" } },
 ];
 
 const RESTAURANTS = [
@@ -93,13 +94,20 @@ const AndroidStatusBar = ({ light = false }: { light?: boolean }) => {
 };
 
 // ── Material 3 Bottom Navigation ──────────────────────────────────────────────
-const M3BottomNav = ({ active, onTabChange }: { active: number; onTabChange: (i: number) => void }) => {
+const M3BottomNav = ({ active, onTabChange, lang }: { active: number; onTabChange: (i: number) => void; lang: Lang }) => {
+  const TAB_LABELS: Record<Lang, string>[] = [
+    { ko: "홈", en: "Home", uz: "Bosh sahifa", ru: "Главная" },
+    { ko: "검색", en: "Search", uz: "Qidiruv", ru: "Поиск" },
+    { ko: "주문", en: "Orders", uz: "Buyurtmalar", ru: "Заказы" },
+    { ko: "기도", en: "Prayer", uz: "Namoz", ru: "Молитва" },
+    { ko: "프로필", en: "Profile", uz: "Profil", ru: "Профиль" },
+  ];
   const tabs = [
-    { icon: ICONS.home, label: "홈" },
-    { icon: ICONS.search, label: "검색" },
-    { icon: ICONS.bag, label: "주문" },
-    { icon: ICONS.mosque, label: "기도" },
-    { icon: ICONS.person, label: "프로필" },
+    { icon: ICONS.home, label: TAB_LABELS[0][lang] },
+    { icon: ICONS.search, label: TAB_LABELS[1][lang] },
+    { icon: ICONS.bag, label: TAB_LABELS[2][lang] },
+    { icon: ICONS.mosque, label: TAB_LABELS[3][lang] },
+    { icon: ICONS.person, label: TAB_LABELS[4][lang] },
   ];
   return (
     <div style={{ height: 72, backgroundColor: M.surface, borderTop: `1px solid ${M.outlineVar}`, display: "flex", alignItems: "center", flexShrink: 0 }}>
@@ -119,8 +127,26 @@ const M3BottomNav = ({ active, onTabChange }: { active: number; onTabChange: (i:
   );
 };
 
+const TR = {
+  location: { ko: "이태원동", en: "Itaewon-dong", uz: "Itaewon-dong", ru: "Итхэвон-дон" },
+  district: { ko: ", 용산구", en: ", Yongsan-gu", uz: ", Yongsan-gu", ru: ", Йонсан-гу" },
+  nextPrayer: { ko: "다음 기도", en: "Next prayer", uz: "Keyingi namoz", ru: "Следующий намаз" },
+  hoursLater: { ko: "2시간 후", en: "in 2h", uz: "2 soatdan so'ng", ru: "через 2ч" },
+  searchPlaceholder: { ko: "할랄 음식, 레스토랑 검색...", en: "Search halal food, restaurants...", uz: "Halol taom, restoran qidirish...", ru: "Поиск халяльной еды, ресторанов..." },
+  popularRestaurants: { ko: "🔥 인기 할랄 식당", en: "🔥 Popular Halal Restaurants", uz: "🔥 Mashhur halol restoranlar", ru: "🔥 Популярные халяльные рестораны" },
+  more: { ko: "더보기", en: "See more", uz: "Ko'proq", ru: "Показать ещё" },
+  deliveryFee: { ko: "배달비", en: "Delivery fee", uz: "Yetkazish narxi", ru: "Доставка" },
+  nearbyMosques: { ko: "🕌 근처 모스크", en: "🕌 Nearby Mosques", uz: "🕌 Yaqin atrofdagi masjidlar", ru: "🕌 Ближайшие мечети" },
+  viewMap: { ko: "지도 보기", en: "View map", uz: "Xaritada ko'rish", ru: "Смотреть на карте" },
+  walk: { ko: "도보", en: "walk", uz: "piyoda", ru: "пешком" },
+  firstOrderPromo: { ko: "첫 주문 특별 혜택", en: "First order special offer", uz: "Birinchi buyurtma uchun maxsus taklif", ru: "Специальное предложение на первый заказ" },
+  discountCoupon: { ko: "₩3,000 할인 쿠폰", en: "₩3,000 discount coupon", uz: "₩3,000 chegirma kuponi", ru: "Купон на скидку ₩3,000" },
+} satisfies Record<string, Record<Lang, string>>;
+
 // ── Main Component ────────────────────────────────────────────────────────────
 export default function HomeAndroid({ onNavigate, onTabChange }: { onNavigate?: (screen: string) => void; onTabChange?: (tab: TabId) => void }) {
+  const { lang } = useLanguage();
+  const t = (k: keyof typeof TR) => TR[k][lang];
   const [activeCategory, setActiveCategory] = useState(0);
 
   return (
@@ -141,8 +167,8 @@ export default function HomeAndroid({ onNavigate, onTabChange }: { onNavigate?: 
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <MIcon d={ICONS.pin} size={16} color="rgba(255,255,255,0.8)" />
             <div>
-              <span style={{ color: "white", fontSize: 14, fontWeight: 700 }}>이태원동</span>
-              <span style={{ color: "rgba(255,255,255,0.6)", fontSize: 11 }}>, 용산구</span>
+              <span style={{ color: "white", fontSize: 14, fontWeight: 700 }}>{t("location")}</span>
+              <span style={{ color: "rgba(255,255,255,0.6)", fontSize: 11 }}>{t("district")}</span>
             </div>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="rgba(255,255,255,0.6)"><path d="M7 10l5 5 5-5z"/></svg>
           </div>
@@ -164,7 +190,7 @@ export default function HomeAndroid({ onNavigate, onTabChange }: { onNavigate?: 
               <MIcon d={ICONS.prayer} size={18} color="white" />
             </div>
             <div style={{ flex: 1 }}>
-              <p style={{ fontSize: 10, color: "rgba(255,255,255,0.65)", fontWeight: 500, marginBottom: 1 }}>다음 기도</p>
+              <p style={{ fontSize: 10, color: "rgba(255,255,255,0.65)", fontWeight: 500, marginBottom: 1 }}>{t("nextPrayer")}</p>
               <p style={{ fontSize: 13, fontWeight: 700, color: "white" }}>아스르 Asr</p>
               <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 4 }}>
                 <div style={{ flex: 1, height: 3, backgroundColor: "rgba(255,255,255,0.2)", borderRadius: 99 }}>
@@ -173,7 +199,7 @@ export default function HomeAndroid({ onNavigate, onTabChange }: { onNavigate?: 
                 <span style={{ fontSize: 11, color: M.gold, fontWeight: 600 }}>14:32</span>
               </div>
             </div>
-            <span style={{ fontSize: 11, color: "rgba(255,255,255,0.5)" }}>2시간 후</span>
+            <span style={{ fontSize: 11, color: "rgba(255,255,255,0.5)" }}>{t("hoursLater")}</span>
           </div>
         </div>
 
@@ -181,7 +207,7 @@ export default function HomeAndroid({ onNavigate, onTabChange }: { onNavigate?: 
         <div style={{ margin: "10px 12px 0" }}>
           <div style={{ height: 44, backgroundColor: M.surfaceVar, borderRadius: 22, display: "flex", alignItems: "center", padding: "0 14px", gap: 10 }}>
             <MIcon d={ICONS.search} size={18} color={M.muted} />
-            <span style={{ fontSize: 13, color: M.muted }}>할랄 음식, 레스토랑 검색...</span>
+            <span style={{ fontSize: 13, color: M.muted }}>{t("searchPlaceholder")}</span>
             <div style={{ marginLeft: "auto" }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill={M.muted}><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2H3v2a9 9 0 0 0 8 8.94V23h2v-2.06A9 9 0 0 0 21 12v-2h-2z"/></svg>
             </div>
@@ -198,7 +224,7 @@ export default function HomeAndroid({ onNavigate, onTabChange }: { onNavigate?: 
                 {isActive && (
                   <svg width="14" height="14" viewBox="0 0 24 24" fill={M.green}><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
                 )}
-                <span style={{ fontSize: 11, fontWeight: 500, color: isActive ? M.green : M.textMid, whiteSpace: "nowrap" }}>{cat.emoji} {cat.label}</span>
+                <span style={{ fontSize: 11, fontWeight: 500, color: isActive ? M.green : M.textMid, whiteSpace: "nowrap" }}>{cat.emoji} {cat.label[lang]}</span>
               </button>
             );
           })}
@@ -207,9 +233,9 @@ export default function HomeAndroid({ onNavigate, onTabChange }: { onNavigate?: 
         {/* Section: Popular restaurants */}
         <div style={{ padding: "14px 12px 0" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-            <span style={{ fontSize: 14, fontWeight: 700, color: M.text }}>🔥 인기 할랄 식당</span>
+            <span style={{ fontSize: 14, fontWeight: 700, color: M.text }}>{t("popularRestaurants")}</span>
             <button onClick={() => onNavigate?.("restaurant-list")} style={{ display: "flex", alignItems: "center", gap: 2, background: "none", border: "none", cursor: "pointer" }}>
-              <span style={{ fontSize: 12, color: M.green, fontWeight: 600 }}>더보기</span>
+              <span style={{ fontSize: 12, color: M.green, fontWeight: 600 }}>{t("more")}</span>
               <MIcon d={ICONS.chevron} size={14} color={M.green} />
             </button>
           </div>
@@ -239,7 +265,7 @@ export default function HomeAndroid({ onNavigate, onTabChange }: { onNavigate?: 
                   <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                     <span style={{ fontSize: 10, color: M.muted }}>📍 {r.dist}</span>
                     <span style={{ fontSize: 10, color: M.muted }}>•</span>
-                    <span style={{ fontSize: 10, color: M.muted }}>배달비 {r.fee}</span>
+                    <span style={{ fontSize: 10, color: M.muted }}>{t("deliveryFee")} {r.fee}</span>
                   </div>
                 </div>
               </div>
@@ -250,9 +276,9 @@ export default function HomeAndroid({ onNavigate, onTabChange }: { onNavigate?: 
         {/* Section: Nearby Mosques */}
         <div style={{ padding: "14px 12px 12px" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-            <span style={{ fontSize: 14, fontWeight: 700, color: M.text }}>🕌 근처 모스크</span>
+            <span style={{ fontSize: 14, fontWeight: 700, color: M.text }}>{t("nearbyMosques")}</span>
             <button onClick={() => onNavigate?.("mosque-list")} style={{ display: "flex", alignItems: "center", gap: 2, background: "none", border: "none", cursor: "pointer" }}>
-              <span style={{ fontSize: 12, color: M.green, fontWeight: 600 }}>지도 보기</span>
+              <span style={{ fontSize: 12, color: M.green, fontWeight: 600 }}>{t("viewMap")}</span>
               <MIcon d={ICONS.chevron} size={14} color={M.green} />
             </button>
           </div>
@@ -265,7 +291,7 @@ export default function HomeAndroid({ onNavigate, onTabChange }: { onNavigate?: 
                 <p style={{ fontSize: 13, fontWeight: 600, color: M.text }}>{m.name}</p>
                 <p style={{ fontSize: 11, color: M.muted, marginTop: 1 }}>{m.sub}</p>
                 <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 3 }}>
-                  <span style={{ fontSize: 10, color: M.muted }}>📍 {m.dist} · 도보 {m.walk}</span>
+                  <span style={{ fontSize: 10, color: M.muted }}>📍 {m.dist} · {t("walk")} {m.walk}</span>
                 </div>
               </div>
               <div style={{ backgroundColor: M.greenLight, padding: "4px 8px", borderRadius: 8 }}>
@@ -279,8 +305,8 @@ export default function HomeAndroid({ onNavigate, onTabChange }: { onNavigate?: 
         <div style={{ margin: "0 12px 16px", borderRadius: M.radius, overflow: "hidden" }}>
           <div style={{ background: `linear-gradient(135deg, ${M.gold} 0%, #a66b20 100%)`, padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div>
-              <p style={{ fontSize: 12, color: "rgba(255,255,255,0.75)", fontWeight: 500 }}>첫 주문 특별 혜택</p>
-              <p style={{ fontSize: 16, fontWeight: 800, color: "white", marginTop: 2 }}>₩3,000 할인 쿠폰</p>
+              <p style={{ fontSize: 12, color: "rgba(255,255,255,0.75)", fontWeight: 500 }}>{t("firstOrderPromo")}</p>
+              <p style={{ fontSize: 16, fontWeight: 800, color: "white", marginTop: 2 }}>{t("discountCoupon")}</p>
             </div>
             <div style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82zM7 7H5v2h2V7z"/></svg>
@@ -290,7 +316,7 @@ export default function HomeAndroid({ onNavigate, onTabChange }: { onNavigate?: 
       </div>
 
       {/* Material 3 Bottom Navigation */}
-      <M3BottomNav active={0} onTabChange={(i) => onTabChange?.(TAB_ORDER[i])} />
+      <M3BottomNav active={0} onTabChange={(i) => onTabChange?.(TAB_ORDER[i])} lang={lang} />
 
       {/* Android gesture bar */}
       <div style={{ height: 20, backgroundColor: M.surface, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>

@@ -1,4 +1,5 @@
 import React from "react";
+import { useLanguage, type Lang } from "./LanguageSwitcher";
 
 // ── Geometric Pattern ────────────────────────────────────────────────────────
 export const GeometricPattern = ({
@@ -70,11 +71,17 @@ export const StatusBar = ({ dark = false }: { dark?: boolean }) => {
 // ── Bottom Navigation ────────────────────────────────────────────────────────
 type TabId = "home" | "search" | "orders" | "prayer" | "profile";
 
-const tabs: { id: TabId; label: string; labelKo: string; icon: (filled: boolean) => React.ReactNode }[] = [
+const TAB_LABELS: Record<TabId, Record<Lang, string>> = {
+  home: { ko: "홈", en: "Home", uz: "Bosh sahifa", ru: "Главная" },
+  search: { ko: "검색", en: "Search", uz: "Qidiruv", ru: "Поиск" },
+  orders: { ko: "주문", en: "Orders", uz: "Buyurtmalar", ru: "Заказы" },
+  prayer: { ko: "기도", en: "Prayer", uz: "Namoz", ru: "Молитва" },
+  profile: { ko: "프로필", en: "Profile", uz: "Profil", ru: "Профиль" },
+};
+
+const tabs: { id: TabId; icon: (filled: boolean) => React.ReactNode }[] = [
   {
     id: "home",
-    label: "Home",
-    labelKo: "홈",
     icon: (f) => (
       <svg width="24" height="24" viewBox="0 0 24 24" fill={f ? "var(--green)" : "none"} stroke={f ? "var(--green)" : "var(--muted)"} strokeWidth="1.8">
         <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
@@ -84,8 +91,6 @@ const tabs: { id: TabId; label: string; labelKo: string; icon: (filled: boolean)
   },
   {
     id: "search",
-    label: "Search",
-    labelKo: "검색",
     icon: (f) => (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={f ? "var(--green)" : "var(--muted)"} strokeWidth="1.8">
         <circle cx="11" cy="11" r="7" fill={f ? "var(--green-light)" : "none"}/>
@@ -95,8 +100,6 @@ const tabs: { id: TabId; label: string; labelKo: string; icon: (filled: boolean)
   },
   {
     id: "orders",
-    label: "Orders",
-    labelKo: "주문",
     icon: (f) => (
       <svg width="24" height="24" viewBox="0 0 24 24" fill={f ? "var(--green)" : "none"} stroke={f ? "var(--green)" : "var(--muted)"} strokeWidth="1.8">
         <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
@@ -107,8 +110,6 @@ const tabs: { id: TabId; label: string; labelKo: string; icon: (filled: boolean)
   },
   {
     id: "prayer",
-    label: "Prayer",
-    labelKo: "기도",
     icon: (f) => (
       <svg width="24" height="24" viewBox="0 0 24 24" fill={f ? "var(--green)" : "none"} stroke={f ? "var(--green)" : "var(--muted)"} strokeWidth="1.8">
         <path d="M12 3C9 3 6.5 5.5 6.5 8.5C6.5 12 9.5 14.5 12 17C14.5 14.5 17.5 12 17.5 8.5C17.5 5.5 15 3 12 3Z"/>
@@ -120,8 +121,6 @@ const tabs: { id: TabId; label: string; labelKo: string; icon: (filled: boolean)
   },
   {
     id: "profile",
-    label: "Profile",
-    labelKo: "프로필",
     icon: (f) => (
       <svg width="24" height="24" viewBox="0 0 24 24" fill={f ? "var(--green)" : "none"} stroke={f ? "var(--green)" : "var(--muted)"} strokeWidth="1.8">
         <circle cx="12" cy="8" r="4" fill={f ? "var(--green-light)" : "none"}/>
@@ -137,28 +136,31 @@ export const BottomNav = ({
 }: {
   active: TabId;
   onTabChange?: (id: TabId) => void;
-}) => (
-  <div className="flex items-center border-t border-[#E8E6E1] bg-white px-1 pt-2 pb-5 flex-shrink-0">
-    {tabs.map((t) => (
-      <button
-        key={t.id}
-        onClick={() => onTabChange?.(t.id)}
-        className="flex flex-col items-center gap-0.5 flex-1 py-0.5 transition-opacity active:opacity-70"
-      >
-        {t.icon(active === t.id)}
-        <span
-          className="text-[10px] font-medium"
-          style={{ color: active === t.id ? "var(--green)" : "var(--muted)" }}
+}) => {
+  const { lang } = useLanguage();
+  return (
+    <div className="flex items-center border-t border-[#E8E6E1] bg-white px-1 pt-2 pb-5 flex-shrink-0">
+      {tabs.map((t) => (
+        <button
+          key={t.id}
+          onClick={() => onTabChange?.(t.id)}
+          className="flex flex-col items-center gap-0.5 flex-1 py-0.5 transition-opacity active:opacity-70"
         >
-          {t.labelKo}
-        </span>
-        {active === t.id && (
-          <span className="w-1 h-1 rounded-full" style={{ backgroundColor: "var(--green)" }} />
-        )}
-      </button>
-    ))}
-  </div>
-);
+          {t.icon(active === t.id)}
+          <span
+            className="text-[10px] font-medium"
+            style={{ color: active === t.id ? "var(--green)" : "var(--muted)" }}
+          >
+            {TAB_LABELS[t.id][lang]}
+          </span>
+          {active === t.id && (
+            <span className="w-1 h-1 rounded-full" style={{ backgroundColor: "var(--green)" }} />
+          )}
+        </button>
+      ))}
+    </div>
+  );
+};
 
 // ── Halal Badge ──────────────────────────────────────────────────────────────
 type BadgeVariant = "certified" | "owned" | "friendly";
@@ -337,22 +339,23 @@ export const MosqueCard = ({
 
 // ── Order Status Chip ────────────────────────────────────────────────────────
 type OrderStatus = "pending" | "preparing" | "delivering" | "delivered" | "cancelled";
-const statusConfig: Record<OrderStatus, { label: string; labelKo: string; bg: string; text: string }> = {
-  pending: { label: "Pending", labelKo: "대기중", bg: "#FEF3C7", text: "#92400E" },
-  preparing: { label: "Preparing", labelKo: "조리중", bg: "#DBEAFE", text: "#1E40AF" },
-  delivering: { label: "On the Way", labelKo: "배달중", bg: "#EDE9FE", text: "#5B21B6" },
-  delivered: { label: "Delivered", labelKo: "배달완료", bg: "#D1FAE5", text: "#065F46" },
-  cancelled: { label: "Cancelled", labelKo: "취소됨", bg: "#FEE2E2", text: "#991B1B" },
+const statusConfig: Record<OrderStatus, { label: Record<Lang, string>; bg: string; text: string }> = {
+  pending: { label: { ko: "대기중", en: "Pending", uz: "Kutilmoqda", ru: "Ожидание" }, bg: "#FEF3C7", text: "#92400E" },
+  preparing: { label: { ko: "조리중", en: "Preparing", uz: "Tayyorlanmoqda", ru: "Готовится" }, bg: "#DBEAFE", text: "#1E40AF" },
+  delivering: { label: { ko: "배달중", en: "On the Way", uz: "Yetkazilmoqda", ru: "В пути" }, bg: "#EDE9FE", text: "#5B21B6" },
+  delivered: { label: { ko: "배달완료", en: "Delivered", uz: "Yetkazildi", ru: "Доставлено" }, bg: "#D1FAE5", text: "#065F46" },
+  cancelled: { label: { ko: "취소됨", en: "Cancelled", uz: "Bekor qilindi", ru: "Отменено" }, bg: "#FEE2E2", text: "#991B1B" },
 };
 
 export const OrderStatusChip = ({ status }: { status: OrderStatus }) => {
   const cfg = statusConfig[status];
+  const { lang } = useLanguage();
   return (
     <span
       className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold"
       style={{ backgroundColor: cfg.bg, color: cfg.text }}
     >
-      {cfg.labelKo}
+      {cfg.label[lang]}
     </span>
   );
 };

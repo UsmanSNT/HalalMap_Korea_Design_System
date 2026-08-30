@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { GeometricPattern, StatusBar, BackButton, HalalBadge, PriceTag, Toggle } from "../components/Shared";
+import { useLanguage, type Lang } from "../components/LanguageSwitcher";
 
 // ── 4. AI Meal Recommendations ─────────────────────────────────────────────────
 const mealCards = [
@@ -35,7 +36,22 @@ const mealCards = [
   },
 ];
 
+const TR1 = {
+  title: { ko: "AI 맞춤 추천", en: "AI Recommendations", uz: "AI tavsiyalari", ru: "ИИ-рекомендации" },
+  rainyDay: { ko: "🌧️ 비 오는 날", en: "🌧️ Rainy day", uz: "🌧️ Yomg'irli kun", ru: "🌧️ Дождливый день" },
+  dinner: { ko: "⏰ 저녁 식사", en: "⏰ Dinner", uz: "⏰ Kechki ovqat", ru: "⏰ Ужин" },
+  within2km: { ko: "📍 2km 이내", en: "📍 Within 2km", uz: "📍 2 km ichida", ru: "📍 В радиусе 2 км" },
+  under20000: { ko: "💰 ₩20,000 이하", en: "💰 Under ₩20,000", uz: "💰 20,000 vondan past", ru: "💰 До ₩20,000" },
+  aiMatch: { ko: "AI 매칭", en: "AI Match", uz: "AI moslik", ru: "ИИ-совпадение" },
+  orderNow: { ko: "바로 주문", en: "Order Now", uz: "Hoziroq buyurtma", ru: "Заказать сейчас" },
+  delivery: { ko: "배달", en: "Delivery", uz: "Yetkazib berish", ru: "Доставка" },
+  deliveryFee: { ko: "배달비", en: "delivery fee", uz: "yetkazib berish narxi", ru: "плата за доставку" },
+  swipeHint: { ko: "← 건너뛰기 · 추가하기 →", en: "← Skip · Add →", uz: "← O'tkazib yuborish · Qo'shish →", ru: "← Пропустить · Добавить →" },
+} satisfies Record<string, Record<Lang, string>>;
+
 export const AIMealScreen = () => {
+  const { lang } = useLanguage();
+  const t = (k: keyof typeof TR1) => TR1[k][lang];
   const [cardIdx, setCardIdx] = useState(0);
   const [swipeDir, setSwipeDir] = useState<null | "left" | "right">(null);
   const card = mealCards[cardIdx % mealCards.length];
@@ -56,7 +72,7 @@ export const AIMealScreen = () => {
         <div className="flex items-center gap-3 px-4 pb-3">
           <BackButton />
           <div className="flex-1">
-            <h1 className="font-bold text-lg">AI 맞춤 추천</h1>
+            <h1 className="font-bold text-lg">{t("title")}</h1>
             <p className="text-xs text-[var(--muted)]">오늘 오후 5:47 · 이태원 · 🌧️ 12°C</p>
           </div>
           <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ backgroundColor: "var(--green-light)" }}>
@@ -70,8 +86,8 @@ export const AIMealScreen = () => {
       <div className="flex-1 flex flex-col px-6 py-4 gap-4">
         {/* Context chips */}
         <div className="flex flex-wrap gap-2">
-          {["🌧️ 비 오는 날", "⏰ 저녁 식사", "📍 2km 이내", "💰 ₩20,000 이하"].map((c) => (
-            <span key={c} className="text-xs font-medium px-3 py-1.5 rounded-full bg-white border border-[var(--border)] text-[#1A1A18]">{c}</span>
+          {(["rainyDay", "dinner", "within2km", "under20000"] as const).map((c) => (
+            <span key={c} className="text-xs font-medium px-3 py-1.5 rounded-full bg-white border border-[var(--border)] text-[#1A1A18]">{t(c)}</span>
           ))}
         </div>
 
@@ -96,7 +112,7 @@ export const AIMealScreen = () => {
               {/* Match score */}
               <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-white/95 backdrop-blur px-3 py-1.5 rounded-full">
                 <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: "var(--green)" }} />
-                <span className="text-xs font-bold text-[#1A1A18]">AI 매칭 {card.match}%</span>
+                <span className="text-xs font-bold text-[#1A1A18]">{t("aiMatch")} {card.match}%</span>
               </div>
 
               <div className="absolute bottom-3 left-3 right-3">
@@ -117,10 +133,10 @@ export const AIMealScreen = () => {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <PriceTag amount={card.price} className="text-lg" />
-                  <p className="text-xs text-[var(--muted)]">배달 {card.eta} · 배달비 ₩2,000</p>
+                  <p className="text-xs text-[var(--muted)]">{t("delivery")} {card.eta} · {t("deliveryFee")} ₩2,000</p>
                 </div>
                 <button className="px-5 py-3 rounded-xl font-bold text-white text-sm" style={{ backgroundColor: "var(--green)" }}>
-                  바로 주문
+                  {t("orderNow")}
                 </button>
               </div>
             </div>
@@ -156,7 +172,7 @@ export const AIMealScreen = () => {
           </button>
         </div>
 
-        <p className="text-center text-xs text-[var(--muted)]">← 건너뛰기 · 추가하기 →</p>
+        <p className="text-center text-xs text-[var(--muted)]">{t("swipeHint")}</p>
       </div>
     </div>
   );
@@ -170,7 +186,28 @@ const groupMembers = [
   { name: "Yusuf", avatar: "🧔", items: [], total: 0, ready: false },
 ];
 
+const TR2 = {
+  groupOrder: { ko: "그룹 주문", en: "Group Order", uz: "Guruhli buyurtma", ru: "Групповой заказ" },
+  inviteLink: { ko: "초대 링크", en: "Invite Link", uz: "Taklif havolasi", ru: "Ссылка-приглашение" },
+  orderStatus: { ko: "주문 현황", en: "Order Status", uz: "Buyurtma holati", ru: "Статус заказа" },
+  splitBill: { ko: "계산 분배", en: "Split Bill", uz: "Hisobni bo'lish", ru: "Разделить счёт" },
+  participation: { ko: "참여 현황", en: "Participation", uz: "Ishtirok holati", ru: "Участие" },
+  completedOf: { ko: "명 완료", en: " done", uz: " kishi tayyor", ru: " готово" },
+  orderComplete: { ko: "주문 완료 ✓", en: "Order complete ✓", uz: "Buyurtma tayyor ✓", ru: "Заказ готов ✓" },
+  stillChoosing: { ko: "아직 선택 중...", en: "Still choosing...", uz: "Hali tanlamoqda...", ru: "Ещё выбирает..." },
+  editing: { ko: "수정 중 ✏️", en: "Editing ✏️", uz: "Tahrirlamoqda ✏️", ru: "Редактирует ✏️" },
+  subtotal: { ko: "소계", en: "Subtotal", uz: "Oraliq jami", ru: "Промежуточный итог" },
+  deliverySplitEqually: { ko: "배달비 균등 분배", en: "Delivery fee (split evenly)", uz: "Yetkazib berish (teng bo'lingan)", ru: "Доставка (поровну)" },
+  total: { ko: "총합", en: "Total", uz: "Jami", ru: "Итого" },
+  kakaoPayRequest: { ko: "카카오페이 요청", en: "Request via KakaoPay", uz: "KakaoPay orqali so'rash", ru: "Запросить через KakaoPay" },
+  tossSettle: { ko: "토스 정산", en: "Settle via Toss", uz: "Toss orqali hisob-kitob", ru: "Расчёт через Toss" },
+  groupOrderComplete: { ko: "그룹 주문 완료", en: "Group order complete", uz: "Guruhli buyurtma tayyor", ru: "Групповой заказ готов" },
+  waiting: { ko: "명 대기중...", en: " waiting...", uz: " kishi kutmoqda...", ru: " ожидают..." },
+} satisfies Record<string, Record<Lang, string>>;
+
 export const GroupOrderScreen = () => {
+  const { lang } = useLanguage();
+  const t = (k: keyof typeof TR2) => TR2[k][lang];
   const [tab, setTab] = useState<"order" | "split">("order");
   const readyCount = groupMembers.filter(m => m.ready).length;
   const grandTotal = groupMembers.reduce((acc, m) => acc + m.total, 0);
@@ -183,21 +220,21 @@ export const GroupOrderScreen = () => {
         <div className="flex items-center gap-3 px-4 pb-3">
           <BackButton />
           <div className="flex-1">
-            <h1 className="font-bold text-lg">그룹 주문</h1>
+            <h1 className="font-bold text-lg">{t("groupOrder")}</h1>
             <p className="text-xs text-[var(--muted)]">신당 할랄 키친</p>
           </div>
           <button className="text-sm font-bold px-3 py-1.5 rounded-xl" style={{ backgroundColor: "var(--green-light)", color: "var(--green)" }}>
-            초대 링크
+            {t("inviteLink")}
           </button>
         </div>
 
         {/* Tabs */}
         <div className="flex bg-[var(--cream)] mx-4 mb-3 rounded-xl p-1">
-          {(["order", "split"] as const).map((t) => (
-            <button key={t} onClick={() => setTab(t)}
+          {(["order", "split"] as const).map((tabKey) => (
+            <button key={tabKey} onClick={() => setTab(tabKey)}
               className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all"
-              style={{ backgroundColor: tab === t ? "var(--green)" : "transparent", color: tab === t ? "white" : "var(--muted)" }}>
-              {t === "order" ? "주문 현황" : "계산 분배"}
+              style={{ backgroundColor: tab === tabKey ? "var(--green)" : "transparent", color: tab === tabKey ? "white" : "var(--muted)" }}>
+              {tabKey === "order" ? t("orderStatus") : t("splitBill")}
             </button>
           ))}
         </div>
@@ -209,8 +246,8 @@ export const GroupOrderScreen = () => {
             {/* Progress */}
             <div className="bg-white rounded-2xl p-4 shadow-sm">
               <div className="flex items-center justify-between mb-2">
-                <p className="font-semibold text-sm text-[#1A1A18]">참여 현황</p>
-                <p className="text-sm font-bold" style={{ color: "var(--green)" }}>{readyCount}/{groupMembers.length}명 완료</p>
+                <p className="font-semibold text-sm text-[#1A1A18]">{t("participation")}</p>
+                <p className="text-sm font-bold" style={{ color: "var(--green)" }}>{readyCount}/{groupMembers.length}{t("completedOf")}</p>
               </div>
               <div className="h-2 bg-[var(--cream)] rounded-full overflow-hidden">
                 <div className="h-full rounded-full transition-all" style={{ width: `${(readyCount / groupMembers.length) * 100}%`, backgroundColor: "var(--green)" }} />
@@ -240,11 +277,11 @@ export const GroupOrderScreen = () => {
                   <div className="flex-1">
                     <p className="font-bold text-sm text-[#1A1A18]">{m.name}</p>
                     {m.ready ? (
-                      <span className="text-[10px] font-bold" style={{ color: "var(--green)" }}>주문 완료 ✓</span>
+                      <span className="text-[10px] font-bold" style={{ color: "var(--green)" }}>{t("orderComplete")}</span>
                     ) : m.items.length === 0 ? (
-                      <span className="text-[10px] text-[var(--muted)]">아직 선택 중...</span>
+                      <span className="text-[10px] text-[var(--muted)]">{t("stillChoosing")}</span>
                     ) : (
-                      <span className="text-[10px] text-[var(--gold)]">수정 중 ✏️</span>
+                      <span className="text-[10px] text-[var(--gold)]">{t("editing")}</span>
                     )}
                   </div>
                   {m.total > 0 && <PriceTag amount={m.total} className="text-sm font-bold" />}
@@ -266,7 +303,7 @@ export const GroupOrderScreen = () => {
           <>
             {/* Split bill */}
             <div className="bg-white rounded-2xl p-5 shadow-sm space-y-3">
-              <p className="font-bold text-base text-[#1A1A18]">계산 분배</p>
+              <p className="font-bold text-base text-[#1A1A18]">{t("splitBill")}</p>
               {groupMembers.filter(m => m.total > 0).map((m, i) => (
                 <div key={i} className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full bg-[var(--cream)] flex items-center justify-center text-base flex-shrink-0">{m.avatar}</div>
@@ -282,15 +319,15 @@ export const GroupOrderScreen = () => {
                 </div>
               ))}
               <div className="pt-3 border-t border-[var(--border)] space-y-1.5 text-sm">
-                <div className="flex justify-between text-[var(--muted)]"><span>소계</span><span>₩{grandTotal.toLocaleString()}</span></div>
-                <div className="flex justify-between text-[var(--muted)]"><span>배달비 균등 분배</span><span>₩{deliveryFee.toLocaleString()}</span></div>
-                <div className="flex justify-between font-bold text-base text-[#1A1A18]"><span>총합</span><span>₩{(grandTotal + deliveryFee).toLocaleString()}</span></div>
+                <div className="flex justify-between text-[var(--muted)]"><span>{t("subtotal")}</span><span>₩{grandTotal.toLocaleString()}</span></div>
+                <div className="flex justify-between text-[var(--muted)]"><span>{t("deliverySplitEqually")}</span><span>₩{deliveryFee.toLocaleString()}</span></div>
+                <div className="flex justify-between font-bold text-base text-[#1A1A18]"><span>{t("total")}</span><span>₩{(grandTotal + deliveryFee).toLocaleString()}</span></div>
               </div>
             </div>
 
             <div className="bg-white rounded-2xl p-4 flex gap-3">
-              <button className="flex-1 py-3 rounded-xl text-sm font-bold text-white" style={{ backgroundColor: "var(--green)" }}>카카오페이 요청</button>
-              <button className="flex-1 py-3 rounded-xl text-sm font-semibold border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>토스 정산</button>
+              <button className="flex-1 py-3 rounded-xl text-sm font-bold text-white" style={{ backgroundColor: "var(--green)" }}>{t("kakaoPayRequest")}</button>
+              <button className="flex-1 py-3 rounded-xl text-sm font-semibold border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>{t("tossSettle")}</button>
             </div>
           </>
         )}
@@ -299,7 +336,7 @@ export const GroupOrderScreen = () => {
       {/* Bottom CTA */}
       <div className="px-4 pb-8 pt-3 bg-white border-t border-[var(--border)] flex-shrink-0">
         <button className="w-full py-4 rounded-2xl font-bold text-white text-base" style={{ backgroundColor: readyCount === groupMembers.length ? "var(--green)" : "#9CA3AF" }}>
-          {readyCount === groupMembers.length ? `₩${(grandTotal + deliveryFee).toLocaleString()} 그룹 주문 완료` : `${groupMembers.length - readyCount}명 대기중...`}
+          {readyCount === groupMembers.length ? `₩${(grandTotal + deliveryFee).toLocaleString()} ${t("groupOrderComplete")}` : `${groupMembers.length - readyCount}${t("waiting")}`}
         </button>
       </div>
     </div>
@@ -315,7 +352,69 @@ const mealPlan = [
   { day: "금", meal: "치킨 커리", rest: "델리 스파이스", delivered: false },
 ];
 
+const TR3 = {
+  mealPlan: { ko: "밀플랜 구독", en: "Meal Plan Subscription", uz: "Ovqat rejasi obunasi", ru: "Подписка на план питания" },
+  goldPlanName: { ko: "할랄 주간 구독 — 골드", en: "Halal Weekly Subscription — Gold", uz: "Halol haftalik obuna — Oltin", ru: "Халяль-подписка на неделю — Голд" },
+  deliveriesPerWeek: { ko: "주 5회 배달 · ₩69,000/주", en: "5 deliveries/week · ₩69,000/week", uz: "Haftada 5 marta yetkazish · 69,000 vom/hafta", ru: "5 доставок в неделю · ₩69,000/нед" },
+  subscribed: { ko: "구독중", en: "Subscribed", uz: "Obuna faol", ru: "Подписка активна" },
+  thisWeek: { ko: "이번 주", en: "This week", uz: "Shu hafta", ru: "Эта неделя" },
+  nextWeek: { ko: "다음 주", en: "Next week", uz: "Keyingi hafta", ru: "Следующая неделя" },
+  twoWeeksLater: { ko: "2주 후", en: "In 2 weeks", uz: "2 haftadan keyin", ru: "Через 2 недели" },
+  today: { ko: "오늘", en: "Today", uz: "Bugun", ru: "Сегодня" },
+  delivered: { ko: "배달완료", en: "Delivered", uz: "Yetkazildi", ru: "Доставлено" },
+  change: { ko: "변경", en: "Change", uz: "O'zgartirish", ru: "Изменить" },
+  dietarySettings: { ko: "식단 설정", en: "Dietary Preferences", uz: "Ovqatlanish sozlamalari", ru: "Настройки питания" },
+  prefBeefChicken: { ko: "소고기 / 닭고기 포함", en: "Include beef / chicken", uz: "Mol go'shti / tovuq qo'shilgan", ru: "С говядиной / курицей" },
+  prefVegetarian: { ko: "채식 메뉴 포함", en: "Include vegetarian options", uz: "Vegetarian taomlar qo'shilgan", ru: "С вегетарианскими блюдами" },
+  prefKorean: { ko: "한국 음식 위주", en: "Mostly Korean food", uz: "Asosan koreys taomlari", ru: "В основном корейская кухня" },
+  prefNoSpicy: { ko: "매운 음식 제외", en: "Exclude spicy food", uz: "Achchiq taomlar istisno", ru: "Без острой еды" },
+  changePlan: { ko: "플랜 변경", en: "Change Plan", uz: "Rejani o'zgartirish", ru: "Сменить план" },
+  timesPerWeek3: { ko: "주 3회", en: "3x/week", uz: "Haftada 3 marta", ru: "3 раза/нед" },
+  timesPerWeek5: { ko: "주 5회", en: "5x/week", uz: "Haftada 5 marta", ru: "5 раз/нед" },
+  timesPerWeek7: { ko: "주 7회", en: "7x/week", uz: "Haftada 7 marta", ru: "7 раз/нед" },
+  planSilver: { ko: "실버", en: "Silver", uz: "Kumush", ru: "Серебро" },
+  planGold: { ko: "골드", en: "Gold", uz: "Oltin", ru: "Голд" },
+  planPlatinum: { ko: "플래티넘", en: "Platinum", uz: "Platina", ru: "Платина" },
+  current: { ko: "현재", en: "Current", uz: "Joriy", ru: "Текущий" },
+  select: { ko: "선택", en: "Select", uz: "Tanlash", ru: "Выбрать" },
+} satisfies Record<string, Record<Lang, string>>;
+
+const dayKeyMap: Record<string, keyof typeof TR3> = {
+  "이번 주": "thisWeek",
+  "다음 주": "nextWeek",
+  "2주 후": "twoWeeksLater",
+};
+
+const prefKeyMap: Record<string, keyof typeof TR3> = {
+  "소고기 / 닭고기 포함": "prefBeefChicken",
+  "채식 메뉴 포함": "prefVegetarian",
+  "한국 음식 위주": "prefKorean",
+  "매운 음식 제외": "prefNoSpicy",
+};
+
+const planMealsKeyMap: Record<string, keyof typeof TR3> = {
+  "주 3회": "timesPerWeek3",
+  "주 5회": "timesPerWeek5",
+  "주 7회": "timesPerWeek7",
+};
+
+const planNameKeyMap: Record<string, keyof typeof TR3> = {
+  "실버": "planSilver",
+  "골드": "planGold",
+  "플래티넘": "planPlatinum",
+};
+
+const weekdayLetterMap: Record<string, Record<Lang, string>> = {
+  "월": { ko: "월", en: "Mon", uz: "Dush", ru: "Пн" },
+  "화": { ko: "화", en: "Tue", uz: "Sesh", ru: "Вт" },
+  "수": { ko: "수", en: "Wed", uz: "Chor", ru: "Ср" },
+  "목": { ko: "목", en: "Thu", uz: "Pay", ru: "Чт" },
+  "금": { ko: "금", en: "Fri", uz: "Jum", ru: "Пт" },
+};
+
 export const MealPlansScreen = () => {
+  const { lang } = useLanguage();
+  const t = (k: keyof typeof TR3) => TR3[k][lang];
   const [activeWeek, setActiveWeek] = useState(0);
 
   return (
@@ -326,15 +425,15 @@ export const MealPlansScreen = () => {
         <div className="relative z-10 px-5 pb-5">
           <div className="flex items-center gap-3 mb-3">
             <BackButton dark />
-            <h1 className="font-bold text-lg text-white">밀플랜 구독</h1>
+            <h1 className="font-bold text-lg text-white">{t("mealPlan")}</h1>
           </div>
           <div className="bg-white/15 rounded-2xl p-4 flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center text-2xl">🍽️</div>
             <div className="flex-1">
-              <p className="text-white font-bold">할랄 주간 구독 — 골드</p>
-              <p className="text-white/70 text-xs mt-0.5">주 5회 배달 · ₩69,000/주</p>
+              <p className="text-white font-bold">{t("goldPlanName")}</p>
+              <p className="text-white/70 text-xs mt-0.5">{t("deliveriesPerWeek")}</p>
             </div>
-            <span className="text-xs font-bold px-2 py-1 rounded-full" style={{ backgroundColor: "var(--gold)", color: "white" }}>구독중</span>
+            <span className="text-xs font-bold px-2 py-1 rounded-full" style={{ backgroundColor: "var(--gold)", color: "white" }}>{t("subscribed")}</span>
           </div>
         </div>
       </div>
@@ -350,7 +449,7 @@ export const MealPlansScreen = () => {
                 color: activeWeek === i ? "white" : "var(--muted)",
                 borderColor: activeWeek === i ? "var(--green)" : "var(--border)",
               }}>
-              {w}
+              {t(dayKeyMap[w])}
             </button>
           ))}
         </div>
@@ -368,7 +467,7 @@ export const MealPlansScreen = () => {
                 {day.delivered ? (
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round"><path d="M2 8l4 4 8-8"/></svg>
                 ) : (
-                  <p className="text-sm font-bold" style={{ color: day.today ? "white" : "var(--muted)" }}>{day.day}</p>
+                  <p className="text-sm font-bold" style={{ color: day.today ? "white" : "var(--muted)" }}>{weekdayLetterMap[day.day][lang]}</p>
                 )}
               </div>
               <div className="flex-1 min-w-0">
@@ -376,10 +475,10 @@ export const MealPlansScreen = () => {
                 <p className="text-xs text-[var(--muted)] truncate">{day.rest}</p>
               </div>
               <div className="flex items-center gap-2">
-                {day.today && <span className="text-[10px] font-bold px-2 py-1 rounded-full text-white" style={{ backgroundColor: "var(--green)" }}>오늘</span>}
-                {day.delivered && <span className="text-[10px] font-bold px-2 py-1 rounded-full" style={{ backgroundColor: "var(--green-light)", color: "var(--green)" }}>배달완료</span>}
+                {day.today && <span className="text-[10px] font-bold px-2 py-1 rounded-full text-white" style={{ backgroundColor: "var(--green)" }}>{t("today")}</span>}
+                {day.delivered && <span className="text-[10px] font-bold px-2 py-1 rounded-full" style={{ backgroundColor: "var(--green-light)", color: "var(--green)" }}>{t("delivered")}</span>}
                 {!day.delivered && !day.today && (
-                  <button className="text-xs text-[var(--muted)] underline">변경</button>
+                  <button className="text-xs text-[var(--muted)] underline">{t("change")}</button>
                 )}
               </div>
             </div>
@@ -388,7 +487,7 @@ export const MealPlansScreen = () => {
 
         {/* Dietary preferences */}
         <div className="bg-white rounded-2xl p-4 shadow-sm space-y-3">
-          <p className="font-bold text-sm text-[#1A1A18]">식단 설정</p>
+          <p className="font-bold text-sm text-[#1A1A18]">{t("dietarySettings")}</p>
           {[
             { label: "소고기 / 닭고기 포함", on: true },
             { label: "채식 메뉴 포함", on: false },
@@ -396,7 +495,7 @@ export const MealPlansScreen = () => {
             { label: "매운 음식 제외", on: false },
           ].map((pref) => (
             <div key={pref.label} className="flex items-center justify-between">
-              <p className="text-sm text-[#1A1A18]">{pref.label}</p>
+              <p className="text-sm text-[#1A1A18]">{t(prefKeyMap[pref.label])}</p>
               <Toggle on={pref.on} />
             </div>
           ))}
@@ -404,7 +503,7 @@ export const MealPlansScreen = () => {
 
         {/* Plan options */}
         <div className="space-y-2.5">
-          <p className="font-bold text-sm text-[#1A1A18]">플랜 변경</p>
+          <p className="font-bold text-sm text-[#1A1A18]">{t("changePlan")}</p>
           {[
             { name: "실버", meals: "주 3회", price: 45000, current: false },
             { name: "골드", meals: "주 5회", price: 69000, current: true },
@@ -417,13 +516,13 @@ export const MealPlansScreen = () => {
                 {plan.name === "실버" ? "🥈" : plan.name === "골드" ? "🥇" : "💎"}
               </div>
               <div className="flex-1">
-                <p className="font-bold text-sm text-[#1A1A18]">{plan.name}</p>
-                <p className="text-xs text-[var(--muted)]">{plan.meals} · ₩{plan.price.toLocaleString()}/주</p>
+                <p className="font-bold text-sm text-[#1A1A18]">{t(planNameKeyMap[plan.name])}</p>
+                <p className="text-xs text-[var(--muted)]">{t(planMealsKeyMap[plan.meals])} · ₩{plan.price.toLocaleString()}/{lang === "ko" ? "주" : lang === "ru" ? "нед" : lang === "uz" ? "hafta" : "wk"}</p>
               </div>
               {plan.current ? (
-                <span className="text-[10px] font-bold px-2 py-1 rounded-full text-white" style={{ backgroundColor: "var(--green)" }}>현재</span>
+                <span className="text-[10px] font-bold px-2 py-1 rounded-full text-white" style={{ backgroundColor: "var(--green)" }}>{t("current")}</span>
               ) : (
-                <button className="text-xs font-bold" style={{ color: "var(--green)" }}>선택</button>
+                <button className="text-xs font-bold" style={{ color: "var(--green)" }}>{t("select")}</button>
               )}
             </div>
           ))}
@@ -447,7 +546,23 @@ const products = [
   { name: "KMF 인증 닭고기", brand: "하림 할랄", price: 12500, available: false, image: "1617196034183-421b4040d6fd", stores: 1 },
 ];
 
+const TR4 = {
+  groceryTitle: { ko: "할랄 식료품", en: "Halal Grocery", uz: "Halol oziq-ovqat", ru: "Халяль-продукты" },
+  searchPlaceholder: { ko: "제품 또는 브랜드 검색...", en: "Search products or brands...", uz: "Mahsulot yoki brend qidirish...", ru: "Поиск товаров или брендов..." },
+  storesTab: { ko: "🏪 할랄 마트", en: "🏪 Halal Marts", uz: "🏪 Halol do'konlar", ru: "🏪 Халяль-магазины" },
+  productsTab: { ko: "🛒 제품 검색", en: "🛒 Product Search", uz: "🛒 Mahsulot qidirish", ru: "🛒 Поиск товаров" },
+  halalSectionAvailable: { ko: "할랄 섹션 있음", en: "Halal section available", uz: "Halol bo'limi mavjud", ru: "Есть халяль-раздел" },
+  halalProductCount: { ko: "할랄 제품", en: "halal products", uz: "ta halol mahsulot", ru: "халяль-товаров" },
+  viewProducts: { ko: "제품 보기", en: "View Products", uz: "Mahsulotlarni ko'rish", ru: "Смотреть товары" },
+  nearbyHalalProducts: { ko: "주변 할랄 제품", en: "nearby halal products", uz: "yaqin atrofdagi halol mahsulotlar", ru: "халяль-товаров рядом" },
+  stores: { ko: "개 마트", en: " stores", uz: " do'kon", ru: " магазинов" },
+  inStock: { ko: "재고 있음", en: "In stock", uz: "Sotuvda bor", ru: "В наличии" },
+  outOfStock: { ko: "재고 없음", en: "Out of stock", uz: "Sotuvda yo'q", ru: "Нет в наличии" },
+} satisfies Record<string, Record<Lang, string>>;
+
 export const GroceryScreen = () => {
+  const { lang } = useLanguage();
+  const t = (k: keyof typeof TR4) => TR4[k][lang];
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<"stores" | "products">("stores");
 
@@ -458,18 +573,18 @@ export const GroceryScreen = () => {
         <div className="px-4 pb-3">
           <div className="flex items-center gap-3 mb-3">
             <BackButton />
-            <h1 className="font-bold text-lg flex-1">할랄 식료품</h1>
+            <h1 className="font-bold text-lg flex-1">{t("groceryTitle")}</h1>
           </div>
           <div className="flex items-center gap-2 bg-[var(--cream)] border border-[var(--border)] rounded-xl px-4 py-3 mb-3">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--muted)" strokeWidth="1.8"><circle cx="7" cy="7" r="5"/><path d="M12 12L15 15" strokeLinecap="round"/></svg>
-            <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="제품 또는 브랜드 검색..." className="flex-1 bg-transparent text-sm outline-none" />
+            <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder={t("searchPlaceholder")} className="flex-1 bg-transparent text-sm outline-none" />
           </div>
           <div className="flex bg-[var(--cream)] rounded-xl p-1">
-            {(["stores", "products"] as const).map((t) => (
-              <button key={t} onClick={() => setActiveTab(t)}
+            {(["stores", "products"] as const).map((tabKey) => (
+              <button key={tabKey} onClick={() => setActiveTab(tabKey)}
                 className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all"
-                style={{ backgroundColor: activeTab === t ? "var(--green)" : "transparent", color: activeTab === t ? "white" : "var(--muted)" }}>
-                {t === "stores" ? "🏪 할랄 마트" : "🛒 제품 검색"}
+                style={{ backgroundColor: activeTab === tabKey ? "var(--green)" : "transparent", color: activeTab === tabKey ? "white" : "var(--muted)" }}>
+                {tabKey === "stores" ? t("storesTab") : t("productsTab")}
               </button>
             ))}
           </div>
@@ -486,7 +601,7 @@ export const GroceryScreen = () => {
                   <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent" />
                   <div className="absolute top-3 left-3">
                     <span className="text-[10px] font-bold px-2 py-1 rounded-full text-white" style={{ backgroundColor: "var(--green)" }}>
-                      할랄 섹션 있음
+                      {t("halalSectionAvailable")}
                     </span>
                   </div>
                 </div>
@@ -502,10 +617,10 @@ export const GroceryScreen = () => {
                   </div>
                   <div className="flex items-center justify-between mt-3">
                     <p className="text-sm font-medium" style={{ color: "var(--green)" }}>
-                      할랄 제품 {store.products}종
+                      {t("halalProductCount")} {store.products}
                     </p>
                     <button className="text-xs font-bold px-3 py-1.5 rounded-xl" style={{ backgroundColor: "var(--green-light)", color: "var(--green)" }}>
-                      제품 보기
+                      {t("viewProducts")}
                     </button>
                   </div>
                 </div>
@@ -514,7 +629,7 @@ export const GroceryScreen = () => {
           </>
         ) : (
           <>
-            <p className="text-xs text-[var(--muted)]">주변 할랄 제품 {products.length}가지</p>
+            <p className="text-xs text-[var(--muted)]">{products.length} {t("nearbyHalalProducts")}</p>
             {products.map((prod, i) => (
               <div key={i} className="bg-white rounded-2xl p-4 shadow-sm flex gap-3">
                 <div className="w-16 h-16 rounded-xl bg-[#E8E6E1] flex-shrink-0 overflow-hidden">
@@ -525,7 +640,7 @@ export const GroceryScreen = () => {
                   <p className="text-xs text-[var(--muted)]">{prod.brand}</p>
                   <div className="flex items-center gap-2">
                     <PriceTag amount={prod.price} className="text-sm" />
-                    <span className="text-[10px] text-[var(--muted)]">· {prod.stores}개 마트</span>
+                    <span className="text-[10px] text-[var(--muted)]">· {prod.stores}{t("stores")}</span>
                   </div>
                   <span
                     className="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full"
@@ -534,7 +649,7 @@ export const GroceryScreen = () => {
                       color: prod.available ? "var(--green)" : "var(--danger)",
                     }}
                   >
-                    {prod.available ? "재고 있음" : "재고 없음"}
+                    {prod.available ? t("inStock") : t("outOfStock")}
                   </span>
                 </div>
                 <button className="w-8 h-8 rounded-xl flex items-center justify-center self-end flex-shrink-0" style={{ backgroundColor: prod.available ? "var(--green)" : "#E5E7EB" }}>

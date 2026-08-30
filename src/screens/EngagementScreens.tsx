@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { GeometricPattern, StatusBar, BackButton, Toggle } from "../components/Shared";
+import { useLanguage, type Lang } from "../components/LanguageSwitcher";
 
 // ── 10. Push Notification Designs ─────────────────────────────────────────────
-const notifications = [
+const notificationsKo = [
   {
     type: "order",
     icon: "🛵",
@@ -60,7 +61,55 @@ const notifications = [
   },
 ];
 
+const NOTIF_TR = [
+  { title: { ko: "배달 기사가 출발했습니다!", en: "Your delivery rider is on the way!", uz: "Kuryer yo'lga chiqdi!", ru: "Курьер выехал!" },
+    body: { ko: "신당 할랄 키친 · 예상 도착 18분 · 주문 #8847", en: "Sindang Halal Kitchen · ETA 18 min · Order #8847", uz: "Sindang Halol Kuxna · Yetib kelish 18 daqiqa · Buyurtma #8847", ru: "Sindang Halal Kitchen · Прибытие через 18 мин · Заказ №8847" },
+    time: { ko: "방금", en: "Just now", uz: "Hozirgina", ru: "Только что" },
+    cta: { ko: "주문 추적", en: "Track Order", uz: "Buyurtmani kuzatish", ru: "Отследить заказ" } },
+  { title: { ko: "마그립 기도 시간 알림", en: "Maghrib Prayer Reminder", uz: "Shom namozi eslatmasi", ru: "Напоминание о намазе Магриб" },
+    body: { ko: "마그립 Maghrib · 17:48 · 지금부터 10분 후", en: "Maghrib · 17:48 · in 10 minutes", uz: "Shom · 17:48 · 10 daqiqadan keyin", ru: "Магриб · 17:48 · через 10 минут" },
+    time: { ko: "5분 전", en: "5 min ago", uz: "5 daqiqa oldin", ru: "5 мин назад" },
+    cta: { ko: "기도 방향", en: "Qibla Direction", uz: "Qibla yo'nalishi", ru: "Направление киблы" } },
+  { title: { ko: "근처에 새 할랄 식당이 생겼어요!", en: "A new halal restaurant just opened nearby!", uz: "Yaqin atrofda yangi halol restoran ochildi!", ru: "Рядом открылся новый халяль-ресторан!" },
+    body: { ko: "마포구 할랄 팔라펠 · 이태원에서 2.1km · 4.7★", en: "Mapo Halal Falafel · 2.1km from Itaewon · 4.7★", uz: "Mapo Halol Falafel · Itaewondan 2.1km · 4.7★", ru: "Mapo Halal Falafel · 2.1 км от Итэвона · 4.7★" },
+    time: { ko: "1시간 전", en: "1 hour ago", uz: "1 soat oldin", ru: "1 час назад" },
+    cta: { ko: "메뉴 보기", en: "View Menu", uz: "Menyuni ko'rish", ru: "Смотреть меню" } },
+  { title: { ko: "오늘만! ₩3,000 추가 할인", en: "Today only! ₩3,000 extra off", uz: "Faqat bugun! ₩3,000 qo'shimcha chegirma", ru: "Только сегодня! Скидка ещё ₩3,000" },
+    body: { ko: "인증된 할랄 식당 최초 주문 시 코드: HALAL3K", en: "Use code HALAL3K on your first order from a certified halal restaurant", uz: "Sertifikatlangan halol restorandan birinchi buyurtmada HALAL3K kodini kiriting", ru: "Используйте код HALAL3K при первом заказе в сертифицированном халяль-ресторане" },
+    time: { ko: "2시간 전", en: "2 hours ago", uz: "2 soat oldin", ru: "2 часа назад" },
+    cta: { ko: "쿠폰 받기", en: "Get Coupon", uz: "Kupon olish", ru: "Получить купон" } },
+  { title: { ko: "라마단 무바락! 특별 이프타르 메뉴", en: "Ramadan Mubarak! Special Iftar Menu", uz: "Ramazon muborak! Maxsus Iftorlik menyu", ru: "Рамадан мубарак! Специальное меню ифтара" },
+    body: { ko: "라마단 기간 파트너 식당 20곳의 특별 이프타르 세트", en: "Special iftar sets from 20 partner restaurants during Ramadan", uz: "Ramazon davomida 20 ta hamkor restorandan maxsus iftorlik to'plamlari", ru: "Специальные наборы ифтара от 20 ресторанов-партнёров на Рамадан" },
+    time: { ko: "어제", en: "Yesterday", uz: "Kecha", ru: "Вчера" },
+    cta: { ko: "이프타르 보기", en: "View Iftar Sets", uz: "Iftorlikni ko'rish", ru: "Смотреть наборы ифтара" } },
+] as const;
+
+const buildNotifications = (lang: Lang) => notificationsKo.map((n, i) => ({
+  ...n,
+  title: NOTIF_TR[i].title[lang],
+  body: NOTIF_TR[i].body[lang],
+  time: NOTIF_TR[i].time[lang],
+  cta: NOTIF_TR[i].cta[lang],
+}));
+
+const TR_NOTIF = {
+  header: { ko: "알림", en: "Notifications", uz: "Bildirishnomalar", ru: "Уведомления" },
+  markAllRead: { ko: "모두 읽음", en: "Mark all read", uz: "Barchasini o'qilgan deb belgilash", ru: "Отметить всё прочитанным" },
+  unreadSection: { ko: "읽지 않음", en: "Unread", uz: "O'qilmagan", ru: "Непрочитанные" },
+  earlierSection: { ko: "이전 알림", en: "Earlier", uz: "Avvalgi bildirishnomalar", ru: "Ранее" },
+  settingsTitle: { ko: "알림 설정", en: "Notification Settings", uz: "Bildirishnoma sozlamalari", ru: "Настройки уведомлений" },
+  dismiss: { ko: "닫기", en: "Dismiss", uz: "Yopish", ru: "Закрыть" },
+  orderUpdates: { ko: "주문 업데이트", en: "Order updates", uz: "Buyurtma yangilanishlari", ru: "Обновления заказа" },
+  prayerReminders: { ko: "기도 시간 알림", en: "Prayer time reminders", uz: "Namoz vaqti eslatmalari", ru: "Напоминания о намазе" },
+  newRestaurant: { ko: "신규 식당 알림", en: "New restaurant alerts", uz: "Yangi restoran haqida xabar", ru: "Уведомления о новых ресторанах" },
+  promotions: { ko: "프로모션", en: "Promotions", uz: "Aksiyalar", ru: "Акции" },
+  ramadanSpecial: { ko: "라마단 특별 알림", en: "Ramadan special alerts", uz: "Ramazon maxsus xabarlari", ru: "Особые уведомления Рамадана" },
+} satisfies Record<string, Record<Lang, string>>;
+
 export const NotificationsScreen = () => {
+  const { lang } = useLanguage();
+  const tN = (k: keyof typeof TR_NOTIF) => TR_NOTIF[k][lang];
+  const notifications = buildNotifications(lang);
   const [dismissed, setDismissed] = useState<number[]>([]);
 
   return (
@@ -69,32 +118,32 @@ export const NotificationsScreen = () => {
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
           <BackButton />
-          <h1 className="font-bold text-lg flex-1">알림</h1>
-          <button className="text-sm font-medium" style={{ color: "var(--green)" }}>모두 읽음</button>
+          <h1 className="font-bold text-lg flex-1">{tN("header")}</h1>
+          <button className="text-sm font-medium" style={{ color: "var(--green)" }}>{tN("markAllRead")}</button>
         </div>
       </div>
 
       <div className="flex-1 phone-scroll px-4 py-3 space-y-2">
         {/* Unread section */}
-        <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide">읽지 않음</p>
+        <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide">{tN("unreadSection")}</p>
         {notifications.filter(n => n.unread && !dismissed.includes(notifications.indexOf(n))).map((n, i) => (
           <NotifCard key={i} notif={n} onDismiss={() => setDismissed(d => [...d, i])} />
         ))}
 
-        <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide pt-1">이전 알림</p>
+        <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide pt-1">{tN("earlierSection")}</p>
         {notifications.filter(n => !n.unread).map((n, i) => (
           <NotifCard key={i + 100} notif={n} dim />
         ))}
 
         {/* Notification Settings */}
         <div className="bg-white rounded-2xl p-4 shadow-sm mt-4 space-y-3">
-          <p className="font-bold text-sm text-[#1A1A18]">알림 설정</p>
+          <p className="font-bold text-sm text-[#1A1A18]">{tN("settingsTitle")}</p>
           {[
-            { label: "주문 업데이트", on: true },
-            { label: "기도 시간 알림", on: true },
-            { label: "신규 식당 알림", on: false },
-            { label: "프로모션", on: false },
-            { label: "라마단 특별 알림", on: true },
+            { label: tN("orderUpdates"), on: true },
+            { label: tN("prayerReminders"), on: true },
+            { label: tN("newRestaurant"), on: false },
+            { label: tN("promotions"), on: false },
+            { label: tN("ramadanSpecial"), on: true },
           ].map((s) => (
             <div key={s.label} className="flex items-center justify-between">
               <p className="text-sm text-[#1A1A18]">{s.label}</p>
@@ -108,7 +157,10 @@ export const NotificationsScreen = () => {
   );
 };
 
-const NotifCard = ({ notif, dim, onDismiss }: { notif: typeof notifications[0]; dim?: boolean; onDismiss?: () => void }) => (
+const NotifCard = ({ notif, dim, onDismiss }: { notif: ReturnType<typeof buildNotifications>[0]; dim?: boolean; onDismiss?: () => void }) => {
+  const { lang } = useLanguage();
+  const tN = (k: keyof typeof TR_NOTIF) => TR_NOTIF[k][lang];
+  return (
   <div className="bg-white rounded-2xl p-4 shadow-sm flex gap-3 relative overflow-hidden" style={{ opacity: dim ? 0.65 : 1 }}>
     {notif.unread && !dim && (
       <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl" style={{ backgroundColor: notif.ctaColor }} />
@@ -128,18 +180,38 @@ const NotifCard = ({ notif, dim, onDismiss }: { notif: typeof notifications[0]; 
           {notif.cta}
         </button>
         {onDismiss && (
-          <button onClick={onDismiss} className="text-xs text-[var(--muted)]">닫기</button>
+          <button onClick={onDismiss} className="text-xs text-[var(--muted)]">{tN("dismiss")}</button>
         )}
       </div>
     </div>
   </div>
-);
+  );
+};
 
 // ── 11. Ramadan Mode ───────────────────────────────────────────────────────────
 const iftarTime = "18:54";
 const suhoorTime = "04:41";
 
+const TR_RAMADAN = {
+  ramadanMode: { ko: "라마단 모드", en: "Ramadan Mode", uz: "Ramazon rejimi", ru: "Режим Рамадана" },
+  ramadanMubarak: { ko: "라마단 무바락!", en: "Ramadan Mubarak!", uz: "Ramazon muborak!", ru: "Рамадан мубарак!" },
+  dayOf: { ko: "1446년 라마단 17일째", en: "Day 17 of Ramadan 1446", uz: "1446-yil Ramazon oyining 17-kuni", ru: "17-й день Рамадана 1446" },
+  suhoor: { ko: "수후르 Suhoor", en: "Suhoor", uz: "Sahar (Suhur)", ru: "Сухур" },
+  iftar: { ko: "이프타르 Iftar", en: "Iftar", uz: "Iftorlik", ru: "Ифтар" },
+  untilIftar: { ko: "이프타르까지", en: "Until Iftar", uz: "Iftorlikkacha", ru: "До ифтара" },
+  specialIftarSet: { ko: "🌙 이프타르 특별 세트", en: "🌙 Special Iftar Sets", uz: "🌙 Maxsus iftorlik to'plamlari", ru: "🌙 Специальные наборы ифтара" },
+  order: { ko: "주문하기", en: "Order Now", uz: "Buyurtma berish", ru: "Заказать" },
+  todayPrayerTimes: { ko: "오늘 기도 시간", en: "Today's Prayer Times", uz: "Bugungi namoz vaqtlari", ru: "Сегодняшнее время намаза" },
+  suhoorFajr: { ko: "수후르 (파즈르)", en: "Suhoor (Fajr)", uz: "Sahar (Bomdod)", ru: "Сухур (Фаджр)" },
+  iftarMaghrib: { ko: "이프타르 (마그립)", en: "Iftar (Maghrib)", uz: "Iftorlik (Shom)", ru: "Ифтар (Магриб)" },
+  communityIftar: { ko: "커뮤니티 이프타르 🍽️", en: "Community Iftar 🍽️", uz: "Jamoaviy iftorlik 🍽️", ru: "Общинный ифтар 🍽️" },
+  communityDesc: { ko: "오늘 서울 무슬림 커뮤니티에서 이프타르 모임이 있습니다. 장소: 서울중앙성원 · 18:50", en: "There's a community iftar gathering today with Seoul's Muslim community. Location: Seoul Central Mosque · 18:50", uz: "Bugun Seul musulmon jamoasi bilan iftorlik uchrashuvi bo'ladi. Manzil: Seul Markaziy masjidi · 18:50", ru: "Сегодня состоится общинный ифтар с мусульманской общиной Сеула. Место: Центральная мечеть Сеула · 18:50" },
+  joinNow: { ko: "참여 신청", en: "Join Now", uz: "Ishtirok etish", ru: "Присоединиться" },
+} satisfies Record<string, Record<Lang, string>>;
+
 export const RamadanScreen = () => {
+  const { lang } = useLanguage();
+  const tR = (k: keyof typeof TR_RAMADAN) => TR_RAMADAN[k][lang];
   const [ramadanMode, setRamadanMode] = useState(true);
 
   return (
@@ -167,7 +239,7 @@ export const RamadanScreen = () => {
           <div className="flex items-center justify-between mb-4">
             <BackButton dark />
             <div className="flex items-center gap-2">
-              <span className="text-white/70 text-xs">라마단 모드</span>
+              <span className="text-white/70 text-xs">{tR("ramadanMode")}</span>
               <Toggle on={ramadanMode} onToggle={() => setRamadanMode(!ramadanMode)} />
             </div>
           </div>
@@ -176,16 +248,16 @@ export const RamadanScreen = () => {
           <div className="text-center space-y-2 py-2">
             <div className="text-5xl">☪️</div>
             <p className="font-arabic text-3xl font-bold" style={{ color: "var(--gold)" }}>رمضان مبارك</p>
-            <p className="text-white/80 font-semibold">라마단 무바락!</p>
-            <p className="text-white/50 text-xs">1446년 라마단 17일째</p>
+            <p className="text-white/80 font-semibold">{tR("ramadanMubarak")}</p>
+            <p className="text-white/50 text-xs">{tR("dayOf")}</p>
           </div>
 
           {/* Iftar countdown */}
           <div className="mt-4 bg-white/10 backdrop-blur rounded-2xl p-4 space-y-3">
             <div className="flex justify-between items-center">
               {[
-                { label: "수후르 Suhoor", time: suhoorTime, icon: "🌄" },
-                { label: "이프타르 Iftar", time: iftarTime, icon: "🌅" },
+                { label: tR("suhoor"), time: suhoorTime, icon: "🌄" },
+                { label: tR("iftar"), time: iftarTime, icon: "🌅" },
               ].map((t) => (
                 <div key={t.label} className="flex-1 text-center">
                   <p className="text-white/60 text-xs">{t.icon} {t.label}</p>
@@ -194,7 +266,7 @@ export const RamadanScreen = () => {
               ))}
             </div>
             <div className="text-center pt-2 border-t border-white/10">
-              <p className="text-white/60 text-xs mb-0.5">이프타르까지</p>
+              <p className="text-white/60 text-xs mb-0.5">{tR("untilIftar")}</p>
               <p className="text-white font-bold text-2xl tabular-nums" style={{ color: "var(--gold)" }}>1:47:23</p>
             </div>
           </div>
@@ -204,7 +276,7 @@ export const RamadanScreen = () => {
       <div className="flex-1 phone-scroll px-4 py-4 space-y-4">
         {/* Special menu section */}
         <div>
-          <p className="font-bold text-sm mb-2" style={{ color: ramadanMode ? "white" : "#1A1A18" }}>🌙 이프타르 특별 세트</p>
+          <p className="font-bold text-sm mb-2" style={{ color: ramadanMode ? "white" : "#1A1A18" }}>{tR("specialIftarSet")}</p>
           <div className="flex gap-3 overflow-x-auto scrollbar-hide">
             {[
               { name: "이프타르 한식 세트", rest: "신당 할랄 키친", price: 35000, imageId: "1498654896293-37c98e7f5fe4", saves: "₩8,000 할인" },
@@ -219,7 +291,7 @@ export const RamadanScreen = () => {
                   <p className="font-bold text-sm text-[#1A1A18]">{item.name}</p>
                   <p className="text-xs text-[var(--muted)]">{item.rest}</p>
                   <p className="font-bold text-sm text-[#1A1A18]">₩{item.price.toLocaleString()}</p>
-                  <button className="w-full py-2 rounded-xl text-xs font-bold text-white mt-1" style={{ backgroundColor: "var(--green)" }}>주문하기</button>
+                  <button className="w-full py-2 rounded-xl text-xs font-bold text-white mt-1" style={{ backgroundColor: "var(--green)" }}>{tR("order")}</button>
                 </div>
               </div>
             ))}
@@ -228,13 +300,13 @@ export const RamadanScreen = () => {
 
         {/* Prayer schedule */}
         <div className="rounded-2xl p-4 shadow-sm" style={{ backgroundColor: ramadanMode ? "rgba(255,255,255,0.06)" : "white", border: ramadanMode ? "1px solid rgba(255,255,255,0.08)" : "none" }}>
-          <p className="font-bold text-sm mb-3" style={{ color: ramadanMode ? "white" : "#1A1A18" }}>오늘 기도 시간</p>
+          <p className="font-bold text-sm mb-3" style={{ color: ramadanMode ? "white" : "#1A1A18" }}>{tR("todayPrayerTimes")}</p>
           <div className="space-y-2">
             {[
-              { name: "수후르 (파즈르)", time: "04:41", passed: true },
+              { name: tR("suhoorFajr"), time: "04:41", passed: true },
               { name: "두흐르 Dhuhr", time: "12:16", passed: true },
               { name: "아스르 Asr", time: "14:33", passed: false, next: true },
-              { name: "이프타르 (마그립)", time: iftarTime, passed: false },
+              { name: tR("iftarMaghrib"), time: iftarTime, passed: false },
               { name: "이샤 Isha", time: "19:22", passed: false },
             ].map((p) => (
               <div key={p.name} className="flex items-center justify-between py-1.5"
@@ -251,12 +323,12 @@ export const RamadanScreen = () => {
 
         {/* Community */}
         <div className="rounded-2xl p-4 shadow-sm" style={{ backgroundColor: ramadanMode ? "rgba(255,255,255,0.06)" : "white", border: ramadanMode ? "1px solid rgba(255,255,255,0.08)" : "none" }}>
-          <p className="font-bold text-sm mb-2" style={{ color: ramadanMode ? "white" : "#1A1A18" }}>커뮤니티 이프타르 🍽️</p>
+          <p className="font-bold text-sm mb-2" style={{ color: ramadanMode ? "white" : "#1A1A18" }}>{tR("communityIftar")}</p>
           <p className="text-sm" style={{ color: ramadanMode ? "rgba(255,255,255,0.6)" : "var(--muted)" }}>
-            오늘 서울 무슬림 커뮤니티에서 이프타르 모임이 있습니다. 장소: 서울중앙성원 · 18:50
+            {tR("communityDesc")}
           </p>
           <button className="mt-3 px-4 py-2 rounded-xl text-xs font-bold" style={{ backgroundColor: "var(--gold)", color: "white" }}>
-            참여 신청
+            {tR("joinNow")}
           </button>
         </div>
         <div className="h-4" />
@@ -266,7 +338,30 @@ export const RamadanScreen = () => {
 };
 
 // ── 12. Eid Special ────────────────────────────────────────────────────────────
+const TR_EID = {
+  eidFitrTab: { ko: "이드 알피트르", en: "Eid al-Fitr", uz: "Ramazon hayiti", ru: "Ураза-байрам" },
+  eidAdhaTab: { ko: "이드 알아드하", en: "Eid al-Adha", uz: "Qurbon hayiti", ru: "Курбан-байрам" },
+  fitrGreeting: { ko: "이드 알피트르 무바락!", en: "Eid al-Fitr Mubarak!", uz: "Ramazon hayitingiz muborak bo'lsin!", ru: "С праздником Ураза-байрам!" },
+  adhaGreeting: { ko: "이드 알아드하 무바락!", en: "Eid al-Adha Mubarak!", uz: "Qurbon hayitingiz muborak bo'lsin!", ru: "С праздником Курбан-байрам!" },
+  fitrSubtitle: { ko: "라마단이 끝나고 찾아온 기쁜 이드!", en: "A joyful Eid after a month of Ramadan!", uz: "Ramazon oyidan so'ng keladigan quvonchli hayit!", ru: "Радостный праздник после месяца Рамадана!" },
+  adhaSubtitle: { ko: "희생과 헌신의 이드!", en: "A celebration of sacrifice and devotion!", uz: "Qurbonlik va sadoqat bayrami!", ru: "Праздник жертвенности и преданности!" },
+  specialDeals: { ko: "🎁 이드 특별 혜택", en: "🎁 Eid Special Deals", uz: "🎁 Hayit uchun maxsus takliflar", ru: "🎁 Особые предложения на праздник" },
+  eidCoupon: { ko: "이드 쿠폰", en: "Eid Coupon", uz: "Hayit kuponi", ru: "Купон к празднику" },
+  eidCouponDesc: { ko: "전 주문 10% 할인", en: "10% off all orders", uz: "Barcha buyurtmalarga 10% chegirma", ru: "Скидка 10% на все заказы" },
+  mosqueEvents: { ko: "모스크 행사", en: "Mosque Events", uz: "Masjid tadbirlari", ru: "Мероприятия в мечети" },
+  mosqueEventsDesc: { ko: "서울 이드 예배 안내", en: "Eid prayer info in Seoul", uz: "Seuldagi hayit namozi haqida ma'lumot", ru: "Информация о праздничном намазе в Сеуле" },
+  specialMenu: { ko: "특별 메뉴", en: "Special Menu", uz: "Maxsus menyu", ru: "Особое меню" },
+  specialMenuDesc: { ko: "파트너 식당 이드 세트", en: "Eid sets from partner restaurants", uz: "Hamkor restoranlarning hayit to'plamlari", ru: "Праздничные наборы от ресторанов-партнёров" },
+  freeDelivery: { ko: "배달 무료", en: "Free Delivery", uz: "Bepul yetkazib berish", ru: "Бесплатная доставка" },
+  freeDeliveryDesc: { ko: "이드 당일 전 주문", en: "All orders on Eid day", uz: "Hayit kuni barcha buyurtmalarga", ru: "На все заказы в день праздника" },
+  todayOnly: { ko: "오늘만", en: "Today only", uz: "Faqat bugun", ru: "Только сегодня" },
+  viewSpecialMenu: { ko: "이드 특별 메뉴 보기", en: "View Eid Special Menu", uz: "Hayit maxsus menyusini ko'rish", ru: "Смотреть праздничное меню" },
+  shareGreeting: { ko: "이드 인사 공유하기", en: "Share Eid Greeting", uz: "Hayit tabrigini ulashish", ru: "Поделиться поздравлением" },
+} satisfies Record<string, Record<Lang, string>>;
+
 export const EidScreen = () => {
+  const { lang } = useLanguage();
+  const tE = (k: keyof typeof TR_EID) => TR_EID[k][lang];
   const [greeting, setGreeting] = useState<"fitr" | "adha">("fitr");
 
   return (
@@ -296,7 +391,7 @@ export const EidScreen = () => {
               backgroundColor: greeting === e ? "var(--gold)" : "rgba(255,255,255,0.1)",
               color: greeting === e ? "black" : "rgba(255,255,255,0.6)",
             }}>
-            {e === "fitr" ? "이드 알피트르" : "이드 알아드하"}
+            {e === "fitr" ? tE("eidFitrTab") : tE("eidAdhaTab")}
           </button>
         ))}
       </div>
@@ -323,8 +418,8 @@ export const EidScreen = () => {
         </div>
 
         <div className="text-center space-y-1">
-          <p className="text-white font-bold text-2xl">{greeting === "fitr" ? "이드 알피트르 무바락!" : "이드 알아드하 무바락!"}</p>
-          <p className="text-white/60 text-sm">{greeting === "fitr" ? "라마단이 끝나고 찾아온 기쁜 이드!" : "희생과 헌신의 이드!"}</p>
+          <p className="text-white font-bold text-2xl">{greeting === "fitr" ? tE("fitrGreeting") : tE("adhaGreeting")}</p>
+          <p className="text-white/60 text-sm">{greeting === "fitr" ? tE("fitrSubtitle") : tE("adhaSubtitle")}</p>
         </div>
 
         {/* Emoji decoration */}
@@ -336,13 +431,13 @@ export const EidScreen = () => {
       <div className="relative z-10 px-4 pb-6 space-y-3">
         {/* Deals section */}
         <div className="rounded-2xl p-4 space-y-3" style={{ backgroundColor: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.1)" }}>
-          <p className="font-bold text-white text-sm">🎁 이드 특별 혜택</p>
+          <p className="font-bold text-white text-sm">{tE("specialDeals")}</p>
           <div className="grid grid-cols-2 gap-2">
             {[
-              { label: "이드 쿠폰", value: "₩10,000", desc: "전 주문 10% 할인" },
-              { label: "모스크 행사", value: "5개", desc: "서울 이드 예배 안내" },
-              { label: "특별 메뉴", value: "30+", desc: "파트너 식당 이드 세트" },
-              { label: "배달 무료", value: "오늘만", desc: "이드 당일 전 주문" },
+              { label: tE("eidCoupon"), value: "₩10,000", desc: tE("eidCouponDesc") },
+              { label: tE("mosqueEvents"), value: "5개", desc: tE("mosqueEventsDesc") },
+              { label: tE("specialMenu"), value: "30+", desc: tE("specialMenuDesc") },
+              { label: tE("freeDelivery"), value: tE("todayOnly"), desc: tE("freeDeliveryDesc") },
             ].map((item) => (
               <div key={item.label} className="rounded-xl p-3" style={{ backgroundColor: "rgba(255,255,255,0.06)" }}>
                 <p className="text-[10px] text-white/50">{item.label}</p>
@@ -354,10 +449,10 @@ export const EidScreen = () => {
         </div>
 
         <button className="w-full py-4 rounded-2xl font-bold text-black text-base" style={{ backgroundColor: "var(--gold)" }}>
-          이드 특별 메뉴 보기
+          {tE("viewSpecialMenu")}
         </button>
         <button className="w-full py-3 rounded-2xl font-semibold text-sm border border-white/20 text-white">
-          이드 인사 공유하기
+          {tE("shareGreeting")}
         </button>
       </div>
     </div>

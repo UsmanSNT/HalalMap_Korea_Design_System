@@ -1,9 +1,18 @@
 import React, { useState } from "react";
 import { StatusBar, BackButton } from "../components/Shared";
+import { useLanguage, useT, type Lang } from "../components/LanguageSwitcher";
 
 // ── 22. Scanner Screen ─────────────────────────────────────────────────────────
+const TR1 = {
+  title: { ko: "할랄 스캐너", en: "Halal Scanner", uz: "Halol Skaner", ru: "Халяль Сканер" },
+  instructions: { ko: "바코드 또는 성분표를 스캔하세요", en: "Scan a barcode or ingredient label", uz: "Shtrix-kod yoki tarkib jadvalini skanerlang", ru: "Отсканируйте штрихкод или состав" },
+  recentScan: { ko: "최근 스캔", en: "Recent scan", uz: "Oxirgi skanerlash", ru: "Недавнее сканирование" },
+  chooseFromGallery: { ko: "갤러리에서 선택", en: "Choose from gallery", uz: "Galereyadan tanlash", ru: "Выбрать из галереи" },
+} satisfies Record<string, Record<Lang, string>>;
+
 export const ScannerScreen = () => {
   const [flash, setFlash] = useState(false);
+  const t = useT(TR1);
 
   return (
     <div className="flex flex-col h-full" style={{ backgroundColor: "#0A0A0A" }}>
@@ -12,7 +21,7 @@ export const ScannerScreen = () => {
       {/* Controls */}
       <div className="flex items-center justify-between px-5 pb-4 relative z-20">
         <BackButton dark />
-        <h1 className="font-bold text-white text-lg">할랄 스캐너</h1>
+        <h1 className="font-bold text-white text-lg">{t("title")}</h1>
         <button
           onClick={() => setFlash(!flash)}
           className="w-9 h-9 rounded-full flex items-center justify-center transition-colors"
@@ -64,7 +73,7 @@ export const ScannerScreen = () => {
         {/* Instructions */}
         <div className="mt-8 px-6 py-3 rounded-2xl" style={{ backgroundColor: "rgba(255,255,255,0.1)" }}>
           <p className="text-white text-sm font-medium text-center leading-relaxed">
-            바코드 또는 성분표를 스캔하세요
+            {t("instructions")}
           </p>
         </div>
 
@@ -82,7 +91,7 @@ export const ScannerScreen = () => {
             <img src="https://images.unsplash.com/photo-1567620905572-d1d0d6ca9ea0?w=80&h=80&fit=crop&auto=format&q=80" alt="scan" className="w-full h-full object-cover" />
           </div>
           <div className="flex-1">
-            <p className="text-white/60 text-[10px] font-medium">최근 스캔</p>
+            <p className="text-white/60 text-[10px] font-medium">{t("recentScan")}</p>
             <p className="text-white text-sm font-semibold">오리온 초코파이 정 (12개입)</p>
           </div>
           <span className="text-[10px] font-bold px-2 py-1 rounded-full" style={{ backgroundColor: "var(--green)", color: "white" }}>HALAL</span>
@@ -96,7 +105,7 @@ export const ScannerScreen = () => {
               <circle cx="6.5" cy="6.5" r="1.5"/>
               <path d="M2 12l4-4 3 3 2-2 4 4" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-            갤러리에서 선택
+            {t("chooseFromGallery")}
           </button>
         </div>
       </div>
@@ -107,32 +116,65 @@ export const ScannerScreen = () => {
 // ── 23. Scan Result ────────────────────────────────────────────────────────────
 type Verdict = "halal" | "haram" | "mashbooh";
 
-const verdictConfig: Record<Verdict, { label: string; labelKo: string; color: string; bg: string; icon: string; desc: string }> = {
+const verdictConfig: Record<Verdict, { label: string; labelKo: Record<Lang, string>; color: string; bg: string; icon: string; desc: Record<Lang, string> }> = {
   halal: {
     label: "HALAL",
-    labelKo: "할랄 인증",
+    labelKo: { ko: "할랄 인증", en: "Halal Certified", uz: "Halol tasdiqlangan", ru: "Халяль сертифицирован" },
     color: "#1B6B4A",
     bg: "#E8F3ED",
     icon: "✅",
-    desc: "이 제품은 이슬람 율법에 따라 할랄 인증을 받았습니다.",
+    desc: {
+      ko: "이 제품은 이슬람 율법에 따라 할랄 인증을 받았습니다.",
+      en: "This product is certified halal in accordance with Islamic law.",
+      uz: "Ushbu mahsulot Islom qonuniga muvofiq halol deb tasdiqlangan.",
+      ru: "Этот продукт сертифицирован как халяльный в соответствии с исламским законом.",
+    },
   },
   haram: {
     label: "HARAM",
-    labelKo: "하람 (금지)",
+    labelKo: { ko: "하람 (금지)", en: "Haram (Prohibited)", uz: "Harom (taqiqlangan)", ru: "Харам (запрещено)" },
     color: "#D94F4F",
     bg: "#FEE2E2",
     icon: "❌",
-    desc: "이 제품에는 이슬람 율법에 따라 금지된 성분이 포함되어 있습니다.",
+    desc: {
+      ko: "이 제품에는 이슬람 율법에 따라 금지된 성분이 포함되어 있습니다.",
+      en: "This product contains ingredients prohibited under Islamic law.",
+      uz: "Ushbu mahsulot tarkibida Islom qonuniga ko'ra taqiqlangan tarkibiy qismlar bor.",
+      ru: "Этот продукт содержит ингредиенты, запрещённые исламским законом.",
+    },
   },
   mashbooh: {
     label: "MASHBOOH",
-    labelKo: "의심 (확인 필요)",
+    labelKo: { ko: "의심 (확인 필요)", en: "Mashbooh (Unclear)", uz: "Shubhali (tekshirish kerak)", ru: "Машбух (требует проверки)" },
     color: "#D97706",
     bg: "#FEF3C7",
     icon: "⚠️",
-    desc: "일부 성분의 출처를 확인할 수 없습니다. 추가 확인이 필요합니다.",
+    desc: {
+      ko: "일부 성분의 출처를 확인할 수 없습니다. 추가 확인이 필요합니다.",
+      en: "The source of some ingredients cannot be confirmed. Further checking is needed.",
+      uz: "Ba'zi tarkibiy qismlarning manbasini tasdiqlab bo'lmaydi. Qo'shimcha tekshirish talab qilinadi.",
+      ru: "Источник некоторых ингредиентов не удалось подтвердить. Требуется дополнительная проверка.",
+    },
   },
 };
+
+const TR2 = {
+  screenTitle: { ko: "스캔 결과", en: "Scan Result", uz: "Skanerlash natijasi", ru: "Результат сканирования" },
+  share: { ko: "공유", en: "Share", uz: "Ulashish", ru: "Поделиться" },
+  certifiedBy: { ko: "인증 기관: 한국이슬람교중앙회 (KMF)", en: "Certified by: Korea Muslim Federation (KMF)", uz: "Sertifikatlovchi: Koreya Musulmonlar Federatsiyasi (KMF)", ru: "Сертификат выдан: Мусульманской федерацией Кореи (KMF)" },
+  ingredientAnalysis: { ko: "성분 분석", en: "Ingredient Analysis", uz: "Tarkib tahlili", ru: "Анализ состава" },
+  ingredientsConfirmed: { ko: "개 성분 확인됨", en: " ingredients confirmed", uz: " ta tarkibiy qism tekshirildi", ru: " ингредиентов проверено" },
+  needsCheck: { ko: "확인 필요", en: "Needs check", uz: "Tekshirish kerak", ru: "Требует проверки" },
+  confirmedItems: { ko: "확인 사항", en: "Confirmed Items", uz: "Tasdiqlangan holatlar", ru: "Подтверждённые пункты" },
+  noPorkGelatin: { ko: "돼지 젤라틴 없음", en: "No pork gelatin", uz: "Cho'chqa jelatinasiz", ru: "Без свиного желатина" },
+  noAlcohol: { ko: "알코올 성분 없음", en: "No alcohol content", uz: "Spirtsiz", ru: "Без алкоголя" },
+  noCrossContamination: { ko: "교차 오염 없음 (KMF 인증)", en: "No cross-contamination (KMF certified)", uz: "Aralashib ifloslanish yo'q (KMF tasdiqlagan)", ru: "Без перекрёстного загрязнения (сертифицировано KMF)" },
+  dataSource: { ko: "데이터 출처", en: "Data Source", uz: "Ma'lumot manbasi", ru: "Источник данных" },
+  kmfDatabase: { ko: "KMF 할랄 데이터베이스", en: "KMF Halal Database", uz: "KMF Halol ma'lumotlar bazasi", ru: "База данных KMF Halal" },
+  updatedDate: { ko: "2024년 10월 업데이트", en: "Updated October 2024", uz: "2024-yil oktabrda yangilangan", ru: "Обновлено в октябре 2024" },
+  reportError: { ko: "오류 신고", en: "Report Error", uz: "Xatolik haqida xabar berish", ru: "Сообщить об ошибке" },
+  scanAgain: { ko: "다시 스캔하기", en: "Scan Again", uz: "Qayta skanerlash", ru: "Сканировать снова" },
+} satisfies Record<string, Record<Lang, string>>;
 
 const ingredients = [
   { name: "밀가루 (소맥분)", status: "ok" },
@@ -147,6 +189,8 @@ const ingredients = [
 
 export const ScanResultScreen = ({ verdict = "halal" }: { verdict?: Verdict }) => {
   const cfg = verdictConfig[verdict];
+  const { lang } = useLanguage();
+  const t = useT(TR2);
 
   return (
     <div className="flex flex-col h-full bg-[var(--cream)]">
@@ -154,8 +198,8 @@ export const ScanResultScreen = ({ verdict = "halal" }: { verdict?: Verdict }) =
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
           <BackButton />
-          <h1 className="font-bold text-lg flex-1">스캔 결과</h1>
-          <button className="text-sm font-medium" style={{ color: "var(--muted)" }}>공유</button>
+          <h1 className="font-bold text-lg flex-1">{t("screenTitle")}</h1>
+          <button className="text-sm font-medium" style={{ color: "var(--muted)" }}>{t("share")}</button>
         </div>
       </div>
 
@@ -192,8 +236,8 @@ export const ScanResultScreen = ({ verdict = "halal" }: { verdict?: Verdict }) =
             </div>
             <div className="flex-1">
               <span className="text-xs font-bold tracking-widest" style={{ color: cfg.color }}>{cfg.label}</span>
-              <p className="font-bold text-xl text-[#1A1A18] mt-0.5">{cfg.labelKo}</p>
-              <p className="text-xs text-[var(--muted)] mt-1 leading-relaxed">{cfg.desc}</p>
+              <p className="font-bold text-xl text-[#1A1A18] mt-0.5">{cfg.labelKo[lang]}</p>
+              <p className="text-xs text-[var(--muted)] mt-1 leading-relaxed">{cfg.desc[lang]}</p>
             </div>
           </div>
 
@@ -202,7 +246,7 @@ export const ScanResultScreen = ({ verdict = "halal" }: { verdict?: Verdict }) =
               <svg width="14" height="14" viewBox="0 0 14 14" fill={cfg.color}>
                 <path d="M7 1L8.5 5H12.5L9.5 7.5L10.5 12L7 9.5L3.5 12L4.5 7.5L1.5 5H5.5L7 1Z"/>
               </svg>
-              <p className="text-xs font-semibold" style={{ color: cfg.color }}>인증 기관: 한국이슬람교중앙회 (KMF)</p>
+              <p className="text-xs font-semibold" style={{ color: cfg.color }}>{t("certifiedBy")}</p>
             </div>
           )}
         </div>
@@ -210,8 +254,8 @@ export const ScanResultScreen = ({ verdict = "halal" }: { verdict?: Verdict }) =
         {/* Ingredients */}
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
           <div className="px-4 py-3 border-b border-[var(--border)]">
-            <p className="font-semibold text-sm text-[#1A1A18]">성분 분석</p>
-            <p className="text-xs text-[var(--muted)] mt-0.5">{ingredients.length}개 성분 확인됨</p>
+            <p className="font-semibold text-sm text-[#1A1A18]">{t("ingredientAnalysis")}</p>
+            <p className="text-xs text-[var(--muted)] mt-0.5">{ingredients.length}{t("ingredientsConfirmed")}</p>
           </div>
           <div className="divide-y divide-[var(--border)]">
             {ingredients.map((ing) => (
@@ -230,7 +274,7 @@ export const ScanResultScreen = ({ verdict = "halal" }: { verdict?: Verdict }) =
                 </div>
                 <p className="text-sm text-[#1A1A18] flex-1">{ing.name}</p>
                 {ing.status === "warn" && (
-                  <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ backgroundColor: "var(--gold-light)", color: "#92400E" }}>확인 필요</span>
+                  <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ backgroundColor: "var(--gold-light)", color: "#92400E" }}>{t("needsCheck")}</span>
                 )}
               </div>
             ))}
@@ -240,8 +284,8 @@ export const ScanResultScreen = ({ verdict = "halal" }: { verdict?: Verdict }) =
         {/* Positive notes */}
         {verdict === "halal" && (
           <div className="bg-white rounded-2xl px-4 py-3 shadow-sm space-y-2">
-            <p className="font-semibold text-sm text-[#1A1A18]">확인 사항</p>
-            {["돼지 젤라틴 없음", "알코올 성분 없음", "교차 오염 없음 (KMF 인증)"].map((note) => (
+            <p className="font-semibold text-sm text-[#1A1A18]">{t("confirmedItems")}</p>
+            {[t("noPorkGelatin"), t("noAlcohol"), t("noCrossContamination")].map((note) => (
               <div key={note} className="flex items-center gap-2 text-sm" style={{ color: "var(--green)" }}>
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M2 7l3.5 3.5L12 4"/></svg>
                 {note}
@@ -253,12 +297,12 @@ export const ScanResultScreen = ({ verdict = "halal" }: { verdict?: Verdict }) =
         {/* Source */}
         <div className="bg-white rounded-2xl px-4 py-3 shadow-sm flex items-center justify-between">
           <div>
-            <p className="text-xs text-[var(--muted)]">데이터 출처</p>
-            <p className="text-sm font-semibold text-[#1A1A18]">KMF 할랄 데이터베이스</p>
-            <p className="text-xs text-[var(--muted)]">2024년 10월 업데이트</p>
+            <p className="text-xs text-[var(--muted)]">{t("dataSource")}</p>
+            <p className="text-sm font-semibold text-[#1A1A18]">{t("kmfDatabase")}</p>
+            <p className="text-xs text-[var(--muted)]">{t("updatedDate")}</p>
           </div>
           <button className="text-xs font-medium px-3 py-2 rounded-xl border border-[var(--border)]" style={{ color: "var(--muted)" }}>
-            오류 신고
+            {t("reportError")}
           </button>
         </div>
 
@@ -266,7 +310,7 @@ export const ScanResultScreen = ({ verdict = "halal" }: { verdict?: Verdict }) =
           className="w-full py-4 rounded-2xl font-bold text-white text-base"
           style={{ backgroundColor: "var(--green)" }}
         >
-          다시 스캔하기
+          {t("scanAgain")}
         </button>
         <div className="h-2" />
       </div>
@@ -283,14 +327,21 @@ const scanHistory = [
   { name: "해태 허니버터칩", brand: "해태제과", date: "11월 17일", verdict: "halal" as Verdict },
 ];
 
-export const ScanHistoryScreen = () => (
+const TR3 = {
+  scanHistory: { ko: "스캔 기록", en: "Scan History", uz: "Skanerlash tarixi", ru: "История сканирований" },
+  deleteAll: { ko: "전체 삭제", en: "Delete All", uz: "Barchasini o'chirish", ru: "Удалить всё" },
+} satisfies Record<string, Record<Lang, string>>;
+
+export const ScanHistoryScreen = () => {
+  const t = useT(TR3);
+  return (
   <div className="flex flex-col h-full bg-[var(--cream)]">
     <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
       <StatusBar />
       <div className="flex items-center gap-3 px-4 pb-3">
         <BackButton />
-        <h1 className="font-bold text-lg flex-1">스캔 기록</h1>
-        <button className="text-sm font-medium" style={{ color: "var(--danger)" }}>전체 삭제</button>
+        <h1 className="font-bold text-lg flex-1">{t("scanHistory")}</h1>
+        <button className="text-sm font-medium" style={{ color: "var(--danger)" }}>{t("deleteAll")}</button>
       </div>
     </div>
 
@@ -322,4 +373,5 @@ export const ScanHistoryScreen = () => (
       <div className="h-4" />
     </div>
   </div>
-);
+  );
+};

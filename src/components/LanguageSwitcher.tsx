@@ -1,6 +1,40 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { createContext, useContext, useState, useRef, useEffect } from "react";
 
 export type Lang = "ko" | "en" | "uz" | "ru";
+
+const LANG_STORAGE_KEY = "halalmap-lang";
+
+const LanguageContext = createContext<{ lang: Lang; setLang: (l: Lang) => void }>({
+  lang: "ko",
+  setLang: () => {},
+});
+
+export const LanguageProvider = ({ children }: { children: React.ReactNode }) => {
+  const [lang, setLangState] = useState<Lang>(() => {
+    if (typeof window === "undefined") return "ko";
+    const stored = window.localStorage.getItem(LANG_STORAGE_KEY);
+    return stored === "ko" || stored === "en" || stored === "uz" || stored === "ru" ? stored : "ko";
+  });
+
+  const setLang = (l: Lang) => {
+    setLangState(l);
+    window.localStorage.setItem(LANG_STORAGE_KEY, l);
+  };
+
+  return <LanguageContext.Provider value={{ lang, setLang }}>{children}</LanguageContext.Provider>;
+};
+
+/** Access the app-wide selected language and its setter. */
+export const useLanguage = () => useContext(LanguageContext);
+
+/**
+ * Build a `t(key)` translator bound to the current language from a
+ * component-local dictionary: `Record<key, Record<Lang, string>>`.
+ */
+export function useT<D extends Record<string, Record<Lang, string>>>(dict: D) {
+  const { lang } = useLanguage();
+  return (key: keyof D) => dict[key][lang];
+}
 
 export const LANGUAGES: { id: Lang; flag: string; name: string; native: string }[] = [
   { id: "ko", flag: "🇰🇷", name: "Korean", native: "한국어" },

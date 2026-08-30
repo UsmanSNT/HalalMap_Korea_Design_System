@@ -1,5 +1,6 @@
 import React from "react";
 import { StatusBar, BottomNav, BackButton, OrderStatusChip, TabId } from "../components/Shared";
+import { useLanguage, useT, type Lang } from "../components/LanguageSwitcher";
 
 // ── 25. Active Order Tracking ──────────────────────────────────────────────────
 // Fake route map
@@ -36,15 +37,30 @@ const RouteSVG = () => (
   </svg>
 );
 
-const trackSteps = [
-  { label: "주문 접수", done: true },
-  { label: "조리중", done: true, active: false },
-  { label: "픽업 완료", done: false, active: false },
-  { label: "배달중", done: false, active: true },
-  { label: "배달 완료", done: false },
-];
+const TR1 = {
+  orderReceived: { ko: "주문 접수", en: "Order Received", uz: "Buyurtma qabul qilindi", ru: "Заказ принят" },
+  cooking: { ko: "조리중", en: "Cooking", uz: "Tayyorlanmoqda", ru: "Готовится" },
+  pickedUp: { ko: "픽업 완료", en: "Picked Up", uz: "Olib ketildi", ru: "Забрано" },
+  outForDelivery: { ko: "배달중", en: "Out for Delivery", uz: "Yetkazilmoqda", ru: "В пути" },
+  delivered: { ko: "배달 완료", en: "Delivered", uz: "Yetkazildi", ru: "Доставлено" },
+  orderTracking: { ko: "주문 추적", en: "Order Tracking", uz: "Buyurtmani kuzatish", ru: "Отслеживание заказа" },
+  arrivingIn: { ko: "도착까지 약", en: "Arriving in about", uz: "Yetib kelishga taxminan", ru: "Прибытие примерно через" },
+  minutes: { ko: "분", en: " min", uz: " daqiqa", ru: " мин" },
+  etaAt: { ko: "오후 3:05 도착 예정", en: "Expected at 3:05 PM", uz: "Taxminan 15:05 da yetib keladi", ru: "Ожидается к 15:05" },
+  courierInfo: { ko: "배달 기사 정보", en: "Courier Info", uz: "Kuryer haqida ma'lumot", ru: "Информация о курьере" },
+  deliveries: { ko: "회 배달", en: " deliveries", uz: " ta yetkazib berish", ru: " доставок" },
+} satisfies Record<string, Record<Lang, string>>;
 
-export const OrderTrackingScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void }) => (
+export const OrderTrackingScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void }) => {
+  const t = useT(TR1);
+  const trackSteps = [
+    { label: t("orderReceived"), done: true },
+    { label: t("cooking"), done: true, active: false },
+    { label: t("pickedUp"), done: false, active: false },
+    { label: t("outForDelivery"), done: false, active: true },
+    { label: t("delivered"), done: false },
+  ];
+  return (
   <div className="flex flex-col h-full bg-[var(--cream)]">
     {/* Map */}
     <div className="relative h-72 flex-shrink-0">
@@ -53,7 +69,7 @@ export const OrderTrackingScreen = ({ onTabChange }: { onTabChange?: (t: TabId) 
         <StatusBar dark />
         <div className="flex items-center px-4 gap-3">
           <BackButton dark onBack={() => onTabChange?.("home")} />
-          <h1 className="font-bold text-white text-lg">주문 추적</h1>
+          <h1 className="font-bold text-white text-lg">{t("orderTracking")}</h1>
         </div>
       </div>
     </div>
@@ -68,9 +84,9 @@ export const OrderTrackingScreen = ({ onTabChange }: { onTabChange?: (t: TabId) 
       <div className="px-5 pb-6 space-y-4">
         {/* ETA */}
         <div className="text-center pt-1">
-          <p className="text-xs font-medium text-[var(--muted)]">도착까지 약</p>
-          <p className="font-bold text-4xl text-[#1A1A18] mt-1">18분</p>
-          <p className="text-sm text-[var(--muted)] mt-0.5">오후 3:05 도착 예정</p>
+          <p className="text-xs font-medium text-[var(--muted)]">{t("arrivingIn")}</p>
+          <p className="font-bold text-4xl text-[#1A1A18] mt-1">18{t("minutes")}</p>
+          <p className="text-sm text-[var(--muted)] mt-0.5">{t("etaAt")}</p>
         </div>
 
         {/* Status stepper */}
@@ -111,7 +127,7 @@ export const OrderTrackingScreen = ({ onTabChange }: { onTabChange?: (t: TabId) 
 
         {/* Courier card */}
         <div className="bg-white border border-[var(--border)] rounded-2xl p-4">
-          <p className="text-xs font-medium text-[var(--muted)] mb-3">배달 기사 정보</p>
+          <p className="text-xs font-medium text-[var(--muted)] mb-3">{t("courierInfo")}</p>
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-full bg-[#E8E6E1] flex items-center justify-center text-xl flex-shrink-0">
               👨‍🦱
@@ -121,7 +137,7 @@ export const OrderTrackingScreen = ({ onTabChange }: { onTabChange?: (t: TabId) 
               <div className="flex items-center gap-1.5 mt-0.5">
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="#C4883A"><path d="M6 1l1.2 2.5 2.8.4-2 2 .5 2.7L6 7.3 3.5 8.6l.5-2.7-2-2 2.8-.4L6 1z"/></svg>
                 <span className="text-xs font-semibold text-[#1A1A18]">4.9</span>
-                <span className="text-xs text-[var(--muted)]">· 8,241회 배달</span>
+                <span className="text-xs text-[var(--muted)]">· 8,241{t("deliveries")}</span>
               </div>
             </div>
             <div className="flex gap-2">
@@ -146,7 +162,8 @@ export const OrderTrackingScreen = ({ onTabChange }: { onTabChange?: (t: TabId) 
 
     <BottomNav active="orders" onTabChange={onTabChange} />
   </div>
-);
+  );
+};
 
 // ── 26. Order History ──────────────────────────────────────────────────────────
 const orderHistory = [
@@ -184,15 +201,26 @@ const orderHistory = [
   },
 ];
 
-export const OrderHistoryScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void }) => (
+const TR2 = {
+  orderHistoryTitle: { ko: "주문 내역", en: "Order History", uz: "Buyurtmalar tarixi", ru: "История заказов" },
+  inProgress: { ko: "진행중 (1)", en: "In Progress (1)", uz: "Jarayonda (1)", ru: "В процессе (1)" },
+  completed: { ko: "완료 (12)", en: "Completed (12)", uz: "Tugallangan (12)", ru: "Завершено (12)" },
+  ratePrompt: { ko: "이 주문 어떠셨나요? 리뷰 남기기", en: "How was your order? Leave a review", uz: "Buyurtma qanday bo'ldi? Sharh qoldiring", ru: "Как вам заказ? Оставьте отзыв" },
+  reorder: { ko: "재주문", en: "Reorder", uz: "Qayta buyurtma berish", ru: "Повторить заказ" },
+  receipt: { ko: "영수증", en: "Receipt", uz: "Chek", ru: "Чек" },
+} satisfies Record<string, Record<Lang, string>>;
+
+export const OrderHistoryScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void }) => {
+  const t = useT(TR2);
+  return (
   <div className="flex flex-col h-full bg-[var(--cream)]">
     <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
       <StatusBar />
       <div className="px-5 pb-3">
-        <h1 className="font-bold text-xl text-[#1A1A18]">주문 내역</h1>
+        <h1 className="font-bold text-xl text-[#1A1A18]">{t("orderHistoryTitle")}</h1>
         {/* Tabs */}
         <div className="flex gap-4 mt-3">
-          {["진행중 (1)", "완료 (12)"].map((tab, i) => (
+          {[t("inProgress"), t("completed")].map((tab, i) => (
             <button
               key={tab}
               className="pb-2 text-sm font-semibold border-b-2 transition-all"
@@ -231,7 +259,7 @@ export const OrderHistoryScreen = ({ onTabChange }: { onTabChange?: (t: TabId) =
                     </svg>
                   ))}
                 </div>
-                <p className="text-xs font-medium flex-1" style={{ color: "#7A5220" }}>이 주문 어떠셨나요? 리뷰 남기기</p>
+                <p className="text-xs font-medium flex-1" style={{ color: "#7A5220" }}>{t("ratePrompt")}</p>
               </div>
             )}
           </div>
@@ -240,10 +268,10 @@ export const OrderHistoryScreen = ({ onTabChange }: { onTabChange?: (t: TabId) =
           {order.status !== "cancelled" && (
             <div className="flex border-t border-[var(--border)] divide-x divide-[var(--border)]">
               <button className="flex-1 py-3 text-sm font-semibold" style={{ color: "var(--green)" }}>
-                재주문
+                {t("reorder")}
               </button>
               <button className="flex-1 py-3 text-sm font-medium text-[var(--muted)]">
-                영수증
+                {t("receipt")}
               </button>
             </div>
           )}
@@ -254,17 +282,43 @@ export const OrderHistoryScreen = ({ onTabChange }: { onTabChange?: (t: TabId) =
 
     <BottomNav active="orders" onTabChange={onTabChange} />
   </div>
-);
+  );
+};
 
 // ── 27. Order Detail ───────────────────────────────────────────────────────────
-export const OrderDetailScreen = () => (
+const TR3 = {
+  orderDetail: { ko: "주문 상세", en: "Order Detail", uz: "Buyurtma tafsilotlari", ru: "Детали заказа" },
+  receipt: { ko: "영수증", en: "Receipt", uz: "Chek", ru: "Чек" },
+  orderNumber: { ko: "주문번호", en: "Order Number", uz: "Buyurtma raqami", ru: "Номер заказа" },
+  orderedAt: { ko: "주문일시: 2024년 11월 20일 오후 2:15", en: "Ordered: Nov 20, 2024, 2:15 PM", uz: "Buyurtma vaqti: 2024-yil 20-noyabr, 14:15", ru: "Время заказа: 20 ноября 2024, 14:15" },
+  deliveredAt: { ko: "배달완료: 2024년 11월 20일 오후 3:02", en: "Delivered: Nov 20, 2024, 3:02 PM", uz: "Yetkazilgan vaqt: 2024-yil 20-noyabr, 15:02", ru: "Доставлено: 20 ноября 2024, 15:02" },
+  islamicCertBadge: { ko: "이슬람 식품청 인증 · 한식 할랄", en: "Islamic Food Authority Certified · Korean Halal", uz: "Islom oziq-ovqat idorasi tasdiqlagan · Koreys halol taomi", ru: "Сертифицировано Исламским продовольственным управлением · Корейская халяльная кухня" },
+  orderItems: { ko: "주문 항목", en: "Order Items", uz: "Buyurtma tarkibi", ru: "Позиции заказа" },
+  qtyUnit: { ko: "개", en: "x", uz: " dona", ru: " шт" },
+  paymentDetails: { ko: "결제 내역", en: "Payment Details", uz: "To'lov tafsilotlari", ru: "Детали оплаты" },
+  subtotal: { ko: "소계", en: "Subtotal", uz: "Oraliq summa", ru: "Промежуточный итог" },
+  deliveryFee: { ko: "배달비", en: "Delivery Fee", uz: "Yetkazib berish narxi", ru: "Стоимость доставки" },
+  couponDiscount: { ko: "쿠폰 할인", en: "Coupon Discount", uz: "Kupon chegirmasi", ru: "Скидка по купону" },
+  tip: { ko: "팁", en: "Tip", uz: "Choy puli", ru: "Чаевые" },
+  total: { ko: "합계", en: "Total", uz: "Jami", ru: "Итого" },
+  paymentMethod: { ko: "결제 수단: 신한카드 ····4521", en: "Payment: Shinhan Card ····4521", uz: "To'lov usuli: Shinhan karta ····4521", ru: "Способ оплаты: карта Shinhan ····4521" },
+  deliveryInfo: { ko: "배달 정보", en: "Delivery Info", uz: "Yetkazib berish ma'lumoti", ru: "Информация о доставке" },
+  deliveryAddress: { ko: "📍 서울특별시 용산구 이태원로 123, 501호", en: "📍 123 Itaewon-ro, Yongsan-gu, Seoul, Unit 501", uz: "📍 Seul, Yongsan-gu, Itaewon-ro 123, 501-xona", ru: "📍 Сеул, район Йонсан, Итэвон-ро 123, кв. 501" },
+  courierNamePrefix: { ko: "🛵 배달 기사: 김민준 · ⭐ 4.9", en: "🛵 Courier: Minjun Kim · ⭐ 4.9", uz: "🛵 Kuryer: Kim Minjun · ⭐ 4.9", ru: "🛵 Курьер: Ким Минджун · ⭐ 4.9" },
+  reorder: { ko: "재주문", en: "Reorder", uz: "Qayta buyurtma berish", ru: "Повторить заказ" },
+  writeReview: { ko: "리뷰 쓰기", en: "Write a Review", uz: "Sharh yozish", ru: "Написать отзыв" },
+} satisfies Record<string, Record<Lang, string>>;
+
+export const OrderDetailScreen = () => {
+  const t = useT(TR3);
+  return (
   <div className="flex flex-col h-full bg-[var(--cream)]">
     <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
       <StatusBar />
       <div className="flex items-center gap-3 px-4 pb-3">
         <BackButton />
-        <h1 className="font-bold text-lg flex-1">주문 상세</h1>
-        <button className="text-sm font-medium" style={{ color: "var(--green)" }}>영수증</button>
+        <h1 className="font-bold text-lg flex-1">{t("orderDetail")}</h1>
+        <button className="text-sm font-medium" style={{ color: "var(--green)" }}>{t("receipt")}</button>
       </div>
     </div>
 
@@ -273,14 +327,14 @@ export const OrderDetailScreen = () => (
       <div className="bg-white rounded-2xl p-4 shadow-sm">
         <div className="flex items-center justify-between mb-3">
           <div>
-            <p className="text-xs text-[var(--muted)]">주문번호</p>
+            <p className="text-xs text-[var(--muted)]">{t("orderNumber")}</p>
             <p className="font-bold text-base text-[#1A1A18]">#HMK-20241120-7731</p>
           </div>
           <OrderStatusChip status="delivered" />
         </div>
         <div className="text-xs text-[var(--muted)] space-y-0.5">
-          <p>주문일시: 2024년 11월 20일 오후 2:15</p>
-          <p>배달완료: 2024년 11월 20일 오후 3:02</p>
+          <p>{t("orderedAt")}</p>
+          <p>{t("deliveredAt")}</p>
         </div>
       </div>
 
@@ -289,14 +343,14 @@ export const OrderDetailScreen = () => (
         <div className="w-12 h-12 rounded-xl bg-[var(--green-light)] flex items-center justify-center text-xl">🍖</div>
         <div>
           <p className="font-bold text-base text-[#1A1A18]">신당 할랄 키친</p>
-          <p className="text-xs text-[var(--muted)]">이슬람 식품청 인증 · 한식 할랄</p>
+          <p className="text-xs text-[var(--muted)]">{t("islamicCertBadge")}</p>
         </div>
       </div>
 
       {/* Items */}
       <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
         <div className="px-4 py-3 border-b border-[var(--border)]">
-          <p className="font-semibold text-sm text-[#1A1A18]">주문 항목</p>
+          <p className="font-semibold text-sm text-[#1A1A18]">{t("orderItems")}</p>
         </div>
         <div className="divide-y divide-[var(--border)]">
           {[
@@ -307,7 +361,7 @@ export const OrderDetailScreen = () => (
             <div key={item.name} className="flex items-center justify-between px-4 py-3">
               <div>
                 <p className="text-sm font-medium text-[#1A1A18]">{item.name}</p>
-                <p className="text-xs text-[var(--muted)]">{item.option} · {item.qty}개</p>
+                <p className="text-xs text-[var(--muted)]">{item.option} · {item.qty}{t("qtyUnit")}</p>
               </div>
               <p className="text-sm font-semibold text-[#1A1A18]">₩{(item.price * item.qty).toLocaleString()}</p>
             </div>
@@ -317,12 +371,12 @@ export const OrderDetailScreen = () => (
 
       {/* Payment breakdown */}
       <div className="bg-white rounded-2xl p-4 shadow-sm space-y-2.5">
-        <p className="font-semibold text-sm text-[#1A1A18]">결제 내역</p>
+        <p className="font-semibold text-sm text-[#1A1A18]">{t("paymentDetails")}</p>
         {[
-          { label: "소계", val: "₩38,500" },
-          { label: "배달비", val: "₩2,000" },
-          { label: "쿠폰 할인", val: "-₩6,000", accent: true },
-          { label: "팁", val: "₩0" },
+          { label: t("subtotal"), val: "₩38,500" },
+          { label: t("deliveryFee"), val: "₩2,000" },
+          { label: t("couponDiscount"), val: "-₩6,000", accent: true },
+          { label: t("tip"), val: "₩0" },
         ].map((row) => (
           <div key={row.label} className="flex justify-between text-sm">
             <span style={{ color: "var(--muted)" }}>{row.label}</span>
@@ -330,28 +384,29 @@ export const OrderDetailScreen = () => (
           </div>
         ))}
         <div className="flex justify-between font-bold text-base pt-2 border-t border-[var(--border)]">
-          <span>합계</span>
+          <span>{t("total")}</span>
           <span>₩34,500</span>
         </div>
-        <p className="text-xs text-[var(--muted)]">결제 수단: 신한카드 ····4521</p>
+        <p className="text-xs text-[var(--muted)]">{t("paymentMethod")}</p>
       </div>
 
       {/* Delivery info */}
       <div className="bg-white rounded-2xl p-4 shadow-sm space-y-2">
-        <p className="font-semibold text-sm text-[#1A1A18]">배달 정보</p>
-        <p className="text-sm text-[var(--muted)]">📍 서울특별시 용산구 이태원로 123, 501호</p>
-        <p className="text-sm text-[var(--muted)]">🛵 배달 기사: 김민준 · ⭐ 4.9</p>
+        <p className="font-semibold text-sm text-[#1A1A18]">{t("deliveryInfo")}</p>
+        <p className="text-sm text-[var(--muted)]">{t("deliveryAddress")}</p>
+        <p className="text-sm text-[var(--muted)]">{t("courierNamePrefix")}</p>
       </div>
 
       <div className="flex gap-3">
         <button className="flex-1 py-4 rounded-2xl font-bold text-white text-base" style={{ backgroundColor: "var(--green)" }}>
-          재주문
+          {t("reorder")}
         </button>
         <button className="flex-1 py-4 rounded-2xl font-semibold text-sm border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>
-          리뷰 쓰기
+          {t("writeReview")}
         </button>
       </div>
       <div className="h-4" />
     </div>
   </div>
-);
+  );
+};

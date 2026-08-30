@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useLanguage, type Lang } from "../components/LanguageSwitcher";
 
 const G = {
   green:      "#1B6B4A",
@@ -18,22 +19,22 @@ const G = {
   dim:        "#ABABAB",
 };
 
-const LANGUAGES = [
+const LANGUAGES: { id: Lang; flag: string; label: string }[] = [
   { id: "ko", flag: "🇰🇷", label: "KO" },
   { id: "en", flag: "🇺🇸", label: "EN" },
   { id: "uz", flag: "🇺🇿", label: "UZ" },
   { id: "ru", flag: "🇷🇺", label: "RU" },
 ];
 
-const CATEGORIES = [
-  { emoji: "🍖", label: "한식 할랄" },
-  { emoji: "🥙", label: "터키" },
-  { emoji: "🍽️", label: "우즈베크" },
-  { emoji: "🍛", label: "인도" },
-  { emoji: "🥗", label: "아랍" },
-  { emoji: "🍜", label: "파키스탄" },
-  { emoji: "🍲", label: "인도네시아" },
-  { emoji: "🔍", label: "할랄 스캐너" },
+const CATEGORIES: { emoji: string; label: Record<Lang, string> }[] = [
+  { emoji: "🍖", label: { ko: "한식 할랄", en: "Korean Halal", uz: "Koreys halol", ru: "Корейская халяль" } },
+  { emoji: "🥙", label: { ko: "터키", en: "Turkish", uz: "Turk", ru: "Турецкая" } },
+  { emoji: "🍽️", label: { ko: "우즈베크", en: "Uzbek", uz: "O'zbek", ru: "Узбекская" } },
+  { emoji: "🍛", label: { ko: "인도", en: "Indian", uz: "Hind", ru: "Индийская" } },
+  { emoji: "🥗", label: { ko: "아랍", en: "Arab", uz: "Arab", ru: "Арабская" } },
+  { emoji: "🍜", label: { ko: "파키스탄", en: "Pakistani", uz: "Pokiston", ru: "Пакистанская" } },
+  { emoji: "🍲", label: { ko: "인도네시아", en: "Indonesian", uz: "Indoneziya", ru: "Индонезийская" } },
+  { emoji: "🔍", label: { ko: "할랄 스캐너", en: "Halal Scanner", uz: "Halol Skaner", ru: "Халяль сканер" } },
 ];
 
 const RESTAURANTS = [
@@ -53,9 +54,17 @@ const PRAYER_TIMES = [
   { name: "이샤",   time: "19:21", passed: false },
 ];
 
+const TR_NAV = {
+  search: { ko: "할랄 음식, 레스토랑, 모스크 검색...", en: "Search halal food, restaurants, mosques...", uz: "Halol taom, restoran, masjid qidirish...", ru: "Поиск халяльной еды, ресторанов, мечетей..." },
+  location: { ko: "이태원동", en: "Itaewon-dong", uz: "Itaewon-dong", ru: "Итхэвон-дон" },
+  nextPrayer: { ko: "다음 기도 · 아스르", en: "Next prayer · Asr", uz: "Keyingi namoz · Asr", ru: "Следующий намаз · Аср" },
+  hoursLater: { ko: "14:32 · 2시간 후", en: "14:32 · in 2h", uz: "14:32 · 2 soatdan so'ng", ru: "14:32 · через 2ч" },
+} satisfies Record<string, Record<Lang, string>>;
+
 // ── Top Navigation Bar ────────────────────────────────────────────────────────
-function TopNav({ lang, setLang }: { lang: string; setLang: (l: string) => void }) {
+function TopNav({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
   const [showLang, setShowLang] = useState(false);
+  const t = (k: keyof typeof TR_NAV) => TR_NAV[k][lang];
   return (
     <div style={{ height: 64, backgroundColor: G.surface, borderBottom: `1px solid ${G.border}`, display: "flex", alignItems: "center", padding: "0 32px", gap: 20, flexShrink: 0, position: "sticky", top: 0, zIndex: 20 }}>
       {/* Logo */}
@@ -74,11 +83,11 @@ function TopNav({ lang, setLang }: { lang: string; setLang: (l: string) => void 
       <div style={{ flex: 1, maxWidth: 500, position: "relative" }}>
         <div style={{ height: 40, backgroundColor: G.bg, border: `1.5px solid ${G.border}`, borderRadius: 20, display: "flex", alignItems: "center", padding: "0 14px", gap: 8 }}>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={G.muted} strokeWidth="2" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-          <span style={{ fontSize: 13, color: G.dim }}>할랄 음식, 레스토랑, 모스크 검색...</span>
+          <span style={{ fontSize: 13, color: G.dim }}>{t("search")}</span>
           <div style={{ marginLeft: "auto", width: 1, height: 20, backgroundColor: G.border }} />
           <div style={{ display: "flex", alignItems: "center", gap: 4, paddingLeft: 4 }}>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={G.muted} strokeWidth="2" strokeLinecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            <span style={{ fontSize: 12, color: G.textMid }}>이태원동</span>
+            <span style={{ fontSize: 12, color: G.textMid }}>{t("location")}</span>
           </div>
         </div>
       </div>
@@ -87,8 +96,8 @@ function TopNav({ lang, setLang }: { lang: string; setLang: (l: string) => void 
       <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 12px", backgroundColor: G.greenLight, borderRadius: 10, flexShrink: 0 }}>
         <div style={{ width: 6, height: 6, borderRadius: 99, backgroundColor: G.green, animation: "pulse 2s infinite" }} />
         <div>
-          <p style={{ fontSize: 10, color: G.green, fontWeight: 600 }}>다음 기도 · 아스르</p>
-          <p style={{ fontSize: 12, fontWeight: 700, color: G.greenDark }}>14:32 · 2시간 후</p>
+          <p style={{ fontSize: 10, color: G.green, fontWeight: 600 }}>{t("nextPrayer")}</p>
+          <p style={{ fontSize: 12, fontWeight: 700, color: G.greenDark }}>{t("hoursLater")}</p>
         </div>
       </div>
 
@@ -126,10 +135,11 @@ function TopNav({ lang, setLang }: { lang: string; setLang: (l: string) => void 
 }
 
 // ── Restaurant Card ───────────────────────────────────────────────────────────
-function RestaurantCard({ r }: { r: typeof RESTAURANTS[0] }) {
+function RestaurantCard({ r, lang }: { r: typeof RESTAURANTS[0]; lang: Lang }) {
   const [hovered, setHovered] = useState(false);
   const badgeColor = r.badge === "HALAL CERTIFIED" ? G.green : r.badge === "MUSLIM-OWNED" ? G.gold : "#6B8F71";
   const badgeBg = r.badge === "HALAL CERTIFIED" ? G.greenLight : r.badge === "MUSLIM-OWNED" ? G.goldLight : "#EEF5EF";
+  const feeLabel = { ko: "배달비", en: "Delivery fee", uz: "Yetkazish narxi", ru: "Доставка" }[lang];
   return (
     <div
       onMouseEnter={() => setHovered(true)}
@@ -162,7 +172,7 @@ function RestaurantCard({ r }: { r: typeof RESTAURANTS[0] }) {
           <span style={{ fontSize: 10, color: G.dim }}>· {r.category}</span>
         </div>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <span style={{ fontSize: 10, color: G.muted }}>📍 {r.dist} · 배달비 {r.fee}</span>
+          <span style={{ fontSize: 10, color: G.muted }}>📍 {r.dist} · {feeLabel} {r.fee}</span>
           <span style={{ fontSize: 11, color: G.muted, fontWeight: 600 }}>{r.priceRange}</span>
         </div>
       </div>
@@ -170,13 +180,21 @@ function RestaurantCard({ r }: { r: typeof RESTAURANTS[0] }) {
   );
 }
 
+const TR_MAP = {
+  title: { ko: "📍 주변 지도", en: "📍 Nearby Map", uz: "📍 Yaqin atrofdagi xarita", ru: "📍 Карта поблизости" },
+  viewAll: { ko: "전체 보기", en: "View all", uz: "Barchasini ko'rish", ru: "Смотреть все" },
+  restaurants: { ko: "레스토랑 8", en: "8 restaurants", uz: "8 restoran", ru: "8 ресторанов" },
+  mosques: { ko: "모스크 3", en: "3 mosques", uz: "3 masjid", ru: "3 мечети" },
+} satisfies Record<string, Record<Lang, string>>;
+
 // ── Sidebar: Map preview ──────────────────────────────────────────────────────
-function MapPreview() {
+function MapPreview({ lang }: { lang: Lang }) {
+  const t = (k: keyof typeof TR_MAP) => TR_MAP[k][lang];
   return (
     <div style={{ backgroundColor: G.surface, borderRadius: 14, border: `1px solid ${G.border}`, overflow: "hidden" }}>
       <div style={{ padding: "12px 14px", borderBottom: `1px solid ${G.borderLight}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <span style={{ fontSize: 13, fontWeight: 700, color: G.text }}>📍 주변 지도</span>
-        <button style={{ fontSize: 11, color: G.green, fontWeight: 600, background: "none", border: "none", cursor: "pointer" }}>전체 보기</button>
+        <span style={{ fontSize: 13, fontWeight: 700, color: G.text }}>{t("title")}</span>
+        <button style={{ fontSize: 11, color: G.green, fontWeight: 600, background: "none", border: "none", cursor: "pointer" }}>{t("viewAll")}</button>
       </div>
       {/* SVG Fake map */}
       <div style={{ height: 160, position: "relative", overflow: "hidden" }}>
@@ -222,28 +240,35 @@ function MapPreview() {
       <div style={{ padding: "8px 14px 10px", display: "flex", gap: 12 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
           <div style={{ width: 8, height: 8, borderRadius: 99, backgroundColor: G.green }} />
-          <span style={{ fontSize: 10, color: G.muted }}>레스토랑 8</span>
+          <span style={{ fontSize: 10, color: G.muted }}>{t("restaurants")}</span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
           <div style={{ width: 8, height: 8, borderRadius: 99, backgroundColor: G.gold }} />
-          <span style={{ fontSize: 10, color: G.muted }}>모스크 3</span>
+          <span style={{ fontSize: 10, color: G.muted }}>{t("mosques")}</span>
         </div>
       </div>
     </div>
   );
 }
 
+const TR_PRAYER_WIDGET = {
+  todayPrayers: { ko: "오늘 기도 시간", en: "Today's Prayer Times", uz: "Bugungi namoz vaqtlari", ru: "Время намаза сегодня" },
+  location: { ko: "이태원동, 서울", en: "Itaewon-dong, Seoul", uz: "Itaewon-dong, Seul", ru: "Итхэвон-дон, Сеул" },
+  nextPrayer: { ko: "다음 기도", en: "Next prayer", uz: "Keyingi namoz", ru: "Следующий намаз" },
+} satisfies Record<string, Record<Lang, string>>;
+
 // ── Sidebar: Prayer times widget ──────────────────────────────────────────────
-function PrayerWidget() {
+function PrayerWidget({ lang }: { lang: Lang }) {
+  const t = (k: keyof typeof TR_PRAYER_WIDGET) => TR_PRAYER_WIDGET[k][lang];
   return (
     <div style={{ backgroundColor: G.surface, borderRadius: 14, border: `1px solid ${G.border}`, overflow: "hidden" }}>
       <div style={{ padding: "12px 14px", background: `linear-gradient(135deg, ${G.green} 0%, ${G.greenDark} 100%)`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div>
-          <p style={{ fontSize: 10, color: "rgba(255,255,255,0.65)", fontWeight: 500 }}>오늘 기도 시간</p>
-          <p style={{ fontSize: 12, color: "white", fontWeight: 700, marginTop: 1 }}>이태원동, 서울</p>
+          <p style={{ fontSize: 10, color: "rgba(255,255,255,0.65)", fontWeight: 500 }}>{t("todayPrayers")}</p>
+          <p style={{ fontSize: 12, color: "white", fontWeight: 700, marginTop: 1 }}>{t("location")}</p>
         </div>
         <div style={{ textAlign: "right" }}>
-          <p style={{ fontSize: 10, color: "rgba(255,255,255,0.65)" }}>다음 기도</p>
+          <p style={{ fontSize: 10, color: "rgba(255,255,255,0.65)" }}>{t("nextPrayer")}</p>
           <p style={{ fontSize: 14, fontWeight: 800, color: G.gold }}>14:32</p>
         </div>
       </div>
@@ -263,8 +288,15 @@ function PrayerWidget() {
   );
 }
 
+const TR_QIBLA = {
+  direction: { ko: "키블라 방향", en: "Qibla Direction", uz: "Qibla yo'nalishi", ru: "Направление киблы" },
+  fromSeoul: { ko: "서울에서 292.4°", en: "292.4° from Seoul", uz: "Seuldan 292.4°", ru: "292.4° от Сеула" },
+  currentHeading: { ko: "현재 방향: 147°", en: "Current heading: 147°", uz: "Joriy yo'nalish: 147°", ru: "Текущее направление: 147°" },
+} satisfies Record<string, Record<Lang, string>>;
+
 // ── Sidebar: Qibla mini ───────────────────────────────────────────────────────
-function QiblaMini() {
+function QiblaMini({ lang }: { lang: Lang }) {
+  const t = (k: keyof typeof TR_QIBLA) => TR_QIBLA[k][lang];
   return (
     <div style={{ backgroundColor: G.surface, borderRadius: 14, border: `1px solid ${G.border}`, padding: "14px", display: "flex", alignItems: "center", gap: 14 }}>
       <div style={{ position: "relative", width: 52, height: 52, flexShrink: 0 }}>
@@ -284,18 +316,46 @@ function QiblaMini() {
         </svg>
       </div>
       <div>
-        <p style={{ fontSize: 12, fontWeight: 700, color: G.text }}>키블라 방향</p>
-        <p style={{ fontSize: 11, color: G.muted, marginTop: 1 }}>서울에서 292.4°</p>
-        <p style={{ fontSize: 10, color: G.green, fontWeight: 600, marginTop: 3 }}>현재 방향: 147°</p>
+        <p style={{ fontSize: 12, fontWeight: 700, color: G.text }}>{t("direction")}</p>
+        <p style={{ fontSize: 11, color: G.muted, marginTop: 1 }}>{t("fromSeoul")}</p>
+        <p style={{ fontSize: 10, color: G.green, fontWeight: 600, marginTop: 3 }}>{t("currentHeading")}</p>
       </div>
     </div>
   );
 }
 
+const TR_HOME_DESKTOP = {
+  deliverableNow: { ko: "지금 배달 가능", en: "Available for delivery now", uz: "Hozir yetkazib berish mumkin", ru: "Доступна доставка сейчас" },
+  nearbyRestaurants: { ko: "주변 {n}개 식당", en: "{n} restaurants nearby", uz: "Yaqinda {n} ta restoran", ru: "{n} ресторанов рядом" },
+  heroTitle: { ko: "이태원의 할랄 맛집을\n지금 바로 주문하세요", en: "Order Itaewon's best halal food\nright now", uz: "Itaewondagi eng yaxshi halol\ntaomlarni hozir buyurtma qiling", ru: "Закажите лучшую халяльную еду\nИтхэвона прямо сейчас" },
+  orderNow: { ko: "주문하기 →", en: "Order now →", uz: "Buyurtma berish →", ru: "Заказать →" },
+  halalScanner: { ko: "할랄 스캐너 →", en: "Halal Scanner →", uz: "Halol skaner →", ru: "Халяль сканер →" },
+  home: { ko: "홈", en: "Home", uz: "Bosh sahifa", ru: "Главная" },
+  breadcrumb: { ko: "이태원동 · 할랄 레스토랑", en: "Itaewon-dong · Halal Restaurants", uz: "Itaewon-dong · Halol restoranlar", ru: "Итхэвон-дон · Халяльные рестораны" },
+  restaurantsCount: { ko: "식당", en: "restaurants", uz: "restoran", ru: "ресторанов" },
+  sortDistance: { ko: "거리순", en: "Distance", uz: "Masofa", ru: "По расстоянию" },
+  sortRating: { ko: "평점순", en: "Rating", uz: "Reyting", ru: "По рейтингу" },
+  sortDelivery: { ko: "배달비순", en: "Delivery fee", uz: "Yetkazish narxi", ru: "По стоимости доставки" },
+  quickLinks: { ko: "빠른 링크", en: "Quick Links", uz: "Tezkor havolalar", ru: "Быстрые ссылки" },
+  nearbyMosques: { ko: "근처 모스크", en: "Nearby Mosques", uz: "Yaqin atrofdagi masjidlar", ru: "Ближайшие мечети" },
+  mosquesCount: { ko: "3개", en: "3", uz: "3 ta", ru: "3" },
+  halalScannerLabel: { ko: "할랄 스캐너", en: "Halal Scanner", uz: "Halol skaner", ru: "Халяль сканер" },
+  verifyCert: { ko: "인증 확인", en: "Verify certification", uz: "Sertifikatni tekshirish", ru: "Проверить сертификат" },
+  travelMode: { ko: "여행 모드", en: "Travel Mode", uz: "Sayohat rejimi", ru: "Режим путешествия" },
+  seoulGuide: { ko: "서울 가이드", en: "Seoul Guide", uz: "Seul qo'llanmasi", ru: "Гид по Сеулу" },
+  terms: { ko: "이용약관", en: "Terms of Service", uz: "Foydalanish shartlari", ru: "Условия использования" },
+  privacy: { ko: "개인정보처리방침", en: "Privacy Policy", uz: "Maxfiylik siyosati", ru: "Политика конфиденциальности" },
+  support: { ko: "고객센터", en: "Support", uz: "Yordam markazi", ru: "Служба поддержки" },
+  langSettings: { ko: "언어 설정", en: "Language Settings", uz: "Til sozlamalari", ru: "Настройки языка" },
+  footerCert: { ko: "· HalalMap Korea v1.0 · 한국이슬람교중앙회 인증", en: "· HalalMap Korea v1.0 · Certified by Korea Muslim Federation", uz: "· HalalMap Korea v1.0 · Koreya Musulmonlar Federatsiyasi tomonidan tasdiqlangan", ru: "· HalalMap Korea v1.0 · Сертифицировано Мусульманской федерацией Кореи" },
+} satisfies Record<string, Record<Lang, string>>;
+
 // ── Main Component ────────────────────────────────────────────────────────────
 export default function HomeDesktop() {
-  const [lang, setLang] = useState("ko");
+  const { lang, setLang } = useLanguage();
   const [activeCategory, setActiveCategory] = useState(0);
+  const t = (k: keyof typeof TR_HOME_DESKTOP) => TR_HOME_DESKTOP[k][lang];
+  const sorts = [t("sortDistance"), t("sortRating"), t("sortDelivery")];
 
   return (
     <div style={{ width: "100%", height: "100dvh", backgroundColor: G.bg, display: "flex", flexDirection: "column", overflow: "hidden", fontFamily: "'Noto Sans KR', 'Inter', sans-serif" }}>
@@ -311,11 +371,11 @@ export default function HomeDesktop() {
         </div>
         <div style={{ position: "absolute", inset: 0, maxWidth: 1200, margin: "0 auto", padding: "0 24px", display: "flex", alignItems: "center" }}>
           <div>
-            <p style={{ fontSize: 12, color: "rgba(255,255,255,0.7)", fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 6 }}>지금 배달 가능 · 주변 {RESTAURANTS.length}개 식당</p>
-            <h2 style={{ fontSize: 28, fontWeight: 900, color: "white", lineHeight: 1.2, marginBottom: 10 }}>이태원의 할랄 맛집을<br/>지금 바로 주문하세요</h2>
+            <p style={{ fontSize: 12, color: "rgba(255,255,255,0.7)", fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 6 }}>{t("deliverableNow")} · {t("nearbyRestaurants").replace("{n}", String(RESTAURANTS.length))}</p>
+            <h2 style={{ fontSize: 28, fontWeight: 900, color: "white", lineHeight: 1.2, marginBottom: 10, whiteSpace: "pre-line" }}>{t("heroTitle")}</h2>
             <div style={{ display: "flex", gap: 10 }}>
-              <button style={{ padding: "9px 20px", backgroundColor: G.gold, borderRadius: 10, color: "white", fontSize: 13, fontWeight: 700, border: "none", cursor: "pointer" }}>주문하기 →</button>
-              <button style={{ padding: "9px 20px", backgroundColor: "rgba(255,255,255,0.15)", borderRadius: 10, color: "white", fontSize: 13, fontWeight: 600, border: "1px solid rgba(255,255,255,0.3)", cursor: "pointer", backdropFilter: "blur(8px)" }}>할랄 스캐너 →</button>
+              <button style={{ padding: "9px 20px", backgroundColor: G.gold, borderRadius: 10, color: "white", fontSize: 13, fontWeight: 700, border: "none", cursor: "pointer" }}>{t("orderNow")}</button>
+              <button style={{ padding: "9px 20px", backgroundColor: "rgba(255,255,255,0.15)", borderRadius: 10, color: "white", fontSize: 13, fontWeight: 600, border: "1px solid rgba(255,255,255,0.3)", cursor: "pointer", backdropFilter: "blur(8px)" }}>{t("halalScanner")}</button>
             </div>
           </div>
         </div>
@@ -329,9 +389,9 @@ export default function HomeDesktop() {
           <div style={{ overflow: "auto", display: "flex", flexDirection: "column", gap: 16 }} className="scrollbar-hide">
             {/* Breadcrumb */}
             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <span style={{ fontSize: 11, color: G.muted }}>홈</span>
+              <span style={{ fontSize: 11, color: G.muted }}>{t("home")}</span>
               <span style={{ fontSize: 11, color: G.dim }}>/</span>
-              <span style={{ fontSize: 11, color: G.text, fontWeight: 600 }}>이태원동 · 할랄 레스토랑</span>
+              <span style={{ fontSize: 11, color: G.text, fontWeight: 600 }}>{t("breadcrumb")}</span>
             </div>
 
             {/* Category filter chips */}
@@ -341,7 +401,7 @@ export default function HomeDesktop() {
                 return (
                   <button key={i} onClick={() => setActiveCategory(i)}
                     style={{ height: 34, padding: "0 14px", borderRadius: 99, border: `1.5px solid ${isActive ? G.green : G.border}`, backgroundColor: isActive ? G.greenLight : G.surface, color: isActive ? G.green : G.textMid, fontSize: 12, fontWeight: isActive ? 700 : 500, cursor: "pointer", transition: "all 0.15s", display: "flex", alignItems: "center", gap: 5 }}>
-                    {cat.emoji} {cat.label}
+                    {cat.emoji} {cat.label[lang]}
                   </button>
                 );
               })}
@@ -349,9 +409,9 @@ export default function HomeDesktop() {
 
             {/* Sort / filter bar */}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <p style={{ fontSize: 13, color: G.textMid }}><span style={{ fontWeight: 700, color: G.text }}>{RESTAURANTS.length}개</span> 식당</p>
+              <p style={{ fontSize: 13, color: G.textMid }}><span style={{ fontWeight: 700, color: G.text }}>{RESTAURANTS.length}</span> {t("restaurantsCount")}</p>
               <div style={{ display: "flex", gap: 8 }}>
-                {["거리순", "평점순", "배달비순"].map((s, i) => (
+                {sorts.map((s, i) => (
                   <button key={s} style={{ height: 30, padding: "0 12px", borderRadius: 8, border: `1px solid ${i === 0 ? G.green : G.border}`, backgroundColor: i === 0 ? G.greenLight : G.surface, color: i === 0 ? G.green : G.muted, fontSize: 11, fontWeight: i === 0 ? 700 : 500, cursor: "pointer" }}>{s}</button>
                 ))}
               </div>
@@ -359,23 +419,23 @@ export default function HomeDesktop() {
 
             {/* 3-column grid */}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14 }}>
-              {RESTAURANTS.map((r, i) => <RestaurantCard key={i} r={r} />)}
+              {RESTAURANTS.map((r, i) => <RestaurantCard key={i} r={r} lang={lang} />)}
             </div>
           </div>
 
           {/* Right column — sticky sidebar */}
           <div style={{ overflow: "auto", display: "flex", flexDirection: "column", gap: 14 }} className="scrollbar-hide">
-            <MapPreview />
-            <PrayerWidget />
-            <QiblaMini />
+            <MapPreview lang={lang} />
+            <PrayerWidget lang={lang} />
+            <QiblaMini lang={lang} />
 
             {/* Quick links */}
             <div style={{ backgroundColor: G.surface, borderRadius: 14, border: `1px solid ${G.border}`, padding: "12px 14px" }}>
-              <p style={{ fontSize: 12, fontWeight: 700, color: G.text, marginBottom: 8 }}>빠른 링크</p>
+              <p style={{ fontSize: 12, fontWeight: 700, color: G.text, marginBottom: 8 }}>{t("quickLinks")}</p>
               {[
-                { icon: "🕌", label: "근처 모스크", sub: "3개" },
-                { icon: "🔍", label: "할랄 스캐너", sub: "인증 확인" },
-                { icon: "✈️", label: "여행 모드", sub: "서울 가이드" },
+                { icon: "🕌", label: t("nearbyMosques"), sub: t("mosquesCount") },
+                { icon: "🔍", label: t("halalScannerLabel"), sub: t("verifyCert") },
+                { icon: "✈️", label: t("travelMode"), sub: t("seoulGuide") },
               ].map((item, i) => (
                 <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, padding: "7px 0", borderBottom: i < 2 ? `1px solid ${G.borderLight}` : "none", cursor: "pointer" }}>
                   <span style={{ fontSize: 16 }}>{item.icon}</span>
@@ -393,10 +453,10 @@ export default function HomeDesktop() {
 
       {/* Footer */}
       <div style={{ height: 40, backgroundColor: G.surface, borderTop: `1px solid ${G.border}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, gap: 20 }}>
-        {["이용약관", "개인정보처리방침", "고객센터", "언어 설정"].map((item, i) => (
+        {[t("terms"), t("privacy"), t("support"), t("langSettings")].map((item, i) => (
           <span key={i} style={{ fontSize: 11, color: G.muted, cursor: "pointer" }}>{item}</span>
         ))}
-        <span style={{ fontSize: 11, color: G.dim }}>· HalalMap Korea v1.0 · 한국이슬람교중앙회 인증</span>
+        <span style={{ fontSize: 11, color: G.dim }}>{t("footerCert")}</span>
       </div>
     </div>
   );
