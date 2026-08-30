@@ -384,8 +384,8 @@ export const Toggle = ({ on, onToggle }: { on: boolean; onToggle?: () => void })
     style={{ backgroundColor: on ? "var(--green)" : "#D1D5DB" }}
   >
     <span
-      className="absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200"
-      style={{ transform: on ? "translateX(26px)" : "translateX(2px)" }}
+      className="absolute w-5 h-5 bg-white rounded-full shadow transition-transform duration-200"
+      style={{ top: "2px", left: "2px", transform: on ? "translateX(24px)" : "translateX(0)" }}
     />
   </button>
 );
