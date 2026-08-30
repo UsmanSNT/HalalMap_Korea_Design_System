@@ -276,14 +276,14 @@ export const PrayerTimesScreen = ({ onTabChange }: { onTabChange?: (t: TabId) =>
                   p.id === "fajr" ? "🌅" : p.id === "sunrise" ? "☀️" : p.id === "dhuhr" ? "🌤" : p.id === "asr" ? "🌇" : p.id === "maghrib" ? "🌆" : "🌃"
                 }</span>
               </div>
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <p className={`font-semibold text-sm ${p.next ? "text-[var(--green)]" : "text-[#1A1A18]"}`}>{p.name}</p>
-                  {p.next && <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full text-white" style={{ backgroundColor: "var(--green)" }}>다음</span>}
+                  <p className={`font-semibold text-sm truncate ${p.next ? "text-[var(--green)]" : "text-[#1A1A18]"}`}>{p.name}</p>
+                  {p.next && <span className="flex-shrink-0 text-[9px] font-bold px-1.5 py-0.5 rounded-full text-white" style={{ backgroundColor: "var(--green)" }}>다음</span>}
                 </div>
-                <p className="text-xs text-[var(--muted)]">{p.nameEn}</p>
+                <p className="text-xs text-[var(--muted)] truncate">{p.nameEn}</p>
               </div>
-              <p className={`font-bold text-base tabular-nums ${p.next ? "text-[var(--green)]" : "text-[#1A1A18]"}`}>{p.time}</p>
+              <p className={`flex-shrink-0 font-bold text-base tabular-nums ${p.next ? "text-[var(--green)]" : "text-[#1A1A18]"}`}>{p.time}</p>
               {p.id !== "sunrise" && (
                 <Toggle on={notifState[p.id]} onToggle={() => setNotifState(s => ({ ...s, [p.id]: !s[p.id] }))} />
               )}
