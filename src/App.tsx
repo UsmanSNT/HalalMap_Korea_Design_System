@@ -111,10 +111,19 @@ function CustomerScreen({ id, deviceType, onTabChange, onLogout }: { id: ScreenI
 
 const DEVICE_LABELS: Record<DeviceType, string> = { desktop: "🖥️ Desktop", android: "🤖 Android", ios: "🍎 iOS" };
 
+const ROLE_DASHBOARD_LABELS: Partial<Record<AuthUser["role"], string>> = {
+  owner: "🍽️ Oshxona paneliga qaytish",
+  courier: "🏍️ Kuryer paneliga qaytish",
+  admin: "🛠️ Admin paneliga qaytish",
+};
+
+type ViewMode = "customer" | "role";
+
 export default function App() {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [restoringSession, setRestoringSession] = useState(true);
   const [current, setCurrent] = useState<ScreenId>("home");
+  const [viewMode, setViewMode] = useState<ViewMode>("role");
   const deviceType = useDeviceType();
   const [deviceOverride, setDeviceOverrideState] = useState<DeviceType | null>(() => getDeviceOverride());
 
@@ -140,13 +149,17 @@ export default function App() {
     await logout();
     setUser(null);
     setCurrent("home");
+    setViewMode("role");
   };
+
+  const switchToCustomer = () => setViewMode("customer");
+  const switchToRole = () => setViewMode("role");
 
   if (restoringSession) return <main className="grid min-h-dvh place-items-center bg-[var(--cream)] text-sm font-semibold text-[var(--green)]">Session tekshirilmoqda…</main>;
   if (!user) return <main className="mx-auto h-dvh w-full max-w-[390px] overflow-hidden bg-[var(--cream)]"><LoginScreen onLogin={handleLogin} /></main>;
-  if (user.role === "owner") return <DashboardApp onSwitch={handleLogout} />;
-  if (user.role === "courier") return <CourierApp onSwitch={handleLogout} />;
-  if (user.role === "admin") return <AdminApp onSwitch={handleLogout} />;
+  if (user.role === "owner" && viewMode === "role") return <DashboardApp onSwitch={switchToCustomer} />;
+  if (user.role === "courier" && viewMode === "role") return <CourierApp onSwitch={switchToCustomer} />;
+  if (user.role === "admin" && viewMode === "role") return <AdminApp onSwitch={switchToCustomer} />;
 
   const handleTabChange = (tab: TabId) => setCurrent(TAB_SCREENS[tab]);
   const effectiveDevice = deviceOverride ?? deviceType;
@@ -167,10 +180,17 @@ export default function App() {
     </div>
   );
 
+  const roleDashboardButton = ROLE_DASHBOARD_LABELS[user.role] && (
+    <button onClick={switchToRole} className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-full bg-[var(--green)] px-4 py-3 text-xs font-bold text-white shadow-xl">
+      {ROLE_DASHBOARD_LABELS[user.role]}
+    </button>
+  );
+
   if (isDesktopHome) {
     return (
       <div className="relative h-dvh w-full overflow-hidden">
         {devToolbar}
+        {roleDashboardButton}
         <HomeDesktop />
       </div>
     );
@@ -179,6 +199,7 @@ export default function App() {
   return (
     <div className="relative min-h-dvh bg-[#EDEAE5]">
       {devToolbar}
+      {roleDashboardButton}
       <main className="mx-auto h-dvh w-full max-w-[390px] overflow-hidden bg-[var(--cream)]">
         <CustomerScreen id={current} deviceType={effectiveDevice} onTabChange={handleTabChange} onLogout={handleLogout} />
       </main>

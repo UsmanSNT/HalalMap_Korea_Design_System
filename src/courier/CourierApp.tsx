@@ -87,7 +87,6 @@ const SIDEBAR_ACTIVE = "#0F2030";
 // ── App shell ──────────────────────────────────────────────────────────────────
 export default function CourierApp({ onSwitch }: { onSwitch: () => void }) {
   const [active, setActive] = useState<CourierScreenId>("go-online");
-  const [customerMode, setCustomerMode] = useState<"customer" | "owner">("customer");
 
   return (
     <div className="flex h-screen w-screen overflow-hidden" style={{ backgroundColor: "#04090F" }}>
