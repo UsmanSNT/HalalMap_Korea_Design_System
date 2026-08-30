@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { type AuthUser, getCurrentUser, login, logout } from "./api/auth";
 import { type TabId } from "./components/Shared";
+import { type DeviceType, useDeviceType, getDeviceOverride, setDeviceOverride } from "./hooks/useDeviceType";
 import DashboardApp from "./dashboard/DashboardApp";
 import CourierApp from "./courier/CourierApp";
 import AdminApp from "./admin/AdminApp";
 import { SplashScreen, OnboardingScreen, SignUpScreen, LoginScreen, LanguageScreen } from "./screens/OnboardingScreens";
 import { HomeScreen, RestaurantListScreen, RestaurantDetailScreen, MenuScreen, ItemDetailScreen, CartScreen, CheckoutScreen, OrderConfirmationScreen } from "./screens/HomeScreens";
+import HomeDesktop from "./screens/HomeDesktop";
+import HomeAndroid from "./screens/HomeAndroid";
 import { SearchScreen, MapViewScreen, CitySelectorScreen, RestaurantMapDetailScreen } from "./screens/SearchScreens";
 import { MosqueListScreen, MosqueDetailScreen, PrayerTimesScreen, QiblaScreen } from "./screens/MosqueScreens";
 import { ScannerScreen, ScanResultScreen, ScanHistoryScreen } from "./screens/ScannerScreens";
@@ -53,13 +56,15 @@ const TAB_SCREENS: Record<TabId, ScreenId> = {
   home: "home", search: "search", orders: "order-history", prayer: "prayer-times", profile: "profile",
 };
 
-function CustomerScreen({ id, onTabChange, onLogout }: { id: ScreenId; onTabChange: (tab: TabId) => void; onLogout: () => void }) {
+function CustomerScreen({ id, deviceType, onTabChange, onLogout }: { id: ScreenId; deviceType: DeviceType; onTabChange: (tab: TabId) => void; onLogout: () => void }) {
   switch (id) {
     case "splash": return <SplashScreen />;
     case "onboarding": return <OnboardingScreen />;
     case "signup": return <SignUpScreen />;
     case "language": return <LanguageScreen />;
-    case "home": return <HomeScreen onTabChange={onTabChange} />;
+    case "home":
+      if (deviceType === "android") return <HomeAndroid />;
+      return <HomeScreen onTabChange={onTabChange} />;
     case "restaurant-list": return <RestaurantListScreen />;
     case "restaurant-detail": return <RestaurantDetailScreen />;
     case "menu": return <MenuScreen />;
@@ -104,10 +109,19 @@ function CustomerScreen({ id, onTabChange, onLogout }: { id: ScreenId; onTabChan
   }
 }
 
+const DEVICE_LABELS: Record<DeviceType, string> = { desktop: "🖥️ Desktop", android: "🤖 Android", ios: "🍎 iOS" };
+
 export default function App() {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [restoringSession, setRestoringSession] = useState(true);
   const [current, setCurrent] = useState<ScreenId>("home");
+  const deviceType = useDeviceType();
+  const [deviceOverride, setDeviceOverrideState] = useState<DeviceType | null>(() => getDeviceOverride());
+
+  const handleDeviceOverride = (value: DeviceType | null) => {
+    setDeviceOverride(value);
+    setDeviceOverrideState(value);
+  };
 
   useEffect(() => {
     getCurrentUser().then(setUser).finally(() => setRestoringSession(false));
@@ -135,16 +149,38 @@ export default function App() {
   if (user.role === "admin") return <AdminApp onSwitch={handleLogout} />;
 
   const handleTabChange = (tab: TabId) => setCurrent(TAB_SCREENS[tab]);
+  const effectiveDevice = deviceOverride ?? deviceType;
+  const isDesktopHome = current === "home" && effectiveDevice === "desktop";
+
+  const devToolbar = (
+    <div className="fixed right-3 top-3 z-50 flex items-center gap-2 rounded-xl border border-[var(--border)] bg-white/95 p-2 shadow-lg backdrop-blur">
+      <select value={current} onChange={(event) => setCurrent(event.target.value as ScreenId)} aria-label="Ekranni tanlash" className="max-w-40 rounded-lg bg-[var(--cream)] px-2 py-1.5 text-xs font-semibold outline-none">
+        {SCREEN_GROUPS.map((group) => <optgroup key={group.section} label={group.section}>{group.screens.map((screen) => <option key={screen.id} value={screen.id}>{screen.label}</option>)}</optgroup>)}
+      </select>
+      <select value={deviceOverride ?? "auto"} onChange={(event) => handleDeviceOverride(event.target.value === "auto" ? null : (event.target.value as DeviceType))} aria-label="Qurilma turini tanlash" className="rounded-lg bg-[var(--cream)] px-2 py-1.5 text-xs font-semibold outline-none">
+        <option value="auto">Avto ({DEVICE_LABELS[deviceType]})</option>
+        <option value="desktop">{DEVICE_LABELS.desktop}</option>
+        <option value="android">{DEVICE_LABELS.android}</option>
+        <option value="ios">{DEVICE_LABELS.ios}</option>
+      </select>
+      <button onClick={handleLogout} className="rounded-lg bg-[var(--danger)] px-3 py-1.5 text-xs font-bold text-white">Chiqish</button>
+    </div>
+  );
+
+  if (isDesktopHome) {
+    return (
+      <div className="relative h-dvh w-full overflow-hidden">
+        {devToolbar}
+        <HomeDesktop />
+      </div>
+    );
+  }
+
   return (
     <div className="relative min-h-dvh bg-[#EDEAE5]">
-      <div className="fixed right-3 top-3 z-50 flex items-center gap-2 rounded-xl border border-[var(--border)] bg-white/95 p-2 shadow-lg backdrop-blur">
-        <select value={current} onChange={(event) => setCurrent(event.target.value as ScreenId)} aria-label="Ekranni tanlash" className="max-w-40 rounded-lg bg-[var(--cream)] px-2 py-1.5 text-xs font-semibold outline-none">
-          {SCREEN_GROUPS.map((group) => <optgroup key={group.section} label={group.section}>{group.screens.map((screen) => <option key={screen.id} value={screen.id}>{screen.label}</option>)}</optgroup>)}
-        </select>
-        <button onClick={handleLogout} className="rounded-lg bg-[var(--danger)] px-3 py-1.5 text-xs font-bold text-white">Chiqish</button>
-      </div>
+      {devToolbar}
       <main className="mx-auto h-dvh w-full max-w-[390px] overflow-hidden bg-[var(--cream)]">
-        <CustomerScreen id={current} onTabChange={handleTabChange} onLogout={handleLogout} />
+        <CustomerScreen id={current} deviceType={effectiveDevice} onTabChange={handleTabChange} onLogout={handleLogout} />
       </main>
     </div>
   );

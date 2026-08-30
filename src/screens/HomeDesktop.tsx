@@ -298,7 +298,7 @@ export default function HomeDesktop() {
   const [activeCategory, setActiveCategory] = useState(0);
 
   return (
-    <div style={{ width: 1440, height: 900, backgroundColor: G.bg, display: "flex", flexDirection: "column", overflow: "hidden", fontFamily: "'Noto Sans KR', 'Inter', sans-serif" }}>
+    <div style={{ width: "100%", height: "100dvh", backgroundColor: G.bg, display: "flex", flexDirection: "column", overflow: "hidden", fontFamily: "'Noto Sans KR', 'Inter', sans-serif" }}>
       <TopNav lang={lang} setLang={setLang} />
 
       {/* Hero banner */}

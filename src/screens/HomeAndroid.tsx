@@ -122,7 +122,7 @@ export default function HomeAndroid() {
   const [activeTab, setActiveTab] = useState(0);
 
   return (
-    <div style={{ width: 360, height: 800, backgroundColor: M.bg, display: "flex", flexDirection: "column", overflow: "hidden", fontFamily: "'Noto Sans KR', 'Inter', sans-serif" }}>
+    <div style={{ width: "100%", height: "100%", backgroundColor: M.bg, display: "flex", flexDirection: "column", overflow: "hidden", fontFamily: "'Noto Sans KR', 'Inter', sans-serif" }}>
 
       {/* Status bar — on green header */}
       <div style={{ backgroundColor: M.green }}>
