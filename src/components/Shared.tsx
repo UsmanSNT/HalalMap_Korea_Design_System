@@ -204,6 +204,7 @@ export const RestaurantCardV = ({
   distance,
   eta,
   fee,
+  onClick,
 }: {
   name: string;
   imageId: string;
@@ -213,8 +214,9 @@ export const RestaurantCardV = ({
   distance: string;
   eta: string;
   fee: string;
+  onClick?: () => void;
 }) => (
-  <div className="bg-white rounded-2xl overflow-hidden shadow-sm flex-shrink-0 w-52">
+  <div onClick={onClick} className="bg-white rounded-2xl overflow-hidden shadow-sm flex-shrink-0 w-52 cursor-pointer">
     <div className="relative h-32 bg-[#E8E6E1]">
       <img
         src={`https://images.unsplash.com/photo-${imageId}?w=300&h=200&fit=crop&auto=format&q=80`}
@@ -248,6 +250,7 @@ export const RestaurantCardH = ({
   eta,
   fee,
   cuisine,
+  onClick,
 }: {
   name: string;
   imageId: string;
@@ -258,8 +261,9 @@ export const RestaurantCardH = ({
   eta: string;
   fee: string;
   cuisine?: string;
+  onClick?: () => void;
 }) => (
-  <div className="bg-white rounded-2xl overflow-hidden shadow-sm flex items-stretch">
+  <div onClick={onClick} className="bg-white rounded-2xl overflow-hidden shadow-sm flex items-stretch cursor-pointer">
     <div className="w-24 h-24 flex-shrink-0 bg-[#E8E6E1]">
       <img
         src={`https://images.unsplash.com/photo-${imageId}?w=200&h=200&fit=crop&auto=format&q=80`}
@@ -354,11 +358,11 @@ export const OrderStatusChip = ({ status }: { status: OrderStatus }) => {
 };
 
 // ── Section Header ────────────────────────────────────────────────────────────
-export const SectionHeader = ({ title, action }: { title: string; action?: string }) => (
+export const SectionHeader = ({ title, action, onAction }: { title: string; action?: string; onAction?: () => void }) => (
   <div className="flex items-center justify-between px-4 mb-3">
     <h3 className="font-bold text-base text-[#1A1A18]">{title}</h3>
     {action && (
-      <button className="text-sm font-medium" style={{ color: "var(--green)" }}>
+      <button onClick={onAction} className="text-sm font-medium" style={{ color: "var(--green)" }}>
         {action} →
       </button>
     )}

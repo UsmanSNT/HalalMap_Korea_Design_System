@@ -56,22 +56,22 @@ const TAB_SCREENS: Record<TabId, ScreenId> = {
   home: "home", search: "search", orders: "order-history", prayer: "prayer-times", profile: "profile",
 };
 
-function CustomerScreen({ id, deviceType, onTabChange, onLogout }: { id: ScreenId; deviceType: DeviceType; onTabChange: (tab: TabId) => void; onLogout: () => void }) {
+function CustomerScreen({ id, deviceType, onTabChange, onLogout, onNavigate }: { id: ScreenId; deviceType: DeviceType; onTabChange: (tab: TabId) => void; onLogout: () => void; onNavigate: (screen: string) => void }) {
   switch (id) {
     case "splash": return <SplashScreen />;
     case "onboarding": return <OnboardingScreen />;
     case "signup": return <SignUpScreen />;
     case "language": return <LanguageScreen />;
     case "home":
-      if (deviceType === "android") return <HomeAndroid />;
-      return <HomeScreen onTabChange={onTabChange} />;
-    case "restaurant-list": return <RestaurantListScreen />;
-    case "restaurant-detail": return <RestaurantDetailScreen />;
-    case "menu": return <MenuScreen />;
-    case "item-detail": return <ItemDetailScreen />;
-    case "cart": return <CartScreen />;
-    case "checkout": return <CheckoutScreen />;
-    case "order-confirmation": return <OrderConfirmationScreen />;
+      if (deviceType === "android") return <HomeAndroid onNavigate={onNavigate} onTabChange={onTabChange} />;
+      return <HomeScreen onTabChange={onTabChange} onNavigate={onNavigate} />;
+    case "restaurant-list": return <RestaurantListScreen onNavigate={onNavigate} />;
+    case "restaurant-detail": return <RestaurantDetailScreen onNavigate={onNavigate} />;
+    case "menu": return <MenuScreen onNavigate={onNavigate} />;
+    case "item-detail": return <ItemDetailScreen onNavigate={onNavigate} />;
+    case "cart": return <CartScreen onNavigate={onNavigate} />;
+    case "checkout": return <CheckoutScreen onNavigate={onNavigate} />;
+    case "order-confirmation": return <OrderConfirmationScreen onNavigate={onNavigate} />;
     case "search": return <SearchScreen onTabChange={onTabChange} />;
     case "map-view": return <MapViewScreen onTabChange={onTabChange} />;
     case "city-selector": return <CitySelectorScreen />;
@@ -118,14 +118,33 @@ const ROLE_DASHBOARD_LABELS: Partial<Record<AuthUser["role"], string>> = {
 };
 
 type ViewMode = "customer" | "role";
+type BootStep = "splash" | "onboarding" | "auth";
+
+const ONBOARDED_KEY = "halalmap-onboarded";
 
 export default function App() {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [restoringSession, setRestoringSession] = useState(true);
   const [current, setCurrent] = useState<ScreenId>("home");
   const [viewMode, setViewMode] = useState<ViewMode>("role");
+  const [bootStep, setBootStep] = useState<BootStep>(() =>
+    localStorage.getItem(ONBOARDED_KEY) ? "auth" : "splash"
+  );
   const deviceType = useDeviceType();
   const [deviceOverride, setDeviceOverrideState] = useState<DeviceType | null>(() => getDeviceOverride());
+
+  useEffect(() => {
+    if (bootStep !== "splash") return;
+    const timer = setTimeout(() => setBootStep("onboarding"), 1800);
+    return () => clearTimeout(timer);
+  }, [bootStep]);
+
+  const finishOnboarding = () => {
+    localStorage.setItem(ONBOARDED_KEY, "1");
+    setBootStep("auth");
+  };
+
+  const navigate = (screen: string) => setCurrent(screen as ScreenId);
 
   const handleDeviceOverride = (value: DeviceType | null) => {
     setDeviceOverride(value);
@@ -156,7 +175,11 @@ export default function App() {
   const switchToRole = () => setViewMode("role");
 
   if (restoringSession) return <main className="grid min-h-dvh place-items-center bg-[var(--cream)] text-sm font-semibold text-[var(--green)]">Session tekshirilmoqda…</main>;
-  if (!user) return <main className="mx-auto h-dvh w-full max-w-[390px] overflow-hidden bg-[var(--cream)]"><LoginScreen onLogin={handleLogin} /></main>;
+  if (!user) {
+    if (bootStep === "splash") return <main className="mx-auto h-dvh w-full max-w-[390px] overflow-hidden bg-[var(--cream)]"><SplashScreen /></main>;
+    if (bootStep === "onboarding") return <main className="mx-auto h-dvh w-full max-w-[390px] overflow-hidden bg-[var(--cream)]"><OnboardingScreen onSkip={finishOnboarding} onDone={finishOnboarding} /></main>;
+    return <main className="mx-auto h-dvh w-full max-w-[390px] overflow-hidden bg-[var(--cream)]"><LoginScreen onLogin={handleLogin} /></main>;
+  }
   if (user.role === "owner" && viewMode === "role") return <DashboardApp onSwitch={switchToCustomer} />;
   if (user.role === "courier" && viewMode === "role") return <CourierApp onSwitch={switchToCustomer} />;
   if (user.role === "admin" && viewMode === "role") return <AdminApp onSwitch={switchToCustomer} />;
@@ -201,7 +224,7 @@ export default function App() {
       {devToolbar}
       {roleDashboardButton}
       <main className="mx-auto h-dvh w-full max-w-[390px] overflow-hidden bg-[var(--cream)]">
-        <CustomerScreen id={current} deviceType={effectiveDevice} onTabChange={handleTabChange} onLogout={handleLogout} />
+        <CustomerScreen id={current} deviceType={effectiveDevice} onTabChange={handleTabChange} onLogout={handleLogout} onNavigate={navigate} />
       </main>
     </div>
   );

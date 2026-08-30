@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { type TabId } from "../components/Shared";
+
+const TAB_ORDER: TabId[] = ["home", "search", "orders", "prayer", "profile"];
 
 // ── Material Design 3 tokens ───────────────────────────────────────────────────
 const M = {
@@ -117,9 +120,8 @@ const M3BottomNav = ({ active, onTabChange }: { active: number; onTabChange: (i:
 };
 
 // ── Main Component ────────────────────────────────────────────────────────────
-export default function HomeAndroid() {
+export default function HomeAndroid({ onNavigate, onTabChange }: { onNavigate?: (screen: string) => void; onTabChange?: (tab: TabId) => void }) {
   const [activeCategory, setActiveCategory] = useState(0);
-  const [activeTab, setActiveTab] = useState(0);
 
   return (
     <div style={{ width: "100%", height: "100%", backgroundColor: M.bg, display: "flex", flexDirection: "column", overflow: "hidden", fontFamily: "'Noto Sans KR', 'Inter', sans-serif" }}>
@@ -206,14 +208,14 @@ export default function HomeAndroid() {
         <div style={{ padding: "14px 12px 0" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
             <span style={{ fontSize: 14, fontWeight: 700, color: M.text }}>🔥 인기 할랄 식당</span>
-            <button style={{ display: "flex", alignItems: "center", gap: 2, background: "none", border: "none", cursor: "pointer" }}>
+            <button onClick={() => onNavigate?.("restaurant-list")} style={{ display: "flex", alignItems: "center", gap: 2, background: "none", border: "none", cursor: "pointer" }}>
               <span style={{ fontSize: 12, color: M.green, fontWeight: 600 }}>더보기</span>
               <MIcon d={ICONS.chevron} size={14} color={M.green} />
             </button>
           </div>
           <div style={{ display: "flex", gap: 10, overflowX: "auto" }} className="scrollbar-hide">
             {RESTAURANTS.map((r, i) => (
-              <div key={i} style={{ width: 200, flexShrink: 0, backgroundColor: M.surface, borderRadius: M.radius, overflow: "hidden", boxShadow: "0 1px 2px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.06)" }}>
+              <div key={i} onClick={() => onNavigate?.("restaurant-detail")} style={{ width: 200, flexShrink: 0, backgroundColor: M.surface, borderRadius: M.radius, overflow: "hidden", boxShadow: "0 1px 2px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.06)", cursor: "pointer" }}>
                 {/* Photo */}
                 <div style={{ height: 110, backgroundColor: "#D4D0C8", overflow: "hidden", position: "relative" }}>
                   <img src={`https://images.unsplash.com/photo-${r.img}?w=200&h=110&fit=crop&auto=format&q=80`} alt={r.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
@@ -249,7 +251,7 @@ export default function HomeAndroid() {
         <div style={{ padding: "14px 12px 12px" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
             <span style={{ fontSize: 14, fontWeight: 700, color: M.text }}>🕌 근처 모스크</span>
-            <button style={{ display: "flex", alignItems: "center", gap: 2, background: "none", border: "none", cursor: "pointer" }}>
+            <button onClick={() => onNavigate?.("mosque-list")} style={{ display: "flex", alignItems: "center", gap: 2, background: "none", border: "none", cursor: "pointer" }}>
               <span style={{ fontSize: 12, color: M.green, fontWeight: 600 }}>지도 보기</span>
               <MIcon d={ICONS.chevron} size={14} color={M.green} />
             </button>
@@ -288,7 +290,7 @@ export default function HomeAndroid() {
       </div>
 
       {/* Material 3 Bottom Navigation */}
-      <M3BottomNav active={activeTab} onTabChange={setActiveTab} />
+      <M3BottomNav active={0} onTabChange={(i) => onTabChange?.(TAB_ORDER[i])} />
 
       {/* Android gesture bar */}
       <div style={{ height: 20, backgroundColor: M.surface, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>

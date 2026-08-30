@@ -52,7 +52,7 @@ export const OrderTrackingScreen = ({ onTabChange }: { onTabChange?: (t: TabId) 
       <div className="absolute top-0 left-0 right-0">
         <StatusBar dark />
         <div className="flex items-center px-4 gap-3">
-          <BackButton dark />
+          <BackButton dark onBack={() => onTabChange?.("home")} />
           <h1 className="font-bold text-white text-lg">주문 추적</h1>
         </div>
       </div>

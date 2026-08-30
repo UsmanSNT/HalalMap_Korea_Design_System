@@ -16,7 +16,9 @@ const categories = [
   { icon: "🔍", label: "전체" },
 ];
 
-export const HomeScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void }) => (
+type NavigateFn = (screen: string) => void;
+
+export const HomeScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabId) => void; onNavigate?: NavigateFn }) => (
   <div className="flex flex-col h-full bg-[var(--cream)]">
     {/* Sticky Header */}
     <div className="relative overflow-hidden flex-shrink-0" style={{ backgroundColor: "var(--green)" }}>
@@ -101,17 +103,17 @@ export const HomeScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void }
 
       {/* Featured restaurants */}
       <div className="pt-4">
-        <SectionHeader title="🔥 인기 할랄 식당" action="더보기" />
+        <SectionHeader title="🔥 인기 할랄 식당" action="더보기" onAction={() => onNavigate?.("restaurant-list")} />
         <div className="flex gap-3 px-4 overflow-x-auto scrollbar-hide pb-1">
-          <RestaurantCardV name="신당 할랄 키친" imageId="1498654896293-37c98e7f5fe4" badge="certified" rating={4.8} count={3241} distance="2.3km" eta="25-35분" fee="₩2,000" />
-          <RestaurantCardV name="이태원 케밥 하우스" imageId="1529042410759-befb1204b468" badge="certified" rating={4.6} count={1820} distance="0.8km" eta="15-25분" fee="₩1,500" />
-          <RestaurantCardV name="마스지드 서울 카페" imageId="1414235077428-338989a2e8c0" badge="owned" rating={4.9} count={940} distance="1.1km" eta="20-30분" fee="무료" />
+          <RestaurantCardV onClick={() => onNavigate?.("restaurant-detail")} name="신당 할랄 키친" imageId="1498654896293-37c98e7f5fe4" badge="certified" rating={4.8} count={3241} distance="2.3km" eta="25-35분" fee="₩2,000" />
+          <RestaurantCardV onClick={() => onNavigate?.("restaurant-detail")} name="이태원 케밥 하우스" imageId="1529042410759-befb1204b468" badge="certified" rating={4.6} count={1820} distance="0.8km" eta="15-25분" fee="₩1,500" />
+          <RestaurantCardV onClick={() => onNavigate?.("restaurant-detail")} name="마스지드 서울 카페" imageId="1414235077428-338989a2e8c0" badge="owned" rating={4.9} count={940} distance="1.1km" eta="20-30분" fee="무료" />
         </div>
       </div>
 
       {/* Nearby mosques */}
       <div className="pt-5">
-        <SectionHeader title="🕌 근처 모스크" action="지도 보기" />
+        <SectionHeader title="🕌 근처 모스크" action="지도 보기" onAction={() => onNavigate?.("mosque-list")} />
         <div className="px-4 space-y-2.5">
           <MosqueCard name="서울중앙성원" nameKo="Seoul Central Mosque" distance="1.2km" nextPrayer="아스르 14:32" walkTime="도보 15분" />
           <MosqueCard name="이태원 마스지드" nameKo="Itaewon Masjid" distance="0.3km" nextPrayer="아스르 14:35" walkTime="도보 4분" />
@@ -129,7 +131,7 @@ export const HomeScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void }
             <p className="text-white/80 text-xs font-medium mb-1">신규 회원 혜택</p>
             <p className="text-white font-bold text-lg leading-tight">첫 주문 ₩3,000 할인</p>
             <p className="text-white/70 text-xs mt-1">코드: HALAL3000</p>
-            <button className="mt-3 px-4 py-2 bg-white rounded-xl text-xs font-bold" style={{ color: "var(--gold)" }}>
+            <button onClick={() => onNavigate?.("restaurant-list")} className="mt-3 px-4 py-2 bg-white rounded-xl text-xs font-bold" style={{ color: "var(--gold)" }}>
               지금 주문하기 →
             </button>
           </div>
@@ -152,7 +154,7 @@ const restaurants = [
   { name: "자카르타 나시고렝", imageId: "1414235077428-338989a2e8c0", badge: "certified" as const, rating: 4.6, count: 1345, distance: "2.8km", eta: "35-45분", fee: "₩2,000", cuisine: "인도네시아" },
 ];
 
-export const RestaurantListScreen = () => {
+export const RestaurantListScreen = ({ onNavigate }: { onNavigate?: NavigateFn } = {}) => {
   const [activeFilter, setActiveFilter] = useState("거리순");
 
   return (
@@ -161,7 +163,7 @@ export const RestaurantListScreen = () => {
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
-          <BackButton />
+          <BackButton onBack={() => onNavigate?.("home")} />
           <h1 className="font-bold text-lg flex-1">할랄 레스토랑</h1>
           <button>
             <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="var(--charcoal)" strokeWidth="1.8">
@@ -204,7 +206,7 @@ export const RestaurantListScreen = () => {
       <div className="flex-1 phone-scroll px-4 py-4 space-y-3">
         <p className="text-xs text-[var(--muted)] font-medium mb-1">근처 할랄 레스토랑 {restaurants.length}개</p>
         {restaurants.map((r, i) => (
-          <RestaurantCardH key={i} {...r} />
+          <RestaurantCardH key={i} {...r} onClick={() => onNavigate?.("restaurant-detail")} />
         ))}
       </div>
 
@@ -216,7 +218,7 @@ export const RestaurantListScreen = () => {
 // ── 8. Restaurant Detail ───────────────────────────────────────────────────────
 const menuTabs = ["전체메뉴", "인기메뉴", "한식", "음료", "사이드"];
 
-export const RestaurantDetailScreen = () => {
+export const RestaurantDetailScreen = ({ onNavigate }: { onNavigate?: NavigateFn } = {}) => {
   const [activeTab, setActiveTab] = useState("인기메뉴");
 
   return (
@@ -236,7 +238,7 @@ export const RestaurantDetailScreen = () => {
           <StatusBar dark />
         </div>
         <div className="absolute top-12 left-4">
-          <BackButton dark />
+          <BackButton dark onBack={() => onNavigate?.("restaurant-list")} />
         </div>
         <div className="absolute top-12 right-4 flex gap-2">
           <button className="w-9 h-9 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
@@ -325,6 +327,7 @@ export const RestaurantDetailScreen = () => {
                 <div className="flex items-center justify-between mt-2">
                   <PriceTag amount={item.price} className="text-sm" />
                   <button
+                    onClick={() => onNavigate?.("item-detail")}
                     className="w-7 h-7 rounded-full flex items-center justify-center text-white text-lg font-light shadow-sm"
                     style={{ backgroundColor: "var(--green)" }}
                   >
@@ -339,7 +342,7 @@ export const RestaurantDetailScreen = () => {
 
       {/* Bottom CTA */}
       <div className="px-4 pb-8 pt-3 bg-white border-t border-[var(--border)] flex-shrink-0">
-        <button className="w-full py-4 rounded-2xl font-bold text-white text-base" style={{ backgroundColor: "var(--green)" }}>
+        <button onClick={() => onNavigate?.("menu")} className="w-full py-4 rounded-2xl font-bold text-white text-base" style={{ backgroundColor: "var(--green)" }}>
           메뉴 전체 보기
         </button>
       </div>
@@ -356,7 +359,7 @@ const menuItems = [
   { name: "할랄 삼계탕", desc: "국산 닭, 인삼, 찹쌀 들어간 보양식", price: 16500, imageId: "1498654896293-37c98e7f5fe4", tags: ["Halal Chicken"], popular: true },
 ];
 
-export const MenuScreen = () => {
+export const MenuScreen = ({ onNavigate }: { onNavigate?: NavigateFn } = {}) => {
   const [activeTab, setActiveTab] = useState("인기메뉴");
   const [cart, setCart] = useState<Record<string, number>>({});
   const cartCount = Object.values(cart).reduce((a, b) => a + b, 0);
@@ -368,12 +371,12 @@ export const MenuScreen = () => {
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
-          <BackButton />
+          <BackButton onBack={() => onNavigate?.("restaurant-detail")} />
           <div className="flex-1">
             <h1 className="font-bold text-base">신당 할랄 키친</h1>
             <p className="text-xs text-[var(--muted)]">메뉴 선택</p>
           </div>
-          <button className="relative">
+          <button onClick={() => onNavigate?.("cart")} className="relative">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--charcoal)" strokeWidth="1.8">
               <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
               <line x1="3" y1="6" x2="21" y2="6"/>
@@ -410,7 +413,7 @@ export const MenuScreen = () => {
         <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide px-1">🔥 {activeTab}</p>
         {menuItems.map((item) => (
           <div key={item.name} className="bg-white rounded-2xl p-3 flex gap-3 shadow-sm">
-            <div className="relative w-20 h-20 rounded-xl bg-[#E8E6E1] flex-shrink-0 overflow-hidden">
+            <div onClick={() => onNavigate?.("item-detail")} className="relative w-20 h-20 rounded-xl bg-[#E8E6E1] flex-shrink-0 overflow-hidden cursor-pointer">
               <img src={`https://images.unsplash.com/photo-${item.imageId}?w=120&h=120&fit=crop&auto=format&q=80`} alt={item.name} className="w-full h-full object-cover" />
               {item.popular && (
                 <div className="absolute top-1 left-1 px-1.5 py-0.5 rounded text-[9px] font-bold text-white" style={{ backgroundColor: "var(--danger)" }}>BEST</div>
@@ -448,7 +451,7 @@ export const MenuScreen = () => {
       {/* Cart CTA */}
       {cartCount > 0 && (
         <div className="px-4 pb-8 pt-3 bg-white border-t border-[var(--border)] flex-shrink-0">
-          <button className="w-full py-4 rounded-2xl font-bold text-white text-base flex items-center justify-between px-5" style={{ backgroundColor: "var(--green)" }}>
+          <button onClick={() => onNavigate?.("cart")} className="w-full py-4 rounded-2xl font-bold text-white text-base flex items-center justify-between px-5" style={{ backgroundColor: "var(--green)" }}>
             <span className="bg-white/20 rounded-lg px-2.5 py-1 text-sm">{cartCount}개</span>
             <span>장바구니 보기</span>
             <span>₩{cartTotal.toLocaleString()}</span>
@@ -460,7 +463,7 @@ export const MenuScreen = () => {
 };
 
 // ── 10. Item Detail ────────────────────────────────────────────────────────────
-export const ItemDetailScreen = () => {
+export const ItemDetailScreen = ({ onNavigate }: { onNavigate?: NavigateFn } = {}) => {
   const [size, setSize] = useState("보통");
   const [spice, setSpice] = useState("보통");
   const [extras, setExtras] = useState<string[]>([]);
@@ -482,7 +485,7 @@ export const ItemDetailScreen = () => {
         <div className="absolute top-0 left-0 right-0">
           <StatusBar dark />
         </div>
-        <div className="absolute top-12 left-4"><BackButton dark /></div>
+        <div className="absolute top-12 left-4"><BackButton dark onBack={() => onNavigate?.("menu")} /></div>
       </div>
 
       <div className="flex-1 phone-scroll px-5 pt-5 pb-4 space-y-5">
@@ -568,7 +571,7 @@ export const ItemDetailScreen = () => {
             <span className="text-sm font-bold w-5 text-center">{qty}</span>
             <button onClick={() => setQty(qty + 1)} className="w-7 h-7 rounded-full flex items-center justify-center text-white font-bold text-sm" style={{ backgroundColor: "var(--green)" }}>+</button>
           </div>
-          <button className="flex-1 py-4 rounded-2xl font-bold text-white flex items-center justify-between px-5" style={{ backgroundColor: "var(--green)" }}>
+          <button onClick={() => onNavigate?.("cart")} className="flex-1 py-4 rounded-2xl font-bold text-white flex items-center justify-between px-5" style={{ backgroundColor: "var(--green)" }}>
             <span>장바구니 담기</span>
             <PriceTag amount={total} className="text-white" />
           </button>
@@ -579,7 +582,7 @@ export const ItemDetailScreen = () => {
 };
 
 // ── 11. Cart ───────────────────────────────────────────────────────────────────
-export const CartScreen = () => {
+export const CartScreen = ({ onNavigate }: { onNavigate?: NavigateFn } = {}) => {
   const [items, setItems] = useState([
     { name: "할랄 갈비탕", option: "보통", price: 13500, qty: 1 },
     { name: "비빔밥 (할랄)", option: "기본", price: 11000, qty: 2 },
@@ -601,7 +604,7 @@ export const CartScreen = () => {
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
-          <BackButton />
+          <BackButton onBack={() => onNavigate?.("menu")} />
           <h1 className="font-bold text-lg flex-1">장바구니</h1>
           <span className="text-sm font-semibold" style={{ color: "var(--green)" }}>{items.length}개</span>
         </div>
@@ -685,7 +688,7 @@ export const CartScreen = () => {
 
       {/* CTA */}
       <div className="px-4 pb-8 pt-3 bg-white border-t border-[var(--border)] flex-shrink-0">
-        <button className="w-full py-4 rounded-2xl font-bold text-white text-base flex items-center justify-between px-6" style={{ backgroundColor: "var(--green)" }}>
+        <button onClick={() => onNavigate?.("checkout")} className="w-full py-4 rounded-2xl font-bold text-white text-base flex items-center justify-between px-6" style={{ backgroundColor: "var(--green)" }}>
           <span>주문하기</span>
           <span>₩{total.toLocaleString()}</span>
         </button>
@@ -702,7 +705,7 @@ const paymentMethods = [
 ];
 const tips = [0, 500, 1000, 2000];
 
-export const CheckoutScreen = () => {
+export const CheckoutScreen = ({ onNavigate }: { onNavigate?: NavigateFn } = {}) => {
   const [payment, setPayment] = useState("shinhan");
   const [tip, setTip] = useState(0);
   const total = 34500 + tip;
@@ -712,7 +715,7 @@ export const CheckoutScreen = () => {
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
-          <BackButton />
+          <BackButton onBack={() => onNavigate?.("cart")} />
           <h1 className="font-bold text-lg">결제</h1>
         </div>
       </div>
@@ -797,7 +800,7 @@ export const CheckoutScreen = () => {
       </div>
 
       <div className="px-4 pb-8 pt-3 bg-white border-t border-[var(--border)] flex-shrink-0">
-        <button className="w-full py-4 rounded-2xl font-bold text-white text-base flex items-center justify-between px-6" style={{ backgroundColor: "var(--green)" }}>
+        <button onClick={() => onNavigate?.("order-confirmation")} className="w-full py-4 rounded-2xl font-bold text-white text-base flex items-center justify-between px-6" style={{ backgroundColor: "var(--green)" }}>
           <span>₩{total.toLocaleString()} 결제하기</span>
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round"><path d="M5 10h10M12 7l3 3-3 3"/></svg>
         </button>
@@ -809,7 +812,7 @@ export const CheckoutScreen = () => {
 // ── 13. Order Confirmation ─────────────────────────────────────────────────────
 const steps = ["주문접수", "조리중", "픽업완료", "배달완료"];
 
-export const OrderConfirmationScreen = () => (
+export const OrderConfirmationScreen = ({ onNavigate }: { onNavigate?: NavigateFn } = {}) => (
   <div className="flex flex-col h-full relative overflow-hidden" style={{ backgroundColor: "var(--green)" }}>
     <GeometricPattern color="white" opacity={0.05} />
     <StatusBar dark />
@@ -868,10 +871,10 @@ export const OrderConfirmationScreen = () => (
 
     {/* Buttons */}
     <div className="relative z-10 px-5 pb-10 space-y-3">
-      <button className="w-full py-4 rounded-2xl font-bold text-white text-base border-2 border-white/40">
+      <button onClick={() => onNavigate?.("order-tracking")} className="w-full py-4 rounded-2xl font-bold text-white text-base border-2 border-white/40">
         주문 추적하기
       </button>
-      <button className="w-full py-3 rounded-2xl font-semibold text-sm bg-white" style={{ color: "var(--green)" }}>
+      <button onClick={() => onNavigate?.("home")} className="w-full py-3 rounded-2xl font-semibold text-sm bg-white" style={{ color: "var(--green)" }}>
         홈으로 돌아가기
       </button>
     </div>

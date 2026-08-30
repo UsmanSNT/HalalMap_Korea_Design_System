@@ -148,7 +148,7 @@ const slides = [
   },
 ];
 
-export const OnboardingScreen = () => {
+export const OnboardingScreen = ({ onSkip, onDone }: { onSkip?: () => void; onDone?: () => void } = {}) => {
   const [slide, setSlide] = useState(0);
   const current = slides[slide];
 
@@ -157,7 +157,7 @@ export const OnboardingScreen = () => {
       <StatusBar />
       {/* Skip button */}
       <div className="flex justify-end px-5 pt-2">
-        <button className="text-sm font-medium" style={{ color: "var(--muted)" }}>건너뛰기</button>
+        <button onClick={onSkip} className="text-sm font-medium" style={{ color: "var(--muted)" }}>건너뛰기</button>
       </div>
 
       {/* Illustration */}
@@ -204,12 +204,14 @@ export const OnboardingScreen = () => {
         ) : (
           <>
             <button
+              onClick={onDone}
               className="w-full py-4 rounded-2xl font-bold text-white text-base shadow-sm"
               style={{ backgroundColor: "var(--green)" }}
             >
               시작하기
             </button>
             <button
+              onClick={onDone}
               className="w-full py-3 rounded-2xl font-semibold text-base border"
               style={{ color: "var(--green)", borderColor: "var(--green)" }}
             >
