@@ -205,6 +205,47 @@ const api = createServer(async (request, response) => {
       return json(response, 200, { prayerTimes: PRAYER_TIMES, location: "이태원동, 서울" });
     }
 
+    // ── Profile ──────────────────────────────────────────────────
+
+    if (request.method === "GET" && url.pathname === "/api/profile") {
+      const auth = authenticate(request);
+      if (!auth) return json(response, 401, { error: "Avtorizatsiya talab qilinadi" });
+      const profile = {
+        ...publicUser(auth.user),
+        initials: auth.user.name.charAt(0),
+        membership: "일반 회원",
+        points: 3200,
+        stats: { orders: 12, reviews: 8, saved: 5 },
+      };
+      return json(response, 200, { profile });
+    }
+
+    // ── Orders ──────────────────────────────────────────────────
+
+    if (request.method === "GET" && url.pathname === "/api/orders") {
+      const auth = authenticate(request);
+      if (!auth) return json(response, 401, { error: "Avtorizatsiya talab qilinadi" });
+      return json(response, 200, { orders: ORDERS });
+    }
+
+    if (request.method === "GET" && url.pathname.startsWith("/api/orders/")) {
+      const auth = authenticate(request);
+      if (!auth) return json(response, 401, { error: "Avtorizatsiya talab qilinadi" });
+      const id = url.pathname.split("/")[3];
+      const order = ORDERS.find((o) => o.id === id);
+      return order
+        ? json(response, 200, { order })
+        : json(response, 404, { error: "Buyurtma topilmadi" });
+    }
+
+    // ── Saved Places ────────────────────────────────────────────
+
+    if (request.method === "GET" && url.pathname === "/api/saved-places") {
+      const auth = authenticate(request);
+      if (!auth) return json(response, 401, { error: "Avtorizatsiya talab qilinadi" });
+      return json(response, 200, { savedPlaces: SAVED_PLACES });
+    }
+
     return json(response, 404, { error: "Endpoint topilmadi" });
   } catch (error) {
     console.error(error);
@@ -421,6 +462,76 @@ const PRAYER_TIMES = {
     { id: "asr", name: "아스르", nameEn: "Asr", time: "14:32" },
     { id: "maghrib", name: "마그립", nameEn: "Maghrib", time: "17:48" },
     { id: "isha", name: "이샤", nameEn: "Isha", time: "19:21" },
+  ],
+};
+
+const ORDERS = [
+  {
+    id: "order-1",
+    restaurant: "신당 할랄 키친",
+    restaurantId: "sindang-halal",
+    date: "2024.11.20",
+    total: 34500,
+    items: "할랄 갈비탕 외 2개",
+    status: "delivered",
+    rated: false,
+    orderNumber: "#HMK-20241120-7731",
+    orderDate: "2024년 11월 20일 오후 2:15",
+    deliveredDate: "2024년 11월 20일 오후 3:02",
+    orderItems: [
+      { name: "할랄 갈비탕", option: "보통", price: 13500, qty: 1 },
+      { name: "비빔밥 (할랄)", option: "기본", price: 11000, qty: 2 },
+      { name: "오이무침", option: "사이드", price: 3000, qty: 1 },
+    ],
+    subtotal: 38500,
+    deliveryFee: 2000,
+    couponDiscount: 6000,
+    tip: 0,
+    paymentMethod: "신한카드 ····4521",
+    deliveryAddress: "서울특별시 용산구 이태원로 123, 501호",
+    courier: { name: "김민준", rating: 4.9, deliveries: 8241 },
+  },
+  {
+    id: "order-2",
+    restaurant: "이스탄불 케밥 & 피데",
+    restaurantId: "itaewon-kebab",
+    date: "2024.11.15",
+    total: 21000,
+    items: "케밥 세트 외 1개",
+    status: "delivered",
+    rated: true,
+  },
+  {
+    id: "order-3",
+    restaurant: "우즈베키스탄 플로프 하우스",
+    restaurantId: "uzbekistan-plov",
+    date: "2024.11.10",
+    total: 18500,
+    items: "플로프 + 라그만",
+    status: "delivered",
+    rated: true,
+  },
+  {
+    id: "order-4",
+    restaurant: "델리 스파이스 하우스",
+    restaurantId: "delhi-spice",
+    date: "2024.11.05",
+    total: 27000,
+    items: "버터 치킨 커리 외 2개",
+    status: "cancelled",
+    rated: false,
+  },
+];
+
+const SAVED_PLACES = {
+  restaurants: [
+    { id: "sindang-halal", name: "신당 할랄 키친", halalStatus: "certified", rating: 4.8, reviewCount: 3241, imageId: "1498654896293-37c98e7f5fe4" },
+    { id: "itaewon-kebab", name: "이스탄불 케밥 & 피데", halalStatus: "certified", rating: 4.5, reviewCount: 2110, imageId: "1529042410759-befb1204b468" },
+    { id: "masjid-seoul-cafe", name: "마스지드 서울 카페", halalStatus: "muslim-owned", rating: 4.9, reviewCount: 940, imageId: "1414235077428-338989a2e8c0" },
+  ],
+  mosques: [
+    { id: "seoul-central", name: "서울중앙성원", nameEn: "Seoul Central Mosque", distance: "1.2km" },
+    { id: "itaewon-masjid", name: "이태원 마스지드", nameEn: "Itaewon Masjid", distance: "0.3km" },
   ],
 };
 

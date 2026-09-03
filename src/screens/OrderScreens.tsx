@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { StatusBar, BottomNav, BackButton, OrderStatusChip, TabId } from "../components/Shared";
+import { getOrders, getOrder, type Order } from "../api/orders";
 
 // ── 25. Active Order Tracking ──────────────────────────────────────────────────
 // Fake route map
@@ -149,50 +150,28 @@ export const OrderTrackingScreen = ({ onTabChange }: { onTabChange?: (t: TabId) 
 );
 
 // ── 26. Order History ──────────────────────────────────────────────────────────
-const orderHistory = [
-  {
-    restaurant: "신당 할랄 키친",
-    date: "2024.11.20",
-    total: 34500,
-    items: "할랄 갈비탕 외 2개",
-    status: "delivered" as const,
-    rated: false,
-  },
-  {
-    restaurant: "이스탄불 케밥 & 피데",
-    date: "2024.11.15",
-    total: 21000,
-    items: "케밥 세트 외 1개",
-    status: "delivered" as const,
-    rated: true,
-  },
-  {
-    restaurant: "우즈베키스탄 플로프 하우스",
-    date: "2024.11.10",
-    total: 18500,
-    items: "플로프 + 라그만",
-    status: "delivered" as const,
-    rated: true,
-  },
-  {
-    restaurant: "델리 스파이스 하우스",
-    date: "2024.11.05",
-    total: 27000,
-    items: "버터 치킨 커리 외 2개",
-    status: "cancelled" as const,
-    rated: false,
-  },
-];
+export const OrderHistoryScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void }) => {
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
 
-export const OrderHistoryScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void }) => (
+  useEffect(() => {
+    getOrders()
+      .then(setOrders)
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  const delivered = orders.filter((o) => o.status === "delivered" || o.status === "cancelled");
+  const active = orders.filter((o) => o.status === "preparing" || o.status === "delivering");
+
+  return (
   <div className="flex flex-col h-full bg-[var(--cream)]">
     <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
       <StatusBar />
       <div className="px-5 pb-3">
         <h1 className="font-bold text-xl text-[#1A1A18]">주문 내역</h1>
-        {/* Tabs */}
         <div className="flex gap-4 mt-3">
-          {["진행중 (1)", "완료 (12)"].map((tab, i) => (
+          {[`진행중 (${active.length})`, `완료 (${delivered.length})`].map((tab, i) => (
             <button
               key={tab}
               className="pb-2 text-sm font-semibold border-b-2 transition-all"
@@ -209,55 +188,89 @@ export const OrderHistoryScreen = ({ onTabChange }: { onTabChange?: (t: TabId) =
     </div>
 
     <div className="flex-1 phone-scroll px-4 py-4 space-y-3">
-      {orderHistory.map((order, i) => (
-        <div key={i} className="bg-white rounded-2xl shadow-sm overflow-hidden">
-          <div className="p-4">
-            <div className="flex items-start justify-between gap-2 mb-2">
-              <div>
-                <p className="font-bold text-base text-[#1A1A18]">{order.restaurant}</p>
-                <p className="text-xs text-[var(--muted)] mt-0.5">{order.date} · {order.items}</p>
-              </div>
-              <OrderStatusChip status={order.status} />
-            </div>
-            <p className="font-bold text-lg text-[#1A1A18]">₩{order.total.toLocaleString()}</p>
-
-            {/* Rating prompt */}
-            {!order.rated && order.status === "delivered" && (
-              <div className="mt-3 flex items-center gap-2 p-3 rounded-xl" style={{ backgroundColor: "var(--gold-light)" }}>
-                <div className="flex gap-0.5">
-                  {[1,2,3,4,5].map((s) => (
-                    <svg key={s} width="16" height="16" viewBox="0 0 16 16" fill="#C4883A">
-                      <path d="M8 1.5l1.6 3.3 3.7.5-2.7 2.6.6 3.6L8 9.7l-3.2 1.8.6-3.6L2.7 5.3l3.7-.5L8 1.5z"/>
-                    </svg>
-                  ))}
+      {loading ? (
+        <p className="text-center text-sm text-[var(--muted)] py-8">로딩중...</p>
+      ) : (
+        orders.map((order) => (
+          <div key={order.id} className="bg-white rounded-2xl shadow-sm overflow-hidden">
+            <div className="p-4">
+              <div className="flex items-start justify-between gap-2 mb-2">
+                <div>
+                  <p className="font-bold text-base text-[#1A1A18]">{order.restaurant}</p>
+                  <p className="text-xs text-[var(--muted)] mt-0.5">{order.date} · {order.items}</p>
                 </div>
-                <p className="text-xs font-medium flex-1" style={{ color: "#7A5220" }}>이 주문 어떠셨나요? 리뷰 남기기</p>
+                <OrderStatusChip status={order.status} />
+              </div>
+              <p className="font-bold text-lg text-[#1A1A18]">₩{order.total.toLocaleString()}</p>
+
+              {!order.rated && order.status === "delivered" && (
+                <div className="mt-3 flex items-center gap-2 p-3 rounded-xl" style={{ backgroundColor: "var(--gold-light)" }}>
+                  <div className="flex gap-0.5">
+                    {[1,2,3,4,5].map((s) => (
+                      <svg key={s} width="16" height="16" viewBox="0 0 16 16" fill="#C4883A">
+                        <path d="M8 1.5l1.6 3.3 3.7.5-2.7 2.6.6 3.6L8 9.7l-3.2 1.8.6-3.6L2.7 5.3l3.7-.5L8 1.5z"/>
+                      </svg>
+                    ))}
+                  </div>
+                  <p className="text-xs font-medium flex-1" style={{ color: "#7A5220" }}>이 주문 어떠셨나요? 리뷰 남기기</p>
+                </div>
+              )}
+            </div>
+
+            {order.status !== "cancelled" && (
+              <div className="flex border-t border-[var(--border)] divide-x divide-[var(--border)]">
+                <button className="flex-1 py-3 text-sm font-semibold" style={{ color: "var(--green)" }}>
+                  재주문
+                </button>
+                <button className="flex-1 py-3 text-sm font-medium text-[var(--muted)]">
+                  영수증
+                </button>
               </div>
             )}
           </div>
-
-          {/* Buttons */}
-          {order.status !== "cancelled" && (
-            <div className="flex border-t border-[var(--border)] divide-x divide-[var(--border)]">
-              <button className="flex-1 py-3 text-sm font-semibold" style={{ color: "var(--green)" }}>
-                재주문
-              </button>
-              <button className="flex-1 py-3 text-sm font-medium text-[var(--muted)]">
-                영수증
-              </button>
-            </div>
-          )}
-        </div>
-      ))}
+        ))
+      )}
       <div className="h-4" />
     </div>
 
     <BottomNav active="orders" onTabChange={onTabChange} />
   </div>
-);
+  );
+};
 
 // ── 27. Order Detail ───────────────────────────────────────────────────────────
-export const OrderDetailScreen = () => (
+export const OrderDetailScreen = () => {
+  const [order, setOrder] = useState<Order | null>(null);
+
+  useEffect(() => {
+    getOrder("order-1").then(setOrder).catch(() => {});
+  }, []);
+
+  if (!order) {
+    return (
+      <div className="flex flex-col h-full bg-[var(--cream)]">
+        <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
+          <StatusBar />
+          <div className="flex items-center gap-3 px-4 pb-3">
+            <BackButton />
+            <h1 className="font-bold text-lg flex-1">주문 상세</h1>
+          </div>
+        </div>
+        <div className="flex-1 flex items-center justify-center">
+          <p className="text-sm text-[var(--muted)]">로딩중...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const paymentRows = [
+    { label: "소계", val: `₩${(order.subtotal ?? 0).toLocaleString()}` },
+    { label: "배달비", val: `₩${(order.deliveryFee ?? 0).toLocaleString()}` },
+    { label: "쿠폰 할인", val: `-₩${(order.couponDiscount ?? 0).toLocaleString()}`, accent: true },
+    { label: "팁", val: `₩${(order.tip ?? 0).toLocaleString()}` },
+  ];
+
+  return (
   <div className="flex flex-col h-full bg-[var(--cream)]">
     <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
       <StatusBar />
@@ -269,61 +282,50 @@ export const OrderDetailScreen = () => (
     </div>
 
     <div className="flex-1 phone-scroll px-4 py-4 space-y-3">
-      {/* Status */}
       <div className="bg-white rounded-2xl p-4 shadow-sm">
         <div className="flex items-center justify-between mb-3">
           <div>
             <p className="text-xs text-[var(--muted)]">주문번호</p>
-            <p className="font-bold text-base text-[#1A1A18]">#HMK-20241120-7731</p>
+            <p className="font-bold text-base text-[#1A1A18]">{order.orderNumber}</p>
           </div>
-          <OrderStatusChip status="delivered" />
+          <OrderStatusChip status={order.status} />
         </div>
         <div className="text-xs text-[var(--muted)] space-y-0.5">
-          <p>주문일시: 2024년 11월 20일 오후 2:15</p>
-          <p>배달완료: 2024년 11월 20일 오후 3:02</p>
+          <p>주문일시: {order.orderDate}</p>
+          {order.deliveredDate && <p>배달완료: {order.deliveredDate}</p>}
         </div>
       </div>
 
-      {/* Restaurant */}
       <div className="bg-white rounded-2xl p-4 shadow-sm flex items-center gap-3">
         <div className="w-12 h-12 rounded-xl bg-[var(--green-light)] flex items-center justify-center text-xl">🍖</div>
         <div>
-          <p className="font-bold text-base text-[#1A1A18]">신당 할랄 키친</p>
-          <p className="text-xs text-[var(--muted)]">이슬람 식품청 인증 · 한식 할랄</p>
+          <p className="font-bold text-base text-[#1A1A18]">{order.restaurant}</p>
+          <p className="text-xs text-[var(--muted)]">{order.items}</p>
         </div>
       </div>
 
-      {/* Items */}
-      <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-        <div className="px-4 py-3 border-b border-[var(--border)]">
-          <p className="font-semibold text-sm text-[#1A1A18]">주문 항목</p>
-        </div>
-        <div className="divide-y divide-[var(--border)]">
-          {[
-            { name: "할랄 갈비탕", option: "보통", price: 13500, qty: 1 },
-            { name: "비빔밥 (할랄)", option: "기본", price: 11000, qty: 2 },
-            { name: "오이무침", option: "사이드", price: 3000, qty: 1 },
-          ].map((item) => (
-            <div key={item.name} className="flex items-center justify-between px-4 py-3">
-              <div>
-                <p className="text-sm font-medium text-[#1A1A18]">{item.name}</p>
-                <p className="text-xs text-[var(--muted)]">{item.option} · {item.qty}개</p>
+      {order.orderItems && (
+        <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+          <div className="px-4 py-3 border-b border-[var(--border)]">
+            <p className="font-semibold text-sm text-[#1A1A18]">주문 항목</p>
+          </div>
+          <div className="divide-y divide-[var(--border)]">
+            {order.orderItems.map((item) => (
+              <div key={item.name} className="flex items-center justify-between px-4 py-3">
+                <div>
+                  <p className="text-sm font-medium text-[#1A1A18]">{item.name}</p>
+                  <p className="text-xs text-[var(--muted)]">{item.option} · {item.qty}개</p>
+                </div>
+                <p className="text-sm font-semibold text-[#1A1A18]">₩{(item.price * item.qty).toLocaleString()}</p>
               </div>
-              <p className="text-sm font-semibold text-[#1A1A18]">₩{(item.price * item.qty).toLocaleString()}</p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* Payment breakdown */}
       <div className="bg-white rounded-2xl p-4 shadow-sm space-y-2.5">
         <p className="font-semibold text-sm text-[#1A1A18]">결제 내역</p>
-        {[
-          { label: "소계", val: "₩38,500" },
-          { label: "배달비", val: "₩2,000" },
-          { label: "쿠폰 할인", val: "-₩6,000", accent: true },
-          { label: "팁", val: "₩0" },
-        ].map((row) => (
+        {paymentRows.map((row) => (
           <div key={row.label} className="flex justify-between text-sm">
             <span style={{ color: "var(--muted)" }}>{row.label}</span>
             <span className={row.accent ? "font-semibold" : ""} style={{ color: row.accent ? "var(--danger)" : "#1A1A18" }}>{row.val}</span>
@@ -331,17 +333,18 @@ export const OrderDetailScreen = () => (
         ))}
         <div className="flex justify-between font-bold text-base pt-2 border-t border-[var(--border)]">
           <span>합계</span>
-          <span>₩34,500</span>
+          <span>₩{order.total.toLocaleString()}</span>
         </div>
-        <p className="text-xs text-[var(--muted)]">결제 수단: 신한카드 ····4521</p>
+        {order.paymentMethod && <p className="text-xs text-[var(--muted)]">결제 수단: {order.paymentMethod}</p>}
       </div>
 
-      {/* Delivery info */}
-      <div className="bg-white rounded-2xl p-4 shadow-sm space-y-2">
-        <p className="font-semibold text-sm text-[#1A1A18]">배달 정보</p>
-        <p className="text-sm text-[var(--muted)]">📍 서울특별시 용산구 이태원로 123, 501호</p>
-        <p className="text-sm text-[var(--muted)]">🛵 배달 기사: 김민준 · ⭐ 4.9</p>
-      </div>
+      {order.deliveryAddress && (
+        <div className="bg-white rounded-2xl p-4 shadow-sm space-y-2">
+          <p className="font-semibold text-sm text-[#1A1A18]">배달 정보</p>
+          <p className="text-sm text-[var(--muted)]">📍 {order.deliveryAddress}</p>
+          {order.courier && <p className="text-sm text-[var(--muted)]">🛵 배달 기사: {order.courier.name} · ⭐ {order.courier.rating}</p>}
+        </div>
+      )}
 
       <div className="flex gap-3">
         <button className="flex-1 py-4 rounded-2xl font-bold text-white text-base" style={{ backgroundColor: "var(--green)" }}>
@@ -354,4 +357,5 @@ export const OrderDetailScreen = () => (
       <div className="h-4" />
     </div>
   </div>
-);
+  );
+};

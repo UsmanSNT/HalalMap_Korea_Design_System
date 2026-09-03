@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { GeometricPattern, StatusBar, BottomNav, BackButton, Toggle, HalalBadge, StarRating, TabId } from "../components/Shared";
+import { getProfile, type Profile } from "../api/profile";
+import { getSavedPlaces, type SavedPlaces } from "../api/savedPlaces";
 
 // ── 28. Profile Screen ─────────────────────────────────────────────────────────
 const profileMenu = [
@@ -14,23 +16,41 @@ const profileMenu = [
   { icon: "⚙️", label: "설정", sub: "" },
 ];
 
-export const ProfileScreen = ({ onTabChange, onLogout }: { onTabChange?: (t: TabId) => void; onLogout?: () => void }) => (
+export const ProfileScreen = ({ onTabChange, onLogout }: { onTabChange?: (t: TabId) => void; onLogout?: () => void }) => {
+  const [profile, setProfile] = useState<Profile | null>(null);
+
+  useEffect(() => {
+    getProfile().then(setProfile).catch(() => {});
+  }, []);
+
+  const statsRow = profile
+    ? [
+        { label: "총 주문", val: `${profile.stats.orders}회` },
+        { label: "리뷰", val: `${profile.stats.reviews}개` },
+        { label: "저장", val: `${profile.stats.saved}개` },
+      ]
+    : [
+        { label: "총 주문", val: "-" },
+        { label: "리뷰", val: "-" },
+        { label: "저장", val: "-" },
+      ];
+
+  return (
   <div className="flex flex-col h-full bg-[var(--cream)]">
-    {/* Header */}
     <div className="relative overflow-hidden flex-shrink-0" style={{ backgroundColor: "var(--green)" }}>
       <GeometricPattern color="white" opacity={0.06} />
       <StatusBar dark />
       <div className="relative z-10 px-5 pb-6">
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 rounded-full bg-white/20 border-2 border-white/40 flex items-center justify-center text-2xl font-bold text-white">
-            김
+            {profile?.initials ?? "..."}
           </div>
           <div className="flex-1">
-            <p className="font-bold text-lg text-white">김무함마드</p>
-            <p className="text-white/70 text-sm">muhammad@example.com</p>
+            <p className="font-bold text-lg text-white">{profile?.name ?? "로딩중..."}</p>
+            <p className="text-white/70 text-sm">{profile?.email ?? ""}</p>
             <div className="flex items-center gap-1.5 mt-1.5">
-              <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-white/20 text-white">일반 회원</span>
-              <span className="text-xs text-white/60">· 3,200 포인트</span>
+              <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-white/20 text-white">{profile?.membership ?? ""}</span>
+              {profile && <span className="text-xs text-white/60">· {profile.points.toLocaleString()} 포인트</span>}
             </div>
           </div>
           <button className="w-8 h-8 bg-white/15 rounded-lg flex items-center justify-center">
@@ -41,9 +61,8 @@ export const ProfileScreen = ({ onTabChange, onLogout }: { onTabChange?: (t: Tab
     </div>
 
     <div className="flex-1 phone-scroll">
-      {/* Stats row */}
       <div className="bg-white px-4 py-4 flex divide-x divide-[var(--border)]">
-        {[{ label: "총 주문", val: "12회" }, { label: "리뷰", val: "8개" }, { label: "저장", val: "5개" }].map((s) => (
+        {statsRow.map((s) => (
           <div key={s.label} className="flex-1 text-center">
             <p className="font-bold text-xl text-[#1A1A18]">{s.val}</p>
             <p className="text-xs text-[var(--muted)] mt-0.5">{s.label}</p>
@@ -79,22 +98,20 @@ export const ProfileScreen = ({ onTabChange, onLogout }: { onTabChange?: (t: Tab
 
     <BottomNav active="profile" onTabChange={onTabChange} />
   </div>
-);
+  );
+};
 
 // ── 29. Saved Places ───────────────────────────────────────────────────────────
-const savedRestaurants = [
-  { name: "신당 할랄 키친", badge: "certified" as const, rating: 4.8, count: 3241, imageId: "1498654896293-37c98e7f5fe4" },
-  { name: "이스탄불 케밥 & 피데", badge: "certified" as const, rating: 4.5, count: 2110, imageId: "1529042410759-befb1204b468" },
-  { name: "마스지드 서울 카페", badge: "owned" as const, rating: 4.9, count: 940, imageId: "1414235077428-338989a2e8c0" },
-];
-
-const savedMosques = [
-  { name: "서울중앙성원", nameEn: "Seoul Central Mosque", distance: "1.2km" },
-  { name: "이태원 마스지드", nameEn: "Itaewon Masjid", distance: "0.3km" },
-];
+const halalBadgeMap = (status: string) =>
+  status === "certified" ? ("certified" as const) : status === "muslim-owned" ? ("owned" as const) : ("friendly" as const);
 
 export const SavedPlacesScreen = () => {
   const [tab, setTab] = useState<"restaurants" | "mosques">("restaurants");
+  const [places, setPlaces] = useState<SavedPlaces | null>(null);
+
+  useEffect(() => {
+    getSavedPlaces().then(setPlaces).catch(() => {});
+  }, []);
 
   return (
     <div className="flex flex-col h-full bg-[var(--cream)]">
@@ -122,17 +139,19 @@ export const SavedPlacesScreen = () => {
       </div>
 
       <div className="flex-1 phone-scroll px-4 py-4 space-y-3">
-        {tab === "restaurants" ? (
-          savedRestaurants.map((r) => (
-            <div key={r.name} className="bg-white rounded-2xl overflow-hidden shadow-sm flex items-stretch">
+        {!places ? (
+          <p className="text-center text-sm text-[var(--muted)] py-8">로딩중...</p>
+        ) : tab === "restaurants" ? (
+          places.restaurants.map((r) => (
+            <div key={r.id} className="bg-white rounded-2xl overflow-hidden shadow-sm flex items-stretch">
               <div className="w-24 h-24 flex-shrink-0 bg-[#E8E6E1]">
                 <img src={`https://images.unsplash.com/photo-${r.imageId}?w=180&h=180&fit=crop&auto=format&q=80`} alt={r.name} className="w-full h-full object-cover" />
               </div>
               <div className="p-3 flex-1 flex flex-col justify-between">
                 <div>
-                  <HalalBadge variant={r.badge} />
+                  <HalalBadge variant={halalBadgeMap(r.halalStatus)} />
                   <p className="font-bold text-sm text-[#1A1A18] mt-1">{r.name}</p>
-                  <StarRating rating={r.rating} count={r.count} />
+                  <StarRating rating={r.rating} count={r.reviewCount} />
                 </div>
                 <div className="flex gap-2 mt-2">
                   <button className="flex-1 py-2 rounded-xl text-xs font-bold text-white" style={{ backgroundColor: "var(--green)" }}>주문하기</button>
@@ -144,8 +163,8 @@ export const SavedPlacesScreen = () => {
             </div>
           ))
         ) : (
-          savedMosques.map((m) => (
-            <div key={m.name} className="bg-white rounded-2xl p-4 shadow-sm flex items-center gap-4">
+          places.mosques.map((m) => (
+            <div key={m.id} className="bg-white rounded-2xl p-4 shadow-sm flex items-center gap-4">
               <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "var(--gold-light)" }}>
                 <span className="text-2xl">🕌</span>
               </div>
