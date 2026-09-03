@@ -1,8 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   GeometricPattern, StatusBar, BottomNav, HalalBadge, StarRating,
   RestaurantCardV, RestaurantCardH, MosqueCard, SectionHeader, PriceTag, BackButton, TabId
 } from "../components/Shared";
+import { getRestaurants, getRestaurant, getRestaurantMenu, type Restaurant, type MenuItem } from "@/api/restaurants";
+import { getMosques, getPrayerTimes, type Mosque, type PrayerTimesData } from "@/api/mosques";
+
+const extractImageId = (url: string): string => {
+  const match = url.match(/photo-([^?]+)/);
+  return match ? match[1] : "1498654896293-37c98e7f5fe4";
+};
+
+const halalBadgeMap = (status: string) =>
+  status === "certified" ? "certified" as const
+    : status === "muslim-owned" ? "owned" as const
+    : "friendly" as const;
+
+const formatFee = (fee: number) => fee === 0 ? "무료" : `₩${fee.toLocaleString()}`;
 
 // ── 6. Home Screen ─────────────────────────────────────────────────────────────
 const categories = [
@@ -16,144 +30,207 @@ const categories = [
   { icon: "🔍", label: "전체" },
 ];
 
-export const HomeScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void }) => (
-  <div className="flex flex-col h-full bg-[var(--cream)]">
-    {/* Sticky Header */}
-    <div className="relative overflow-hidden flex-shrink-0" style={{ backgroundColor: "var(--green)" }}>
-      <GeometricPattern color="white" opacity={0.05} />
-      <StatusBar dark />
-      <div className="relative z-10 px-5 pb-5">
-        {/* Location + bell */}
-        <div className="flex items-center justify-between mb-4">
-          <button className="flex items-center gap-1.5 bg-white/20 px-3 py-1.5 rounded-full">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="white">
-              <path d="M7 1C4.8 1 3 2.8 3 5C3 8 7 13 7 13C7 13 11 8 11 5C11 2.8 9.2 1 7 1ZM7 6.5C6.2 6.5 5.5 5.8 5.5 5C5.5 4.2 6.2 3.5 7 3.5C7.8 3.5 8.5 4.2 8.5 5C8.5 5.8 7.8 6.5 7 6.5Z"/>
+export const HomeScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void }) => {
+  const [restaurantList, setRestaurantList] = useState<Restaurant[]>([]);
+  const [mosqueList, setMosqueList] = useState<Mosque[]>([]);
+  const [prayer, setPrayer] = useState<{ next: PrayerTimesData["prayers"][number] | null; location: string }>({ next: null, location: "" });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    Promise.all([getRestaurants(), getMosques(), getPrayerTimes()])
+      .then(([r, m, p]) => {
+        if (cancelled) return;
+        setRestaurantList(r);
+        setMosqueList(m.filter((x) => x.type === "mosque").slice(0, 2));
+        const now = new Date();
+        const nextPrayer = p.prayerTimes.prayers.find((pr) => {
+          if (pr.id === "sunrise") return false;
+          const [h, min] = pr.time.split(":").map(Number);
+          return h > now.getHours() || (h === now.getHours() && min > now.getMinutes());
+        });
+        setPrayer({ next: nextPrayer ?? p.prayerTimes.prayers[0], location: p.location });
+      })
+      .catch(() => {})
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, []);
+
+  const featured = restaurantList.slice(0, 3);
+
+  return (
+    <div className="flex flex-col h-full bg-[var(--cream)]">
+      {/* Sticky Header */}
+      <div className="relative overflow-hidden flex-shrink-0" style={{ backgroundColor: "var(--green)" }}>
+        <GeometricPattern color="white" opacity={0.05} />
+        <StatusBar dark />
+        <div className="relative z-10 px-5 pb-5">
+          {/* Location + bell */}
+          <div className="flex items-center justify-between mb-4">
+            <button className="flex items-center gap-1.5 bg-white/20 px-3 py-1.5 rounded-full">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="white">
+                <path d="M7 1C4.8 1 3 2.8 3 5C3 8 7 13 7 13C7 13 11 8 11 5C11 2.8 9.2 1 7 1ZM7 6.5C6.2 6.5 5.5 5.8 5.5 5C5.5 4.2 6.2 3.5 7 3.5C7.8 3.5 8.5 4.2 8.5 5C8.5 5.8 7.8 6.5 7 6.5Z"/>
+              </svg>
+              <span className="text-white text-sm font-semibold">이태원동, 용산구</span>
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="white" strokeWidth="1.8">
+                <path d="M3 5l3 3 3-3"/>
+              </svg>
+            </button>
+            <button className="relative w-9 h-9 bg-white/20 rounded-full flex items-center justify-center">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white" strokeWidth="1.6">
+                <path d="M4 4h12v8a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"/>
+                <path d="M8 4V2M12 4V2"/>
+                <circle cx="14" cy="4" r="3" fill="var(--danger)" stroke="none"/>
+              </svg>
+            </button>
+          </div>
+
+          {/* Prayer banner */}
+          <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-3.5 mb-4 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="white">
+                <path d="M10 2C8 2 6 3.8 6 6C6 9 8.5 10.5 10 13C11.5 10.5 14 9 14 6C14 3.8 12 2 10 2Z"/>
+                <path d="M7.5 5.5C7.5 4 8.6 2.8 10 2.5" stroke="rgba(255,255,255,0.5)" strokeWidth="0.8" strokeLinecap="round"/>
+                <line x1="10" y1="13" x2="10" y2="18" strokeWidth="1.5" strokeLinecap="round" stroke="white"/>
+                <line x1="7" y1="18" x2="13" y2="18" strokeWidth="1.5" strokeLinecap="round" stroke="white"/>
+              </svg>
+            </div>
+            <div className="flex-1">
+              <p className="text-white/70 text-xs font-medium">다음 기도</p>
+              <p className="text-white font-bold text-sm">
+                {prayer.next ? `${prayer.next.name} ${prayer.next.nameEn}` : "로딩중..."}{" "}
+              </p>
+            </div>
+            <div className="text-right">
+              <p className="text-white font-semibold text-base">{prayer.next?.time ?? "--:--"}</p>
+              <div className="w-20 h-1 bg-white/20 rounded-full mt-1 overflow-hidden">
+                <div className="h-full rounded-full" style={{ width: "38%", backgroundColor: "var(--gold)" }} />
+              </div>
+            </div>
+          </div>
+
+          {/* Search bar */}
+          <div className="flex items-center gap-2 bg-white rounded-xl px-4 py-3">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--muted)" strokeWidth="1.8">
+              <circle cx="8" cy="8" r="5.5"/>
+              <path d="M13.5 13.5L17 17" strokeLinecap="round"/>
             </svg>
-            <span className="text-white text-sm font-semibold">이태원동, 용산구</span>
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="white" strokeWidth="1.8">
-              <path d="M3 5l3 3 3-3"/>
+            <span className="text-sm text-[var(--muted)] flex-1">할랄 음식, 레스토랑 검색...</span>
+            <div className="w-px h-4 bg-[var(--border)]" />
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--muted)" strokeWidth="1.8">
+              <circle cx="6" cy="9" r="3.5"/>
+              <path d="M9.5 9H17" strokeLinecap="round"/>
+              <path d="M12 6.5L14.5 9L12 11.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-          </button>
-          <button className="relative w-9 h-9 bg-white/20 rounded-full flex items-center justify-center">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white" strokeWidth="1.6">
-              <path d="M4 4h12v8a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"/>
-              <path d="M8 4V2M12 4V2"/>
-              <circle cx="14" cy="4" r="3" fill="var(--danger)" stroke="none"/>
-            </svg>
-          </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 phone-scroll">
+        {/* Categories */}
+        <div className="pt-4 pb-2">
+          <div className="flex gap-2 px-4 overflow-x-auto scrollbar-hide pb-1">
+            {categories.map((c, i) => (
+              <button
+                key={i}
+                className="flex-shrink-0 flex flex-col items-center gap-1.5 px-4 py-3 rounded-2xl bg-white border border-[var(--border)] min-w-fit"
+              >
+                <span className="text-xl">{c.icon}</span>
+                <span className="text-xs font-medium text-[#1A1A18] whitespace-nowrap">{c.label}</span>
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* Prayer banner */}
-        <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-3.5 mb-4 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="white">
-              <path d="M10 2C8 2 6 3.8 6 6C6 9 8.5 10.5 10 13C11.5 10.5 14 9 14 6C14 3.8 12 2 10 2Z"/>
-              <path d="M7.5 5.5C7.5 4 8.6 2.8 10 2.5" stroke="rgba(255,255,255,0.5)" strokeWidth="0.8" strokeLinecap="round"/>
-              <line x1="10" y1="13" x2="10" y2="18" strokeWidth="1.5" strokeLinecap="round" stroke="white"/>
-              <line x1="7" y1="18" x2="13" y2="18" strokeWidth="1.5" strokeLinecap="round" stroke="white"/>
-            </svg>
+        {/* Featured restaurants */}
+        <div className="pt-4">
+          <SectionHeader title="🔥 인기 할랄 식당" action="더보기" />
+          <div className="flex gap-3 px-4 overflow-x-auto scrollbar-hide pb-1">
+            {loading ? (
+              <p className="text-sm text-[var(--muted)] px-1">로딩중...</p>
+            ) : (
+              featured.map((r) => (
+                <RestaurantCardV
+                  key={r.id}
+                  name={r.nameKo}
+                  imageId={extractImageId(r.photo)}
+                  badge={halalBadgeMap(r.halalStatus)}
+                  rating={r.rating}
+                  count={r.reviewCount}
+                  distance={r.distance}
+                  eta={r.deliveryTime}
+                  fee={formatFee(r.deliveryFee)}
+                />
+              ))
+            )}
           </div>
-          <div className="flex-1">
-            <p className="text-white/70 text-xs font-medium">다음 기도</p>
-            <p className="text-white font-bold text-sm">아스르 Asr · <span style={{ color: "var(--gold)" }}>2시간 14분 후</span></p>
+        </div>
+
+        {/* Nearby mosques */}
+        <div className="pt-5">
+          <SectionHeader title="🕌 근처 모스크" action="지도 보기" />
+          <div className="px-4 space-y-2.5">
+            {loading ? (
+              <p className="text-sm text-[var(--muted)] px-1">로딩중...</p>
+            ) : (
+              mosqueList.map((m) => (
+                <MosqueCard
+                  key={m.id}
+                  name={m.nameKo}
+                  nameKo={m.name}
+                  distance={m.distance}
+                  nextPrayer={prayer.next ? `${prayer.next.name} ${prayer.next.time}` : ""}
+                  walkTime={m.walkTime ?? ""}
+                />
+              ))
+            )}
           </div>
-          <div className="text-right">
-            <p className="text-white font-semibold text-base">14:32</p>
-            <div className="w-20 h-1 bg-white/20 rounded-full mt-1 overflow-hidden">
-              <div className="h-full rounded-full" style={{ width: "38%", backgroundColor: "var(--gold)" }} />
+        </div>
+
+        {/* Promo banner */}
+        <div className="px-4 pt-5 pb-6">
+          <div
+            className="relative rounded-2xl p-5 overflow-hidden"
+            style={{ background: "linear-gradient(135deg, var(--gold) 0%, #A0692A 100%)" }}
+          >
+            <GeometricPattern color="white" opacity={0.08} />
+            <div className="relative z-10">
+              <p className="text-white/80 text-xs font-medium mb-1">신규 회원 혜택</p>
+              <p className="text-white font-bold text-lg leading-tight">첫 주문 ₩3,000 할인</p>
+              <p className="text-white/70 text-xs mt-1">코드: HALAL3000</p>
+              <button className="mt-3 px-4 py-2 bg-white rounded-xl text-xs font-bold" style={{ color: "var(--gold)" }}>
+                지금 주문하기 →
+              </button>
             </div>
           </div>
         </div>
-
-        {/* Search bar */}
-        <div className="flex items-center gap-2 bg-white rounded-xl px-4 py-3">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--muted)" strokeWidth="1.8">
-            <circle cx="8" cy="8" r="5.5"/>
-            <path d="M13.5 13.5L17 17" strokeLinecap="round"/>
-          </svg>
-          <span className="text-sm text-[var(--muted)] flex-1">할랄 음식, 레스토랑 검색...</span>
-          <div className="w-px h-4 bg-[var(--border)]" />
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--muted)" strokeWidth="1.8">
-            <circle cx="6" cy="9" r="3.5"/>
-            <path d="M9.5 9H17" strokeLinecap="round"/>
-            <path d="M12 6.5L14.5 9L12 11.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </div>
       </div>
+
+      <BottomNav active="home" onTabChange={onTabChange} />
     </div>
-
-    {/* Content */}
-    <div className="flex-1 phone-scroll">
-      {/* Categories */}
-      <div className="pt-4 pb-2">
-        <div className="flex gap-2 px-4 overflow-x-auto scrollbar-hide pb-1">
-          {categories.map((c, i) => (
-            <button
-              key={i}
-              className="flex-shrink-0 flex flex-col items-center gap-1.5 px-4 py-3 rounded-2xl bg-white border border-[var(--border)] min-w-fit"
-            >
-              <span className="text-xl">{c.icon}</span>
-              <span className="text-xs font-medium text-[#1A1A18] whitespace-nowrap">{c.label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Featured restaurants */}
-      <div className="pt-4">
-        <SectionHeader title="🔥 인기 할랄 식당" action="더보기" />
-        <div className="flex gap-3 px-4 overflow-x-auto scrollbar-hide pb-1">
-          <RestaurantCardV name="신당 할랄 키친" imageId="1498654896293-37c98e7f5fe4" badge="certified" rating={4.8} count={3241} distance="2.3km" eta="25-35분" fee="₩2,000" />
-          <RestaurantCardV name="이태원 케밥 하우스" imageId="1529042410759-befb1204b468" badge="certified" rating={4.6} count={1820} distance="0.8km" eta="15-25분" fee="₩1,500" />
-          <RestaurantCardV name="마스지드 서울 카페" imageId="1414235077428-338989a2e8c0" badge="owned" rating={4.9} count={940} distance="1.1km" eta="20-30분" fee="무료" />
-        </div>
-      </div>
-
-      {/* Nearby mosques */}
-      <div className="pt-5">
-        <SectionHeader title="🕌 근처 모스크" action="지도 보기" />
-        <div className="px-4 space-y-2.5">
-          <MosqueCard name="서울중앙성원" nameKo="Seoul Central Mosque" distance="1.2km" nextPrayer="아스르 14:32" walkTime="도보 15분" />
-          <MosqueCard name="이태원 마스지드" nameKo="Itaewon Masjid" distance="0.3km" nextPrayer="아스르 14:35" walkTime="도보 4분" />
-        </div>
-      </div>
-
-      {/* Promo banner */}
-      <div className="px-4 pt-5 pb-6">
-        <div
-          className="relative rounded-2xl p-5 overflow-hidden"
-          style={{ background: "linear-gradient(135deg, var(--gold) 0%, #A0692A 100%)" }}
-        >
-          <GeometricPattern color="white" opacity={0.08} />
-          <div className="relative z-10">
-            <p className="text-white/80 text-xs font-medium mb-1">신규 회원 혜택</p>
-            <p className="text-white font-bold text-lg leading-tight">첫 주문 ₩3,000 할인</p>
-            <p className="text-white/70 text-xs mt-1">코드: HALAL3000</p>
-            <button className="mt-3 px-4 py-2 bg-white rounded-xl text-xs font-bold" style={{ color: "var(--gold)" }}>
-              지금 주문하기 →
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <BottomNav active="home" onTabChange={onTabChange} />
-  </div>
-);
+  );
+};
 
 // ── 7. Restaurant List ─────────────────────────────────────────────────────────
 const filters = ["거리순", "⭐ 평점", "배달비", "인증유형", "음식종류"];
 
-const restaurants = [
-  { name: "신당 할랄 키친", imageId: "1498654896293-37c98e7f5fe4", badge: "certified" as const, rating: 4.8, count: 3241, distance: "2.3km", eta: "25-35분", fee: "₩2,000", cuisine: "한식" },
-  { name: "우즈베키스탄 플로프 하우스", imageId: "1565557623262-b51ff2a27b73", badge: "owned" as const, rating: 4.7, count: 892, distance: "3.1km", eta: "30-40분", fee: "₩1,500", cuisine: "우즈베크" },
-  { name: "이스탄불 케밥 & 피데", imageId: "1529042410759-befb1204b468", badge: "certified" as const, rating: 4.5, count: 2110, distance: "0.8km", eta: "20-30분", fee: "무료", cuisine: "터키" },
-  { name: "델리 스파이스 하우스", imageId: "1617196034183-421b4040d6fd", badge: "friendly" as const, rating: 4.3, count: 654, distance: "4.2km", eta: "40-50분", fee: "₩2,500", cuisine: "인도" },
-  { name: "자카르타 나시고렝", imageId: "1414235077428-338989a2e8c0", badge: "certified" as const, rating: 4.6, count: 1345, distance: "2.8km", eta: "35-45분", fee: "₩2,000", cuisine: "인도네시아" },
-];
+const categoryMap: Record<string, string> = {
+  korean: "한식", turkish: "터키", uzbek: "우즈베크", indian: "인도",
+  indonesian: "인도네시아", cafe: "카페", arabic: "아랍",
+};
 
 export const RestaurantListScreen = () => {
   const [activeFilter, setActiveFilter] = useState("거리순");
+  const [list, setList] = useState<Restaurant[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getRestaurants()
+      .then(setList)
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
 
   return (
     <div className="flex flex-col h-full bg-[var(--cream)]">
@@ -202,10 +279,27 @@ export const RestaurantListScreen = () => {
 
       {/* List */}
       <div className="flex-1 phone-scroll px-4 py-4 space-y-3">
-        <p className="text-xs text-[var(--muted)] font-medium mb-1">근처 할랄 레스토랑 {restaurants.length}개</p>
-        {restaurants.map((r, i) => (
-          <RestaurantCardH key={i} {...r} />
-        ))}
+        {loading ? (
+          <p className="text-sm text-[var(--muted)]">로딩중...</p>
+        ) : (
+          <>
+            <p className="text-xs text-[var(--muted)] font-medium mb-1">근처 할랄 레스토랑 {list.length}개</p>
+            {list.map((r) => (
+              <RestaurantCardH
+                key={r.id}
+                name={r.nameKo}
+                imageId={extractImageId(r.photo)}
+                badge={halalBadgeMap(r.halalStatus)}
+                rating={r.rating}
+                count={r.reviewCount}
+                distance={r.distance}
+                eta={r.deliveryTime}
+                fee={formatFee(r.deliveryFee)}
+                cuisine={categoryMap[r.category] ?? r.category}
+              />
+            ))}
+          </>
+        )}
       </div>
 
       <BottomNav active="home" />
@@ -218,6 +312,35 @@ const menuTabs = ["전체메뉴", "인기메뉴", "한식", "음료", "사이드
 
 export const RestaurantDetailScreen = () => {
   const [activeTab, setActiveTab] = useState("인기메뉴");
+  const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
+  const [menuItems, setMenuItems] = useState<import("@/api/restaurants").MenuItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    Promise.all([
+      getRestaurant("sindang-halal"),
+      getRestaurantMenu("sindang-halal"),
+    ])
+      .then(([r, m]) => {
+        if (cancelled) return;
+        setRestaurant(r);
+        setMenuItems(m.menu);
+      })
+      .catch(() => {})
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, []);
+
+  if (loading || !restaurant) {
+    return (
+      <div className="flex flex-col h-full bg-[var(--cream)] items-center justify-center">
+        <p className="text-sm text-[var(--muted)]">로딩중...</p>
+      </div>
+    );
+  }
+
+  const previewItems = menuItems.slice(0, 3);
 
   return (
     <div className="flex flex-col h-full bg-[var(--cream)]">
@@ -225,13 +348,12 @@ export const RestaurantDetailScreen = () => {
       <div className="relative flex-shrink-0">
         <div className="h-52 bg-[#D8D4CD] relative">
           <img
-            src="https://images.unsplash.com/photo-1498654896293-37c98e7f5fe4?w=390&h=210&fit=crop&auto=format&q=80"
-            alt="신당 할랄 키친"
+            src={`${restaurant.photo}&w=390&h=210&fit=crop&auto=format&q=80`}
+            alt={restaurant.nameKo}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
         </div>
-        {/* Overlay status bar + back */}
         <div className="absolute top-0 left-0 right-0">
           <StatusBar dark />
         </div>
@@ -260,25 +382,24 @@ export const RestaurantDetailScreen = () => {
         {/* Info card */}
         <div className="bg-white px-5 pt-4 pb-4">
           <div className="flex items-start justify-between gap-2 mb-2">
-            <h1 className="font-bold text-xl text-[#1A1A18] leading-tight">신당 할랄 키친</h1>
-            <HalalBadge variant="certified" />
+            <h1 className="font-bold text-xl text-[#1A1A18] leading-tight">{restaurant.nameKo}</h1>
+            <HalalBadge variant={halalBadgeMap(restaurant.halalStatus)} />
           </div>
-          <p className="text-sm text-[var(--muted)] mb-3">이슬람 식품청 인증 할랄 한식 전문점. 돼지고기 및 알코올 완전 배제.</p>
+          <p className="text-sm text-[var(--muted)] mb-3">{restaurant.description}</p>
 
           <div className="flex items-center gap-4 mb-4">
-            <StarRating rating={4.8} count={3241} />
+            <StarRating rating={restaurant.rating} count={restaurant.reviewCount} />
             <span className="text-xs text-[var(--muted)]">·</span>
-            <span className="text-xs text-[var(--muted)]">📍 2.3km</span>
+            <span className="text-xs text-[var(--muted)]">📍 {restaurant.distance}</span>
             <span className="text-xs text-[var(--muted)]">·</span>
-            <span className="text-xs text-[var(--muted)]">⏱ 25-35분</span>
+            <span className="text-xs text-[var(--muted)]">⏱ {restaurant.deliveryTime}</span>
           </div>
 
-          {/* Info row */}
           <div className="grid grid-cols-3 gap-3 py-3 border-t border-b border-[var(--border)]">
             {[
-              { label: "최소주문", value: "₩10,000" },
-              { label: "배달비", value: "₩2,000" },
-              { label: "영업시간", value: "09:00–22:00" },
+              { label: "최소주문", value: `₩${restaurant.minOrder.toLocaleString()}` },
+              { label: "배달비", value: formatFee(restaurant.deliveryFee) },
+              { label: "영업시간", value: restaurant.hours },
             ].map((item) => (
               <div key={item.label} className="text-center">
                 <p className="text-xs text-[var(--muted)]">{item.label}</p>
@@ -310,18 +431,16 @@ export const RestaurantDetailScreen = () => {
         {/* Menu items preview */}
         <div className="px-4 pt-4 pb-28 space-y-3">
           <p className="text-xs font-semibold text-[var(--muted)] uppercase tracking-wide">🔥 인기메뉴</p>
-          {[
-            { name: "할랄 갈비탕", desc: "사골 육수와 소갈비, 12시간 정성껏 우린 국물", price: 13500, imageId: "1569050467447-ce54b3bbc37d" },
-            { name: "비빔밥 (할랄)", desc: "신선한 채소와 할랄 소고기, 참기름 드레싱", price: 11000, imageId: "1583394293214-b483ffd7e3f7" },
-            { name: "된장찌개 세트", desc: "전통 된장에 두부, 야채, 밥 포함", price: 12000, imageId: "1617196034183-421b4040d6fd" },
-          ].map((item) => (
-            <div key={item.name} className="bg-white rounded-2xl p-3 flex gap-3 shadow-sm">
+          {previewItems.map((item) => (
+            <div key={item.id} className="bg-white rounded-2xl p-3 flex gap-3 shadow-sm">
               <div className="w-20 h-20 rounded-xl bg-[#E8E6E1] flex-shrink-0 overflow-hidden">
-                <img src={`https://images.unsplash.com/photo-${item.imageId}?w=120&h=120&fit=crop&auto=format&q=80`} alt={item.name} className="w-full h-full object-cover" />
+                {item.photo && (
+                  <img src={`${item.photo}&w=120&h=120&fit=crop&auto=format&q=80`} alt={item.name} className="w-full h-full object-cover" />
+                )}
               </div>
               <div className="flex-1 py-1">
                 <p className="font-semibold text-sm text-[#1A1A18]">{item.name}</p>
-                <p className="text-xs text-[var(--muted)] mt-0.5 leading-relaxed">{item.desc}</p>
+                <p className="text-xs text-[var(--muted)] mt-0.5 leading-relaxed">{item.description}</p>
                 <div className="flex items-center justify-between mt-2">
                   <PriceTag amount={item.price} className="text-sm" />
                   <button
@@ -349,18 +468,26 @@ export const RestaurantDetailScreen = () => {
 
 // ── 9. Menu Screen ─────────────────────────────────────────────────────────────
 const menuCategories = ["인기메뉴", "한식", "세트메뉴", "음료", "사이드"];
-const menuItems = [
-  { name: "할랄 갈비탕", desc: "사골 육수 12시간 우린 국물", price: 13500, imageId: "1569050467447-ce54b3bbc37d", tags: ["No Pork", "No Alcohol"], popular: true },
-  { name: "비빔밥 (할랄)", desc: "신선 야채 + 할랄 소고기", price: 11000, imageId: "1583394293214-b483ffd7e3f7", tags: ["Halal Beef"], popular: true },
-  { name: "된장찌개 세트", desc: "전통 된장, 두부, 야채, 밥 포함", price: 12000, imageId: "1617196034183-421b4040d6fd", tags: ["Vegetable"], popular: false },
-  { name: "할랄 삼계탕", desc: "국산 닭, 인삼, 찹쌀 들어간 보양식", price: 16500, imageId: "1498654896293-37c98e7f5fe4", tags: ["Halal Chicken"], popular: true },
-];
 
 export const MenuScreen = () => {
   const [activeTab, setActiveTab] = useState("인기메뉴");
   const [cart, setCart] = useState<Record<string, number>>({});
+  const [restaurantName, setRestaurantName] = useState("로딩중...");
+  const [apiMenuItems, setApiMenuItems] = useState<MenuItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getRestaurantMenu("sindang-halal")
+      .then((data) => {
+        setRestaurantName(data.restaurant.name);
+        setApiMenuItems(data.menu);
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
   const cartCount = Object.values(cart).reduce((a, b) => a + b, 0);
-  const cartTotal = menuItems.reduce((acc, item) => acc + (cart[item.name] || 0) * item.price, 0);
+  const cartTotal = apiMenuItems.reduce((acc, item) => acc + (cart[item.id] || 0) * item.price, 0);
 
   return (
     <div className="flex flex-col h-full bg-[var(--cream)]">
@@ -370,7 +497,7 @@ export const MenuScreen = () => {
         <div className="flex items-center gap-3 px-4 pb-3">
           <BackButton />
           <div className="flex-1">
-            <h1 className="font-bold text-base">신당 할랄 키친</h1>
+            <h1 className="font-bold text-base">{restaurantName}</h1>
             <p className="text-xs text-[var(--muted)]">메뉴 선택</p>
           </div>
           <button className="relative">
@@ -408,40 +535,41 @@ export const MenuScreen = () => {
       {/* Menu items */}
       <div className="flex-1 phone-scroll px-4 pt-4 space-y-3">
         <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide px-1">🔥 {activeTab}</p>
-        {menuItems.map((item) => (
-          <div key={item.name} className="bg-white rounded-2xl p-3 flex gap-3 shadow-sm">
-            <div className="relative w-20 h-20 rounded-xl bg-[#E8E6E1] flex-shrink-0 overflow-hidden">
-              <img src={`https://images.unsplash.com/photo-${item.imageId}?w=120&h=120&fit=crop&auto=format&q=80`} alt={item.name} className="w-full h-full object-cover" />
-              {item.popular && (
-                <div className="absolute top-1 left-1 px-1.5 py-0.5 rounded text-[9px] font-bold text-white" style={{ backgroundColor: "var(--danger)" }}>BEST</div>
-              )}
-            </div>
-            <div className="flex-1 py-0.5">
-              <p className="font-semibold text-sm text-[#1A1A18]">{item.name}</p>
-              <p className="text-xs text-[var(--muted)] mt-0.5">{item.desc}</p>
-              <div className="flex flex-wrap gap-1 mt-1.5">
-                {item.tags.map((tag) => (
-                  <span key={tag} className="text-[9px] font-semibold px-1.5 py-0.5 rounded-full bg-[var(--green-light)] text-[var(--green)]">{tag}</span>
-                ))}
-              </div>
-              <div className="flex items-center justify-between mt-2">
-                <PriceTag amount={item.price} className="text-sm" />
-                {cart[item.name] ? (
-                  <div className="flex items-center gap-2">
-                    <button onClick={() => setCart(c => ({ ...c, [item.name]: Math.max(0, (c[item.name] || 0) - 1) }))}
-                      className="w-7 h-7 rounded-full border border-[var(--border)] flex items-center justify-center text-sm font-bold text-[var(--green)]">−</button>
-                    <span className="text-sm font-bold w-4 text-center">{cart[item.name]}</span>
-                    <button onClick={() => setCart(c => ({ ...c, [item.name]: (c[item.name] || 0) + 1 }))}
-                      className="w-7 h-7 rounded-full flex items-center justify-center text-white text-sm font-bold" style={{ backgroundColor: "var(--green)" }}>+</button>
-                  </div>
-                ) : (
-                  <button onClick={() => setCart(c => ({ ...c, [item.name]: 1 }))}
-                    className="w-7 h-7 rounded-full flex items-center justify-center text-white text-lg font-light" style={{ backgroundColor: "var(--green)" }}>+</button>
+        {loading ? (
+          <p className="text-sm text-[var(--muted)]">로딩중...</p>
+        ) : (
+          apiMenuItems.map((item) => (
+            <div key={item.id} className="bg-white rounded-2xl p-3 flex gap-3 shadow-sm">
+              <div className="relative w-20 h-20 rounded-xl bg-[#E8E6E1] flex-shrink-0 overflow-hidden">
+                {item.photo && (
+                  <img src={`${item.photo}&w=120&h=120&fit=crop&auto=format&q=80`} alt={item.name} className="w-full h-full object-cover" />
                 )}
               </div>
+              <div className="flex-1 py-0.5">
+                <p className="font-semibold text-sm text-[#1A1A18]">{item.name}</p>
+                <p className="text-xs text-[var(--muted)] mt-0.5">{item.description}</p>
+                <div className="flex flex-wrap gap-1 mt-1.5">
+                  <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded-full bg-[var(--green-light)] text-[var(--green)]">{item.category}</span>
+                </div>
+                <div className="flex items-center justify-between mt-2">
+                  <PriceTag amount={item.price} className="text-sm" />
+                  {cart[item.id] ? (
+                    <div className="flex items-center gap-2">
+                      <button onClick={() => setCart(c => ({ ...c, [item.id]: Math.max(0, (c[item.id] || 0) - 1) }))}
+                        className="w-7 h-7 rounded-full border border-[var(--border)] flex items-center justify-center text-sm font-bold text-[var(--green)]">−</button>
+                      <span className="text-sm font-bold w-4 text-center">{cart[item.id]}</span>
+                      <button onClick={() => setCart(c => ({ ...c, [item.id]: (c[item.id] || 0) + 1 }))}
+                        className="w-7 h-7 rounded-full flex items-center justify-center text-white text-sm font-bold" style={{ backgroundColor: "var(--green)" }}>+</button>
+                    </div>
+                  ) : (
+                    <button onClick={() => setCart(c => ({ ...c, [item.id]: 1 }))}
+                      className="w-7 h-7 rounded-full flex items-center justify-center text-white text-lg font-light" style={{ backgroundColor: "var(--green)" }}>+</button>
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
         <div className="h-20" />
       </div>
 
