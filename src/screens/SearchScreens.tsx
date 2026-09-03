@@ -1,5 +1,16 @@
-import React, { useState } from "react";
-import { StatusBar, BottomNav, MapPin, RestaurantCardV, HalalBadge, BackButton, TabId } from "../components/Shared";
+import React, { useState, useEffect } from "react";
+import { StatusBar, BottomNav, MapPin, RestaurantCardV, RestaurantCardH, HalalBadge, BackButton, TabId } from "../components/Shared";
+import { getRestaurants, getRestaurant, type Restaurant } from "@/api/restaurants";
+
+const extractImageId = (url: string): string => {
+  const match = url.match(/photo-([^?]+)/);
+  return match ? match[1] : "1498654896293-37c98e7f5fe4";
+};
+const halalBadgeMap = (status: string) =>
+  status === "certified" ? "certified" as const
+    : status === "muslim-owned" ? "owned" as const
+    : "friendly" as const;
+const formatFee = (fee: number) => fee === 0 ? "무료" : `₩${fee.toLocaleString()}`;
 
 // ── 14. Search Screen ──────────────────────────────────────────────────────────
 const recentSearches = ["이태원 할랄", "케밥", "모스크 근처 식당", "할랄 치킨"];
@@ -15,6 +26,22 @@ const quickCategories = [
 
 export const SearchScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void }) => {
   const [query, setQuery] = useState("");
+  const [results, setResults] = useState<Restaurant[]>([]);
+  const [searching, setSearching] = useState(false);
+
+  useEffect(() => {
+    if (!query.trim()) { setResults([]); return; }
+    const timer = setTimeout(() => {
+      setSearching(true);
+      getRestaurants({ q: query.trim() })
+        .then(setResults)
+        .catch(() => setResults([]))
+        .finally(() => setSearching(false));
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  const showResults = query.trim().length > 0;
 
   return (
     <div className="flex flex-col h-full bg-[var(--cream)]">
@@ -22,7 +49,6 @@ export const SearchScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void
         <StatusBar />
         <div className="px-4 pb-4">
           <h1 className="font-bold text-xl text-[#1A1A18] mb-3">검색</h1>
-          {/* Search bar */}
           <div className="flex items-center gap-2 bg-[var(--cream)] border border-[var(--border)] rounded-xl px-4 py-3">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--muted)" strokeWidth="1.8">
               <circle cx="8" cy="8" r="5.5"/>
@@ -44,74 +70,107 @@ export const SearchScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void
       </div>
 
       <div className="flex-1 phone-scroll px-4 pt-4 space-y-5">
-        {/* Voice search */}
-        <div className="flex items-center justify-center">
-          <button className="flex flex-col items-center gap-2">
-            <div className="w-14 h-14 rounded-full flex items-center justify-center shadow-md" style={{ backgroundColor: "var(--green)" }}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8">
-                <rect x="9" y="2" width="6" height="10" rx="3"/>
-                <path d="M5 10c0 3.9 3.1 7 7 7s7-3.1 7-7" strokeLinecap="round"/>
-                <line x1="12" y1="17" x2="12" y2="21" strokeLinecap="round"/>
-                <line x1="9" y1="21" x2="15" y2="21" strokeLinecap="round"/>
-              </svg>
-            </div>
-            <p className="text-xs font-medium text-[var(--muted)]">음성 검색</p>
-          </button>
-        </div>
-
-        {/* Recent */}
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="font-bold text-sm text-[#1A1A18]">최근 검색</h3>
-            <button className="text-xs font-medium" style={{ color: "var(--muted)" }}>전체 삭제</button>
+        {showResults ? (
+          <div>
+            {searching ? (
+              <p className="text-sm text-[var(--muted)]">검색중...</p>
+            ) : results.length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-3xl mb-2">🔍</p>
+                <p className="font-semibold text-sm text-[#1A1A18]">"{query}" 검색 결과가 없습니다</p>
+                <p className="text-xs text-[var(--muted)] mt-1">다른 키워드로 검색해 보세요</p>
+              </div>
+            ) : (
+              <>
+                <p className="text-xs text-[var(--muted)] font-medium">검색 결과 {results.length}개</p>
+                <div className="space-y-3">
+                  {results.map((r) => (
+                    <RestaurantCardH
+                      key={r.id}
+                      name={r.nameKo}
+                      imageId={extractImageId(r.photo)}
+                      badge={halalBadgeMap(r.halalStatus)}
+                      rating={r.rating}
+                      count={r.reviewCount}
+                      distance={r.distance}
+                      eta={r.deliveryTime}
+                      fee={formatFee(r.deliveryFee)}
+                      cuisine={r.category}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
           </div>
-          <div className="space-y-1">
-            {recentSearches.map((s) => (
-              <div key={s} className="flex items-center gap-3 py-2.5">
-                <div className="w-8 h-8 rounded-lg bg-[var(--cream)] flex items-center justify-center flex-shrink-0">
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--muted)" strokeWidth="1.5">
-                    <circle cx="8" cy="8" r="6"/>
-                    <path d="M8 4.5v4L10.5 11" strokeLinecap="round" strokeLinejoin="round"/>
+        ) : (
+          <>
+            {/* Voice search */}
+            <div className="flex items-center justify-center">
+              <button className="flex flex-col items-center gap-2">
+                <div className="w-14 h-14 rounded-full flex items-center justify-center shadow-md" style={{ backgroundColor: "var(--green)" }}>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8">
+                    <rect x="9" y="2" width="6" height="10" rx="3"/>
+                    <path d="M5 10c0 3.9 3.1 7 7 7s7-3.1 7-7" strokeLinecap="round"/>
+                    <line x1="12" y1="17" x2="12" y2="21" strokeLinecap="round"/>
+                    <line x1="9" y1="21" x2="15" y2="21" strokeLinecap="round"/>
                   </svg>
                 </div>
-                <span className="flex-1 text-sm text-[#1A1A18]">{s}</span>
-                <button className="text-[var(--muted)]">
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M10 4L4 10M4 4l6 6" strokeLinecap="round"/></svg>
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Trending */}
-        <div>
-          <h3 className="font-bold text-sm text-[#1A1A18] mb-2">🔥 인기 검색어</h3>
-          <div className="space-y-2">
-            {trending.map((t, i) => (
-              <div key={t} className="flex items-center gap-3 py-1.5">
-                <span className="text-sm font-bold w-5 text-center" style={{ color: i < 3 ? "var(--danger)" : "var(--muted)" }}>{i + 1}</span>
-                <span className="flex-1 text-sm text-[#1A1A18]">{t}</span>
-                {i < 3 && (
-                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ backgroundColor: "var(--danger)", color: "white" }}>인기</span>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Quick categories */}
-        <div>
-          <h3 className="font-bold text-sm text-[#1A1A18] mb-2">카테고리</h3>
-          <div className="grid grid-cols-3 gap-2">
-            {quickCategories.map((c) => (
-              <button key={c.label} className="flex flex-col items-center gap-2 py-4 bg-white rounded-2xl border border-[var(--border)]">
-                <span className="text-2xl">{c.icon}</span>
-                <span className="text-xs font-semibold text-[#1A1A18]">{c.label}</span>
+                <p className="text-xs font-medium text-[var(--muted)]">음성 검색</p>
               </button>
-            ))}
-          </div>
-        </div>
-        <div className="h-4" />
+            </div>
+
+            {/* Recent */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="font-bold text-sm text-[#1A1A18]">최근 검색</h3>
+                <button className="text-xs font-medium" style={{ color: "var(--muted)" }}>전체 삭제</button>
+              </div>
+              <div className="space-y-1">
+                {recentSearches.map((s) => (
+                  <button key={s} onClick={() => setQuery(s)} className="flex items-center gap-3 py-2.5 w-full text-left">
+                    <div className="w-8 h-8 rounded-lg bg-[var(--cream)] flex items-center justify-center flex-shrink-0">
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--muted)" strokeWidth="1.5">
+                        <circle cx="8" cy="8" r="6"/>
+                        <path d="M8 4.5v4L10.5 11" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </div>
+                    <span className="flex-1 text-sm text-[#1A1A18]">{s}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Trending */}
+            <div>
+              <h3 className="font-bold text-sm text-[#1A1A18] mb-2">🔥 인기 검색어</h3>
+              <div className="space-y-2">
+                {trending.map((t, i) => (
+                  <button key={t} onClick={() => setQuery(t)} className="flex items-center gap-3 py-1.5 w-full text-left">
+                    <span className="text-sm font-bold w-5 text-center" style={{ color: i < 3 ? "var(--danger)" : "var(--muted)" }}>{i + 1}</span>
+                    <span className="flex-1 text-sm text-[#1A1A18]">{t}</span>
+                    {i < 3 && (
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ backgroundColor: "var(--danger)", color: "white" }}>인기</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Quick categories */}
+            <div>
+              <h3 className="font-bold text-sm text-[#1A1A18] mb-2">카테고리</h3>
+              <div className="grid grid-cols-3 gap-2">
+                {quickCategories.map((c) => (
+                  <button key={c.label} className="flex flex-col items-center gap-2 py-4 bg-white rounded-2xl border border-[var(--border)]">
+                    <span className="text-2xl">{c.icon}</span>
+                    <span className="text-xs font-semibold text-[#1A1A18]">{c.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="h-4" />
+          </>
+        )}
       </div>
 
       <BottomNav active="search" onTabChange={onTabChange} />
@@ -157,13 +216,16 @@ const mapPins: { x: number; y: number; type: "restaurant" | "mosque" | "user"; l
 
 export const MapViewScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void }) => {
   const [activeFilter, setActiveFilter] = useState("레스토랑");
+  const [nearby, setNearby] = useState<Restaurant[]>([]);
+
+  useEffect(() => {
+    getRestaurants().then(setNearby).catch(() => {});
+  }, []);
 
   return (
     <div className="flex flex-col h-full bg-[var(--cream)] relative overflow-hidden">
-      {/* Map */}
       <div className="absolute inset-0">
         <FakeMapBg />
-        {/* Render pins */}
         {mapPins.map((pin, i) => (
           <div key={i} className="absolute" style={{ left: pin.x - 16, top: pin.y - 16 }}>
             <MapPin type={pin.type} />
@@ -171,12 +233,10 @@ export const MapViewScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => voi
         ))}
       </div>
 
-      {/* Status bar overlay */}
       <div className="relative z-10 flex-shrink-0">
         <StatusBar />
       </div>
 
-      {/* Top search bar */}
       <div className="relative z-10 px-4 pb-3 flex-shrink-0">
         <div className="flex items-center gap-2">
           <div className="flex-1 flex items-center gap-2 bg-white/95 backdrop-blur rounded-xl px-4 py-3 shadow-sm">
@@ -195,7 +255,6 @@ export const MapViewScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => voi
           </button>
         </div>
 
-        {/* Filters */}
         <div className="flex gap-2 mt-2 overflow-x-auto scrollbar-hide">
           {["레스토랑", "모스크", "기도실"].map((f) => (
             <button
@@ -213,10 +272,8 @@ export const MapViewScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => voi
         </div>
       </div>
 
-      {/* Spacer (pushes bottom sheet to bottom) */}
       <div className="flex-1" />
 
-      {/* Current location button */}
       <div className="relative z-10 flex justify-end px-4 pb-3">
         <button className="w-10 h-10 bg-white rounded-xl shadow-md flex items-center justify-center">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--info)" strokeWidth="1.8">
@@ -226,17 +283,26 @@ export const MapViewScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => voi
         </button>
       </div>
 
-      {/* Bottom sheet */}
       <div className="relative z-10 bg-white rounded-t-3xl shadow-lg flex-shrink-0">
-        {/* Handle */}
         <div className="flex justify-center pt-3 pb-2">
           <div className="w-10 h-1 bg-[var(--border)] rounded-full" />
         </div>
         <div className="px-4 pb-4">
-          <p className="font-bold text-sm text-[#1A1A18] mb-3">주변 결과 8개</p>
+          <p className="font-bold text-sm text-[#1A1A18] mb-3">주변 결과 {nearby.length}개</p>
           <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-1">
-            <RestaurantCardV name="신당 할랄 키친" imageId="1498654896293-37c98e7f5fe4" badge="certified" rating={4.8} count={3241} distance="2.3km" eta="25-35분" fee="₩2,000" />
-            <RestaurantCardV name="이스탄불 케밥" imageId="1529042410759-befb1204b468" badge="certified" rating={4.5} count={2110} distance="0.8km" eta="20-30분" fee="무료" />
+            {nearby.slice(0, 3).map((r) => (
+              <RestaurantCardV
+                key={r.id}
+                name={r.nameKo}
+                imageId={extractImageId(r.photo)}
+                badge={halalBadgeMap(r.halalStatus)}
+                rating={r.rating}
+                count={r.reviewCount}
+                distance={r.distance}
+                eta={r.deliveryTime}
+                fee={formatFee(r.deliveryFee)}
+              />
+            ))}
           </div>
         </div>
       </div>
@@ -343,67 +409,74 @@ export const CitySelectorScreen = () => {
 };
 
 // ── 17. Restaurant Map Detail ──────────────────────────────────────────────────
-export const RestaurantMapDetailScreen = () => (
-  <div className="flex flex-col h-full relative overflow-hidden bg-[var(--cream)]">
-    {/* Map */}
-    <div className="absolute inset-0">
-      <FakeMapBg />
-      {/* Selected pin — larger */}
-      <div className="absolute" style={{ left: 100, top: 160 }}>
-        <div className="flex flex-col items-center">
-          <div className="bg-white rounded-xl px-3 py-1.5 shadow-lg mb-1 border-2" style={{ borderColor: "var(--green)" }}>
-            <p className="text-xs font-bold text-[#1A1A18]">신당 할랄 키친</p>
-          </div>
-          <div className="w-12 h-12 rounded-full border-3 border-white shadow-lg flex items-center justify-center" style={{ backgroundColor: "var(--green)" }}>
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="white">
-              <path d="M7 2v5M10 2v5M13 2v5M7 7c0 2.8 1.8 4.5 3 4.5s3-1.7 3-4.5"/>
-              <line x1="10" y1="11.5" x2="10" y2="18" strokeWidth="1.5" strokeLinecap="round" stroke="white"/>
-            </svg>
-          </div>
-          <div className="w-2 h-2 rounded-full mt-0.5" style={{ backgroundColor: "var(--green)" }} />
-        </div>
-      </div>
-      {/* Other pins */}
-      <div className="absolute" style={{ left: 220, top: 192 }}><MapPin type="restaurant" /></div>
-      <div className="absolute" style={{ left: 170, top: 112 }}><MapPin type="mosque" /></div>
-      <div className="absolute" style={{ left: 177, top: 208 }}><MapPin type="user" /></div>
-    </div>
+export const RestaurantMapDetailScreen = () => {
+  const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
 
-    {/* Status + back */}
-    <div className="relative z-10 flex-shrink-0">
-      <StatusBar />
-      <div className="px-4 pt-1">
-        <BackButton />
-      </div>
-    </div>
+  useEffect(() => {
+    getRestaurant("sindang-halal").then(setRestaurant).catch(() => {});
+  }, []);
 
-    <div className="flex-1" />
-
-    {/* Info card */}
-    <div className="relative z-10 bg-white rounded-t-3xl shadow-lg flex-shrink-0 animate-slide-up">
-      <div className="flex justify-center pt-3 pb-4">
-        <div className="w-10 h-1 bg-[var(--border)] rounded-full" />
-      </div>
-      <div className="px-4 pb-8 flex gap-4">
-        <div className="w-20 h-20 rounded-2xl overflow-hidden bg-[#E8E6E1] flex-shrink-0">
-          <img src="https://images.unsplash.com/photo-1498654896293-37c98e7f5fe4?w=120&h=120&fit=crop&auto=format&q=80" alt="restaurant" className="w-full h-full object-cover" />
-        </div>
-        <div className="flex-1 space-y-1.5">
-          <HalalBadge variant="certified" />
-          <h2 className="font-bold text-lg text-[#1A1A18] leading-tight">신당 할랄 키친</h2>
-          <div className="flex items-center gap-2 text-xs text-[var(--muted)]">
-            <span>⭐ 4.8</span>
-            <span>·</span>
-            <span>📍 2.3km</span>
-            <span>·</span>
-            <span>⏱ 25-35분</span>
-          </div>
-          <div className="flex gap-2 pt-1">
-            <button className="flex-1 py-2.5 rounded-xl font-bold text-white text-sm" style={{ backgroundColor: "var(--green)" }}>메뉴 보기</button>
-            <button className="flex-1 py-2.5 rounded-xl font-semibold text-sm border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>길 찾기</button>
+  return (
+    <div className="flex flex-col h-full relative overflow-hidden bg-[var(--cream)]">
+      <div className="absolute inset-0">
+        <FakeMapBg />
+        <div className="absolute" style={{ left: 100, top: 160 }}>
+          <div className="flex flex-col items-center">
+            <div className="bg-white rounded-xl px-3 py-1.5 shadow-lg mb-1 border-2" style={{ borderColor: "var(--green)" }}>
+              <p className="text-xs font-bold text-[#1A1A18]">{restaurant?.nameKo ?? "로딩중..."}</p>
+            </div>
+            <div className="w-12 h-12 rounded-full border-3 border-white shadow-lg flex items-center justify-center" style={{ backgroundColor: "var(--green)" }}>
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="white">
+                <path d="M7 2v5M10 2v5M13 2v5M7 7c0 2.8 1.8 4.5 3 4.5s3-1.7 3-4.5"/>
+                <line x1="10" y1="11.5" x2="10" y2="18" strokeWidth="1.5" strokeLinecap="round" stroke="white"/>
+              </svg>
+            </div>
+            <div className="w-2 h-2 rounded-full mt-0.5" style={{ backgroundColor: "var(--green)" }} />
           </div>
         </div>
+        <div className="absolute" style={{ left: 220, top: 192 }}><MapPin type="restaurant" /></div>
+        <div className="absolute" style={{ left: 170, top: 112 }}><MapPin type="mosque" /></div>
+        <div className="absolute" style={{ left: 177, top: 208 }}><MapPin type="user" /></div>
+      </div>
+
+      <div className="relative z-10 flex-shrink-0">
+        <StatusBar />
+        <div className="px-4 pt-1">
+          <BackButton />
+        </div>
+      </div>
+
+      <div className="flex-1" />
+
+      <div className="relative z-10 bg-white rounded-t-3xl shadow-lg flex-shrink-0 animate-slide-up">
+        <div className="flex justify-center pt-3 pb-4">
+          <div className="w-10 h-1 bg-[var(--border)] rounded-full" />
+        </div>
+        <div className="px-4 pb-8 flex gap-4">
+          <div className="w-20 h-20 rounded-2xl overflow-hidden bg-[#E8E6E1] flex-shrink-0">
+            {restaurant?.photo && (
+              <img src={`${restaurant.photo}&w=120&h=120&fit=crop&auto=format&q=80`} alt={restaurant.nameKo} className="w-full h-full object-cover" />
+            )}
+          </div>
+          <div className="flex-1 space-y-1.5">
+            {restaurant && <HalalBadge variant={halalBadgeMap(restaurant.halalStatus)} />}
+            <h2 className="font-bold text-lg text-[#1A1A18] leading-tight">{restaurant?.nameKo ?? "로딩중..."}</h2>
+            {restaurant && (
+              <div className="flex items-center gap-2 text-xs text-[var(--muted)]">
+                <span>⭐ {restaurant.rating}</span>
+                <span>·</span>
+                <span>📍 {restaurant.distance}</span>
+                <span>·</span>
+                <span>⏱ {restaurant.deliveryTime}</span>
+              </div>
+            )}
+            <div className="flex gap-2 pt-1">
+              <button className="flex-1 py-2.5 rounded-xl font-bold text-white text-sm" style={{ backgroundColor: "var(--green)" }}>메뉴 보기</button>
+              <button className="flex-1 py-2.5 rounded-xl font-semibold text-sm border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>길 찾기</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
