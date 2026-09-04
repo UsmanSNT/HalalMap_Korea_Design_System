@@ -2,196 +2,213 @@ import React, { useState } from "react";
 import { StatusBar, BackButton } from "../components/Shared";
 import type { ScreenId } from "../App";
 
-// ── 15. Onboarding Tutorial Overlay ───────────────────────────────────────────
-const steps = [
+// ── 15. Onboarding Tutorial ──────────────────────────────────────────────────
+const tutorialSteps = [
   {
-    id: "search",
+    icon: "🔍",
     title: "할랄 식당 검색",
-    body: "검색창을 눌러 주변 할랄 인증 식당을 찾아보세요. 음식 종류, 거리, 인증 유형으로 필터링할 수 있어요.",
-    spotlight: { top: 160, left: 16, width: 358, height: 48, radius: 24 },
-    callout: { top: 228, align: "center" as const },
-    arrowDir: "up" as const,
+    body: "검색창을 눌러 주변 할랄 인증 식당을 찾아보세요.\n음식 종류, 거리, 인증 유형으로 필터링할 수 있어요.",
+    color: "var(--green)",
+    illustration: (
+      <div className="w-48 h-48 relative flex items-center justify-center">
+        <div className="absolute inset-0 rounded-full" style={{ backgroundColor: "var(--green-light)" }} />
+        <div className="relative z-10 flex flex-col items-center gap-3">
+          <div className="w-44 h-11 bg-white rounded-2xl flex items-center gap-2 px-3 shadow-md border border-[var(--border)]">
+            <span className="text-base">🔍</span>
+            <span className="text-xs text-[var(--muted)]">할랄 음식 검색...</span>
+          </div>
+          <div className="flex gap-2">
+            {["한식", "터키", "우즈벡", "인도"].map((c) => (
+              <div key={c} className="bg-white rounded-full px-2.5 py-1 text-[10px] font-medium text-[#1A1A18] shadow-sm">{c}</div>
+            ))}
+          </div>
+          <div className="flex gap-2">
+            <div className="bg-white rounded-xl p-2 shadow-sm flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg" style={{ backgroundColor: "var(--green-light)" }} />
+              <div className="space-y-1">
+                <div className="h-2 bg-gray-200 rounded w-12" />
+                <div className="h-1.5 bg-gray-100 rounded w-8" />
+              </div>
+            </div>
+            <div className="bg-white rounded-xl p-2 shadow-sm flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg" style={{ backgroundColor: "var(--gold-light)" }} />
+              <div className="space-y-1">
+                <div className="h-2 bg-gray-200 rounded w-12" />
+                <div className="h-1.5 bg-gray-100 rounded w-8" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    ),
   },
   {
-    id: "prayer",
-    title: "기도 시간 배너",
-    body: "홈 화면 상단에서 다음 기도까지 남은 시간을 확인하세요. 알림 설정으로 기도 시간을 놓치지 마세요.",
-    spotlight: { top: 108, left: 16, width: 358, height: 56, radius: 16 },
-    callout: { top: 188, align: "center" as const },
-    arrowDir: "up" as const,
+    icon: "🕌",
+    title: "기도 시간 & 모스크",
+    body: "다음 기도까지 남은 시간을 실시간으로 확인하고,\n근처 모스크와 기도실을 찾아보세요.",
+    color: "var(--gold)",
+    illustration: (
+      <div className="w-48 h-48 relative flex items-center justify-center">
+        <div className="absolute inset-0 rounded-full" style={{ backgroundColor: "var(--gold-light)" }} />
+        <div className="relative z-10 flex flex-col items-center gap-3">
+          <div className="rounded-xl p-3 flex items-center gap-2 shadow-md" style={{ background: "linear-gradient(135deg, var(--green-dark), var(--green))" }}>
+            <span className="text-2xl">🌙</span>
+            <div>
+              <p className="text-white text-xs font-semibold">다음 기도: 아스르 Asr</p>
+              <div className="h-1.5 bg-white/20 rounded-full mt-1 w-28"><div className="h-full w-1/3 rounded-full bg-[var(--gold)]" /></div>
+            </div>
+            <p className="text-[var(--gold)] text-sm font-bold">2:14</p>
+          </div>
+          <div className="flex gap-2">
+            <div className="bg-white rounded-xl px-3 py-2 shadow-sm text-center">
+              <span className="text-lg">🕌</span>
+              <p className="text-[10px] font-bold text-[#1A1A18] mt-0.5">서울 중앙</p>
+              <p className="text-[9px] text-[var(--muted)]">0.8km</p>
+            </div>
+            <div className="bg-white rounded-xl px-3 py-2 shadow-sm text-center">
+              <span className="text-lg">🧭</span>
+              <p className="text-[10px] font-bold text-[#1A1A18] mt-0.5">키블라</p>
+              <p className="text-[9px] text-[var(--muted)]">253.4°</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    ),
   },
   {
-    id: "bottomnav",
-    title: "하단 탭 바",
-    body: "홈, 검색, 주문, 기도, 프로필 5개 탭으로 앱의 모든 기능에 빠르게 접근할 수 있습니다.",
-    spotlight: { top: 760, left: 0, width: 390, height: 84, radius: 0 },
-    callout: { top: 666, align: "center" as const },
-    arrowDir: "down" as const,
-  },
-  {
-    id: "scan",
+    icon: "📱",
     title: "할랄 스캐너",
-    body: "제품 바코드를 스캔해 할랄 여부를 즉시 확인하세요. 포장 식품 쇼핑 시 꼭 활용해 보세요!",
-    spotlight: { top: 300, left: 120, width: 150, height: 150, radius: 75 },
-    callout: { top: 470, align: "center" as const },
-    arrowDir: "up" as const,
+    body: "제품 바코드를 스캔해 할랄 여부를 즉시 확인하세요.\n포장 식품 쇼핑 시 꼭 활용해 보세요!",
+    color: "var(--green)",
+    illustration: (
+      <div className="w-48 h-48 relative flex items-center justify-center">
+        <div className="absolute inset-0 rounded-full" style={{ backgroundColor: "var(--green-light)" }} />
+        <div className="relative z-10 flex flex-col items-center gap-3">
+          <div className="w-28 h-28 relative border-2 border-[#1B6B4A] rounded-xl flex items-center justify-center bg-white/50">
+            <div className="absolute top-0 left-0 w-4 h-4 border-t-3 border-l-3 border-[#1B6B4A] rounded-tl-lg" />
+            <div className="absolute top-0 right-0 w-4 h-4 border-t-3 border-r-3 border-[#1B6B4A] rounded-tr-lg" />
+            <div className="absolute bottom-0 left-0 w-4 h-4 border-b-3 border-l-3 border-[#1B6B4A] rounded-bl-lg" />
+            <div className="absolute bottom-0 right-0 w-4 h-4 border-b-3 border-r-3 border-[#1B6B4A] rounded-br-lg" />
+            <div className="flex gap-0.5 items-center">
+              {[3,5,2,4,3,6,2,4,3].map((h, i) => (
+                <div key={i} className="bg-[#1A1A18] w-0.5 rounded-full" style={{ height: `${h * 5}px` }} />
+              ))}
+            </div>
+            <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-red-500/70 -translate-y-1/2" />
+          </div>
+          <div className="flex items-center gap-2 bg-white rounded-xl px-3 py-2 shadow-md">
+            <div className="w-5 h-5 rounded-full flex items-center justify-center text-xs text-white" style={{ backgroundColor: "var(--green)" }}>✓</div>
+            <p className="text-xs font-bold text-[#1A1A18]">할랄 인증 확인됨</p>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  {
+    icon: "🗺️",
+    title: "하단 탭 바 사용법",
+    body: "홈, 검색, 주문, 기도, 프로필 — 5개 탭으로\n앱의 모든 기능에 빠르게 접근할 수 있어요.",
+    color: "var(--green)",
+    illustration: (
+      <div className="w-56 h-48 relative flex items-center justify-center">
+        <div className="absolute inset-0 rounded-3xl" style={{ backgroundColor: "var(--green-light)" }} />
+        <div className="relative z-10 flex flex-col items-center gap-3">
+          <div className="bg-white rounded-2xl shadow-md px-4 py-3 flex gap-4">
+            {[
+              { icon: "🏠", label: "홈", active: true },
+              { icon: "🔍", label: "검색", active: false },
+              { icon: "🛵", label: "주문", active: false },
+              { icon: "🌙", label: "기도", active: false },
+              { icon: "👤", label: "프로필", active: false },
+            ].map((tab) => (
+              <div key={tab.label} className="flex flex-col items-center gap-0.5">
+                <span className="text-lg" style={{ opacity: tab.active ? 1 : 0.4 }}>{tab.icon}</span>
+                <span className="text-[9px] font-medium" style={{ color: tab.active ? "var(--green)" : "var(--muted)" }}>{tab.label}</span>
+                {tab.active && <div className="w-1 h-1 rounded-full" style={{ backgroundColor: "var(--green)" }} />}
+              </div>
+            ))}
+          </div>
+          <div className="flex gap-2">
+            {["식당 목록", "기도 시간", "주문 내역", "내 프로필"].map((label) => (
+              <div key={label} className="bg-white rounded-lg px-2 py-1 shadow-sm">
+                <p className="text-[9px] font-medium text-[var(--muted)]">{label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    ),
   },
 ];
 
-// Fake home screen to place spotlight over
-const FakeHomePreview = () => (
-  <div className="w-full h-full bg-[var(--cream)] relative pointer-events-none select-none overflow-hidden">
-    {/* Status bar */}
-    <div className="h-12 bg-[var(--green)] flex items-center justify-between px-6">
-      <span className="text-white text-xs font-bold">9:41</span>
-      <div className="flex gap-1.5">
-        <div className="w-4 h-2.5 bg-white/60 rounded-sm" />
-        <div className="w-3 h-2.5 bg-white/60 rounded-sm" />
-        <div className="w-6 h-2.5 bg-white/40 rounded-sm" />
-      </div>
-    </div>
-
-    {/* Prayer banner */}
-    <div className="mx-4 mt-3 rounded-xl p-3 flex items-center gap-2" style={{ background: "linear-gradient(90deg, var(--green-dark), var(--green))" }}>
-      <span className="text-xl">🌙</span>
-      <div className="flex-1">
-        <p className="text-white text-xs font-semibold">다음 기도: 아스르 Asr</p>
-        <div className="h-1.5 bg-white/20 rounded-full mt-1"><div className="h-full w-1/3 rounded-full bg-[var(--gold)]" /></div>
-      </div>
-      <p className="text-[var(--gold)] text-xs font-bold">2:14</p>
-    </div>
-
-    {/* Search bar */}
-    <div className="mx-4 mt-3 bg-white rounded-2xl h-12 flex items-center gap-2 px-4 shadow-sm border border-[var(--border)]">
-      <span className="text-[var(--muted)] text-base">🔍</span>
-      <p className="text-[var(--muted)] text-sm">할랄 음식 검색...</p>
-    </div>
-
-    {/* Category chips */}
-    <div className="flex gap-2 px-4 mt-3 overflow-hidden">
-      {["한식 할랄", "터키", "우즈베크", "인도"].map((c) => (
-        <div key={c} className="flex-shrink-0 bg-white rounded-full px-3 py-1.5 text-xs font-medium text-[#1A1A18] border border-[var(--border)]">{c}</div>
-      ))}
-    </div>
-
-    {/* Section label */}
-    <div className="flex justify-between items-center px-4 mt-4 mb-2">
-      <p className="font-bold text-sm text-[#1A1A18]">인기 할랄 식당</p>
-      <p className="text-xs" style={{ color: "var(--green)" }}>더보기 ›</p>
-    </div>
-
-    {/* Restaurant card previews */}
-    <div className="flex gap-3 px-4 overflow-hidden">
-      {["#D8D4CC", "#C4C0B8"].map((bg, i) => (
-        <div key={i} className="w-40 flex-shrink-0 bg-white rounded-xl overflow-hidden shadow-sm">
-          <div className="h-24 rounded-t-xl" style={{ backgroundColor: bg }} />
-          <div className="p-2 space-y-1">
-            <div className="h-3 bg-gray-200 rounded w-20" />
-            <div className="h-2.5 bg-gray-100 rounded w-14" />
-          </div>
-        </div>
-      ))}
-    </div>
-
-    {/* Bottom nav */}
-    <div className="absolute bottom-0 left-0 right-0 h-20 bg-white border-t border-[var(--border)] flex items-center justify-around px-4">
-      {["🏠", "🔍", "🛵", "🌙", "👤"].map((icon, i) => (
-        <div key={i} className="flex flex-col items-center gap-1">
-          <span className="text-xl" style={{ opacity: i === 0 ? 1 : 0.4 }}>{icon}</span>
-          <div className="h-1 w-1 rounded-full" style={{ backgroundColor: i === 0 ? "var(--green)" : "transparent" }} />
-        </div>
-      ))}
-    </div>
-  </div>
-);
-
 export const TutorialScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const [step, setStep] = useState(0);
-  const current = steps[step];
-  const isLast = step === steps.length - 1;
-
-  const sp = current.spotlight;
+  const current = tutorialSteps[step];
+  const isLast = step === tutorialSteps.length - 1;
 
   return (
-    <div className="flex flex-col h-full relative bg-black">
-      {/* Base app preview */}
-      <div className="absolute inset-0 z-0">
-        <FakeHomePreview />
+    <div className="flex flex-col h-full bg-white">
+      <StatusBar />
+
+      {/* Skip / step counter */}
+      <div className="flex items-center justify-between px-5 pt-2 pb-1">
+        <p className="text-xs font-medium text-[var(--muted)]">{step + 1} / {tutorialSteps.length}</p>
+        <button onClick={() => onNavigate?.("home")} className="text-sm font-medium" style={{ color: "var(--muted)" }}>건너뛰기</button>
       </div>
 
-      {/* Spotlight mask: dark overlay with hole cut out via SVG clip */}
-      <div className="absolute inset-0 z-10 pointer-events-none">
-        <svg width="390" height="844" viewBox="0 0 390 844">
-          <defs>
-            <mask id="spot-mask">
-              <rect width="390" height="844" fill="white" />
-              <rect
-                x={sp.left} y={sp.top}
-                width={sp.width} height={sp.height}
-                rx={sp.radius} ry={sp.radius}
-                fill="black"
-              />
-            </mask>
-          </defs>
-          <rect width="390" height="844" fill="rgba(0,0,0,0.72)" mask="url(#spot-mask)" />
-          {/* Spotlight border glow */}
-          <rect
-            x={sp.left - 2} y={sp.top - 2}
-            width={sp.width + 4} height={sp.height + 4}
-            rx={sp.radius + 2} ry={sp.radius + 2}
-            fill="none" stroke="#1B6B4A" strokeWidth="2.5" opacity="0.9"
-          />
-        </svg>
-      </div>
-
-      {/* Callout tooltip */}
-      <div className="absolute z-20 left-4 right-4 pointer-events-none" style={{ top: current.callout.top }}>
-        {/* Arrow */}
-        {current.arrowDir === "up" && (
-          <div className="flex justify-center mb-1.5">
-            <svg width="20" height="14" viewBox="0 0 20 14">
-              <polygon points="10,0 20,14 0,14" fill="white" />
-            </svg>
-          </div>
-        )}
-        <div className="bg-white rounded-2xl p-4 shadow-xl">
-          <p className="font-bold text-sm text-[#1A1A18] mb-1">{current.title}</p>
-          <p className="text-xs text-[var(--muted)] leading-relaxed">{current.body}</p>
+      {/* Content area */}
+      <div className="flex-1 flex flex-col items-center justify-center px-8 gap-6">
+        {/* Illustration */}
+        <div className="flex items-center justify-center">
+          {current.illustration}
         </div>
-        {current.arrowDir === "down" && (
-          <div className="flex justify-center mt-1.5">
-            <svg width="20" height="14" viewBox="0 0 20 14">
-              <polygon points="10,14 20,0 0,0" fill="white" />
-            </svg>
-          </div>
-        )}
-      </div>
 
-      {/* Controls */}
-      <div className="absolute bottom-8 left-4 right-4 z-20 space-y-3">
+        {/* Text */}
+        <div className="text-center space-y-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold text-white" style={{ backgroundColor: current.color }}>
+            <span>{current.icon}</span>
+            <span>{current.title}</span>
+          </div>
+          <p className="text-sm text-[#6B7280] leading-relaxed whitespace-pre-line mt-3">{current.body}</p>
+        </div>
+
         {/* Dots */}
-        <div className="flex justify-center gap-1.5">
-          {steps.map((_, i) => (
-            <div key={i} className="h-2 rounded-full transition-all" style={{ backgroundColor: i === step ? "var(--green)" : "rgba(255,255,255,0.4)", width: i === step ? "20px" : "8px" }} />
+        <div className="flex gap-2">
+          {tutorialSteps.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setStep(i)}
+              className="rounded-full transition-all duration-300"
+              style={{
+                width: i === step ? "24px" : "8px",
+                height: "8px",
+                backgroundColor: i === step ? "var(--green)" : "var(--border)",
+              }}
+            />
           ))}
         </div>
+      </div>
 
+      {/* Actions */}
+      <div className="px-6 pb-10 space-y-3">
         <div className="flex gap-2">
           {step > 0 && (
-            <button onClick={() => setStep(s => s - 1)} className="flex-1 py-3 rounded-2xl font-bold text-sm bg-white/20 text-white backdrop-blur">
+            <button
+              onClick={() => setStep(s => s - 1)}
+              className="flex-1 py-3.5 rounded-2xl font-bold text-sm border"
+              style={{ color: "var(--green)", borderColor: "var(--green)" }}
+            >
               이전
             </button>
           )}
-          <button onClick={() => !isLast && setStep(s => s + 1)}
-            className="flex-1 py-3 rounded-2xl font-bold text-sm text-white"
-            style={{ backgroundColor: isLast ? "var(--gold)" : "var(--green)" }}>
-            {isLast ? "시작하기 🎉" : "다음"}
+          <button
+            onClick={() => isLast ? onNavigate?.("home") : setStep(s => s + 1)}
+            className="flex-1 py-3.5 rounded-2xl font-bold text-sm text-white shadow-sm"
+            style={{ backgroundColor: isLast ? "var(--gold)" : "var(--green)" }}
+          >
+            {isLast ? "시작하기" : "다음"}
           </button>
         </div>
-
-        {!isLast && (
-          <button className="w-full py-2 text-white/50 text-xs font-medium">건너뛰기</button>
-        )}
       </div>
     </div>
   );

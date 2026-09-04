@@ -14,6 +14,7 @@ const profileMenu = [
   { icon: "🌐", label: "언어 설정", sub: "한국어" },
   { icon: "🎟", label: "쿠폰 · 포인트", sub: "3,200포인트" },
   { icon: "❓", label: "고객센터", sub: "" },
+  { icon: "📖", label: "앱 사용법", sub: "튜토리얼 다시보기" },
   { icon: "⚙️", label: "설정", sub: "" },
 ];
 
@@ -26,6 +27,7 @@ const profileNavMap: Record<string, ScreenId> = {
   "언어 설정": "language",
   "쿠폰 · 포인트": "loyalty",
   "고객센터": "community",
+  "앱 사용법": "tutorial",
   "설정": "settings",
 };
 
