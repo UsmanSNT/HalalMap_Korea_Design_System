@@ -2,52 +2,44 @@ import React, { useState, useEffect } from "react";
 import { GeometricPattern, StatusBar, BottomNav, BackButton, Toggle, HalalBadge, StarRating, TabId } from "../components/Shared";
 import { getProfile, type Profile } from "../api/profile";
 import { getSavedPlaces, type SavedPlaces } from "../api/savedPlaces";
+import { useLanguage } from "../i18n/LanguageContext";
+import { LANGUAGES } from "../i18n";
 import type { ScreenId } from "../App";
 
 // ── 28. Profile Screen ─────────────────────────────────────────────────────────
-const profileMenu = [
-  { icon: "📦", label: "주문 내역", sub: "최근 주문 12개" },
-  { icon: "🏠", label: "배달 주소 관리", sub: "3개 저장됨" },
-  { icon: "💳", label: "결제 수단", sub: "신한카드 ····4521" },
-  { icon: "❤️", label: "저장된 식당 · 모스크", sub: "5개 저장됨" },
-  { icon: "🔔", label: "알림 설정", sub: "" },
-  { icon: "🌐", label: "언어 설정", sub: "한국어" },
-  { icon: "🎟", label: "쿠폰 · 포인트", sub: "3,200포인트" },
-  { icon: "❓", label: "고객센터", sub: "" },
-  { icon: "📖", label: "앱 사용법", sub: "튜토리얼 다시보기" },
-  { icon: "⚙️", label: "설정", sub: "" },
-];
-
-const profileNavMap: Record<string, ScreenId> = {
-  "주문 내역": "order-history",
-  "저장된 식당 · 모스크": "saved-places",
-  "배달 주소 관리": "address",
-  "결제 수단": "settings",
-  "알림 설정": "notifications",
-  "언어 설정": "language",
-  "쿠폰 · 포인트": "loyalty",
-  "고객센터": "community",
-  "앱 사용법": "tutorial",
-  "설정": "settings",
-};
-
 export const ProfileScreen = ({ onTabChange, onLogout, onNavigate }: { onTabChange?: (t: TabId) => void; onLogout?: () => void; onNavigate?: (s: ScreenId) => void }) => {
+  const { t, lang } = useLanguage();
   const [profile, setProfile] = useState<Profile | null>(null);
 
   useEffect(() => {
     getProfile().then(setProfile).catch(() => {});
   }, []);
 
+  const currentLangName = LANGUAGES.find((l) => l.code === lang)?.name ?? "한국어";
+
+  const profileMenu: { icon: string; label: string; sub: string; target: ScreenId }[] = [
+    { icon: "📦", label: t("profile.menu_orders"), sub: t("profile.menu_orders_sub").replace("{count}", "12"), target: "order-history" },
+    { icon: "🏠", label: t("profile.menu_address"), sub: t("profile.menu_address_sub").replace("{count}", "3"), target: "address" },
+    { icon: "💳", label: t("profile.menu_payment"), sub: "신한카드 ····4521", target: "settings" },
+    { icon: "❤️", label: t("profile.menu_saved"), sub: t("profile.menu_saved_sub").replace("{count}", "5"), target: "saved-places" },
+    { icon: "🔔", label: t("profile.menu_notifications"), sub: "", target: "notifications" },
+    { icon: "🌐", label: t("profile.menu_language"), sub: currentLangName, target: "language" },
+    { icon: "🎟", label: t("profile.menu_loyalty"), sub: t("profile.menu_loyalty_sub").replace("{points}", "3,200"), target: "loyalty" },
+    { icon: "❓", label: t("profile.menu_support"), sub: "", target: "community" },
+    { icon: "📖", label: t("profile.menu_tutorial"), sub: t("profile.menu_tutorial_sub"), target: "tutorial" },
+    { icon: "⚙️", label: t("profile.menu_settings"), sub: "", target: "settings" },
+  ];
+
   const statsRow = profile
     ? [
-        { label: "총 주문", val: `${profile.stats.orders}회` },
-        { label: "리뷰", val: `${profile.stats.reviews}개` },
-        { label: "저장", val: `${profile.stats.saved}개` },
+        { label: t("profile.stat_orders"), val: `${profile.stats.orders}회` },
+        { label: t("profile.stat_reviews"), val: `${profile.stats.reviews}개` },
+        { label: t("profile.stat_saved"), val: `${profile.stats.saved}개` },
       ]
     : [
-        { label: "총 주문", val: "-" },
-        { label: "리뷰", val: "-" },
-        { label: "저장", val: "-" },
+        { label: t("profile.stat_orders"), val: "-" },
+        { label: t("profile.stat_reviews"), val: "-" },
+        { label: t("profile.stat_saved"), val: "-" },
       ];
 
   return (
@@ -61,11 +53,11 @@ export const ProfileScreen = ({ onTabChange, onLogout, onNavigate }: { onTabChan
             {profile?.initials ?? "..."}
           </div>
           <div className="flex-1">
-            <p className="font-bold text-lg text-white">{profile?.name ?? "로딩중..."}</p>
+            <p className="font-bold text-lg text-white">{profile?.name ?? t("common.loading")}</p>
             <p className="text-white/70 text-sm">{profile?.email ?? ""}</p>
             <div className="flex items-center gap-1.5 mt-1.5">
               <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-white/20 text-white">{profile?.membership ?? ""}</span>
-              {profile && <span className="text-xs text-white/60">· {profile.points.toLocaleString()} 포인트</span>}
+              {profile && <span className="text-xs text-white/60">· {profile.points.toLocaleString()} {t("profile.points_unit")}</span>}
             </div>
           </div>
           <button className="w-8 h-8 bg-white/15 rounded-lg flex items-center justify-center">
@@ -88,7 +80,7 @@ export const ProfileScreen = ({ onTabChange, onLogout, onNavigate }: { onTabChan
       {/* Menu */}
       <div className="bg-white mt-2 divide-y divide-[var(--border)]">
         {profileMenu.map((item) => (
-          <button key={item.label} onClick={() => { const target = profileNavMap[item.label]; if (target) onNavigate?.(target); }} className="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[var(--cream)]">
+          <button key={item.label} onClick={() => onNavigate?.(item.target)} className="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[var(--cream)]">
             <div className="w-10 h-10 rounded-xl bg-[var(--cream)] flex items-center justify-center text-lg flex-shrink-0">
               {item.icon}
             </div>
@@ -106,7 +98,7 @@ export const ProfileScreen = ({ onTabChange, onLogout, onNavigate }: { onTabChan
       <div className="px-5 py-4 space-y-3">
         <p className="text-xs text-[var(--muted)] text-center">HalalMap Korea v1.0.0</p>
         <button onClick={onLogout} className="w-full py-3 rounded-2xl font-semibold text-sm border border-[var(--danger)] text-[var(--danger)]">
-          Chiqish
+          {t("common.logout")}
         </button>
       </div>
     </div>
@@ -121,6 +113,7 @@ const halalBadgeMap = (status: string) =>
   status === "certified" ? ("certified" as const) : status === "muslim-owned" ? ("owned" as const) : ("friendly" as const);
 
 export const SavedPlacesScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
+  const { t } = useLanguage();
   const [tab, setTab] = useState<"restaurants" | "mosques">("restaurants");
   const [places, setPlaces] = useState<SavedPlaces | null>(null);
 
@@ -134,20 +127,20 @@ export const SavedPlacesScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
           <BackButton onBack={() => onNavigate?.("home")} />
-          <h1 className="font-bold text-lg flex-1">저장된 장소</h1>
+          <h1 className="font-bold text-lg flex-1">{t("profile.saved_places_title")}</h1>
         </div>
         <div className="flex bg-[var(--cream)] mx-4 mb-4 rounded-xl p-1">
-          {(["restaurants", "mosques"] as const).map((t) => (
+          {(["restaurants", "mosques"] as const).map((tabId) => (
             <button
-              key={t}
-              onClick={() => setTab(t)}
+              key={tabId}
+              onClick={() => setTab(tabId)}
               className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all"
               style={{
-                backgroundColor: tab === t ? "var(--green)" : "transparent",
-                color: tab === t ? "white" : "var(--muted)",
+                backgroundColor: tab === tabId ? "var(--green)" : "transparent",
+                color: tab === tabId ? "white" : "var(--muted)",
               }}
             >
-              {t === "restaurants" ? "❤️ 식당" : "🕌 모스크"}
+              {tabId === "restaurants" ? t("profile.tab_restaurants") : t("profile.tab_mosques")}
             </button>
           ))}
         </div>
@@ -155,7 +148,7 @@ export const SavedPlacesScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =
 
       <div className="flex-1 phone-scroll px-4 py-4 space-y-3">
         {!places ? (
-          <p className="text-center text-sm text-[var(--muted)] py-8">로딩중...</p>
+          <p className="text-center text-sm text-[var(--muted)] py-8">{t("common.loading")}</p>
         ) : tab === "restaurants" ? (
           places.restaurants.map((r) => (
             <div key={r.id} className="bg-white rounded-2xl overflow-hidden shadow-sm flex items-stretch">
@@ -169,7 +162,7 @@ export const SavedPlacesScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =
                   <StarRating rating={r.rating} count={r.reviewCount} />
                 </div>
                 <div className="flex gap-2 mt-2">
-                  <button className="flex-1 py-2 rounded-xl text-xs font-bold text-white" style={{ backgroundColor: "var(--green)" }}>주문하기</button>
+                  <button className="flex-1 py-2 rounded-xl text-xs font-bold text-white" style={{ backgroundColor: "var(--green)" }}>{t("profile.order_now")}</button>
                   <button className="w-8 h-8 rounded-xl border border-[var(--border)] flex items-center justify-center">
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="var(--danger)"><path d="M7 12S1 8 1 4.5C1 2.5 2.7 1 4.5 1c.9 0 1.8.4 2.5 1C7.7 1.4 8.6 1 9.5 1 11.3 1 13 2.5 13 4.5 13 8 7 12 7 12Z"/></svg>
                   </button>
@@ -199,25 +192,28 @@ export const SavedPlacesScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =
 };
 
 // ── 30. Address Management ─────────────────────────────────────────────────────
-const addresses = [
-  { icon: "🏠", label: "집", addr: "서울특별시 용산구 이태원로 123, 501호", default: true },
-  { icon: "🏢", label: "회사", addr: "서울특별시 강남구 테헤란로 456, 12층", default: false },
-  { icon: "🕌", label: "모스크 근처", addr: "서울특별시 용산구 우사단로10길 39", default: false },
+const addressData = [
+  { icon: "🏠", key: "home", addr: "서울특별시 용산구 이태원로 123, 501호", default: true },
+  { icon: "🏢", key: "work", addr: "서울특별시 강남구 테헤란로 456, 12층", default: false },
+  { icon: "🕌", key: "mosque", addr: "서울특별시 용산구 우사단로10길 39", default: false },
 ];
 
-export const AddressScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => (
+export const AddressScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
+  const { t } = useLanguage();
+  const addressLabels: Record<string, string> = { home: t("home.address_home"), work: "회사", mosque: "모스크 근처" };
+  return (
   <div className="flex flex-col h-full bg-[var(--cream)]">
     <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
       <StatusBar />
       <div className="flex items-center gap-3 px-4 pb-3">
         <BackButton onBack={() => onNavigate?.("home")} />
-        <h1 className="font-bold text-lg flex-1">배달 주소 관리</h1>
+        <h1 className="font-bold text-lg flex-1">{t("profile.address_title")}</h1>
       </div>
     </div>
 
     <div className="flex-1 phone-scroll px-4 py-4 space-y-3">
-      {addresses.map((addr) => (
-        <div key={addr.label} className="bg-white rounded-2xl p-4 shadow-sm">
+      {addressData.map((addr) => (
+        <div key={addr.key} className="bg-white rounded-2xl p-4 shadow-sm">
           <div className="flex items-start gap-3">
             <div
               className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
@@ -227,9 +223,9 @@ export const AddressScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-0.5">
-                <p className="font-bold text-sm text-[#1A1A18]">{addr.label}</p>
+                <p className="font-bold text-sm text-[#1A1A18]">{addressLabels[addr.key]}</p>
                 {addr.default && (
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ backgroundColor: "var(--green)", color: "white" }}>기본</span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ backgroundColor: "var(--green)", color: "white" }}>{t("profile.default_badge")}</span>
                 )}
               </div>
               <p className="text-sm text-[var(--muted)] leading-relaxed">{addr.addr}</p>
@@ -247,7 +243,7 @@ export const AddressScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
           </div>
           {!addr.default && (
             <button className="mt-2 text-xs font-medium ml-13 pl-13" style={{ color: "var(--green)", paddingLeft: "52px" }}>
-              기본 주소로 설정
+              {t("profile.set_as_default")}
             </button>
           )}
         </div>
@@ -256,7 +252,7 @@ export const AddressScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
       {/* Add new */}
       <button className="w-full py-4 rounded-2xl border-2 border-dashed border-[var(--border)] flex items-center justify-center gap-2 font-semibold text-sm" style={{ color: "var(--muted)" }}>
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="8" y1="3" x2="8" y2="13"/><line x1="3" y1="8" x2="13" y2="8"/></svg>
-        새 주소 추가
+        {t("profile.add_address")}
       </button>
 
       {/* Map hint */}
@@ -265,21 +261,25 @@ export const AddressScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="bg-white rounded-xl px-4 py-2.5 shadow-md flex items-center gap-2">
             <span>📍</span>
-            <p className="text-sm font-semibold text-[#1A1A18]">지도에서 선택</p>
+            <p className="text-sm font-semibold text-[#1A1A18]">{t("profile.select_on_map")}</p>
           </div>
         </div>
       </div>
       <div className="h-4" />
     </div>
   </div>
-);
+  );
+};
 
 // ── 31. Settings ───────────────────────────────────────────────────────────────
 export const SettingsScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
+  const { t, lang } = useLanguage();
   const [notifOrder, setNotifOrder] = useState(true);
   const [notifPrayer, setNotifPrayer] = useState(true);
   const [notifPromo, setNotifPromo] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark" | "auto">("light");
+  const currentLangName = LANGUAGES.find((l) => l.code === lang)?.name ?? "한국어";
+  const themeLabels: Record<typeof theme, string> = { light: t("profile.theme_light"), dark: t("profile.theme_dark"), auto: t("profile.theme_auto") };
 
   return (
     <div className="flex flex-col h-full bg-[var(--cream)]">
@@ -287,19 +287,19 @@ export const SettingsScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
           <BackButton onBack={() => onNavigate?.("home")} />
-          <h1 className="font-bold text-lg">설정</h1>
+          <h1 className="font-bold text-lg">{t("profile.settings_title")}</h1>
         </div>
       </div>
 
       <div className="flex-1 phone-scroll space-y-2 py-3">
         {/* Notifications */}
         <div>
-          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest px-5 mb-2">알림</p>
+          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest px-5 mb-2">{t("profile.section_notifications")}</p>
           <div className="bg-white divide-y divide-[var(--border)]">
             {[
-              { label: "주문 업데이트", sub: "주문 상태 변경 시 알림", state: notifOrder, set: setNotifOrder },
-              { label: "기도 시간 알림", sub: "각 기도 시간 전 알림", state: notifPrayer, set: setNotifPrayer },
-              { label: "프로모션", sub: "할인 및 쿠폰 알림", state: notifPromo, set: setNotifPromo },
+              { label: t("profile.notif_order"), sub: t("profile.notif_order_sub"), state: notifOrder, set: setNotifOrder },
+              { label: t("profile.notif_prayer"), sub: t("profile.notif_prayer_sub"), state: notifPrayer, set: setNotifPrayer },
+              { label: t("profile.notif_promo"), sub: t("profile.notif_promo_sub"), state: notifPromo, set: setNotifPromo },
             ].map((n) => (
               <div key={n.label} className="flex items-center justify-between px-5 py-4">
                 <div>
@@ -314,43 +314,43 @@ export const SettingsScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
 
         {/* App */}
         <div>
-          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest px-5 mb-2 mt-2">앱</p>
+          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest px-5 mb-2 mt-2">{t("profile.section_app")}</p>
           <div className="bg-white divide-y divide-[var(--border)]">
-            <div className="flex items-center justify-between px-5 py-4">
-              <div>
-                <p className="text-sm font-semibold text-[#1A1A18]">언어</p>
+            <button onClick={() => onNavigate?.("language")} className="w-full flex items-center justify-between px-5 py-4">
+              <div className="text-left">
+                <p className="text-sm font-semibold text-[#1A1A18]">{t("profile.language_row")}</p>
                 <p className="text-xs text-[var(--muted)]">Language</p>
               </div>
               <div className="flex items-center gap-2">
-                <p className="text-sm font-medium text-[var(--muted)]">한국어</p>
+                <p className="text-sm font-medium text-[var(--muted)]">{currentLangName}</p>
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--muted)" strokeWidth="1.8"><path d="M6 4l4 4-4 4" strokeLinecap="round"/></svg>
               </div>
-            </div>
+            </button>
 
             {/* Theme */}
             <div className="px-5 py-4">
-              <p className="text-sm font-semibold text-[#1A1A18] mb-3">테마</p>
+              <p className="text-sm font-semibold text-[#1A1A18] mb-3">{t("profile.theme_row")}</p>
               <div className="flex gap-2">
-                {(["light", "dark", "auto"] as const).map((t) => (
+                {(["light", "dark", "auto"] as const).map((themeId) => (
                   <button
-                    key={t}
-                    onClick={() => setTheme(t)}
+                    key={themeId}
+                    onClick={() => setTheme(themeId)}
                     className="flex-1 py-2.5 rounded-xl text-sm font-semibold border transition-all"
                     style={{
-                      backgroundColor: theme === t ? "var(--green)" : "white",
-                      color: theme === t ? "white" : "var(--muted)",
-                      borderColor: theme === t ? "var(--green)" : "var(--border)",
+                      backgroundColor: theme === themeId ? "var(--green)" : "white",
+                      color: theme === themeId ? "white" : "var(--muted)",
+                      borderColor: theme === themeId ? "var(--green)" : "var(--border)",
                     }}
                   >
-                    {t === "light" ? "라이트" : t === "dark" ? "다크" : "자동"}
+                    {themeLabels[themeId]}
                   </button>
                 ))}
               </div>
             </div>
 
             <button className="w-full flex items-center justify-between px-5 py-4">
-              <div>
-                <p className="text-sm font-semibold text-[#1A1A18]">할랄 인증 기관</p>
+              <div className="text-left">
+                <p className="text-sm font-semibold text-[#1A1A18]">{t("profile.halal_authority")}</p>
                 <p className="text-xs text-[var(--muted)]">KMF, JAKIM, IFANCA</p>
               </div>
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--muted)" strokeWidth="1.8"><path d="M6 4l4 4-4 4" strokeLinecap="round"/></svg>
@@ -360,32 +360,32 @@ export const SettingsScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
 
         {/* Account */}
         <div>
-          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest px-5 mb-2 mt-2">계정</p>
+          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest px-5 mb-2 mt-2">{t("profile.section_account")}</p>
           <div className="bg-white divide-y divide-[var(--border)]">
-            {["개인정보 변경", "비밀번호 변경"].map((item) => (
+            {[t("profile.edit_profile"), t("profile.change_password")].map((item) => (
               <button key={item} className="w-full flex items-center justify-between px-5 py-4">
                 <p className="text-sm font-semibold text-[#1A1A18]">{item}</p>
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--muted)" strokeWidth="1.8"><path d="M6 4l4 4-4 4" strokeLinecap="round"/></svg>
               </button>
             ))}
             <button className="w-full flex items-center justify-between px-5 py-4">
-              <p className="text-sm font-semibold" style={{ color: "var(--danger)" }}>데이터 삭제 요청</p>
+              <p className="text-sm font-semibold" style={{ color: "var(--danger)" }}>{t("profile.delete_data")}</p>
             </button>
           </div>
         </div>
 
         {/* Info */}
         <div>
-          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest px-5 mb-2 mt-2">정보</p>
+          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest px-5 mb-2 mt-2">{t("profile.section_info")}</p>
           <div className="bg-white divide-y divide-[var(--border)]">
-            {["이용약관", "개인정보처리방침"].map((item) => (
+            {[t("profile.terms"), t("profile.privacy")].map((item) => (
               <button key={item} className="w-full flex items-center justify-between px-5 py-4">
                 <p className="text-sm font-semibold text-[#1A1A18]">{item}</p>
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--muted)" strokeWidth="1.8"><path d="M6 4l4 4-4 4" strokeLinecap="round"/></svg>
               </button>
             ))}
             <div className="flex items-center justify-between px-5 py-4">
-              <p className="text-sm font-semibold text-[#1A1A18]">앱 버전</p>
+              <p className="text-sm font-semibold text-[#1A1A18]">{t("profile.app_version")}</p>
               <p className="text-sm text-[var(--muted)]">1.0.0</p>
             </div>
           </div>
