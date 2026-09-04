@@ -1,35 +1,32 @@
 import React, { useState, useRef, useEffect } from "react";
+import { languageOptions, type Language } from "../i18n";
 
-export type Lang = "ko" | "en" | "uz" | "ru";
+export type Lang = Language;
 
-export const LANGUAGES: { id: Lang; flag: string; name: string; native: string }[] = [
-  { id: "ko", flag: "🇰🇷", name: "Korean", native: "한국어" },
-  { id: "en", flag: "🇺🇸", name: "English", native: "English" },
-  { id: "uz", flag: "🇺🇿", name: "Uzbek", native: "O'zbekcha" },
-  { id: "ru", flag: "🇷🇺", name: "Russian", native: "Русский" },
-];
+export const LANGUAGES: { id: Lang; flag: string; name: string; native: string }[] =
+  languageOptions.map(({ code, flag, englishName, name }) => ({ id: code, flag, name: englishName, native: name }));
 
 export const SECTION_LABELS: Record<string, Record<Lang, string>> = {
-  "온보딩 & 인증":   { ko: "온보딩 & 인증", en: "Onboarding", uz: "Kirish", ru: "Регистрация" },
-  "홈 & 탐색":       { ko: "홈 & 탐색", en: "Home & Discover", uz: "Bosh sahifa", ru: "Главная" },
-  "검색 & 지도":      { ko: "검색 & 지도", en: "Search & Map", uz: "Qidiruv & Xarita", ru: "Поиск & Карта" },
-  "모스크 & 기도":    { ko: "모스크 & 기도", en: "Mosque & Prayer", uz: "Masjid & Namoz", ru: "Мечеть & Намаз" },
-  "할랄 스캐너":      { ko: "할랄 스캐너", en: "Halal Scanner", uz: "Halol Skaner", ru: "Халяль Сканер" },
-  "주문 & 추적":      { ko: "주문 & 추적", en: "Orders & Tracking", uz: "Buyurtmalar", ru: "Заказы" },
-  "프로필 & 설정":    { ko: "프로필 & 설정", en: "Profile & Settings", uz: "Profil", ru: "Профиль" },
-  "커뮤니티 & 소셜":  { ko: "커뮤니티 & 소셜", en: "Community", uz: "Jamiyat", ru: "Сообщество" },
-  "스마트 기능":      { ko: "스마트 기능", en: "Smart Features", uz: "Aqlli Funksiyalar", ru: "Умные функции" },
-  "여행 모드":        { ko: "여행 모드", en: "Travel Mode", uz: "Sayohat rejimi", ru: "Режим путешествия" },
-  "알림 & 이벤트":   { ko: "알림 & 이벤트", en: "Notifications", uz: "Bildirishnomalar", ru: "Уведомления" },
-  "포인트 & 리워드":  { ko: "포인트 & 리워드", en: "Rewards", uz: "Mukofotlar", ru: "Награды" },
-  "접근성 & 언어":   { ko: "접근성 & 언어", en: "Accessibility", uz: "Imkoniyatlar", ru: "Доступность" },
+  "온보딩 & 인증": { ko: "온보딩 & 인증", en: "Onboarding", uz: "Kirish" },
+  "홈 & 탐색": { ko: "홈 & 탐색", en: "Home & Discover", uz: "Bosh sahifa" },
+  "검색 & 지도": { ko: "검색 & 지도", en: "Search & Map", uz: "Qidiruv & Xarita" },
+  "모스크 & 기도": { ko: "모스크 & 기도", en: "Mosque & Prayer", uz: "Masjid & Namoz" },
+  "할랄 스캐너": { ko: "할랄 스캐너", en: "Halal Scanner", uz: "Halol Skaner" },
+  "주문 & 추적": { ko: "주문 & 추적", en: "Orders & Tracking", uz: "Buyurtmalar" },
+  "프로필 & 설정": { ko: "프로필 & 설정", en: "Profile & Settings", uz: "Profil" },
+  "커뮤니티 & 소셜": { ko: "커뮤니티 & 소셜", en: "Community", uz: "Hamjamiyat" },
+  "스마트 기능": { ko: "스마트 기능", en: "Smart Features", uz: "Aqlli funksiyalar" },
+  "여행 모드": { ko: "여행 모드", en: "Travel Mode", uz: "Sayohat rejimi" },
+  "알림 & 이벤트": { ko: "알림 & 이벤트", en: "Notifications", uz: "Bildirishnomalar" },
+  "포인트 & 리워드": { ko: "포인트 & 리워드", en: "Rewards", uz: "Mukofotlar" },
+  "접근성 & 언어": { ko: "접근성 & 언어", en: "Accessibility", uz: "Imkoniyatlar" },
 };
 
 export const UI_STRINGS: Record<string, Record<Lang, string>> = {
-  ownerDash:    { ko: "사장님 대시보드", en: "Owner Dashboard", uz: "Restoran paneli", ru: "Панель ресторана" },
-  deliveryApp:  { ko: "배달 파트너 앱", en: "Delivery Partner", uz: "Kuryerlik ilovasi", ru: "Приложение курьера" },
-  adminConsole: { ko: "어드민 콘솔", en: "Admin Console", uz: "Admin paneli", ru: "Консоль" },
-  screenCount:  { ko: "화면", en: "screens", uz: "ekran", ru: "экранов" },
+  ownerDash: { ko: "사장님 대시보드", en: "Owner Dashboard", uz: "Restoran paneli" },
+  deliveryApp: { ko: "배달 파트너 앱", en: "Delivery Partner", uz: "Kuryerlik ilovasi" },
+  adminConsole: { ko: "어드민 콘솔", en: "Admin Console", uz: "Admin paneli" },
+  screenCount: { ko: "화면", en: "screens", uz: "ekran" },
 };
 
 // ── Compact inline dropdown (for sidebar footer) ───────────────────────────────

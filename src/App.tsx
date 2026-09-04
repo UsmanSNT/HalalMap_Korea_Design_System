@@ -17,6 +17,8 @@ import { TravelPlannerScreen, OfflinePrayerScreen } from "./screens/TravelScreen
 import { NotificationsScreen, RamadanScreen, EidScreen } from "./screens/EngagementScreens";
 import { LoyaltyScreen, ReferralScreen } from "./screens/RewardsScreens";
 import { TutorialScreen, MultilingualScreen } from "./screens/AccessibilityScreens";
+import { LanguageSwitcherCompact } from "./components/LanguageSwitcher";
+import { useI18n } from "./i18n";
 
 export type ScreenId =
   | "splash" | "onboarding" | "signup" | "language"
@@ -110,6 +112,7 @@ function CustomerScreen({ id, onTabChange, onLogout, onNavigate }: { id: ScreenI
 }
 
 export default function App() {
+  const { language, setLanguage, t } = useI18n();
   const [user, setUser] = useState<AuthUser | null>(null);
   const [restoringSession, setRestoringSession] = useState(true);
   const [current, setCurrent] = useState<ScreenId>("splash");
@@ -146,7 +149,7 @@ export default function App() {
     setCurrent(screen);
   };
 
-  if (restoringSession) return <main className="grid min-h-dvh place-items-center bg-[var(--cream)] text-sm font-semibold text-[var(--green)]">Session tekshirilmoqda…</main>;
+  if (restoringSession) return <main className="grid min-h-dvh place-items-center bg-[var(--cream)] text-sm font-semibold text-[var(--green)]">{t("common.sessionLoading")}</main>;
 
   if (user?.role === "owner") return <DashboardApp onSwitch={handleLogout} />;
   if (user?.role === "courier") return <CourierApp onSwitch={handleLogout} />;
@@ -160,10 +163,11 @@ export default function App() {
   return (
     <div className="relative min-h-dvh bg-[#EDEAE5]">
       <div className="fixed right-3 top-3 z-50 flex items-center gap-2 rounded-xl border border-[var(--border)] bg-white/95 p-2 shadow-lg backdrop-blur">
-        <select value={current} onChange={(event) => { setHistory([]); setCurrent(event.target.value as ScreenId); }} aria-label="Ekranni tanlash" className="max-w-40 rounded-lg bg-[var(--cream)] px-2 py-1.5 text-xs font-semibold outline-none">
+        <select value={current} onChange={(event) => { setHistory([]); setCurrent(event.target.value as ScreenId); }} aria-label={t("common.selectScreen")} className="max-w-40 rounded-lg bg-[var(--cream)] px-2 py-1.5 text-xs font-semibold outline-none">
           {SCREEN_GROUPS.map((group) => <optgroup key={group.section} label={group.section}>{group.screens.map((screen) => <option key={screen.id} value={screen.id}>{screen.label}</option>)}</optgroup>)}
         </select>
-        <button onClick={handleLogout} className="rounded-lg bg-[var(--danger)] px-3 py-1.5 text-xs font-bold text-white">Chiqish</button>
+        <div className="w-36"><LanguageSwitcherCompact lang={language} onChange={setLanguage} /></div>
+        <button onClick={handleLogout} className="rounded-lg bg-[var(--danger)] px-3 py-1.5 text-xs font-bold text-white">{t("common.logout")}</button>
       </div>
       <main className="mx-auto h-dvh w-full max-w-[390px] overflow-hidden bg-[var(--cream)]">
         <CustomerScreen id={current} onTabChange={handleTabChange} onLogout={handleLogout} onNavigate={handleNavigate} />

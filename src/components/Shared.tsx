@@ -1,4 +1,5 @@
 import React from "react";
+import { useI18n, type TranslationKey } from "../i18n";
 
 // ── Geometric Pattern ────────────────────────────────────────────────────────
 export const GeometricPattern = ({
@@ -70,11 +71,10 @@ export const StatusBar = ({ dark = false }: { dark?: boolean }) => {
 // ── Bottom Navigation ────────────────────────────────────────────────────────
 type TabId = "home" | "search" | "orders" | "prayer" | "profile";
 
-const tabs: { id: TabId; label: string; labelKo: string; icon: (filled: boolean) => React.ReactNode }[] = [
+const tabs: { id: TabId; labelKey: TranslationKey; icon: (filled: boolean) => React.ReactNode }[] = [
   {
     id: "home",
-    label: "Home",
-    labelKo: "홈",
+    labelKey: "nav.home",
     icon: (f) => (
       <svg width="24" height="24" viewBox="0 0 24 24" fill={f ? "var(--green)" : "none"} stroke={f ? "var(--green)" : "var(--muted)"} strokeWidth="1.8">
         <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
@@ -84,8 +84,7 @@ const tabs: { id: TabId; label: string; labelKo: string; icon: (filled: boolean)
   },
   {
     id: "search",
-    label: "Search",
-    labelKo: "검색",
+    labelKey: "nav.search",
     icon: (f) => (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={f ? "var(--green)" : "var(--muted)"} strokeWidth="1.8">
         <circle cx="11" cy="11" r="7" fill={f ? "var(--green-light)" : "none"}/>
@@ -95,8 +94,7 @@ const tabs: { id: TabId; label: string; labelKo: string; icon: (filled: boolean)
   },
   {
     id: "orders",
-    label: "Orders",
-    labelKo: "주문",
+    labelKey: "nav.orders",
     icon: (f) => (
       <svg width="24" height="24" viewBox="0 0 24 24" fill={f ? "var(--green)" : "none"} stroke={f ? "var(--green)" : "var(--muted)"} strokeWidth="1.8">
         <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
@@ -107,8 +105,7 @@ const tabs: { id: TabId; label: string; labelKo: string; icon: (filled: boolean)
   },
   {
     id: "prayer",
-    label: "Prayer",
-    labelKo: "기도",
+    labelKey: "nav.prayer",
     icon: (f) => (
       <svg width="24" height="24" viewBox="0 0 24 24" fill={f ? "var(--green)" : "none"} stroke={f ? "var(--green)" : "var(--muted)"} strokeWidth="1.8">
         <path d="M12 3C9 3 6.5 5.5 6.5 8.5C6.5 12 9.5 14.5 12 17C14.5 14.5 17.5 12 17.5 8.5C17.5 5.5 15 3 12 3Z"/>
@@ -120,8 +117,7 @@ const tabs: { id: TabId; label: string; labelKo: string; icon: (filled: boolean)
   },
   {
     id: "profile",
-    label: "Profile",
-    labelKo: "프로필",
+    labelKey: "nav.profile",
     icon: (f) => (
       <svg width="24" height="24" viewBox="0 0 24 24" fill={f ? "var(--green)" : "none"} stroke={f ? "var(--green)" : "var(--muted)"} strokeWidth="1.8">
         <circle cx="12" cy="8" r="4" fill={f ? "var(--green-light)" : "none"}/>
@@ -137,8 +133,9 @@ export const BottomNav = ({
 }: {
   active: TabId;
   onTabChange?: (id: TabId) => void;
-}) => (
-  <div className="flex items-center border-t border-[#E8E6E1] bg-white px-1 pt-2 pb-5 flex-shrink-0">
+}) => {
+  const { t } = useI18n();
+  return <div className="flex items-center border-t border-[#E8E6E1] bg-white px-1 pt-2 pb-5 flex-shrink-0">
     {tabs.map((t) => (
       <button
         key={t.id}
@@ -150,15 +147,15 @@ export const BottomNav = ({
           className="text-[10px] font-medium"
           style={{ color: active === t.id ? "var(--green)" : "var(--muted)" }}
         >
-          {t.labelKo}
+          {t(t.labelKey)}
         </span>
         {active === t.id && (
           <span className="w-1 h-1 rounded-full" style={{ backgroundColor: "var(--green)" }} />
         )}
       </button>
     ))}
-  </div>
-);
+  </div>;
+};
 
 // ── Halal Badge ──────────────────────────────────────────────────────────────
 type BadgeVariant = "certified" | "owned" | "friendly";

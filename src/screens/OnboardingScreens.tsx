@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { GeometricPattern, StatusBar } from "../components/Shared";
 import type { ScreenId } from "../App";
+import { languageOptions, useI18n } from "../i18n";
 
 // ── 1. Splash Screen ──────────────────────────────────────────────────────────
 export const SplashScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
+  const { language } = useI18n();
   useEffect(() => {
     if (!onNavigate) return;
     const timer = setTimeout(() => onNavigate("onboarding"), 2500);
@@ -41,7 +43,7 @@ export const SplashScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => voi
         </p>
         <div className="text-center">
           <p className="text-white font-bold text-2xl tracking-tight">HalalMap Korea</p>
-          <p className="text-white/70 text-sm mt-1 font-medium">한국의 할랄 라이프스타일 앱</p>
+          <p className="text-white/70 text-sm mt-1 font-medium">{{ ko: "한국의 할랄 라이프스타일 앱", en: "Korea's halal lifestyle app", uz: "Koreyadagi halol turmush ilovasi" }[language]}</p>
         </div>
       </div>
     </div>
@@ -53,7 +55,7 @@ export const SplashScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => voi
           style={{ backgroundColor: "var(--gold)" }}
         />
       </div>
-      <p className="text-white/50 text-xs text-center mt-3 font-medium">버전 1.0.0</p>
+      <p className="text-white/50 text-xs text-center mt-3 font-medium">{{ ko: "버전", en: "Version", uz: "Versiya" }[language]} 1.0.0</p>
     </div>
   </div>
   );
@@ -65,8 +67,10 @@ const slides = [
     emoji: "🍽️",
     title: "주변 할랄 음식을\n찾아보세요",
     titleEn: "Find Halal Food Near You",
+    titleUz: "Yaqin atrofdagi halol\ntaomlarni toping",
     desc: "인증된 할랄 레스토랑, 메뉴 정보, 리뷰를 한 곳에서 확인하세요.",
     descEn: "Discover certified halal restaurants, menus, and reviews all in one place.",
+    descUz: "Sertifikatlangan halol restoranlar, menyular va sharhlarni bir joyda toping.",
     color: "var(--green)",
     illustration: (
       <div className="w-56 h-56 relative flex items-center justify-center">
@@ -91,8 +95,10 @@ const slides = [
     emoji: "🕌",
     title: "근처 모스크와\n기도실을 찾으세요",
     titleEn: "Locate Nearby Mosques",
+    titleUz: "Yaqin masjid va\nnamozxonalarni toping",
     desc: "전국 모스크, 기도실, 기도 시간을 실시간으로 안내해 드립니다.",
     descEn: "Find mosques, prayer rooms, and prayer times across South Korea.",
+    descUz: "Janubiy Koreyadagi masjidlar, namozxonalar va namoz vaqtlarini toping.",
     color: "var(--gold)",
     illustration: (
       <div className="w-56 h-56 relative flex items-center justify-center">
@@ -124,8 +130,10 @@ const slides = [
     emoji: "🔍",
     title: "제품 할랄 성분을\n바로 확인하세요",
     titleEn: "Scan Products for Halal Status",
+    titleUz: "Mahsulotning halolligini\ndarhol tekshiring",
     desc: "바코드 스캔으로 식품의 할랄 여부를 즉시 확인하고, 성분을 분석하세요.",
     descEn: "Scan barcodes to instantly verify halal status and analyze ingredients.",
+    descUz: "Shtrix-kodni skanerlab, mahsulotning halolligi va tarkibini tekshiring.",
     color: "var(--green)",
     illustration: (
       <div className="w-56 h-56 relative flex items-center justify-center">
@@ -158,6 +166,7 @@ const slides = [
 ];
 
 export const OnboardingScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
+  const { language } = useI18n();
   const [slide, setSlide] = useState(0);
   const current = slides[slide];
 
@@ -166,7 +175,7 @@ export const OnboardingScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =>
       <StatusBar />
       {/* Skip button */}
       <div className="flex justify-end px-5 pt-2">
-        <button onClick={() => onNavigate?.("home")} className="text-sm font-medium" style={{ color: "var(--muted)" }}>건너뛰기</button>
+        <button onClick={() => onNavigate?.("home")} className="text-sm font-medium" style={{ color: "var(--muted)" }}>{{ ko: "건너뛰기", en: "Skip", uz: "O'tkazib yuborish" }[language]}</button>
       </div>
 
       {/* Illustration */}
@@ -178,9 +187,9 @@ export const OnboardingScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =>
         {/* Text */}
         <div className="text-center space-y-2">
           <h1 className="font-bold text-2xl text-[#1A1A18] leading-tight whitespace-pre-line">
-            {current.title}
+            {language === "ko" ? current.title : language === "en" ? current.titleEn : current.titleUz}
           </h1>
-          <p className="text-sm text-[#6B7280] leading-relaxed">{current.desc}</p>
+          <p className="text-sm text-[#6B7280] leading-relaxed">{language === "ko" ? current.desc : language === "en" ? current.descEn : current.descUz}</p>
         </div>
 
         {/* Dots */}
@@ -208,7 +217,7 @@ export const OnboardingScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =>
             className="w-full py-4 rounded-2xl font-bold text-white text-base shadow-sm"
             style={{ backgroundColor: "var(--green)" }}
           >
-            다음
+            {{ ko: "다음", en: "Next", uz: "Keyingi" }[language]}
           </button>
         ) : (
           <>
@@ -217,14 +226,14 @@ export const OnboardingScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =>
               className="w-full py-4 rounded-2xl font-bold text-white text-base shadow-sm"
               style={{ backgroundColor: "var(--green)" }}
             >
-              시작하기
+              {{ ko: "시작하기", en: "Get started", uz: "Boshlash" }[language]}
             </button>
             <button
               onClick={() => onNavigate?.("home")}
               className="w-full py-3 rounded-2xl font-semibold text-base border"
               style={{ color: "var(--green)", borderColor: "var(--green)" }}
             >
-              로그인
+              {{ ko: "로그인", en: "Log in", uz: "Kirish" }[language]}
             </button>
           </>
         )}
@@ -469,43 +478,34 @@ export const LoginScreen = ({ onLogin }: { onLogin?: (email: string, password: s
 };
 
 // ── 5. Language Selection ─────────────────────────────────────────────────────
-const languages = [
-  { code: "ko", flag: "🇰🇷", name: "한국어", sub: "Korean" },
-  { code: "en", flag: "🇺🇸", name: "English", sub: "English" },
-  { code: "uz", flag: "🇺🇿", name: "O'zbek", sub: "Uzbek" },
-  { code: "ar", flag: "🇸🇦", name: "العربية", sub: "Arabic", rtl: true },
-  { code: "id", flag: "🇮🇩", name: "Bahasa Indonesia", sub: "Indonesian" },
-  { code: "bn", flag: "🇧🇩", name: "বাংলা", sub: "Bengali" },
-];
-
 export const LanguageScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
-  const [selected, setSelected] = useState("ko");
+  const { language, setLanguage, t } = useI18n();
 
   return (
     <div className="flex flex-col h-full bg-[var(--cream)]">
       <StatusBar />
       <div className="px-5 pt-4 pb-2">
-        <h1 className="font-bold text-2xl text-[#1A1A18]">언어 선택</h1>
-        <p className="text-sm text-[var(--muted)] mt-0.5">Select Language · اختر اللغة</p>
+        <h1 className="font-bold text-2xl text-[#1A1A18]">{t("language.title")}</h1>
+        <p className="text-sm text-[var(--muted)] mt-0.5">{t("language.subtitle")}</p>
       </div>
 
       <div className="flex-1 phone-scroll px-5 py-3 space-y-2">
-        {languages.map((lang) => (
+        {languageOptions.map((lang) => (
           <button
             key={lang.code}
-            onClick={() => setSelected(lang.code)}
+            onClick={() => setLanguage(lang.code)}
             className="w-full flex items-center gap-4 p-4 rounded-2xl bg-white border transition-all text-left"
             style={{
-              borderColor: selected === lang.code ? "var(--green)" : "var(--border)",
-              boxShadow: selected === lang.code ? "0 0 0 2px rgba(27,107,74,0.15)" : "none",
+              borderColor: language === lang.code ? "var(--green)" : "var(--border)",
+              boxShadow: language === lang.code ? "0 0 0 2px rgba(27,107,74,0.15)" : "none",
             }}
           >
             <span className="text-2xl flex-shrink-0">{lang.flag}</span>
-            <div className="flex-1" dir={lang.rtl ? "rtl" : "ltr"}>
-              <p className={`font-semibold text-base text-[#1A1A18] ${lang.rtl ? "font-arabic" : ""}`}>{lang.name}</p>
-              <p className="text-sm text-[var(--muted)]">{lang.sub}</p>
+            <div className="flex-1">
+              <p className="font-semibold text-base text-[#1A1A18]">{lang.name}</p>
+              <p className="text-sm text-[var(--muted)]">{lang.englishName}</p>
             </div>
-            {selected === lang.code && (
+            {language === lang.code && (
               <div
                 className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0"
                 style={{ backgroundColor: "var(--green)" }}
@@ -525,7 +525,7 @@ export const LanguageScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
           className="w-full py-4 rounded-2xl font-bold text-white text-base shadow-sm"
           style={{ backgroundColor: "var(--green)" }}
         >
-          계속하기 · Continue
+          {t("common.continue")}
         </button>
       </div>
     </div>
