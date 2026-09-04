@@ -70,3 +70,8 @@ export function useI18n() {
   if (!context) throw new Error("useI18n must be used inside I18nProvider");
   return context;
 }
+
+export function LocalizedText({ ko, en, uz }: Record<Language, string>) {
+  const { language } = useI18n();
+  return <>{({ ko, en, uz })[language]}</>;
+}

@@ -6,6 +6,7 @@ import {
 import { getRestaurants, getRestaurant, getRestaurantMenu, type Restaurant, type MenuItem } from "@/api/restaurants";
 import { getMosques, getPrayerTimes, type Mosque, type PrayerTimesData } from "@/api/mosques";
 import type { ScreenId } from "../App";
+import { LocalizedText as T } from "../i18n";
 
 const extractImageId = (url: string): string => {
   const match = url.match(/photo-([^?]+)/);
@@ -97,7 +98,7 @@ export const HomeScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabI
               </svg>
             </div>
             <div className="flex-1">
-              <p className="text-white/70 text-xs font-medium">다음 기도</p>
+              <p className="text-white/70 text-xs font-medium"><T ko="다음 기도" en="Next prayer" uz="Keyingi namoz" /></p>
               <p className="text-white font-bold text-sm">
                 {prayer.next ? `${prayer.next.name} ${prayer.next.nameEn}` : "로딩중..."}{" "}
               </p>
@@ -116,7 +117,7 @@ export const HomeScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabI
               <circle cx="8" cy="8" r="5.5"/>
               <path d="M13.5 13.5L17 17" strokeLinecap="round"/>
             </svg>
-            <span className="text-sm text-[var(--muted)] flex-1">할랄 음식, 레스토랑 검색...</span>
+            <span className="text-sm text-[var(--muted)] flex-1"><T ko="할랄 음식, 레스토랑 검색..." en="Search halal food and restaurants..." uz="Halol taom va restoranlarni qidiring..." /></span>
             <div className="w-px h-4 bg-[var(--border)]" />
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--muted)" strokeWidth="1.8">
               <circle cx="6" cy="9" r="3.5"/>
@@ -150,7 +151,7 @@ export const HomeScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabI
           <SectionHeader title="🔥 인기 할랄 식당" action="더보기" onAction={() => onNavigate?.("restaurant-list")} />
           <div className="flex gap-3 px-4 overflow-x-auto scrollbar-hide pb-1">
             {loading ? (
-              <p className="text-sm text-[var(--muted)] px-1">로딩중...</p>
+              <p className="text-sm text-[var(--muted)] px-1"><T ko="로딩중..." en="Loading..." uz="Yuklanmoqda..." /></p>
             ) : (
               featured.map((r) => (
                 <RestaurantCardV
@@ -175,7 +176,7 @@ export const HomeScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabI
           <SectionHeader title="🕌 근처 모스크" action="지도 보기" onAction={() => onNavigate?.("mosque-list")} />
           <div className="px-4 space-y-2.5">
             {loading ? (
-              <p className="text-sm text-[var(--muted)] px-1">로딩중...</p>
+              <p className="text-sm text-[var(--muted)] px-1"><T ko="로딩중..." en="Loading..." uz="Yuklanmoqda..." /></p>
             ) : (
               mosqueList.map((m) => (
                 <MosqueCard
@@ -194,7 +195,7 @@ export const HomeScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabI
 
         {/* Quick services grid */}
         <div className="pt-5 px-4">
-          <h3 className="font-bold text-base text-[#1A1A18] mb-3">서비스</h3>
+          <h3 className="font-bold text-base text-[#1A1A18] mb-3"><T ko="서비스" en="Services" uz="Xizmatlar" /></h3>
           <div className="grid grid-cols-4 gap-2">
             {[
               { icon: "📷", label: "할랄 스캔", screen: "scanner" as ScreenId },
@@ -227,11 +228,11 @@ export const HomeScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabI
           >
             <GeometricPattern color="white" opacity={0.08} />
             <div className="relative z-10">
-              <p className="text-white/80 text-xs font-medium mb-1">신규 회원 혜택</p>
-              <p className="text-white font-bold text-lg leading-tight">첫 주문 ₩3,000 할인</p>
-              <p className="text-white/70 text-xs mt-1">코드: HALAL3000</p>
+              <p className="text-white/80 text-xs font-medium mb-1"><T ko="신규 회원 혜택" en="New member offer" uz="Yangi foydalanuvchi taklifi" /></p>
+              <p className="text-white font-bold text-lg leading-tight"><T ko="첫 주문 ₩3,000 할인" en="₩3,000 off your first order" uz="Birinchi buyurtmaga ₩3,000 chegirma" /></p>
+              <p className="text-white/70 text-xs mt-1"><T ko="코드: HALAL3000" en="Code: HALAL3000" uz="Kod: HALAL3000" /></p>
               <button className="mt-3 px-4 py-2 bg-white rounded-xl text-xs font-bold" style={{ color: "var(--gold)" }}>
-                지금 주문하기 →
+                <T ko="지금 주문하기 →" en="Order now →" uz="Hozir buyurtma bering →" />
               </button>
             </div>
           </div>
@@ -270,7 +271,7 @@ export const RestaurantListScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
           <BackButton onBack={() => onNavigate?.("home")} />
-          <h1 className="font-bold text-lg flex-1">할랄 레스토랑</h1>
+          <h1 className="font-bold text-lg flex-1"><T ko="할랄 레스토랑" en="Halal restaurants" uz="Halol restoranlar" /></h1>
           <button>
             <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="var(--charcoal)" strokeWidth="1.8">
               <line x1="3" y1="7" x2="19" y2="7" strokeLinecap="round"/>
@@ -289,7 +290,7 @@ export const RestaurantListScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId
               <line x1="4" y1="6" x2="8" y2="6"/>
               <line x1="6" y1="9" x2="6" y2="9" strokeLinecap="round" strokeWidth="2"/>
             </svg>
-            빠른배달순
+            <T ko="빠른배달순" en="Fastest delivery" uz="Eng tez yetkazish" />
           </button>
           {filters.map((f) => (
             <button
@@ -311,7 +312,7 @@ export const RestaurantListScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId
       {/* List */}
       <div className="flex-1 phone-scroll px-4 py-4 space-y-3">
         {loading ? (
-          <p className="text-sm text-[var(--muted)]">로딩중...</p>
+          <p className="text-sm text-[var(--muted)]"><T ko="로딩중..." en="Loading..." uz="Yuklanmoqda..." /></p>
         ) : (
           <>
             <p className="text-xs text-[var(--muted)] font-medium mb-1">근처 할랄 레스토랑 {list.length}개</p>
@@ -367,7 +368,7 @@ export const RestaurantDetailScreen = ({ onNavigate }: { onNavigate?: (s: Screen
   if (loading || !restaurant) {
     return (
       <div className="flex flex-col h-full bg-[var(--cream)] items-center justify-center">
-        <p className="text-sm text-[var(--muted)]">로딩중...</p>
+        <p className="text-sm text-[var(--muted)]"><T ko="로딩중..." en="Loading..." uz="Yuklanmoqda..." /></p>
       </div>
     );
   }
@@ -462,7 +463,7 @@ export const RestaurantDetailScreen = ({ onNavigate }: { onNavigate?: (s: Screen
 
         {/* Menu items preview */}
         <div className="px-4 pt-4 pb-28 space-y-3">
-          <p className="text-xs font-semibold text-[var(--muted)] uppercase tracking-wide">🔥 인기메뉴</p>
+          <p className="text-xs font-semibold text-[var(--muted)] uppercase tracking-wide">🔥 <T ko="인기메뉴" en="Popular menu" uz="Mashhur taomlar" /></p>
           {previewItems.map((item) => (
             <div key={item.id} className="bg-white rounded-2xl p-3 flex gap-3 shadow-sm">
               <div className="w-20 h-20 rounded-xl bg-[#E8E6E1] flex-shrink-0 overflow-hidden">
@@ -491,7 +492,7 @@ export const RestaurantDetailScreen = ({ onNavigate }: { onNavigate?: (s: Screen
       {/* Bottom CTA */}
       <div className="px-4 pb-8 pt-3 bg-white border-t border-[var(--border)] flex-shrink-0">
         <button onClick={() => onNavigate?.("menu")} className="w-full py-4 rounded-2xl font-bold text-white text-base" style={{ backgroundColor: "var(--green)" }}>
-          메뉴 전체 보기
+          <T ko="메뉴 전체 보기" en="View full menu" uz="To'liq menyuni ko'rish" />
         </button>
       </div>
     </div>
@@ -530,7 +531,7 @@ export const MenuScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void 
           <BackButton onBack={() => onNavigate?.("home")} />
           <div className="flex-1">
             <h1 className="font-bold text-base">{restaurantName}</h1>
-            <p className="text-xs text-[var(--muted)]">메뉴 선택</p>
+            <p className="text-xs text-[var(--muted)]"><T ko="메뉴 선택" en="Choose menu" uz="Menyuni tanlang" /></p>
           </div>
           <button className="relative">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--charcoal)" strokeWidth="1.8">
@@ -568,7 +569,7 @@ export const MenuScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void 
       <div className="flex-1 phone-scroll px-4 pt-4 space-y-3">
         <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide px-1">🔥 {activeTab}</p>
         {loading ? (
-          <p className="text-sm text-[var(--muted)]">로딩중...</p>
+          <p className="text-sm text-[var(--muted)]"><T ko="로딩중..." en="Loading..." uz="Yuklanmoqda..." /></p>
         ) : (
           apiMenuItems.map((item) => (
             <div key={item.id} className="bg-white rounded-2xl p-3 flex gap-3 shadow-sm">
@@ -610,7 +611,7 @@ export const MenuScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void 
         <div className="px-4 pb-8 pt-3 bg-white border-t border-[var(--border)] flex-shrink-0">
           <button className="w-full py-4 rounded-2xl font-bold text-white text-base flex items-center justify-between px-5" style={{ backgroundColor: "var(--green)" }}>
             <span className="bg-white/20 rounded-lg px-2.5 py-1 text-sm">{cartCount}개</span>
-            <span>장바구니 보기</span>
+            <span><T ko="장바구니 보기" en="View cart" uz="Savatni ko'rish" /></span>
             <span>₩{cartTotal.toLocaleString()}</span>
           </button>
         </div>
@@ -762,7 +763,7 @@ export const CartScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void 
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
           <BackButton onBack={() => onNavigate?.("home")} />
-          <h1 className="font-bold text-lg flex-1">장바구니</h1>
+          <h1 className="font-bold text-lg flex-1"><T ko="장바구니" en="Cart" uz="Savat" /></h1>
           <span className="text-sm font-semibold" style={{ color: "var(--green)" }}>{items.length}개</span>
         </div>
       </div>
@@ -796,13 +797,13 @@ export const CartScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void 
             </div>
           ))}
           <button className="w-full py-4 text-sm font-semibold text-center" style={{ color: "var(--green)" }}>
-            + 다른 메뉴 추가
+            <T ko="+ 다른 메뉴 추가" en="+ Add another item" uz="+ Boshqa taom qo'shish" />
           </button>
         </div>
 
         {/* Coupon */}
         <div className="bg-white mt-2 px-5 py-4 space-y-3">
-          <p className="font-semibold text-sm text-[#1A1A18]">할인 코드</p>
+          <p className="font-semibold text-sm text-[#1A1A18]"><T ko="할인 코드" en="Discount code" uz="Chegirma kodi" /></p>
           <div className="flex gap-2">
             <input
               value={coupon}
@@ -810,7 +811,7 @@ export const CartScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void 
               placeholder="쿠폰 코드 입력 (예: HALAL3000)"
               className="flex-1 border border-[var(--border)] rounded-xl px-4 py-3 text-sm outline-none focus:border-[var(--green)] bg-[var(--cream)]"
             />
-            <button className="px-4 py-3 rounded-xl text-sm font-bold text-white" style={{ backgroundColor: "var(--green)" }}>적용</button>
+            <button className="px-4 py-3 rounded-xl text-sm font-bold text-white" style={{ backgroundColor: "var(--green)" }}><T ko="적용" en="Apply" uz="Qo'llash" /></button>
           </div>
           <textarea
             value={note}
@@ -823,7 +824,7 @@ export const CartScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void 
 
         {/* Price breakdown */}
         <div className="bg-white mt-2 px-5 py-4 space-y-3">
-          <p className="font-semibold text-sm text-[#1A1A18]">주문 금액</p>
+          <p className="font-semibold text-sm text-[#1A1A18]"><T ko="주문 금액" en="Order total" uz="Buyurtma summasi" /></p>
           <div className="space-y-2">
             <div className="flex justify-between text-sm text-[var(--muted)]">
               <span>소계</span><span>₩{subtotal.toLocaleString()}</span>
@@ -846,7 +847,7 @@ export const CartScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void 
       {/* CTA */}
       <div className="px-4 pb-8 pt-3 bg-white border-t border-[var(--border)] flex-shrink-0">
         <button onClick={() => onNavigate?.("checkout")} className="w-full py-4 rounded-2xl font-bold text-white text-base flex items-center justify-between px-6" style={{ backgroundColor: "var(--green)" }}>
-          <span>주문하기</span>
+          <span><T ko="주문하기" en="Place order" uz="Buyurtma berish" /></span>
           <span>₩{total.toLocaleString()}</span>
         </button>
       </div>
@@ -873,14 +874,14 @@ export const CheckoutScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
           <BackButton onBack={() => onNavigate?.("home")} />
-          <h1 className="font-bold text-lg">결제</h1>
+          <h1 className="font-bold text-lg"><T ko="결제" en="Checkout" uz="To'lov" /></h1>
         </div>
       </div>
 
       <div className="flex-1 phone-scroll pb-36 space-y-2">
         {/* Address */}
         <div className="bg-white px-5 py-4 space-y-3">
-          <p className="font-semibold text-sm text-[#1A1A18]">배달 주소</p>
+          <p className="font-semibold text-sm text-[#1A1A18]"><T ko="배달 주소" en="Delivery address" uz="Yetkazib berish manzili" /></p>
           <div className="flex items-start gap-3 p-3 bg-[var(--green-light)] rounded-xl">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "var(--green)" }}>
               <svg width="16" height="16" viewBox="0 0 16 16" fill="white"><path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6C3.5 9.5 8 14.5 8 14.5C8 14.5 12.5 9.5 12.5 6C12.5 3.5 10.5 1.5 8 1.5ZM8 7.5C7.2 7.5 6.5 6.8 6.5 6C6.5 5.2 7.2 4.5 8 4.5C8.8 4.5 9.5 5.2 9.5 6C9.5 6.8 8.8 7.5 8 7.5Z"/></svg>
@@ -897,7 +898,7 @@ export const CheckoutScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
 
         {/* Delivery time */}
         <div className="bg-white px-5 py-4 space-y-3">
-          <p className="font-semibold text-sm text-[#1A1A18]">배달 시간</p>
+          <p className="font-semibold text-sm text-[#1A1A18]"><T ko="배달 시간" en="Delivery time" uz="Yetkazib berish vaqti" /></p>
           <div className="grid grid-cols-2 gap-2">
             {["최대한 빨리 (30-40분)", "시간 지정"].map((opt, i) => (
               <button key={opt} className="py-3 px-4 rounded-xl text-sm font-semibold border transition-all"
@@ -910,7 +911,7 @@ export const CheckoutScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
 
         {/* Payment */}
         <div className="bg-white px-5 py-4 space-y-3">
-          <p className="font-semibold text-sm text-[#1A1A18]">결제 수단</p>
+          <p className="font-semibold text-sm text-[#1A1A18]"><T ko="결제 수단" en="Payment method" uz="To'lov usuli" /></p>
           {paymentMethods.map((pm) => (
             <button key={pm.id} onClick={() => setPayment(pm.id)}
               className="w-full flex items-center gap-3 p-3.5 rounded-xl border transition-all"
@@ -926,7 +927,7 @@ export const CheckoutScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
             </button>
           ))}
           <button className="w-full py-3 rounded-xl border border-dashed border-[var(--border)] text-sm font-medium" style={{ color: "var(--muted)" }}>
-            + 결제수단 추가
+            <T ko="+ 결제수단 추가" en="+ Add payment method" uz="+ To'lov usulini qo'shish" />
           </button>
         </div>
 
@@ -946,7 +947,7 @@ export const CheckoutScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
 
         {/* Summary */}
         <div className="bg-white px-5 py-4 space-y-2">
-          <p className="font-semibold text-sm text-[#1A1A18]">결제 금액</p>
+          <p className="font-semibold text-sm text-[#1A1A18]"><T ko="결제 금액" en="Payment total" uz="To'lov summasi" /></p>
           <div className="flex justify-between text-sm text-[var(--muted)]"><span>소계</span><span>₩32,500</span></div>
           <div className="flex justify-between text-sm text-[var(--muted)]"><span>배달비</span><span>₩2,000</span></div>
           {tip > 0 && <div className="flex justify-between text-sm text-[var(--muted)]"><span>팁</span><span>₩{tip.toLocaleString()}</span></div>}
@@ -985,7 +986,7 @@ export const OrderConfirmationScreen = ({ onNavigate }: { onNavigate?: (s: Scree
       </div>
 
       <div className="text-center space-y-1">
-        <h1 className="font-bold text-2xl text-white">주문이 접수되었습니다! 🎉</h1>
+        <h1 className="font-bold text-2xl text-white"><T ko="주문이 접수되었습니다! 🎉" en="Your order was received! 🎉" uz="Buyurtmangiz qabul qilindi! 🎉" /></h1>
         <p className="text-white/70 text-sm">신당 할랄 키친에서 조리를 시작합니다</p>
       </div>
 
@@ -1029,10 +1030,10 @@ export const OrderConfirmationScreen = ({ onNavigate }: { onNavigate?: (s: Scree
     {/* Buttons */}
     <div className="relative z-10 px-5 pb-10 space-y-3">
       <button onClick={() => onNavigate?.("order-tracking")} className="w-full py-4 rounded-2xl font-bold text-white text-base border-2 border-white/40">
-        주문 추적하기
+        <T ko="주문 추적하기" en="Track order" uz="Buyurtmani kuzatish" />
       </button>
       <button onClick={() => onNavigate?.("home")} className="w-full py-3 rounded-2xl font-semibold text-sm bg-white" style={{ color: "var(--green)" }}>
-        홈으로 돌아가기
+        <T ko="홈으로 돌아가기" en="Back to home" uz="Bosh sahifaga qaytish" />
       </button>
     </div>
   </div>
