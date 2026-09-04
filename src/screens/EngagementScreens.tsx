@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { GeometricPattern, StatusBar, BackButton, Toggle } from "../components/Shared";
+import type { ScreenId } from "../App";
 
 // ── 10. Push Notification Designs ─────────────────────────────────────────────
 const notifications = [
@@ -60,7 +61,7 @@ const notifications = [
   },
 ];
 
-export const NotificationsScreen = () => {
+export const NotificationsScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const [dismissed, setDismissed] = useState<number[]>([]);
 
   return (
@@ -68,7 +69,7 @@ export const NotificationsScreen = () => {
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
-          <BackButton />
+          <BackButton onBack={() => onNavigate?.("home")} />
           <h1 className="font-bold text-lg flex-1">알림</h1>
           <button className="text-sm font-medium" style={{ color: "var(--green)" }}>모두 읽음</button>
         </div>
@@ -139,7 +140,7 @@ const NotifCard = ({ notif, dim, onDismiss }: { notif: typeof notifications[0]; 
 const iftarTime = "18:54";
 const suhoorTime = "04:41";
 
-export const RamadanScreen = () => {
+export const RamadanScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const [ramadanMode, setRamadanMode] = useState(true);
 
   return (
@@ -165,7 +166,7 @@ export const RamadanScreen = () => {
         <StatusBar dark />
         <div className="relative z-10 px-5 pb-6">
           <div className="flex items-center justify-between mb-4">
-            <BackButton dark />
+            <BackButton dark onBack={() => onNavigate?.("home")} />
             <div className="flex items-center gap-2">
               <span className="text-white/70 text-xs">라마단 모드</span>
               <Toggle on={ramadanMode} onToggle={() => setRamadanMode(!ramadanMode)} />
@@ -266,7 +267,7 @@ export const RamadanScreen = () => {
 };
 
 // ── 12. Eid Special ────────────────────────────────────────────────────────────
-export const EidScreen = () => {
+export const EidScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const [greeting, setGreeting] = useState<"fitr" | "adha">("fitr");
 
   return (

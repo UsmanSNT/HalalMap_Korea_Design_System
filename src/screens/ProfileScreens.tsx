@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { GeometricPattern, StatusBar, BottomNav, BackButton, Toggle, HalalBadge, StarRating, TabId } from "../components/Shared";
 import { getProfile, type Profile } from "../api/profile";
 import { getSavedPlaces, type SavedPlaces } from "../api/savedPlaces";
+import type { ScreenId } from "../App";
 
 // ── 28. Profile Screen ─────────────────────────────────────────────────────────
 const profileMenu = [
@@ -16,7 +17,14 @@ const profileMenu = [
   { icon: "⚙️", label: "설정", sub: "" },
 ];
 
-export const ProfileScreen = ({ onTabChange, onLogout }: { onTabChange?: (t: TabId) => void; onLogout?: () => void }) => {
+const profileNavMap: Record<string, ScreenId> = {
+  "주문 내역": "order-history",
+  "저장된 식당 · 모스크": "saved-places",
+  "배달 주소 관리": "address",
+  "설정": "settings",
+};
+
+export const ProfileScreen = ({ onTabChange, onLogout, onNavigate }: { onTabChange?: (t: TabId) => void; onLogout?: () => void; onNavigate?: (s: ScreenId) => void }) => {
   const [profile, setProfile] = useState<Profile | null>(null);
 
   useEffect(() => {
@@ -73,7 +81,7 @@ export const ProfileScreen = ({ onTabChange, onLogout }: { onTabChange?: (t: Tab
       {/* Menu */}
       <div className="bg-white mt-2 divide-y divide-[var(--border)]">
         {profileMenu.map((item) => (
-          <button key={item.label} className="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[var(--cream)]">
+          <button key={item.label} onClick={() => { const target = profileNavMap[item.label]; if (target) onNavigate?.(target); }} className="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[var(--cream)]">
             <div className="w-10 h-10 rounded-xl bg-[var(--cream)] flex items-center justify-center text-lg flex-shrink-0">
               {item.icon}
             </div>
@@ -105,7 +113,7 @@ export const ProfileScreen = ({ onTabChange, onLogout }: { onTabChange?: (t: Tab
 const halalBadgeMap = (status: string) =>
   status === "certified" ? ("certified" as const) : status === "muslim-owned" ? ("owned" as const) : ("friendly" as const);
 
-export const SavedPlacesScreen = () => {
+export const SavedPlacesScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const [tab, setTab] = useState<"restaurants" | "mosques">("restaurants");
   const [places, setPlaces] = useState<SavedPlaces | null>(null);
 
@@ -118,7 +126,7 @@ export const SavedPlacesScreen = () => {
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
-          <BackButton />
+          <BackButton onBack={() => onNavigate?.("home")} />
           <h1 className="font-bold text-lg flex-1">저장된 장소</h1>
         </div>
         <div className="flex bg-[var(--cream)] mx-4 mb-4 rounded-xl p-1">
@@ -190,12 +198,12 @@ const addresses = [
   { icon: "🕌", label: "모스크 근처", addr: "서울특별시 용산구 우사단로10길 39", default: false },
 ];
 
-export const AddressScreen = () => (
+export const AddressScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => (
   <div className="flex flex-col h-full bg-[var(--cream)]">
     <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
       <StatusBar />
       <div className="flex items-center gap-3 px-4 pb-3">
-        <BackButton />
+        <BackButton onBack={() => onNavigate?.("home")} />
         <h1 className="font-bold text-lg flex-1">배달 주소 관리</h1>
       </div>
     </div>
@@ -260,7 +268,7 @@ export const AddressScreen = () => (
 );
 
 // ── 31. Settings ───────────────────────────────────────────────────────────────
-export const SettingsScreen = () => {
+export const SettingsScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const [notifOrder, setNotifOrder] = useState(true);
   const [notifPrayer, setNotifPrayer] = useState(true);
   const [notifPromo, setNotifPromo] = useState(false);
@@ -271,7 +279,7 @@ export const SettingsScreen = () => {
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
-          <BackButton />
+          <BackButton onBack={() => onNavigate?.("home")} />
           <h1 className="font-bold text-lg">설정</h1>
         </div>
       </div>

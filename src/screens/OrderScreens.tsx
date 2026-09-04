@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { StatusBar, BottomNav, BackButton, OrderStatusChip, TabId } from "../components/Shared";
 import { getOrders, getOrder, type Order } from "../api/orders";
+import type { ScreenId } from "../App";
 
 // ── 25. Active Order Tracking ──────────────────────────────────────────────────
 // Fake route map
@@ -45,7 +46,7 @@ const trackSteps = [
   { label: "배달 완료", done: false },
 ];
 
-export const OrderTrackingScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void }) => (
+export const OrderTrackingScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabId) => void; onNavigate?: (s: ScreenId) => void }) => (
   <div className="flex flex-col h-full bg-[var(--cream)]">
     {/* Map */}
     <div className="relative h-72 flex-shrink-0">
@@ -53,7 +54,7 @@ export const OrderTrackingScreen = ({ onTabChange }: { onTabChange?: (t: TabId) 
       <div className="absolute top-0 left-0 right-0">
         <StatusBar dark />
         <div className="flex items-center px-4 gap-3">
-          <BackButton dark />
+          <BackButton dark onBack={() => onNavigate?.("home")} />
           <h1 className="font-bold text-white text-lg">주문 추적</h1>
         </div>
       </div>
@@ -150,7 +151,7 @@ export const OrderTrackingScreen = ({ onTabChange }: { onTabChange?: (t: TabId) 
 );
 
 // ── 26. Order History ──────────────────────────────────────────────────────────
-export const OrderHistoryScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void }) => {
+export const OrderHistoryScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabId) => void; onNavigate?: (s: ScreenId) => void }) => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -239,7 +240,7 @@ export const OrderHistoryScreen = ({ onTabChange }: { onTabChange?: (t: TabId) =
 };
 
 // ── 27. Order Detail ───────────────────────────────────────────────────────────
-export const OrderDetailScreen = () => {
+export const OrderDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const [order, setOrder] = useState<Order | null>(null);
 
   useEffect(() => {
@@ -252,7 +253,7 @@ export const OrderDetailScreen = () => {
         <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
           <StatusBar />
           <div className="flex items-center gap-3 px-4 pb-3">
-            <BackButton />
+            <BackButton onBack={() => onNavigate?.("home")} />
             <h1 className="font-bold text-lg flex-1">주문 상세</h1>
           </div>
         </div>
@@ -275,7 +276,7 @@ export const OrderDetailScreen = () => {
     <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
       <StatusBar />
       <div className="flex items-center gap-3 px-4 pb-3">
-        <BackButton />
+        <BackButton onBack={() => onNavigate?.("home")} />
         <h1 className="font-bold text-lg flex-1">주문 상세</h1>
         <button className="text-sm font-medium" style={{ color: "var(--green)" }}>영수증</button>
       </div>

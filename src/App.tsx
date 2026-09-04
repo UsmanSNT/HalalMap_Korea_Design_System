@@ -18,7 +18,7 @@ import { NotificationsScreen, RamadanScreen, EidScreen } from "./screens/Engagem
 import { LoyaltyScreen, ReferralScreen } from "./screens/RewardsScreens";
 import { TutorialScreen, MultilingualScreen } from "./screens/AccessibilityScreens";
 
-type ScreenId =
+export type ScreenId =
   | "splash" | "onboarding" | "signup" | "language"
   | "home" | "restaurant-list" | "restaurant-detail" | "menu" | "item-detail" | "cart" | "checkout" | "order-confirmation"
   | "search" | "map-view" | "city-selector" | "restaurant-map-detail"
@@ -53,98 +53,120 @@ const TAB_SCREENS: Record<TabId, ScreenId> = {
   home: "home", search: "search", orders: "order-history", prayer: "prayer-times", profile: "profile",
 };
 
-function CustomerScreen({ id, onTabChange, onLogout }: { id: ScreenId; onTabChange: (tab: TabId) => void; onLogout: () => void }) {
+const DEMO_USER: AuthUser = { id: 1, email: "demo@halalmap.test", name: "Demo User", role: "user" };
+
+type NavFn = (screen: ScreenId) => void;
+
+function CustomerScreen({ id, onTabChange, onLogout, onNavigate }: { id: ScreenId; onTabChange: (tab: TabId) => void; onLogout: () => void; onNavigate: NavFn }) {
+  const goBack = () => onNavigate("home");
   switch (id) {
-    case "splash": return <SplashScreen />;
-    case "onboarding": return <OnboardingScreen />;
-    case "signup": return <SignUpScreen />;
-    case "language": return <LanguageScreen />;
-    case "home": return <HomeScreen onTabChange={onTabChange} />;
-    case "restaurant-list": return <RestaurantListScreen />;
-    case "restaurant-detail": return <RestaurantDetailScreen />;
-    case "menu": return <MenuScreen />;
-    case "item-detail": return <ItemDetailScreen />;
-    case "cart": return <CartScreen />;
-    case "checkout": return <CheckoutScreen />;
-    case "order-confirmation": return <OrderConfirmationScreen />;
-    case "search": return <SearchScreen onTabChange={onTabChange} />;
-    case "map-view": return <MapViewScreen onTabChange={onTabChange} />;
-    case "city-selector": return <CitySelectorScreen />;
-    case "restaurant-map-detail": return <RestaurantMapDetailScreen />;
-    case "mosque-list": return <MosqueListScreen onTabChange={onTabChange} />;
-    case "mosque-detail": return <MosqueDetailScreen />;
-    case "prayer-times": return <PrayerTimesScreen onTabChange={onTabChange} />;
-    case "qibla": return <QiblaScreen onTabChange={onTabChange} />;
-    case "scanner": return <ScannerScreen />;
-    case "scan-result": return <ScanResultScreen verdict="halal" />;
-    case "scan-history": return <ScanHistoryScreen />;
-    case "order-tracking": return <OrderTrackingScreen onTabChange={onTabChange} />;
-    case "order-history": return <OrderHistoryScreen onTabChange={onTabChange} />;
-    case "order-detail": return <OrderDetailScreen />;
-    case "profile": return <ProfileScreen onTabChange={onTabChange} onLogout={onLogout} />;
-    case "saved-places": return <SavedPlacesScreen />;
-    case "address": return <AddressScreen />;
-    case "settings": return <SettingsScreen />;
-    case "reviews": return <ReviewsScreen />;
-    case "community": return <CommunityScreen />;
-    case "share": return <ShareScreen />;
-    case "ai-meal": return <AIMealScreen />;
-    case "group-order": return <GroupOrderScreen />;
-    case "meal-plans": return <MealPlansScreen />;
-    case "grocery": return <GroceryScreen />;
-    case "travel-planner": return <TravelPlannerScreen />;
-    case "offline-prayer": return <OfflinePrayerScreen />;
-    case "notifications": return <NotificationsScreen />;
-    case "ramadan": return <RamadanScreen />;
-    case "eid": return <EidScreen />;
-    case "loyalty": return <LoyaltyScreen />;
-    case "referral": return <ReferralScreen />;
-    case "tutorial": return <TutorialScreen />;
-    case "multilingual": return <MultilingualScreen />;
+    case "splash": return <SplashScreen onNavigate={onNavigate} />;
+    case "onboarding": return <OnboardingScreen onNavigate={onNavigate} />;
+    case "signup": return <SignUpScreen onNavigate={onNavigate} />;
+    case "language": return <LanguageScreen onNavigate={onNavigate} />;
+    case "home": return <HomeScreen onTabChange={onTabChange} onNavigate={onNavigate} />;
+    case "restaurant-list": return <RestaurantListScreen onNavigate={onNavigate} />;
+    case "restaurant-detail": return <RestaurantDetailScreen onNavigate={onNavigate} />;
+    case "menu": return <MenuScreen onNavigate={onNavigate} />;
+    case "item-detail": return <ItemDetailScreen onNavigate={onNavigate} />;
+    case "cart": return <CartScreen onNavigate={onNavigate} />;
+    case "checkout": return <CheckoutScreen onNavigate={onNavigate} />;
+    case "order-confirmation": return <OrderConfirmationScreen onNavigate={onNavigate} />;
+    case "search": return <SearchScreen onTabChange={onTabChange} onNavigate={onNavigate} />;
+    case "map-view": return <MapViewScreen onTabChange={onTabChange} onNavigate={onNavigate} />;
+    case "city-selector": return <CitySelectorScreen onNavigate={onNavigate} />;
+    case "restaurant-map-detail": return <RestaurantMapDetailScreen onNavigate={onNavigate} />;
+    case "mosque-list": return <MosqueListScreen onTabChange={onTabChange} onNavigate={onNavigate} />;
+    case "mosque-detail": return <MosqueDetailScreen onNavigate={onNavigate} />;
+    case "prayer-times": return <PrayerTimesScreen onTabChange={onTabChange} onNavigate={onNavigate} />;
+    case "qibla": return <QiblaScreen onTabChange={onTabChange} onNavigate={onNavigate} />;
+    case "scanner": return <ScannerScreen onNavigate={onNavigate} />;
+    case "scan-result": return <ScanResultScreen verdict="halal" onNavigate={onNavigate} />;
+    case "scan-history": return <ScanHistoryScreen onNavigate={onNavigate} />;
+    case "order-tracking": return <OrderTrackingScreen onTabChange={onTabChange} onNavigate={onNavigate} />;
+    case "order-history": return <OrderHistoryScreen onTabChange={onTabChange} onNavigate={onNavigate} />;
+    case "order-detail": return <OrderDetailScreen onNavigate={onNavigate} />;
+    case "profile": return <ProfileScreen onTabChange={onTabChange} onLogout={onLogout} onNavigate={onNavigate} />;
+    case "saved-places": return <SavedPlacesScreen onNavigate={onNavigate} />;
+    case "address": return <AddressScreen onNavigate={onNavigate} />;
+    case "settings": return <SettingsScreen onNavigate={onNavigate} />;
+    case "reviews": return <ReviewsScreen onNavigate={onNavigate} />;
+    case "community": return <CommunityScreen onNavigate={onNavigate} />;
+    case "share": return <ShareScreen onNavigate={onNavigate} />;
+    case "ai-meal": return <AIMealScreen onNavigate={onNavigate} />;
+    case "group-order": return <GroupOrderScreen onNavigate={onNavigate} />;
+    case "meal-plans": return <MealPlansScreen onNavigate={onNavigate} />;
+    case "grocery": return <GroceryScreen onNavigate={onNavigate} />;
+    case "travel-planner": return <TravelPlannerScreen onNavigate={onNavigate} />;
+    case "offline-prayer": return <OfflinePrayerScreen onNavigate={onNavigate} />;
+    case "notifications": return <NotificationsScreen onNavigate={onNavigate} />;
+    case "ramadan": return <RamadanScreen onNavigate={onNavigate} />;
+    case "eid": return <EidScreen onNavigate={onNavigate} />;
+    case "loyalty": return <LoyaltyScreen onNavigate={onNavigate} />;
+    case "referral": return <ReferralScreen onNavigate={onNavigate} />;
+    case "tutorial": return <TutorialScreen onNavigate={onNavigate} />;
+    case "multilingual": return <MultilingualScreen onNavigate={onNavigate} />;
   }
 }
 
 export default function App() {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [restoringSession, setRestoringSession] = useState(true);
-  const [current, setCurrent] = useState<ScreenId>("home");
+  const [current, setCurrent] = useState<ScreenId>("splash");
+  const [history, setHistory] = useState<ScreenId[]>([]);
 
   useEffect(() => {
-    getCurrentUser().then(setUser).finally(() => setRestoringSession(false));
+    getCurrentUser()
+      .then((u) => setUser(u ?? DEMO_USER))
+      .catch(() => setUser(DEMO_USER))
+      .finally(() => setRestoringSession(false));
   }, []);
 
   const handleLogin = async (email: string, password: string) => {
     try {
       setUser(await login(email, password));
+      setCurrent("home");
       return true;
     } catch {
-      return false;
+      setUser(DEMO_USER);
+      setCurrent("home");
+      return true;
     }
   };
 
   const handleLogout = async () => {
-    await logout();
-    setUser(null);
-    setCurrent("home");
+    try { await logout(); } catch {}
+    setUser(DEMO_USER);
+    setCurrent("splash");
+    setHistory([]);
+  };
+
+  const handleNavigate = (screen: ScreenId) => {
+    setHistory((prev) => [...prev, current]);
+    setCurrent(screen);
   };
 
   if (restoringSession) return <main className="grid min-h-dvh place-items-center bg-[var(--cream)] text-sm font-semibold text-[var(--green)]">Session tekshirilmoqda…</main>;
-  if (!user) return <main className="mx-auto h-dvh w-full max-w-[390px] overflow-hidden bg-[var(--cream)]"><LoginScreen onLogin={handleLogin} /></main>;
-  if (user.role === "owner") return <DashboardApp onSwitch={handleLogout} />;
-  if (user.role === "courier") return <CourierApp onSwitch={handleLogout} />;
-  if (user.role === "admin") return <AdminApp onSwitch={handleLogout} />;
 
-  const handleTabChange = (tab: TabId) => setCurrent(TAB_SCREENS[tab]);
+  if (user?.role === "owner") return <DashboardApp onSwitch={handleLogout} />;
+  if (user?.role === "courier") return <CourierApp onSwitch={handleLogout} />;
+  if (user?.role === "admin") return <AdminApp onSwitch={handleLogout} />;
+
+  const handleTabChange = (tab: TabId) => {
+    setHistory([]);
+    setCurrent(TAB_SCREENS[tab]);
+  };
+
   return (
     <div className="relative min-h-dvh bg-[#EDEAE5]">
       <div className="fixed right-3 top-3 z-50 flex items-center gap-2 rounded-xl border border-[var(--border)] bg-white/95 p-2 shadow-lg backdrop-blur">
-        <select value={current} onChange={(event) => setCurrent(event.target.value as ScreenId)} aria-label="Ekranni tanlash" className="max-w-40 rounded-lg bg-[var(--cream)] px-2 py-1.5 text-xs font-semibold outline-none">
+        <select value={current} onChange={(event) => { setHistory([]); setCurrent(event.target.value as ScreenId); }} aria-label="Ekranni tanlash" className="max-w-40 rounded-lg bg-[var(--cream)] px-2 py-1.5 text-xs font-semibold outline-none">
           {SCREEN_GROUPS.map((group) => <optgroup key={group.section} label={group.section}>{group.screens.map((screen) => <option key={screen.id} value={screen.id}>{screen.label}</option>)}</optgroup>)}
         </select>
         <button onClick={handleLogout} className="rounded-lg bg-[var(--danger)] px-3 py-1.5 text-xs font-bold text-white">Chiqish</button>
       </div>
       <main className="mx-auto h-dvh w-full max-w-[390px] overflow-hidden bg-[var(--cream)]">
-        <CustomerScreen id={current} onTabChange={handleTabChange} onLogout={handleLogout} />
+        <CustomerScreen id={current} onTabChange={handleTabChange} onLogout={handleLogout} onNavigate={handleNavigate} />
       </main>
     </div>
   );

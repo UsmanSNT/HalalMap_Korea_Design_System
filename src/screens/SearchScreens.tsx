@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { StatusBar, BottomNav, MapPin, RestaurantCardV, RestaurantCardH, HalalBadge, BackButton, TabId } from "../components/Shared";
 import { getRestaurants, getRestaurant, type Restaurant } from "@/api/restaurants";
+import type { ScreenId } from "../App";
 
 const extractImageId = (url: string): string => {
   const match = url.match(/photo-([^?]+)/);
@@ -24,7 +25,7 @@ const quickCategories = [
   { icon: "🔍", label: "스캐너" },
 ];
 
-export const SearchScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void }) => {
+export const SearchScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabId) => void; onNavigate?: (s: ScreenId) => void }) => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Restaurant[]>([]);
   const [searching, setSearching] = useState(false);
@@ -85,18 +86,19 @@ export const SearchScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void
                 <p className="text-xs text-[var(--muted)] font-medium">검색 결과 {results.length}개</p>
                 <div className="space-y-3">
                   {results.map((r) => (
-                    <RestaurantCardH
-                      key={r.id}
-                      name={r.nameKo}
-                      imageId={extractImageId(r.photo)}
-                      badge={halalBadgeMap(r.halalStatus)}
-                      rating={r.rating}
-                      count={r.reviewCount}
-                      distance={r.distance}
-                      eta={r.deliveryTime}
-                      fee={formatFee(r.deliveryFee)}
-                      cuisine={r.category}
-                    />
+                    <div key={r.id} onClick={() => onNavigate?.("restaurant-detail")} className="cursor-pointer">
+                      <RestaurantCardH
+                        name={r.nameKo}
+                        imageId={extractImageId(r.photo)}
+                        badge={halalBadgeMap(r.halalStatus)}
+                        rating={r.rating}
+                        count={r.reviewCount}
+                        distance={r.distance}
+                        eta={r.deliveryTime}
+                        fee={formatFee(r.deliveryFee)}
+                        cuisine={r.category}
+                      />
+                    </div>
                   ))}
                 </div>
               </>
@@ -214,7 +216,7 @@ const mapPins: { x: number; y: number; type: "restaurant" | "mosque" | "user"; l
   { x: 330, y: 250, type: "mosque", label: "이태원 마스지드" },
 ];
 
-export const MapViewScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void }) => {
+export const MapViewScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabId) => void; onNavigate?: (s: ScreenId) => void }) => {
   const [activeFilter, setActiveFilter] = useState("레스토랑");
   const [nearby, setNearby] = useState<Restaurant[]>([]);
 
@@ -322,7 +324,7 @@ const cities = [
   { name: "경주", nameEn: "Gyeongju", img: "1509316785289-025f5b846b35", count: "12" },
 ];
 
-export const CitySelectorScreen = () => {
+export const CitySelectorScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const [search, setSearch] = useState("");
 
   return (
@@ -330,7 +332,7 @@ export const CitySelectorScreen = () => {
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
-          <BackButton />
+          <BackButton onBack={() => onNavigate?.("home")} />
           <h1 className="font-bold text-lg flex-1">방문 도시 선택</h1>
         </div>
         <div className="px-4 pb-4">
@@ -409,7 +411,7 @@ export const CitySelectorScreen = () => {
 };
 
 // ── 17. Restaurant Map Detail ──────────────────────────────────────────────────
-export const RestaurantMapDetailScreen = () => {
+export const RestaurantMapDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
 
   useEffect(() => {
@@ -442,7 +444,7 @@ export const RestaurantMapDetailScreen = () => {
       <div className="relative z-10 flex-shrink-0">
         <StatusBar />
         <div className="px-4 pt-1">
-          <BackButton />
+          <BackButton onBack={() => onNavigate?.("home")} />
         </div>
       </div>
 
