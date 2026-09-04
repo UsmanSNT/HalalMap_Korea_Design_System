@@ -3,6 +3,7 @@ import { GeometricPattern, StatusBar, BottomNav, BackButton, Toggle, HalalBadge,
 import { getProfile, type Profile } from "../api/profile";
 import { getSavedPlaces, type SavedPlaces } from "../api/savedPlaces";
 import type { ScreenId } from "../App";
+import { LocalizedText as T } from "../i18n";
 
 // ── 28. Profile Screen ─────────────────────────────────────────────────────────
 const profileMenu = [
@@ -134,7 +135,7 @@ export const SavedPlacesScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
           <BackButton onBack={() => onNavigate?.("home")} />
-          <h1 className="font-bold text-lg flex-1">저장된 장소</h1>
+          <h1 className="font-bold text-lg flex-1"><T ko="저장된 장소" en="Saved places" uz="Saqlangan joylar" /></h1>
         </div>
         <div className="flex bg-[var(--cream)] mx-4 mb-4 rounded-xl p-1">
           {(["restaurants", "mosques"] as const).map((t) => (
@@ -155,7 +156,7 @@ export const SavedPlacesScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =
 
       <div className="flex-1 phone-scroll px-4 py-4 space-y-3">
         {!places ? (
-          <p className="text-center text-sm text-[var(--muted)] py-8">로딩중...</p>
+          <p className="text-center text-sm text-[var(--muted)] py-8"><T ko="로딩중..." en="Loading..." uz="Yuklanmoqda..." /></p>
         ) : tab === "restaurants" ? (
           places.restaurants.map((r) => (
             <div key={r.id} className="bg-white rounded-2xl overflow-hidden shadow-sm flex items-stretch">
@@ -169,7 +170,7 @@ export const SavedPlacesScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =
                   <StarRating rating={r.rating} count={r.reviewCount} />
                 </div>
                 <div className="flex gap-2 mt-2">
-                  <button className="flex-1 py-2 rounded-xl text-xs font-bold text-white" style={{ backgroundColor: "var(--green)" }}>주문하기</button>
+                  <button className="flex-1 py-2 rounded-xl text-xs font-bold text-white" style={{ backgroundColor: "var(--green)" }}><T ko="주문하기" en="Order" uz="Buyurtma" /></button>
                   <button className="w-8 h-8 rounded-xl border border-[var(--border)] flex items-center justify-center">
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="var(--danger)"><path d="M7 12S1 8 1 4.5C1 2.5 2.7 1 4.5 1c.9 0 1.8.4 2.5 1C7.7 1.4 8.6 1 9.5 1 11.3 1 13 2.5 13 4.5 13 8 7 12 7 12Z"/></svg>
                   </button>
@@ -211,7 +212,7 @@ export const AddressScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
       <StatusBar />
       <div className="flex items-center gap-3 px-4 pb-3">
         <BackButton onBack={() => onNavigate?.("home")} />
-        <h1 className="font-bold text-lg flex-1">배달 주소 관리</h1>
+        <h1 className="font-bold text-lg flex-1"><T ko="배달 주소 관리" en="Delivery addresses" uz="Yetkazib berish manzillari" /></h1>
       </div>
     </div>
 
@@ -256,7 +257,7 @@ export const AddressScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
       {/* Add new */}
       <button className="w-full py-4 rounded-2xl border-2 border-dashed border-[var(--border)] flex items-center justify-center gap-2 font-semibold text-sm" style={{ color: "var(--muted)" }}>
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="8" y1="3" x2="8" y2="13"/><line x1="3" y1="8" x2="13" y2="8"/></svg>
-        새 주소 추가
+        <T ko="새 주소 추가" en="Add new address" uz="Yangi manzil qo'shish" />
       </button>
 
       {/* Map hint */}
@@ -265,7 +266,7 @@ export const AddressScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="bg-white rounded-xl px-4 py-2.5 shadow-md flex items-center gap-2">
             <span>📍</span>
-            <p className="text-sm font-semibold text-[#1A1A18]">지도에서 선택</p>
+            <p className="text-sm font-semibold text-[#1A1A18]"><T ko="지도에서 선택" en="Choose on map" uz="Xaritadan tanlash" /></p>
           </div>
         </div>
       </div>
@@ -287,14 +288,14 @@ export const SettingsScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
           <BackButton onBack={() => onNavigate?.("home")} />
-          <h1 className="font-bold text-lg">설정</h1>
+          <h1 className="font-bold text-lg"><T ko="설정" en="Settings" uz="Sozlamalar" /></h1>
         </div>
       </div>
 
       <div className="flex-1 phone-scroll space-y-2 py-3">
         {/* Notifications */}
         <div>
-          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest px-5 mb-2">알림</p>
+          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest px-5 mb-2"><T ko="알림" en="Notifications" uz="Bildirishnomalar" /></p>
           <div className="bg-white divide-y divide-[var(--border)]">
             {[
               { label: "주문 업데이트", sub: "주문 상태 변경 시 알림", state: notifOrder, set: setNotifOrder },
@@ -314,11 +315,11 @@ export const SettingsScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
 
         {/* App */}
         <div>
-          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest px-5 mb-2 mt-2">앱</p>
+          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest px-5 mb-2 mt-2"><T ko="앱" en="App" uz="Ilova" /></p>
           <div className="bg-white divide-y divide-[var(--border)]">
             <div className="flex items-center justify-between px-5 py-4">
               <div>
-                <p className="text-sm font-semibold text-[#1A1A18]">언어</p>
+                <p className="text-sm font-semibold text-[#1A1A18]"><T ko="언어" en="Language" uz="Til" /></p>
                 <p className="text-xs text-[var(--muted)]">Language</p>
               </div>
               <div className="flex items-center gap-2">
@@ -329,7 +330,7 @@ export const SettingsScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
 
             {/* Theme */}
             <div className="px-5 py-4">
-              <p className="text-sm font-semibold text-[#1A1A18] mb-3">테마</p>
+              <p className="text-sm font-semibold text-[#1A1A18] mb-3"><T ko="테마" en="Theme" uz="Mavzu" /></p>
               <div className="flex gap-2">
                 {(["light", "dark", "auto"] as const).map((t) => (
                   <button
@@ -360,7 +361,7 @@ export const SettingsScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
 
         {/* Account */}
         <div>
-          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest px-5 mb-2 mt-2">계정</p>
+          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest px-5 mb-2 mt-2"><T ko="계정" en="Account" uz="Hisob" /></p>
           <div className="bg-white divide-y divide-[var(--border)]">
             {["개인정보 변경", "비밀번호 변경"].map((item) => (
               <button key={item} className="w-full flex items-center justify-between px-5 py-4">
@@ -376,7 +377,7 @@ export const SettingsScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
 
         {/* Info */}
         <div>
-          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest px-5 mb-2 mt-2">정보</p>
+          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest px-5 mb-2 mt-2"><T ko="정보" en="Information" uz="Ma'lumot" /></p>
           <div className="bg-white divide-y divide-[var(--border)]">
             {["이용약관", "개인정보처리방침"].map((item) => (
               <button key={item} className="w-full flex items-center justify-between px-5 py-4">

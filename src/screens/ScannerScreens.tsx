@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { StatusBar, BackButton } from "../components/Shared";
 import type { ScreenId } from "../App";
+import { LocalizedText as T } from "../i18n";
 
 // ── 22. Scanner Screen ─────────────────────────────────────────────────────────
 export const ScannerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
@@ -13,7 +14,7 @@ export const ScannerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
       {/* Controls */}
       <div className="flex items-center justify-between px-5 pb-4 relative z-20">
         <BackButton dark onBack={() => onNavigate?.("home")} />
-        <h1 className="font-bold text-white text-lg">할랄 스캐너</h1>
+        <h1 className="font-bold text-white text-lg"><T ko="할랄 스캐너" en="Halal scanner" uz="Halol skaner" /></h1>
         <button
           onClick={() => setFlash(!flash)}
           className="w-9 h-9 rounded-full flex items-center justify-center transition-colors"
@@ -65,7 +66,7 @@ export const ScannerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
         {/* Instructions */}
         <div className="mt-8 px-6 py-3 rounded-2xl" style={{ backgroundColor: "rgba(255,255,255,0.1)" }}>
           <p className="text-white text-sm font-medium text-center leading-relaxed">
-            바코드 또는 성분표를 스캔하세요
+            <T ko="바코드 또는 성분표를 스캔하세요" en="Scan a barcode or ingredient list" uz="Shtrix-kod yoki tarkib ro'yxatini skanerlang" />
           </p>
         </div>
 
@@ -97,7 +98,7 @@ export const ScannerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
               <circle cx="6.5" cy="6.5" r="1.5"/>
               <path d="M2 12l4-4 3 3 2-2 4 4" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-            갤러리에서 선택
+            <T ko="갤러리에서 선택" en="Choose from gallery" uz="Galereyadan tanlash" />
           </button>
         </div>
       </div>
@@ -155,8 +156,8 @@ export const ScanResultScreen = ({ verdict = "halal", onNavigate }: { verdict?: 
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
           <BackButton onBack={() => onNavigate?.("home")} />
-          <h1 className="font-bold text-lg flex-1">스캔 결과</h1>
-          <button className="text-sm font-medium" style={{ color: "var(--muted)" }}>공유</button>
+          <h1 className="font-bold text-lg flex-1"><T ko="스캔 결과" en="Scan result" uz="Skan natijasi" /></h1>
+          <button className="text-sm font-medium" style={{ color: "var(--muted)" }}><T ko="공유" en="Share" uz="Ulashish" /></button>
         </div>
       </div>
 
@@ -211,7 +212,7 @@ export const ScanResultScreen = ({ verdict = "halal", onNavigate }: { verdict?: 
         {/* Ingredients */}
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
           <div className="px-4 py-3 border-b border-[var(--border)]">
-            <p className="font-semibold text-sm text-[#1A1A18]">성분 분석</p>
+            <p className="font-semibold text-sm text-[#1A1A18]"><T ko="성분 분석" en="Ingredient analysis" uz="Tarkib tahlili" /></p>
             <p className="text-xs text-[var(--muted)] mt-0.5">{ingredients.length}개 성분 확인됨</p>
           </div>
           <div className="divide-y divide-[var(--border)]">
@@ -241,7 +242,7 @@ export const ScanResultScreen = ({ verdict = "halal", onNavigate }: { verdict?: 
         {/* Positive notes */}
         {verdict === "halal" && (
           <div className="bg-white rounded-2xl px-4 py-3 shadow-sm space-y-2">
-            <p className="font-semibold text-sm text-[#1A1A18]">확인 사항</p>
+            <p className="font-semibold text-sm text-[#1A1A18]"><T ko="확인 사항" en="Checks" uz="Tekshiruvlar" /></p>
             {["돼지 젤라틴 없음", "알코올 성분 없음", "교차 오염 없음 (KMF 인증)"].map((note) => (
               <div key={note} className="flex items-center gap-2 text-sm" style={{ color: "var(--green)" }}>
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M2 7l3.5 3.5L12 4"/></svg>
@@ -259,7 +260,7 @@ export const ScanResultScreen = ({ verdict = "halal", onNavigate }: { verdict?: 
             <p className="text-xs text-[var(--muted)]">2024년 10월 업데이트</p>
           </div>
           <button className="text-xs font-medium px-3 py-2 rounded-xl border border-[var(--border)]" style={{ color: "var(--muted)" }}>
-            오류 신고
+            <T ko="오류 신고" en="Report an error" uz="Xato haqida xabar berish" />
           </button>
         </div>
 
@@ -267,7 +268,7 @@ export const ScanResultScreen = ({ verdict = "halal", onNavigate }: { verdict?: 
           className="w-full py-4 rounded-2xl font-bold text-white text-base"
           style={{ backgroundColor: "var(--green)" }}
         >
-          다시 스캔하기
+          <T ko="다시 스캔하기" en="Scan again" uz="Qayta skanerlash" />
         </button>
         <div className="h-2" />
       </div>
@@ -290,8 +291,8 @@ export const ScanHistoryScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =
       <StatusBar />
       <div className="flex items-center gap-3 px-4 pb-3">
         <BackButton onBack={() => onNavigate?.("home")} />
-        <h1 className="font-bold text-lg flex-1">스캔 기록</h1>
-        <button className="text-sm font-medium" style={{ color: "var(--danger)" }}>전체 삭제</button>
+        <h1 className="font-bold text-lg flex-1"><T ko="스캔 기록" en="Scan history" uz="Skan tarixi" /></h1>
+        <button className="text-sm font-medium" style={{ color: "var(--danger)" }}><T ko="전체 삭제" en="Clear all" uz="Barchasini tozalash" /></button>
       </div>
     </div>
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { StatusBar, BottomNav, BackButton, OrderStatusChip, TabId } from "../components/Shared";
 import { getOrders, getOrder, type Order } from "../api/orders";
 import type { ScreenId } from "../App";
+import { LocalizedText as T } from "../i18n";
 
 // ── 25. Active Order Tracking ──────────────────────────────────────────────────
 // Fake route map
@@ -55,7 +56,7 @@ export const OrderTrackingScreen = ({ onTabChange, onNavigate }: { onTabChange?:
         <StatusBar dark />
         <div className="flex items-center px-4 gap-3">
           <BackButton dark onBack={() => onNavigate?.("home")} />
-          <h1 className="font-bold text-white text-lg">주문 추적</h1>
+          <h1 className="font-bold text-white text-lg"><T ko="주문 추적" en="Track order" uz="Buyurtmani kuzatish" /></h1>
         </div>
       </div>
     </div>
@@ -70,7 +71,7 @@ export const OrderTrackingScreen = ({ onTabChange, onNavigate }: { onTabChange?:
       <div className="px-5 pb-6 space-y-4">
         {/* ETA */}
         <div className="text-center pt-1">
-          <p className="text-xs font-medium text-[var(--muted)]">도착까지 약</p>
+          <p className="text-xs font-medium text-[var(--muted)]"><T ko="도착까지 약" en="Estimated arrival" uz="Taxminiy yetib kelish" /></p>
           <p className="font-bold text-4xl text-[#1A1A18] mt-1">18분</p>
           <p className="text-sm text-[var(--muted)] mt-0.5">오후 3:05 도착 예정</p>
         </div>
@@ -113,7 +114,7 @@ export const OrderTrackingScreen = ({ onTabChange, onNavigate }: { onTabChange?:
 
         {/* Courier card */}
         <div className="bg-white border border-[var(--border)] rounded-2xl p-4">
-          <p className="text-xs font-medium text-[var(--muted)] mb-3">배달 기사 정보</p>
+          <p className="text-xs font-medium text-[var(--muted)] mb-3"><T ko="배달 기사 정보" en="Courier information" uz="Kuryer ma'lumoti" /></p>
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-full bg-[#E8E6E1] flex items-center justify-center text-xl flex-shrink-0">
               👨‍🦱
@@ -170,7 +171,7 @@ export const OrderHistoryScreen = ({ onTabChange, onNavigate }: { onTabChange?: 
     <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
       <StatusBar />
       <div className="px-5 pb-3">
-        <h1 className="font-bold text-xl text-[#1A1A18]">주문 내역</h1>
+        <h1 className="font-bold text-xl text-[#1A1A18]"><T ko="주문 내역" en="Order history" uz="Buyurtmalar tarixi" /></h1>
         <div className="flex gap-4 mt-3">
           {[`진행중 (${active.length})`, `완료 (${delivered.length})`].map((tab, i) => (
             <button
@@ -190,7 +191,7 @@ export const OrderHistoryScreen = ({ onTabChange, onNavigate }: { onTabChange?: 
 
     <div className="flex-1 phone-scroll px-4 py-4 space-y-3">
       {loading ? (
-        <p className="text-center text-sm text-[var(--muted)] py-8">로딩중...</p>
+        <p className="text-center text-sm text-[var(--muted)] py-8"><T ko="로딩중..." en="Loading..." uz="Yuklanmoqda..." /></p>
       ) : (
         orders.map((order) => (
           <div key={order.id} className="bg-white rounded-2xl shadow-sm overflow-hidden">
@@ -221,10 +222,10 @@ export const OrderHistoryScreen = ({ onTabChange, onNavigate }: { onTabChange?: 
             {order.status !== "cancelled" && (
               <div className="flex border-t border-[var(--border)] divide-x divide-[var(--border)]">
                 <button className="flex-1 py-3 text-sm font-semibold" style={{ color: "var(--green)" }}>
-                  재주문
+                  <T ko="재주문" en="Order again" uz="Qayta buyurtma" />
                 </button>
                 <button className="flex-1 py-3 text-sm font-medium text-[var(--muted)]">
-                  영수증
+                  <T ko="영수증" en="Receipt" uz="Chek" />
                 </button>
               </div>
             )}
@@ -254,11 +255,11 @@ export const OrderDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =
           <StatusBar />
           <div className="flex items-center gap-3 px-4 pb-3">
             <BackButton onBack={() => onNavigate?.("home")} />
-            <h1 className="font-bold text-lg flex-1">주문 상세</h1>
+            <h1 className="font-bold text-lg flex-1"><T ko="주문 상세" en="Order details" uz="Buyurtma tafsilotlari" /></h1>
           </div>
         </div>
         <div className="flex-1 flex items-center justify-center">
-          <p className="text-sm text-[var(--muted)]">로딩중...</p>
+          <p className="text-sm text-[var(--muted)]"><T ko="로딩중..." en="Loading..." uz="Yuklanmoqda..." /></p>
         </div>
       </div>
     );
@@ -277,8 +278,8 @@ export const OrderDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =
       <StatusBar />
       <div className="flex items-center gap-3 px-4 pb-3">
         <BackButton onBack={() => onNavigate?.("home")} />
-        <h1 className="font-bold text-lg flex-1">주문 상세</h1>
-        <button className="text-sm font-medium" style={{ color: "var(--green)" }}>영수증</button>
+        <h1 className="font-bold text-lg flex-1"><T ko="주문 상세" en="Order details" uz="Buyurtma tafsilotlari" /></h1>
+        <button className="text-sm font-medium" style={{ color: "var(--green)" }}><T ko="영수증" en="Receipt" uz="Chek" /></button>
       </div>
     </div>
 
@@ -308,7 +309,7 @@ export const OrderDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =
       {order.orderItems && (
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
           <div className="px-4 py-3 border-b border-[var(--border)]">
-            <p className="font-semibold text-sm text-[#1A1A18]">주문 항목</p>
+            <p className="font-semibold text-sm text-[#1A1A18]"><T ko="주문 항목" en="Order items" uz="Buyurtma tarkibi" /></p>
           </div>
           <div className="divide-y divide-[var(--border)]">
             {order.orderItems.map((item) => (
@@ -325,7 +326,7 @@ export const OrderDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =
       )}
 
       <div className="bg-white rounded-2xl p-4 shadow-sm space-y-2.5">
-        <p className="font-semibold text-sm text-[#1A1A18]">결제 내역</p>
+        <p className="font-semibold text-sm text-[#1A1A18]"><T ko="결제 내역" en="Payment details" uz="To'lov tafsilotlari" /></p>
         {paymentRows.map((row) => (
           <div key={row.label} className="flex justify-between text-sm">
             <span style={{ color: "var(--muted)" }}>{row.label}</span>
@@ -341,7 +342,7 @@ export const OrderDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =
 
       {order.deliveryAddress && (
         <div className="bg-white rounded-2xl p-4 shadow-sm space-y-2">
-          <p className="font-semibold text-sm text-[#1A1A18]">배달 정보</p>
+          <p className="font-semibold text-sm text-[#1A1A18]"><T ko="배달 정보" en="Delivery information" uz="Yetkazib berish ma'lumoti" /></p>
           <p className="text-sm text-[var(--muted)]">📍 {order.deliveryAddress}</p>
           {order.courier && <p className="text-sm text-[var(--muted)]">🛵 배달 기사: {order.courier.name} · ⭐ {order.courier.rating}</p>}
         </div>
@@ -349,10 +350,10 @@ export const OrderDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =
 
       <div className="flex gap-3">
         <button className="flex-1 py-4 rounded-2xl font-bold text-white text-base" style={{ backgroundColor: "var(--green)" }}>
-          재주문
+          <T ko="재주문" en="Order again" uz="Qayta buyurtma" />
         </button>
         <button className="flex-1 py-4 rounded-2xl font-semibold text-sm border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>
-          리뷰 쓰기
+          <T ko="리뷰 쓰기" en="Write a review" uz="Sharh yozish" />
         </button>
       </div>
       <div className="h-4" />
