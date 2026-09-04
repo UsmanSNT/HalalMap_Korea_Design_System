@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { GeometricPattern, StatusBar, BackButton } from "../components/Shared";
 import type { ScreenId } from "../App";
+import { LocalizedText as T } from "../i18n";
 
 // Tier config
 const tiers = [
@@ -112,14 +113,14 @@ export const LoyaltyScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
         <div className="relative z-10 px-5 pb-6">
           <div className="flex items-center gap-3 mb-4">
             <BackButton dark onBack={() => onNavigate?.("home")} />
-            <h1 className="font-bold text-lg text-white flex-1">할랄 포인트</h1>
+            <h1 className="font-bold text-lg text-white flex-1"><T ko="할랄 포인트" en="Halal points" uz="Halol ballar" /></h1>
           </div>
 
           {/* Points balance card */}
           <div className="bg-white/10 backdrop-blur rounded-2xl p-4 space-y-3">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-white/60 text-xs">현재 포인트</p>
+                <p className="text-white/60 text-xs"><T ko="현재 포인트" en="Current points" uz="Joriy ballar" /></p>
                 <p className="text-white font-bold text-4xl tabular-nums">{currentPoints.toLocaleString()}</p>
                 <p className="text-white/60 text-xs">≈ ₩{currentPoints.toLocaleString()} 현금 가치</p>
               </div>
@@ -161,7 +162,7 @@ export const LoyaltyScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
       <div className="flex-1 phone-scroll px-4 py-4 space-y-3">
         {tab === "earn" && (
           <>
-            <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide">포인트 적립 방법</p>
+            <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide"><T ko="포인트 적립 방법" en="How to earn points" uz="Ball to'plash usullari" /></p>
             {[
               { icon: "🛵", label: "주문 시 적립", desc: "주문 금액의 2% 포인트 적립 (실버 등급)", pts: "최대 500P/주문" },
               { icon: "⭐", label: "리뷰 작성", desc: "식당 이용 후 리뷰 작성 시", pts: "+50P" },
@@ -188,7 +189,7 @@ export const LoyaltyScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
 
         {tab === "redeem" && (
           <>
-            <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide">포인트 사용</p>
+            <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide"><T ko="포인트 사용" en="Use points" uz="Ballardan foydalanish" /></p>
             {[
               { icon: "💳", label: "결제 시 사용", desc: "주문 금액에서 포인트 차감 (100P = ₩100)", min: "1,000P부터" },
               { icon: "🎟", label: "쿠폰으로 전환", desc: "1,000P → 배달비 무료 쿠폰 1장", min: "1,000P" },
@@ -206,7 +207,7 @@ export const LoyaltyScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
                   <span className="text-[10px] font-bold px-2 py-1 rounded-full" style={{ backgroundColor: "var(--gold-light)", color: "var(--gold)" }}>{item.min}</span>
                 </div>
                 <button className="w-full py-2.5 rounded-xl font-bold text-sm" style={{ backgroundColor: "var(--gold)", color: "white" }}>
-                  사용하기
+                  <T ko="사용하기" en="Use" uz="Foydalanish" />
                 </button>
               </div>
             ))}
@@ -265,14 +266,14 @@ export const ReferralScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
         <div className="relative z-10 px-5 pb-6">
           <div className="flex items-center gap-3 mb-4">
             <BackButton dark onBack={() => onNavigate?.("home")} />
-            <h1 className="font-bold text-lg text-white flex-1">친구 초대</h1>
+            <h1 className="font-bold text-lg text-white flex-1"><T ko="친구 초대" en="Invite friends" uz="Do'stlarni taklif qilish" /></h1>
           </div>
 
           {/* Main headline */}
           <div className="text-center space-y-2 py-2">
             <p className="text-5xl">👥</p>
-            <p className="text-white font-bold text-2xl">친구 초대하고<br />둘 다 ₩5,000!</p>
-            <p className="text-white/60 text-sm">친구가 첫 주문 완료 시 서로 ₩5,000 쿠폰 증정</p>
+            <p className="text-white font-bold text-2xl"><T ko="친구 초대하고\n둘 다 ₩5,000!" en="Invite a friend\nand both get ₩5,000!" uz="Do'stingizni taklif qiling\nva ikkalangiz ₩5,000 oling!" /></p>
+            <p className="text-white/60 text-sm"><T ko="친구가 첫 주문 완료 시 서로 ₩5,000 쿠폰 증정" en="You both receive a ₩5,000 coupon after their first order" uz="Do'stingizning ilk buyurtmasidan so'ng har ikkingiz ₩5,000 kupon olasiz" /></p>
           </div>
 
           {/* Referral code */}
@@ -295,7 +296,7 @@ export const ReferralScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
       <div className="flex-1 phone-scroll px-4 py-4 space-y-4">
         {/* Share options */}
         <div className="bg-white rounded-2xl p-4 shadow-sm space-y-3">
-          <p className="font-bold text-sm text-[#1A1A18]">공유하기</p>
+          <p className="font-bold text-sm text-[#1A1A18]"><T ko="공유하기" en="Share" uz="Ulashish" /></p>
           <div className="grid grid-cols-4 gap-2">
             {[
               { icon: "💬", label: "카카오", bg: "#FEE500", fg: "#000" },
@@ -315,7 +316,7 @@ export const ReferralScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
 
         {/* How it works */}
         <div className="bg-white rounded-2xl p-4 shadow-sm space-y-3">
-          <p className="font-bold text-sm text-[#1A1A18]">이용 방법</p>
+          <p className="font-bold text-sm text-[#1A1A18]"><T ko="이용 방법" en="How it works" uz="Qanday ishlaydi" /></p>
           <div className="space-y-2.5">
             {[
               { step: "1", text: "초대 코드 또는 링크를 친구에게 공유하세요" },
@@ -349,7 +350,7 @@ export const ReferralScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
         {/* Referral list */}
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
           <div className="px-4 py-3 border-b border-[var(--border)]">
-            <p className="font-bold text-sm text-[#1A1A18]">초대 현황</p>
+            <p className="font-bold text-sm text-[#1A1A18]"><T ko="초대 현황" en="Invitation status" uz="Takliflar holati" /></p>
           </div>
           {referrals.map((r, i) => (
             <div key={i} className="flex items-center gap-3 px-4 py-3 border-b border-[var(--border)] last:border-none">

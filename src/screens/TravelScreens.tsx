@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { GeometricPattern, StatusBar, BackButton, Toggle } from "../components/Shared";
 import type { ScreenId } from "../App";
+import { LocalizedText as T } from "../i18n";
 
 // ── 8. Travel Planner ──────────────────────────────────────────────────────────
 const savedTrips = [
@@ -28,7 +29,7 @@ export const TravelPlannerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId)
         <div className="relative z-10 px-5 pb-6">
           <div className="flex items-center gap-3 mb-4">
             <BackButton dark onBack={() => onNavigate?.("home")} />
-            <h1 className="font-bold text-lg text-white">여행 계획</h1>
+            <h1 className="font-bold text-lg text-white"><T ko="여행 계획" en="Travel planner" uz="Sayohat rejasi" /></h1>
           </div>
 
           {/* Destination inputs */}
@@ -55,8 +56,8 @@ export const TravelPlannerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId)
         {/* Saved trips */}
         <div>
           <div className="flex items-center justify-between mb-2">
-            <p className="font-bold text-sm text-[#1A1A18]">저장된 여행</p>
-            <button className="text-xs font-medium" style={{ color: "var(--green)" }}>+ 새 여행</button>
+            <p className="font-bold text-sm text-[#1A1A18]"><T ko="저장된 여행" en="Saved trips" uz="Saqlangan sayohatlar" /></p>
+            <button className="text-xs font-medium" style={{ color: "var(--green)" }}><T ko="+ 새 여행" en="+ New trip" uz="+ Yangi sayohat" /></button>
           </div>
           <div className="flex gap-3 overflow-x-auto scrollbar-hide">
             {savedTrips.map((trip, i) => (
@@ -142,10 +143,10 @@ export const TravelPlannerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId)
 
         <div className="flex gap-3">
           <button className="flex-1 py-4 rounded-2xl font-bold text-white text-sm" style={{ backgroundColor: "var(--green)" }}>
-            여행 저장
+            <T ko="여행 저장" en="Save trip" uz="Sayohatni saqlash" />
           </button>
           <button className="flex-1 py-4 rounded-2xl font-semibold text-sm border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>
-            공유하기
+            <T ko="공유하기" en="Share" uz="Ulashish" />
           </button>
         </div>
         <div className="h-4" />
@@ -191,8 +192,8 @@ export const OfflinePrayerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId)
         <div className="flex items-center gap-3 px-4 pb-3">
           <BackButton onBack={() => onNavigate?.("home")} />
           <div className="flex-1">
-            <h1 className="font-bold text-lg">오프라인 기도 시간</h1>
-            <p className="text-xs text-[var(--muted)]">인터넷 없이 사용 가능</p>
+            <h1 className="font-bold text-lg"><T ko="오프라인 기도 시간" en="Offline prayer times" uz="Oflayn namoz vaqtlari" /></h1>
+            <p className="text-xs text-[var(--muted)]"><T ko="인터넷 없이 사용 가능" en="Available without internet" uz="Internetsiz ishlaydi" /></p>
           </div>
         </div>
       </div>
@@ -206,8 +207,8 @@ export const OfflinePrayerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId)
               📡
             </div>
             <div className="flex-1">
-              <p className="text-white font-bold">오프라인 모드</p>
-              <p className="text-white/60 text-xs mt-0.5">인터넷 없이도 기도 시간 확인 가능</p>
+              <p className="text-white font-bold"><T ko="오프라인 모드" en="Offline mode" uz="Oflayn rejim" /></p>
+              <p className="text-white/60 text-xs mt-0.5"><T ko="인터넷 없이도 기도 시간 확인 가능" en="Check prayer times without internet" uz="Namoz vaqtlarini internetsiz tekshiring" /></p>
             </div>
             <div className="w-2 h-2 rounded-full" style={{ backgroundColor: "var(--green)" }} />
           </div>
@@ -231,7 +232,7 @@ export const OfflinePrayerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId)
 
         {/* Download cities */}
         <div>
-          <p className="font-bold text-sm text-[#1A1A18] mb-2">도시별 다운로드</p>
+          <p className="font-bold text-sm text-[#1A1A18] mb-2"><T ko="도시별 다운로드" en="Downloads by city" uz="Shaharlar bo'yicha yuklash" /></p>
           <div className="space-y-2">
             {cities.map((city) => {
               const isDownloaded = downloaded.includes(city.name);
@@ -280,7 +281,7 @@ export const OfflinePrayerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId)
 
         {/* Settings */}
         <div className="bg-white rounded-2xl p-4 shadow-sm space-y-3">
-          <p className="font-bold text-sm text-[#1A1A18]">자동 업데이트</p>
+          <p className="font-bold text-sm text-[#1A1A18]"><T ko="자동 업데이트" en="Automatic updates" uz="Avtomatik yangilash" /></p>
           <div className="flex items-center justify-between">
             <p className="text-sm text-[var(--muted)]">Wi-Fi 연결 시 자동 업데이트</p>
             <Toggle on={true} />
