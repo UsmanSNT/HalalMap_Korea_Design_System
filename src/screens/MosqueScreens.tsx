@@ -57,7 +57,7 @@ export const MosqueListScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t
           <p className="text-sm text-[var(--muted)]">로딩중...</p>
         ) : (
           filtered.map((m) => (
-            <div key={m.id} className="bg-white rounded-2xl overflow-hidden shadow-sm">
+            <div key={m.id} onClick={() => onNavigate?.("mosque-detail")} className="bg-white rounded-2xl overflow-hidden shadow-sm cursor-pointer active:scale-[0.98] transition-transform">
               <div className="h-28 bg-[#D8D4CC] relative">
                 {m.photo && (
                   <img
@@ -385,7 +385,23 @@ export const PrayerTimesScreen = ({ onTabChange, onNavigate }: { onTabChange?: (
               </div>
             </div>
 
-            <div className="h-6" />
+            {/* Quick actions */}
+            <div className="px-4 pt-3 pb-6 flex gap-3">
+              <button
+                onClick={() => onNavigate?.("qibla")}
+                className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-white text-sm"
+                style={{ backgroundColor: "var(--green)" }}
+              >
+                🧭 키블라 방향
+              </button>
+              <button
+                onClick={() => onNavigate?.("mosque-list")}
+                className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-semibold text-sm border"
+                style={{ color: "var(--green)", borderColor: "var(--green)" }}
+              >
+                🕌 근처 모스크
+              </button>
+            </div>
           </>
         )}
       </div>
