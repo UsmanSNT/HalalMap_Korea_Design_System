@@ -5,6 +5,7 @@ import {
 } from "../components/Shared";
 import { getRestaurants, getRestaurant, getRestaurantMenu, type Restaurant, type MenuItem } from "@/api/restaurants";
 import { getMosques, getPrayerTimes, type Mosque, type PrayerTimesData } from "@/api/mosques";
+import type { ScreenId } from "../App";
 
 const extractImageId = (url: string): string => {
   const match = url.match(/photo-([^?]+)/);
@@ -30,7 +31,7 @@ const categories = [
   { icon: "🔍", label: "전체" },
 ];
 
-export const HomeScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void }) => {
+export const HomeScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabId) => void; onNavigate?: (s: ScreenId) => void }) => {
   const [restaurantList, setRestaurantList] = useState<Restaurant[]>([]);
   const [mosqueList, setMosqueList] = useState<Mosque[]>([]);
   const [prayer, setPrayer] = useState<{ next: PrayerTimesData["prayers"][number] | null; location: string }>({ next: null, location: "" });
@@ -110,7 +111,7 @@ export const HomeScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void }
           </div>
 
           {/* Search bar */}
-          <div className="flex items-center gap-2 bg-white rounded-xl px-4 py-3">
+          <div onClick={() => onNavigate?.("search")} className="flex items-center gap-2 bg-white rounded-xl px-4 py-3 cursor-pointer">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--muted)" strokeWidth="1.8">
               <circle cx="8" cy="8" r="5.5"/>
               <path d="M13.5 13.5L17 17" strokeLinecap="round"/>
@@ -145,7 +146,7 @@ export const HomeScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void }
 
         {/* Featured restaurants */}
         <div className="pt-4">
-          <SectionHeader title="🔥 인기 할랄 식당" action="더보기" />
+          <SectionHeader title="🔥 인기 할랄 식당" action="더보기" onAction={() => onNavigate?.("restaurant-list")} />
           <div className="flex gap-3 px-4 overflow-x-auto scrollbar-hide pb-1">
             {loading ? (
               <p className="text-sm text-[var(--muted)] px-1">로딩중...</p>
@@ -161,6 +162,7 @@ export const HomeScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void }
                   distance={r.distance}
                   eta={r.deliveryTime}
                   fee={formatFee(r.deliveryFee)}
+                  onClick={() => onNavigate?.("restaurant-detail")}
                 />
               ))
             )}
@@ -169,7 +171,7 @@ export const HomeScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void }
 
         {/* Nearby mosques */}
         <div className="pt-5">
-          <SectionHeader title="🕌 근처 모스크" action="지도 보기" />
+          <SectionHeader title="🕌 근처 모스크" action="지도 보기" onAction={() => onNavigate?.("mosque-list")} />
           <div className="px-4 space-y-2.5">
             {loading ? (
               <p className="text-sm text-[var(--muted)] px-1">로딩중...</p>
@@ -182,6 +184,7 @@ export const HomeScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void }
                   distance={m.distance}
                   nextPrayer={prayer.next ? `${prayer.next.name} ${prayer.next.time}` : ""}
                   walkTime={m.walkTime ?? ""}
+                  onClick={() => onNavigate?.("mosque-detail")}
                 />
               ))
             )}
@@ -220,7 +223,7 @@ const categoryMap: Record<string, string> = {
   indonesian: "인도네시아", cafe: "카페", arabic: "아랍",
 };
 
-export const RestaurantListScreen = () => {
+export const RestaurantListScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const [activeFilter, setActiveFilter] = useState("거리순");
   const [list, setList] = useState<Restaurant[]>([]);
   const [loading, setLoading] = useState(true);
@@ -238,7 +241,7 @@ export const RestaurantListScreen = () => {
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
-          <BackButton />
+          <BackButton onBack={() => onNavigate?.("home")} />
           <h1 className="font-bold text-lg flex-1">할랄 레스토랑</h1>
           <button>
             <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="var(--charcoal)" strokeWidth="1.8">
@@ -285,18 +288,19 @@ export const RestaurantListScreen = () => {
           <>
             <p className="text-xs text-[var(--muted)] font-medium mb-1">근처 할랄 레스토랑 {list.length}개</p>
             {list.map((r) => (
-              <RestaurantCardH
-                key={r.id}
-                name={r.nameKo}
-                imageId={extractImageId(r.photo)}
-                badge={halalBadgeMap(r.halalStatus)}
-                rating={r.rating}
-                count={r.reviewCount}
-                distance={r.distance}
-                eta={r.deliveryTime}
-                fee={formatFee(r.deliveryFee)}
-                cuisine={categoryMap[r.category] ?? r.category}
-              />
+              <div key={r.id} onClick={() => onNavigate?.("restaurant-detail")} className="cursor-pointer">
+                <RestaurantCardH
+                  name={r.nameKo}
+                  imageId={extractImageId(r.photo)}
+                  badge={halalBadgeMap(r.halalStatus)}
+                  rating={r.rating}
+                  count={r.reviewCount}
+                  distance={r.distance}
+                  eta={r.deliveryTime}
+                  fee={formatFee(r.deliveryFee)}
+                  cuisine={categoryMap[r.category] ?? r.category}
+                />
+              </div>
             ))}
           </>
         )}
@@ -310,7 +314,7 @@ export const RestaurantListScreen = () => {
 // ── 8. Restaurant Detail ───────────────────────────────────────────────────────
 const menuTabs = ["전체메뉴", "인기메뉴", "한식", "음료", "사이드"];
 
-export const RestaurantDetailScreen = () => {
+export const RestaurantDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const [activeTab, setActiveTab] = useState("인기메뉴");
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
   const [menuItems, setMenuItems] = useState<import("@/api/restaurants").MenuItem[]>([]);
@@ -358,7 +362,7 @@ export const RestaurantDetailScreen = () => {
           <StatusBar dark />
         </div>
         <div className="absolute top-12 left-4">
-          <BackButton dark />
+          <BackButton dark onBack={() => onNavigate?.("home")} />
         </div>
         <div className="absolute top-12 right-4 flex gap-2">
           <button className="w-9 h-9 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
@@ -458,7 +462,7 @@ export const RestaurantDetailScreen = () => {
 
       {/* Bottom CTA */}
       <div className="px-4 pb-8 pt-3 bg-white border-t border-[var(--border)] flex-shrink-0">
-        <button className="w-full py-4 rounded-2xl font-bold text-white text-base" style={{ backgroundColor: "var(--green)" }}>
+        <button onClick={() => onNavigate?.("menu")} className="w-full py-4 rounded-2xl font-bold text-white text-base" style={{ backgroundColor: "var(--green)" }}>
           메뉴 전체 보기
         </button>
       </div>
@@ -469,7 +473,7 @@ export const RestaurantDetailScreen = () => {
 // ── 9. Menu Screen ─────────────────────────────────────────────────────────────
 const menuCategories = ["인기메뉴", "한식", "세트메뉴", "음료", "사이드"];
 
-export const MenuScreen = () => {
+export const MenuScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const [activeTab, setActiveTab] = useState("인기메뉴");
   const [cart, setCart] = useState<Record<string, number>>({});
   const [restaurantName, setRestaurantName] = useState("로딩중...");
@@ -495,7 +499,7 @@ export const MenuScreen = () => {
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
-          <BackButton />
+          <BackButton onBack={() => onNavigate?.("home")} />
           <div className="flex-1">
             <h1 className="font-bold text-base">{restaurantName}</h1>
             <p className="text-xs text-[var(--muted)]">메뉴 선택</p>
@@ -588,7 +592,7 @@ export const MenuScreen = () => {
 };
 
 // ── 10. Item Detail ────────────────────────────────────────────────────────────
-export const ItemDetailScreen = () => {
+export const ItemDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const [size, setSize] = useState("보통");
   const [spice, setSpice] = useState("보통");
   const [extras, setExtras] = useState<string[]>([]);
@@ -610,7 +614,7 @@ export const ItemDetailScreen = () => {
         <div className="absolute top-0 left-0 right-0">
           <StatusBar dark />
         </div>
-        <div className="absolute top-12 left-4"><BackButton dark /></div>
+        <div className="absolute top-12 left-4"><BackButton dark onBack={() => onNavigate?.("home")} /></div>
       </div>
 
       <div className="flex-1 phone-scroll px-5 pt-5 pb-4 space-y-5">
@@ -696,7 +700,7 @@ export const ItemDetailScreen = () => {
             <span className="text-sm font-bold w-5 text-center">{qty}</span>
             <button onClick={() => setQty(qty + 1)} className="w-7 h-7 rounded-full flex items-center justify-center text-white font-bold text-sm" style={{ backgroundColor: "var(--green)" }}>+</button>
           </div>
-          <button className="flex-1 py-4 rounded-2xl font-bold text-white flex items-center justify-between px-5" style={{ backgroundColor: "var(--green)" }}>
+          <button onClick={() => onNavigate?.("cart")} className="flex-1 py-4 rounded-2xl font-bold text-white flex items-center justify-between px-5" style={{ backgroundColor: "var(--green)" }}>
             <span>장바구니 담기</span>
             <PriceTag amount={total} className="text-white" />
           </button>
@@ -707,7 +711,7 @@ export const ItemDetailScreen = () => {
 };
 
 // ── 11. Cart ───────────────────────────────────────────────────────────────────
-export const CartScreen = () => {
+export const CartScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const [items, setItems] = useState([
     { name: "할랄 갈비탕", option: "보통", price: 13500, qty: 1 },
     { name: "비빔밥 (할랄)", option: "기본", price: 11000, qty: 2 },
@@ -729,7 +733,7 @@ export const CartScreen = () => {
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
-          <BackButton />
+          <BackButton onBack={() => onNavigate?.("home")} />
           <h1 className="font-bold text-lg flex-1">장바구니</h1>
           <span className="text-sm font-semibold" style={{ color: "var(--green)" }}>{items.length}개</span>
         </div>
@@ -813,7 +817,7 @@ export const CartScreen = () => {
 
       {/* CTA */}
       <div className="px-4 pb-8 pt-3 bg-white border-t border-[var(--border)] flex-shrink-0">
-        <button className="w-full py-4 rounded-2xl font-bold text-white text-base flex items-center justify-between px-6" style={{ backgroundColor: "var(--green)" }}>
+        <button onClick={() => onNavigate?.("checkout")} className="w-full py-4 rounded-2xl font-bold text-white text-base flex items-center justify-between px-6" style={{ backgroundColor: "var(--green)" }}>
           <span>주문하기</span>
           <span>₩{total.toLocaleString()}</span>
         </button>
@@ -830,7 +834,7 @@ const paymentMethods = [
 ];
 const tips = [0, 500, 1000, 2000];
 
-export const CheckoutScreen = () => {
+export const CheckoutScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const [payment, setPayment] = useState("shinhan");
   const [tip, setTip] = useState(0);
   const total = 34500 + tip;
@@ -840,7 +844,7 @@ export const CheckoutScreen = () => {
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
-          <BackButton />
+          <BackButton onBack={() => onNavigate?.("home")} />
           <h1 className="font-bold text-lg">결제</h1>
         </div>
       </div>
@@ -925,7 +929,7 @@ export const CheckoutScreen = () => {
       </div>
 
       <div className="px-4 pb-8 pt-3 bg-white border-t border-[var(--border)] flex-shrink-0">
-        <button className="w-full py-4 rounded-2xl font-bold text-white text-base flex items-center justify-between px-6" style={{ backgroundColor: "var(--green)" }}>
+        <button onClick={() => onNavigate?.("order-confirmation")} className="w-full py-4 rounded-2xl font-bold text-white text-base flex items-center justify-between px-6" style={{ backgroundColor: "var(--green)" }}>
           <span>₩{total.toLocaleString()} 결제하기</span>
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round"><path d="M5 10h10M12 7l3 3-3 3"/></svg>
         </button>
@@ -937,7 +941,7 @@ export const CheckoutScreen = () => {
 // ── 13. Order Confirmation ─────────────────────────────────────────────────────
 const steps = ["주문접수", "조리중", "픽업완료", "배달완료"];
 
-export const OrderConfirmationScreen = () => (
+export const OrderConfirmationScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => (
   <div className="flex flex-col h-full relative overflow-hidden" style={{ backgroundColor: "var(--green)" }}>
     <GeometricPattern color="white" opacity={0.05} />
     <StatusBar dark />
@@ -996,10 +1000,10 @@ export const OrderConfirmationScreen = () => (
 
     {/* Buttons */}
     <div className="relative z-10 px-5 pb-10 space-y-3">
-      <button className="w-full py-4 rounded-2xl font-bold text-white text-base border-2 border-white/40">
+      <button onClick={() => onNavigate?.("order-tracking")} className="w-full py-4 rounded-2xl font-bold text-white text-base border-2 border-white/40">
         주문 추적하기
       </button>
-      <button className="w-full py-3 rounded-2xl font-semibold text-sm bg-white" style={{ color: "var(--green)" }}>
+      <button onClick={() => onNavigate?.("home")} className="w-full py-3 rounded-2xl font-semibold text-sm bg-white" style={{ color: "var(--green)" }}>
         홈으로 돌아가기
       </button>
     </div>

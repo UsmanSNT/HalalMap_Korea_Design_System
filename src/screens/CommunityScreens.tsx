@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { GeometricPattern, StatusBar, BackButton, HalalBadge, StarRating } from "../components/Shared";
+import type { ScreenId } from "../App";
 
 // ── 1. Restaurant Reviews ──────────────────────────────────────────────────────
 const ratingCategories = [
@@ -53,7 +54,7 @@ const ratingDist = [
   { stars: 1, pct: 2 },
 ];
 
-export const ReviewsScreen = () => {
+export const ReviewsScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const [sortBy, setSortBy] = useState("최신순");
   const [helpful, setHelpful] = useState<Record<number, boolean>>({});
 
@@ -62,7 +63,7 @@ export const ReviewsScreen = () => {
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
-          <BackButton />
+          <BackButton onBack={() => onNavigate?.("home")} />
           <div className="flex-1">
             <h1 className="font-bold text-lg">리뷰</h1>
             <p className="text-xs text-[var(--muted)]">신당 할랄 키친</p>
@@ -280,7 +281,7 @@ const posts = [
 
 const categories = ["전체", "레스토랑 발견", "식료품 정보", "모스크 정보", "생활 팁", "할랄 스캔"];
 
-export const CommunityScreen = () => {
+export const CommunityScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const [activeCategory, setActiveCategory] = useState("전체");
   const [liked, setLiked] = useState<Record<number, boolean>>({});
 
@@ -402,7 +403,7 @@ const shareTargets = [
   { icon: "📨", label: "더보기", color: "var(--cream)", textColor: "var(--charcoal)" },
 ];
 
-export const ShareScreen = () => {
+export const ShareScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -415,7 +416,7 @@ export const ShareScreen = () => {
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
-          <BackButton />
+          <BackButton onBack={() => onNavigate?.("home")} />
           <h1 className="font-bold text-lg">공유하기</h1>
         </div>
       </div>

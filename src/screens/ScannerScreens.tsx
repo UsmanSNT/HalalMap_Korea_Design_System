@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { StatusBar, BackButton } from "../components/Shared";
+import type { ScreenId } from "../App";
 
 // ── 22. Scanner Screen ─────────────────────────────────────────────────────────
-export const ScannerScreen = () => {
+export const ScannerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const [flash, setFlash] = useState(false);
 
   return (
@@ -11,7 +12,7 @@ export const ScannerScreen = () => {
 
       {/* Controls */}
       <div className="flex items-center justify-between px-5 pb-4 relative z-20">
-        <BackButton dark />
+        <BackButton dark onBack={() => onNavigate?.("home")} />
         <h1 className="font-bold text-white text-lg">할랄 스캐너</h1>
         <button
           onClick={() => setFlash(!flash)}
@@ -145,7 +146,7 @@ const ingredients = [
   { name: "팽창제", status: "ok" },
 ];
 
-export const ScanResultScreen = ({ verdict = "halal" }: { verdict?: Verdict }) => {
+export const ScanResultScreen = ({ verdict = "halal", onNavigate }: { verdict?: Verdict; onNavigate?: (s: ScreenId) => void }) => {
   const cfg = verdictConfig[verdict];
 
   return (
@@ -153,7 +154,7 @@ export const ScanResultScreen = ({ verdict = "halal" }: { verdict?: Verdict }) =
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
-          <BackButton />
+          <BackButton onBack={() => onNavigate?.("home")} />
           <h1 className="font-bold text-lg flex-1">스캔 결과</h1>
           <button className="text-sm font-medium" style={{ color: "var(--muted)" }}>공유</button>
         </div>
@@ -283,12 +284,12 @@ const scanHistory = [
   { name: "해태 허니버터칩", brand: "해태제과", date: "11월 17일", verdict: "halal" as Verdict },
 ];
 
-export const ScanHistoryScreen = () => (
+export const ScanHistoryScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => (
   <div className="flex flex-col h-full bg-[var(--cream)]">
     <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
       <StatusBar />
       <div className="flex items-center gap-3 px-4 pb-3">
-        <BackButton />
+        <BackButton onBack={() => onNavigate?.("home")} />
         <h1 className="font-bold text-lg flex-1">스캔 기록</h1>
         <button className="text-sm font-medium" style={{ color: "var(--danger)" }}>전체 삭제</button>
       </div>

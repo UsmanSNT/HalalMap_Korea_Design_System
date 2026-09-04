@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { GeometricPattern, StatusBar, BackButton, Toggle } from "../components/Shared";
+import type { ScreenId } from "../App";
 
 // ── 8. Travel Planner ──────────────────────────────────────────────────────────
 const savedTrips = [
@@ -15,7 +16,7 @@ const nearbySpots = [
   { type: "mosque" as const, name: "부산 이슬람 센터 기도실", dist: "2.0km", badge: null },
 ];
 
-export const TravelPlannerScreen = () => {
+export const TravelPlannerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const [city, setCity] = useState("부산");
   const [dates, setDates] = useState("12월 8일 – 10일");
 
@@ -26,7 +27,7 @@ export const TravelPlannerScreen = () => {
         <StatusBar dark />
         <div className="relative z-10 px-5 pb-6">
           <div className="flex items-center gap-3 mb-4">
-            <BackButton dark />
+            <BackButton dark onBack={() => onNavigate?.("home")} />
             <h1 className="font-bold text-lg text-white">여행 계획</h1>
           </div>
 
@@ -171,7 +172,7 @@ const offlinePrayers = [
   { name: "이샤 Isha", time: "19:22" },
 ];
 
-export const OfflinePrayerScreen = () => {
+export const OfflinePrayerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const [downloading, setDownloading] = useState<string | null>(null);
   const [downloaded, setDownloaded] = useState<string[]>(["서울 Seoul", "부산 Busan"]);
 
@@ -188,7 +189,7 @@ export const OfflinePrayerScreen = () => {
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
-          <BackButton />
+          <BackButton onBack={() => onNavigate?.("home")} />
           <div className="flex-1">
             <h1 className="font-bold text-lg">오프라인 기도 시간</h1>
             <p className="text-xs text-[var(--muted)]">인터넷 없이 사용 가능</p>

@@ -1,9 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { GeometricPattern, StatusBar } from "../components/Shared";
+import type { ScreenId } from "../App";
 
 // ── 1. Splash Screen ──────────────────────────────────────────────────────────
-export const SplashScreen = () => (
-  <div className="flex flex-col h-full relative overflow-hidden" style={{ backgroundColor: "var(--green)" }}>
+export const SplashScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
+  useEffect(() => {
+    if (!onNavigate) return;
+    const timer = setTimeout(() => onNavigate("onboarding"), 2500);
+    return () => clearTimeout(timer);
+  }, [onNavigate]);
+
+  return (
+  <div className="flex flex-col h-full relative overflow-hidden cursor-pointer" style={{ backgroundColor: "var(--green)" }} onClick={() => onNavigate?.("onboarding")}>
     <GeometricPattern color="white" opacity={0.06} />
     <div className="flex-1 flex flex-col items-center justify-center gap-6 relative z-10">
       {/* Logo mark */}
@@ -48,7 +56,8 @@ export const SplashScreen = () => (
       <p className="text-white/50 text-xs text-center mt-3 font-medium">버전 1.0.0</p>
     </div>
   </div>
-);
+  );
+};
 
 // ── 2. Onboarding Carousel ────────────────────────────────────────────────────
 const slides = [
@@ -148,7 +157,7 @@ const slides = [
   },
 ];
 
-export const OnboardingScreen = () => {
+export const OnboardingScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const [slide, setSlide] = useState(0);
   const current = slides[slide];
 
@@ -157,7 +166,7 @@ export const OnboardingScreen = () => {
       <StatusBar />
       {/* Skip button */}
       <div className="flex justify-end px-5 pt-2">
-        <button className="text-sm font-medium" style={{ color: "var(--muted)" }}>건너뛰기</button>
+        <button onClick={() => onNavigate?.("home")} className="text-sm font-medium" style={{ color: "var(--muted)" }}>건너뛰기</button>
       </div>
 
       {/* Illustration */}
@@ -204,12 +213,14 @@ export const OnboardingScreen = () => {
         ) : (
           <>
             <button
+              onClick={() => onNavigate?.("home")}
               className="w-full py-4 rounded-2xl font-bold text-white text-base shadow-sm"
               style={{ backgroundColor: "var(--green)" }}
             >
               시작하기
             </button>
             <button
+              onClick={() => onNavigate?.("home")}
               className="w-full py-3 rounded-2xl font-semibold text-base border"
               style={{ color: "var(--green)", borderColor: "var(--green)" }}
             >
@@ -223,7 +234,7 @@ export const OnboardingScreen = () => {
 };
 
 // ── 3. Sign Up ────────────────────────────────────────────────────────────────
-export const SignUpScreen = () => {
+export const SignUpScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const [tab, setTab] = useState<"email" | "phone">("email");
   const [name, setName] = useState("김무함마드");
   const [email, setEmail] = useState("muhammad@example.com");
@@ -331,6 +342,7 @@ export const SignUpScreen = () => {
 
         {/* CTA */}
         <button
+          onClick={() => onNavigate?.("home")}
           className="w-full py-4 rounded-2xl font-bold text-white text-base shadow-sm"
           style={{ backgroundColor: agreed ? "var(--green)" : "#9CA3AF" }}
         >
@@ -339,7 +351,7 @@ export const SignUpScreen = () => {
 
         <p className="text-center text-sm text-[var(--muted)]">
           이미 계정이 있으신가요?{" "}
-          <span className="font-semibold" style={{ color: "var(--green)" }}>로그인</span>
+          <button onClick={() => onNavigate?.("home")} className="font-semibold" style={{ color: "var(--green)" }}>로그인</button>
         </p>
       </div>
     </div>
@@ -466,7 +478,7 @@ const languages = [
   { code: "bn", flag: "🇧🇩", name: "বাংলা", sub: "Bengali" },
 ];
 
-export const LanguageScreen = () => {
+export const LanguageScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const [selected, setSelected] = useState("ko");
 
   return (
@@ -509,6 +521,7 @@ export const LanguageScreen = () => {
 
       <div className="px-5 pb-10">
         <button
+          onClick={() => onNavigate?.("home")}
           className="w-full py-4 rounded-2xl font-bold text-white text-base shadow-sm"
           style={{ backgroundColor: "var(--green)" }}
         >

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { GeometricPattern, StatusBar, BackButton, HalalBadge, PriceTag, Toggle } from "../components/Shared";
+import type { ScreenId } from "../App";
 
 // ── 4. AI Meal Recommendations ─────────────────────────────────────────────────
 const mealCards = [
@@ -35,7 +36,7 @@ const mealCards = [
   },
 ];
 
-export const AIMealScreen = () => {
+export const AIMealScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const [cardIdx, setCardIdx] = useState(0);
   const [swipeDir, setSwipeDir] = useState<null | "left" | "right">(null);
   const card = mealCards[cardIdx % mealCards.length];
@@ -54,7 +55,7 @@ export const AIMealScreen = () => {
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
-          <BackButton />
+          <BackButton onBack={() => onNavigate?.("home")} />
           <div className="flex-1">
             <h1 className="font-bold text-lg">AI 맞춤 추천</h1>
             <p className="text-xs text-[var(--muted)]">오늘 오후 5:47 · 이태원 · 🌧️ 12°C</p>
@@ -170,7 +171,7 @@ const groupMembers = [
   { name: "Yusuf", avatar: "🧔", items: [], total: 0, ready: false },
 ];
 
-export const GroupOrderScreen = () => {
+export const GroupOrderScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const [tab, setTab] = useState<"order" | "split">("order");
   const readyCount = groupMembers.filter(m => m.ready).length;
   const grandTotal = groupMembers.reduce((acc, m) => acc + m.total, 0);
@@ -181,7 +182,7 @@ export const GroupOrderScreen = () => {
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
-          <BackButton />
+          <BackButton onBack={() => onNavigate?.("home")} />
           <div className="flex-1">
             <h1 className="font-bold text-lg">그룹 주문</h1>
             <p className="text-xs text-[var(--muted)]">신당 할랄 키친</p>
@@ -315,7 +316,7 @@ const mealPlan = [
   { day: "금", meal: "치킨 커리", rest: "델리 스파이스", delivered: false },
 ];
 
-export const MealPlansScreen = () => {
+export const MealPlansScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const [activeWeek, setActiveWeek] = useState(0);
 
   return (
@@ -325,7 +326,7 @@ export const MealPlansScreen = () => {
         <StatusBar dark />
         <div className="relative z-10 px-5 pb-5">
           <div className="flex items-center gap-3 mb-3">
-            <BackButton dark />
+            <BackButton dark onBack={() => onNavigate?.("home")} />
             <h1 className="font-bold text-lg text-white">밀플랜 구독</h1>
           </div>
           <div className="bg-white/15 rounded-2xl p-4 flex items-center gap-4">
@@ -447,7 +448,7 @@ const products = [
   { name: "KMF 인증 닭고기", brand: "하림 할랄", price: 12500, available: false, image: "1617196034183-421b4040d6fd", stores: 1 },
 ];
 
-export const GroceryScreen = () => {
+export const GroceryScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<"stores" | "products">("stores");
 
@@ -457,7 +458,7 @@ export const GroceryScreen = () => {
         <StatusBar />
         <div className="px-4 pb-3">
           <div className="flex items-center gap-3 mb-3">
-            <BackButton />
+            <BackButton onBack={() => onNavigate?.("home")} />
             <h1 className="font-bold text-lg flex-1">할랄 식료품</h1>
           </div>
           <div className="flex items-center gap-2 bg-[var(--cream)] border border-[var(--border)] rounded-xl px-4 py-3 mb-3">

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { GeometricPattern, StatusBar, BottomNav, BackButton, Toggle, TabId } from "../components/Shared";
 import { getMosques, getMosque, getPrayerTimes, type Mosque, type PrayerTimesData } from "@/api/mosques";
+import type { ScreenId } from "../App";
 
 // ── 18. Mosque List ────────────────────────────────────────────────────────────
-export const MosqueListScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void }) => {
+export const MosqueListScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabId) => void; onNavigate?: (s: ScreenId) => void }) => {
   const [tab, setTab] = useState<"mosque" | "prayer-room">("mosque");
   const [mosqueList, setMosqueList] = useState<Mosque[]>([]);
   const [loading, setLoading] = useState(true);
@@ -101,7 +102,7 @@ export const MosqueListScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => 
 };
 
 // ── 19. Mosque Detail ──────────────────────────────────────────────────────────
-export const MosqueDetailScreen = () => {
+export const MosqueDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const [mosque, setMosque] = useState<Mosque | null>(null);
   const [prayerData, setPrayerData] = useState<PrayerTimesData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -154,7 +155,7 @@ export const MosqueDetailScreen = () => {
           <StatusBar dark />
         </div>
         <div className="absolute top-12 left-4 flex gap-2">
-          <BackButton dark />
+          <BackButton dark onBack={() => onNavigate?.("home")} />
         </div>
         <div className="absolute top-12 right-4">
           <button className="w-9 h-9 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
@@ -255,7 +256,7 @@ const prayerIconMap: Record<string, string> = {
   fajr: "🌅", sunrise: "☀️", dhuhr: "🌤", asr: "🌇", maghrib: "🌆", isha: "🌃",
 };
 
-export const PrayerTimesScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void }) => {
+export const PrayerTimesScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabId) => void; onNavigate?: (s: ScreenId) => void }) => {
   const [notifState, setNotifState] = useState<Record<string, boolean>>({
     fajr: true, sunrise: false, dhuhr: false, asr: true, maghrib: true, isha: false,
   });
@@ -395,7 +396,7 @@ export const PrayerTimesScreen = ({ onTabChange }: { onTabChange?: (t: TabId) =>
 };
 
 // ── 21. Qibla Compass ─────────────────────────────────────────────────────────
-export const QiblaScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void }) => {
+export const QiblaScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabId) => void; onNavigate?: (s: ScreenId) => void }) => {
   const qiblaAngle = 292.4;
 
   return (
@@ -409,7 +410,7 @@ export const QiblaScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void 
 
       {/* Header */}
       <div className="relative z-10 flex items-center gap-3 px-5 pt-2 pb-4">
-        <BackButton dark />
+        <BackButton dark onBack={() => onNavigate?.("home")} />
         <div>
           <h1 className="font-bold text-lg text-white">키블라 Qibla</h1>
           <p className="text-xs text-white/50">서울에서 메카 방향</p>

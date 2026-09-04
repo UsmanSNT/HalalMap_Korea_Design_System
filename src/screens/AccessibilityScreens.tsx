@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { StatusBar, BackButton } from "../components/Shared";
+import type { ScreenId } from "../App";
 
 // ── 15. Onboarding Tutorial Overlay ───────────────────────────────────────────
 const steps = [
@@ -104,7 +105,7 @@ const FakeHomePreview = () => (
   </div>
 );
 
-export const TutorialScreen = () => {
+export const TutorialScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const [step, setStep] = useState(0);
   const current = steps[step];
   const isLast = step === steps.length - 1;
@@ -221,7 +222,7 @@ const langs = [
   { code: "ar", label: "العربية", flag: "🇸🇦", dir: "rtl" as const },
 ];
 
-export const MultilingualScreen = () => {
+export const MultilingualScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const [activePreview, setActivePreview] = useState<"split" | "ko" | "en" | "ar">("split");
 
   return (
@@ -230,7 +231,7 @@ export const MultilingualScreen = () => {
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
-          <BackButton />
+          <BackButton onBack={() => onNavigate?.("home")} />
           <div className="flex-1">
             <h1 className="font-bold text-base text-[#1A1A18]">다국어 콘텐츠 미리보기</h1>
             <p className="text-[11px] text-[var(--muted)]">한국어 · English · العربية</p>

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { GeometricPattern, StatusBar, BackButton } from "../components/Shared";
+import type { ScreenId } from "../App";
 
 // Tier config
 const tiers = [
@@ -97,7 +98,7 @@ const currentPoints = 7840;
 const currentTier = tiers[1]; // silver
 
 // ── 13. Loyalty Program ────────────────────────────────────────────────────────
-export const LoyaltyScreen = () => {
+export const LoyaltyScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const [tab, setTab] = useState<"earn" | "redeem" | "tiers">("earn");
   const nextTier = tiers[2];
   const progress = ((currentPoints - currentTier.min) / (nextTier.min - currentTier.min)) * 100;
@@ -110,7 +111,7 @@ export const LoyaltyScreen = () => {
         <StatusBar dark />
         <div className="relative z-10 px-5 pb-6">
           <div className="flex items-center gap-3 mb-4">
-            <BackButton dark />
+            <BackButton dark onBack={() => onNavigate?.("home")} />
             <h1 className="font-bold text-lg text-white flex-1">할랄 포인트</h1>
           </div>
 
@@ -246,7 +247,7 @@ const referrals = [
   { name: "Siti R.", avatar: "SR", joined: "2024.11.15", status: "대기중", earned: 0 },
 ];
 
-export const ReferralScreen = () => {
+export const ReferralScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const [copied, setCopied] = useState(false);
   const referralCode = "HALAL-KIM7840";
 
@@ -263,7 +264,7 @@ export const ReferralScreen = () => {
         <StatusBar dark />
         <div className="relative z-10 px-5 pb-6">
           <div className="flex items-center gap-3 mb-4">
-            <BackButton dark />
+            <BackButton dark onBack={() => onNavigate?.("home")} />
             <h1 className="font-bold text-lg text-white flex-1">친구 초대</h1>
           </div>
 
