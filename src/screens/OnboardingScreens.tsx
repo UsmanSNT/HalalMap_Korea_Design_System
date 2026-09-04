@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { GeometricPattern, StatusBar } from "../components/Shared";
+import { useLanguage } from "../i18n/LanguageContext";
+import { LANGUAGES } from "../i18n";
 import type { ScreenId } from "../App";
 
 // ── 1. Splash Screen ──────────────────────────────────────────────────────────
 export const SplashScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
+  const { t } = useLanguage();
+
   useEffect(() => {
     if (!onNavigate) return;
     const timer = setTimeout(() => onNavigate("onboarding"), 2500);
@@ -40,8 +44,8 @@ export const SplashScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => voi
           حلال
         </p>
         <div className="text-center">
-          <p className="text-white font-bold text-2xl tracking-tight">HalalMap Korea</p>
-          <p className="text-white/70 text-sm mt-1 font-medium">한국의 할랄 라이프스타일 앱</p>
+          <p className="text-white font-bold text-2xl tracking-tight">{t("onboarding.app_name")}</p>
+          <p className="text-white/70 text-sm mt-1 font-medium">{t("onboarding.app_tagline")}</p>
         </div>
       </div>
     </div>
@@ -53,112 +57,104 @@ export const SplashScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => voi
           style={{ backgroundColor: "var(--gold)" }}
         />
       </div>
-      <p className="text-white/50 text-xs text-center mt-3 font-medium">버전 1.0.0</p>
+      <p className="text-white/50 text-xs text-center mt-3 font-medium">{t("onboarding.version")}</p>
     </div>
   </div>
   );
 };
 
 // ── 2. Onboarding Carousel ────────────────────────────────────────────────────
-const slides = [
-  {
-    emoji: "🍽️",
-    title: "주변 할랄 음식을\n찾아보세요",
-    titleEn: "Find Halal Food Near You",
-    desc: "인증된 할랄 레스토랑, 메뉴 정보, 리뷰를 한 곳에서 확인하세요.",
-    descEn: "Discover certified halal restaurants, menus, and reviews all in one place.",
-    color: "var(--green)",
-    illustration: (
-      <div className="w-56 h-56 relative flex items-center justify-center">
-        <div className="absolute inset-0 rounded-full" style={{ backgroundColor: "var(--green-light)" }} />
-        <div className="relative z-10 flex flex-col items-center gap-3">
-          <div className="w-20 h-20 rounded-2xl bg-white shadow-md flex items-center justify-center text-4xl">🍖</div>
-          <div className="flex gap-2">
-            <div className="w-14 h-14 rounded-xl bg-white shadow-sm flex items-center justify-center text-2xl">🍛</div>
-            <div className="w-14 h-14 rounded-xl bg-white shadow-sm flex items-center justify-center text-2xl">🥙</div>
-          </div>
-        </div>
-        <div
-          className="absolute top-4 right-4 px-2 py-1 rounded-full text-xs font-semibold"
-          style={{ backgroundColor: "var(--green)", color: "white" }}
-        >
-          ✓ HALAL
+const slideIllustrations = [
+  (
+    <div className="w-56 h-56 relative flex items-center justify-center">
+      <div className="absolute inset-0 rounded-full" style={{ backgroundColor: "var(--green-light)" }} />
+      <div className="relative z-10 flex flex-col items-center gap-3">
+        <div className="w-20 h-20 rounded-2xl bg-white shadow-md flex items-center justify-center text-4xl">🍖</div>
+        <div className="flex gap-2">
+          <div className="w-14 h-14 rounded-xl bg-white shadow-sm flex items-center justify-center text-2xl">🍛</div>
+          <div className="w-14 h-14 rounded-xl bg-white shadow-sm flex items-center justify-center text-2xl">🥙</div>
         </div>
       </div>
-    ),
-  },
-  {
-    emoji: "🕌",
-    title: "근처 모스크와\n기도실을 찾으세요",
-    titleEn: "Locate Nearby Mosques",
-    desc: "전국 모스크, 기도실, 기도 시간을 실시간으로 안내해 드립니다.",
-    descEn: "Find mosques, prayer rooms, and prayer times across South Korea.",
-    color: "var(--gold)",
-    illustration: (
-      <div className="w-56 h-56 relative flex items-center justify-center">
-        <div className="absolute inset-0 rounded-full" style={{ backgroundColor: "var(--gold-light)" }} />
-        <div className="relative z-10 flex flex-col items-center gap-2">
-          <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
-            <rect x="10" y="40" width="60" height="32" fill="var(--gold)" rx="2"/>
-            <path d="M10 40L40 20L70 40" fill="var(--gold)" opacity="0.7"/>
-            <rect x="30" y="50" width="20" height="22" fill="white" rx="2"/>
-            <ellipse cx="40" cy="15" rx="6" ry="8" fill="var(--gold)" opacity="0.9"/>
-            <path d="M34 15C34 11.5 36.7 8.5 40 8" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
-            <rect x="8" y="38" width="4" height="4" rx="0.5" fill="var(--gold-light)"/>
-            <rect x="68" y="38" width="4" height="4" rx="0.5" fill="var(--gold-light)"/>
-          </svg>
-          <div
-            className="flex items-center gap-2 bg-white rounded-xl px-3 py-2 shadow-sm"
-          >
-            <span className="text-sm">🕐</span>
-            <div>
-              <p className="text-xs font-bold text-[#1A1A18]">다음 기도: 아스르</p>
-              <p className="text-xs" style={{ color: "var(--green)" }}>14:32 · 1시간 47분 후</p>
-            </div>
-          </div>
-        </div>
+      <div
+        className="absolute top-4 right-4 px-2 py-1 rounded-full text-xs font-semibold"
+        style={{ backgroundColor: "var(--green)", color: "white" }}
+      >
+        ✓ HALAL
       </div>
-    ),
-  },
-  {
-    emoji: "🔍",
-    title: "제품 할랄 성분을\n바로 확인하세요",
-    titleEn: "Scan Products for Halal Status",
-    desc: "바코드 스캔으로 식품의 할랄 여부를 즉시 확인하고, 성분을 분석하세요.",
-    descEn: "Scan barcodes to instantly verify halal status and analyze ingredients.",
-    color: "var(--green)",
-    illustration: (
-      <div className="w-56 h-56 relative flex items-center justify-center">
-        <div className="absolute inset-0 rounded-full" style={{ backgroundColor: "var(--green-light)" }} />
-        <div className="relative z-10 flex flex-col items-center gap-3">
-          {/* Scanner frame */}
-          <div className="w-32 h-32 relative border-2 border-[#1B6B4A] rounded-xl flex items-center justify-center">
-            <div className="absolute top-0 left-0 w-5 h-5 border-t-4 border-l-4 border-[#1B6B4A] rounded-tl-lg" />
-            <div className="absolute top-0 right-0 w-5 h-5 border-t-4 border-r-4 border-[#1B6B4A] rounded-tr-lg" />
-            <div className="absolute bottom-0 left-0 w-5 h-5 border-b-4 border-l-4 border-[#1B6B4A] rounded-bl-lg" />
-            <div className="absolute bottom-0 right-0 w-5 h-5 border-b-4 border-r-4 border-[#1B6B4A] rounded-br-lg" />
-            {/* Barcode lines */}
-            <div className="flex gap-1 items-center">
-              {[3,5,2,4,3,6,2,4,3].map((h, i) => (
-                <div key={i} className="bg-[#1A1A18] w-1 rounded-full" style={{ height: `${h * 6}px` }} />
-              ))}
-            </div>
-          </div>
-          {/* Result */}
-          <div
-            className="flex items-center gap-2 bg-white rounded-xl px-3 py-2 shadow-sm"
-          >
-            <div className="w-6 h-6 rounded-full flex items-center justify-center text-sm" style={{ backgroundColor: "var(--green)" }}>✓</div>
-            <p className="text-xs font-bold text-[#1A1A18]">할랄 인증 확인됨</p>
-          </div>
-        </div>
-      </div>
-    ),
-  },
-];
+    </div>
+  ),
+  null,
+  null,
+] as const;
 
 export const OnboardingScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
+  const { t } = useLanguage();
   const [slide, setSlide] = useState(0);
+
+  const slides = [
+    {
+      titleKey: "onboarding.slide1_title",
+      descKey: "onboarding.slide1_desc",
+      illustration: slideIllustrations[0],
+    },
+    {
+      titleKey: "onboarding.slide2_title",
+      descKey: "onboarding.slide2_desc",
+      illustration: (
+        <div className="w-56 h-56 relative flex items-center justify-center">
+          <div className="absolute inset-0 rounded-full" style={{ backgroundColor: "var(--gold-light)" }} />
+          <div className="relative z-10 flex flex-col items-center gap-2">
+            <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+              <rect x="10" y="40" width="60" height="32" fill="var(--gold)" rx="2"/>
+              <path d="M10 40L40 20L70 40" fill="var(--gold)" opacity="0.7"/>
+              <rect x="30" y="50" width="20" height="22" fill="white" rx="2"/>
+              <ellipse cx="40" cy="15" rx="6" ry="8" fill="var(--gold)" opacity="0.9"/>
+              <path d="M34 15C34 11.5 36.7 8.5 40 8" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+              <rect x="8" y="38" width="4" height="4" rx="0.5" fill="var(--gold-light)"/>
+              <rect x="68" y="38" width="4" height="4" rx="0.5" fill="var(--gold-light)"/>
+            </svg>
+            <div className="flex items-center gap-2 bg-white rounded-xl px-3 py-2 shadow-sm">
+              <span className="text-sm">🕐</span>
+              <div>
+                <p className="text-xs font-bold text-[#1A1A18]">{t("onboarding.next_prayer_label")}</p>
+                <p className="text-xs" style={{ color: "var(--green)" }}>{t("onboarding.next_prayer_countdown")}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      titleKey: "onboarding.slide3_title",
+      descKey: "onboarding.slide3_desc",
+      illustration: (
+        <div className="w-56 h-56 relative flex items-center justify-center">
+          <div className="absolute inset-0 rounded-full" style={{ backgroundColor: "var(--green-light)" }} />
+          <div className="relative z-10 flex flex-col items-center gap-3">
+            {/* Scanner frame */}
+            <div className="w-32 h-32 relative border-2 border-[#1B6B4A] rounded-xl flex items-center justify-center">
+              <div className="absolute top-0 left-0 w-5 h-5 border-t-4 border-l-4 border-[#1B6B4A] rounded-tl-lg" />
+              <div className="absolute top-0 right-0 w-5 h-5 border-t-4 border-r-4 border-[#1B6B4A] rounded-tr-lg" />
+              <div className="absolute bottom-0 left-0 w-5 h-5 border-b-4 border-l-4 border-[#1B6B4A] rounded-bl-lg" />
+              <div className="absolute bottom-0 right-0 w-5 h-5 border-b-4 border-r-4 border-[#1B6B4A] rounded-br-lg" />
+              {/* Barcode lines */}
+              <div className="flex gap-1 items-center">
+                {[3,5,2,4,3,6,2,4,3].map((h, i) => (
+                  <div key={i} className="bg-[#1A1A18] w-1 rounded-full" style={{ height: `${h * 6}px` }} />
+                ))}
+              </div>
+            </div>
+            {/* Result */}
+            <div className="flex items-center gap-2 bg-white rounded-xl px-3 py-2 shadow-sm">
+              <div className="w-6 h-6 rounded-full flex items-center justify-center text-sm" style={{ backgroundColor: "var(--green)" }}>✓</div>
+              <p className="text-xs font-bold text-[#1A1A18]">{t("onboarding.halal_confirmed")}</p>
+            </div>
+          </div>
+        </div>
+      ),
+    },
+  ];
+
   const current = slides[slide];
 
   return (
@@ -166,7 +162,7 @@ export const OnboardingScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =>
       <StatusBar />
       {/* Skip button */}
       <div className="flex justify-end px-5 pt-2">
-        <button onClick={() => onNavigate?.("home")} className="text-sm font-medium" style={{ color: "var(--muted)" }}>건너뛰기</button>
+        <button onClick={() => onNavigate?.("home")} className="text-sm font-medium" style={{ color: "var(--muted)" }}>{t("common.skip")}</button>
       </div>
 
       {/* Illustration */}
@@ -178,9 +174,9 @@ export const OnboardingScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =>
         {/* Text */}
         <div className="text-center space-y-2">
           <h1 className="font-bold text-2xl text-[#1A1A18] leading-tight whitespace-pre-line">
-            {current.title}
+            {t(current.titleKey)}
           </h1>
-          <p className="text-sm text-[#6B7280] leading-relaxed">{current.desc}</p>
+          <p className="text-sm text-[#6B7280] leading-relaxed">{t(current.descKey)}</p>
         </div>
 
         {/* Dots */}
@@ -208,7 +204,7 @@ export const OnboardingScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =>
             className="w-full py-4 rounded-2xl font-bold text-white text-base shadow-sm"
             style={{ backgroundColor: "var(--green)" }}
           >
-            다음
+            {t("common.next")}
           </button>
         ) : (
           <>
@@ -217,14 +213,14 @@ export const OnboardingScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =>
               className="w-full py-4 rounded-2xl font-bold text-white text-base shadow-sm"
               style={{ backgroundColor: "var(--green)" }}
             >
-              시작하기
+              {t("common.start")}
             </button>
             <button
               onClick={() => onNavigate?.("home")}
               className="w-full py-3 rounded-2xl font-semibold text-base border"
               style={{ color: "var(--green)", borderColor: "var(--green)" }}
             >
-              로그인
+              {t("onboarding.login")}
             </button>
           </>
         )}
@@ -235,6 +231,7 @@ export const OnboardingScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =>
 
 // ── 3. Sign Up ────────────────────────────────────────────────────────────────
 export const SignUpScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
+  const { t } = useLanguage();
   const [tab, setTab] = useState<"email" | "phone">("email");
   const [name, setName] = useState("김무함마드");
   const [email, setEmail] = useState("muhammad@example.com");
@@ -248,25 +245,25 @@ export const SignUpScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => voi
         <GeometricPattern color="white" opacity={0.06} />
         <div className="relative z-10 text-center">
           <p className="font-arabic text-3xl font-bold" style={{ color: "var(--gold)" }} dir="rtl">حلال</p>
-          <p className="text-white font-bold text-lg mt-1">HalalMap Korea</p>
-          <p className="text-white/70 text-sm mt-1">새 계정을 만들어 시작하세요</p>
+          <p className="text-white font-bold text-lg mt-1">{t("onboarding.app_name")}</p>
+          <p className="text-white/70 text-sm mt-1">{t("onboarding.signup_subtitle")}</p>
         </div>
       </div>
 
       <div className="flex-1 phone-scroll px-5 pt-5 pb-6 space-y-4">
         {/* Tab toggle */}
         <div className="flex bg-white rounded-xl p-1 border border-[var(--border)]">
-          {(["email", "phone"] as const).map((t) => (
+          {(["email", "phone"] as const).map((tKey) => (
             <button
-              key={t}
-              onClick={() => setTab(t)}
+              key={tKey}
+              onClick={() => setTab(tKey)}
               className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all"
               style={{
-                backgroundColor: tab === t ? "var(--green)" : "transparent",
-                color: tab === t ? "white" : "var(--muted)",
+                backgroundColor: tab === tKey ? "var(--green)" : "transparent",
+                color: tab === tKey ? "white" : "var(--muted)",
               }}
             >
-              {t === "email" ? "이메일" : "전화번호"}
+              {tKey === "email" ? t("onboarding.tab_email") : t("onboarding.tab_phone")}
             </button>
           ))}
         </div>
@@ -274,15 +271,15 @@ export const SignUpScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => voi
         {/* Inputs */}
         <div className="space-y-3">
           <div className="relative border rounded-xl px-4 pt-5 pb-2 bg-white border-[var(--border)] focus-within:border-[var(--green)]">
-            <label className="absolute left-4 text-xs font-medium text-[var(--green)]" style={{ top: 8 }}>이름</label>
+            <label className="absolute left-4 text-xs font-medium text-[var(--green)]" style={{ top: 8 }}>{t("onboarding.field_name")}</label>
             <input className="w-full bg-transparent text-sm text-[#1A1A18] outline-none" value={name} onChange={e => setName(e.target.value)} />
           </div>
           <div className="relative border rounded-xl px-4 pt-5 pb-2 bg-white border-[var(--border)] focus-within:border-[var(--green)]">
-            <label className="absolute left-4 text-xs font-medium text-[var(--green)]" style={{ top: 8 }}>{tab === "email" ? "이메일" : "전화번호"}</label>
+            <label className="absolute left-4 text-xs font-medium text-[var(--green)]" style={{ top: 8 }}>{tab === "email" ? t("onboarding.tab_email") : t("onboarding.tab_phone")}</label>
             <input className="w-full bg-transparent text-sm text-[#1A1A18] outline-none" value={email} onChange={e => setEmail(e.target.value)} />
           </div>
           <div className="relative border rounded-xl px-4 pt-5 pb-2 bg-white border-[var(--border)] focus-within:border-[var(--green)]">
-            <label className="absolute left-4 text-xs font-medium text-[var(--green)]" style={{ top: 8 }}>비밀번호</label>
+            <label className="absolute left-4 text-xs font-medium text-[var(--green)]" style={{ top: 8 }}>{t("onboarding.field_password")}</label>
             <input type="password" className="w-full bg-transparent text-sm text-[#1A1A18] outline-none" value={pw} onChange={e => setPw(e.target.value)} />
           </div>
         </div>
@@ -290,7 +287,7 @@ export const SignUpScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => voi
         {/* Social */}
         <div className="flex items-center gap-3">
           <div className="flex-1 h-px bg-[var(--border)]" />
-          <span className="text-xs text-[var(--muted)]">또는 소셜로 시작</span>
+          <span className="text-xs text-[var(--muted)]">{t("onboarding.or_social")}</span>
           <div className="flex-1 h-px bg-[var(--border)]" />
         </div>
 
@@ -300,7 +297,7 @@ export const SignUpScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => voi
             <svg width="20" height="20" viewBox="0 0 20 20" fill="#1A1A18">
               <path d="M10 2C5.8 2 2.5 4.7 2.5 8C2.5 10 3.6 11.7 5.4 12.8L4.7 15.7L7.9 13.7C8.6 13.9 9.3 14 10 14C14.2 14 17.5 11.3 17.5 8C17.5 4.7 14.2 2 10 2Z"/>
             </svg>
-            카카오로 시작하기
+            {t("onboarding.kakao_signup")}
           </button>
           {/* Google */}
           <button className="w-full flex items-center gap-3 py-3.5 px-5 rounded-2xl font-semibold text-sm bg-white border border-[var(--border)] text-[#1A1A18]">
@@ -310,14 +307,14 @@ export const SignUpScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => voi
               <path d="M3.93 10.67A5.41 5.41 0 013.65 9a5.41 5.41 0 01.28-1.67V5H.96A9 9 0 000 9a9 9 0 00.96 4l2.97-2.33z" fill="#FBBC05"/>
               <path d="M9 3.58a4.86 4.86 0 013.44 1.35l2.58-2.58A8.64 8.64 0 009 0 9 9 0 00.96 5l2.97 2.33A5.4 5.4 0 019 3.58z" fill="#EA4335"/>
             </svg>
-            Google로 시작하기
+            {t("onboarding.google_signup")}
           </button>
           {/* Apple */}
           <button className="w-full flex items-center gap-3 py-3.5 px-5 rounded-2xl font-semibold text-sm bg-[#1A1A18] text-white">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="white">
               <path d="M12.5 0C10.5 0.1 8.1 1.4 7 3a4.9 4.9 0 00-1 2.9C8 6 10.4 4.8 11.5 3a4.7 4.7 0 001-3zm1.4 5.6c-1.7 0-3.2 1-4 1-1 0-2.4-1-3.9-1C3.5 5.6 1 7.7 1 11.2c0 3.4 3 7.8 5.2 7.8.9 0 1.6-.6 3.1-.6s2 .6 3.2.6C15 19 17 14.7 17 13.6a5.5 5.5 0 01-3.2-5.1c0-2 1.2-3 2.2-3.6a5.2 5.2 0 00-2.1-.3z"/>
             </svg>
-            Apple로 시작하기
+            {t("onboarding.apple_signup")}
           </button>
         </div>
 
@@ -336,7 +333,7 @@ export const SignUpScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => voi
             {agreed && <svg width="12" height="10" viewBox="0 0 12 10" fill="white"><path d="M1 5l3 3 7-7" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>}
           </div>
           <span className="text-xs text-[var(--muted)] leading-relaxed">
-            <span className="text-[var(--green)] font-medium">이용약관</span> 및 <span className="text-[var(--green)] font-medium">개인정보처리방침</span>에 동의합니다
+            <span className="text-[var(--green)] font-medium">{t("onboarding.terms_agree_prefix")}</span> {t("onboarding.terms_agree_and")} <span className="text-[var(--green)] font-medium">{t("onboarding.terms_agree_suffix")}</span>
           </span>
         </button>
 
@@ -346,12 +343,12 @@ export const SignUpScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => voi
           className="w-full py-4 rounded-2xl font-bold text-white text-base shadow-sm"
           style={{ backgroundColor: agreed ? "var(--green)" : "#9CA3AF" }}
         >
-          회원가입
+          {t("onboarding.signup_cta")}
         </button>
 
         <p className="text-center text-sm text-[var(--muted)]">
-          이미 계정이 있으신가요?{" "}
-          <button onClick={() => onNavigate?.("home")} className="font-semibold" style={{ color: "var(--green)" }}>로그인</button>
+          {t("onboarding.have_account")}{" "}
+          <button onClick={() => onNavigate?.("home")} className="font-semibold" style={{ color: "var(--green)" }}>{t("onboarding.login")}</button>
         </p>
       </div>
     </div>
@@ -360,6 +357,7 @@ export const SignUpScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => voi
 
 // ── 4. Login Screen ────────────────────────────────────────────────────────────
 export const LoginScreen = ({ onLogin }: { onLogin?: (email: string, password: string) => Promise<boolean> }) => {
+  const { t } = useLanguage();
   const [email, setEmail] = useState("user@halalmap.test");
   const [pw, setPw] = useState("User123!");
   const [error, setError] = useState("");
@@ -395,25 +393,25 @@ export const LoginScreen = ({ onLogin }: { onLogin?: (email: string, password: s
             </svg>
           </div>
           <div className="text-center">
-            <p className="font-bold text-xl text-[#1A1A18]">HalalMap Korea</p>
-            <p className="text-sm text-[var(--muted)] mt-0.5">Test akkauntingiz bilan kiring</p>
+            <p className="font-bold text-xl text-[#1A1A18]">{t("onboarding.app_name")}</p>
+            <p className="text-sm text-[var(--muted)] mt-0.5">{t("onboarding.login_subtitle")}</p>
           </div>
         </div>
 
         {/* Inputs */}
         <div className="space-y-3">
           <div className="relative border rounded-xl px-4 pt-5 pb-2 bg-white border-[var(--green)] shadow-[0_0_0_2px_rgba(27,107,74,0.15)]">
-            <label className="absolute left-4 text-xs font-medium text-[var(--green)]" style={{ top: 8 }}>이메일 또는 전화번호</label>
+            <label className="absolute left-4 text-xs font-medium text-[var(--green)]" style={{ top: 8 }}>{t("onboarding.field_email_or_phone")}</label>
             <input className="w-full bg-transparent text-sm text-[#1A1A18] outline-none" value={email} onChange={e => setEmail(e.target.value)} />
           </div>
           <div className="relative border rounded-xl px-4 pt-5 pb-2 bg-white border-[var(--border)]">
-            <label className="absolute left-4 text-xs font-medium text-[var(--muted)]" style={{ top: 8 }}>비밀번호</label>
+            <label className="absolute left-4 text-xs font-medium text-[var(--muted)]" style={{ top: 8 }}>{t("onboarding.field_password")}</label>
             <input type="password" className="w-full bg-transparent text-sm text-[#1A1A18] outline-none" value={pw} onChange={e => setPw(e.target.value)} />
           </div>
         </div>
 
         <div className="flex justify-end">
-          <button className="text-sm font-medium" style={{ color: "var(--green)" }}>비밀번호를 잊으셨나요?</button>
+          <button className="text-sm font-medium" style={{ color: "var(--green)" }}>{t("onboarding.forgot_password")}</button>
         </div>
 
         <button
@@ -422,13 +420,13 @@ export const LoginScreen = ({ onLogin }: { onLogin?: (email: string, password: s
           className="w-full py-4 rounded-2xl font-bold text-white text-base shadow-sm disabled:opacity-60"
           style={{ backgroundColor: "var(--green)" }}
         >
-          {submitting ? "Tekshirilmoqda…" : "Kirish"}
+          {submitting ? t("onboarding.login_submitting") : t("onboarding.login_cta")}
         </button>
 
         {error && <p className="text-center text-sm font-semibold text-[var(--danger)]">{error}</p>}
 
         <div className="rounded-2xl border border-[var(--border)] bg-white p-3 space-y-2">
-          <p className="text-xs font-bold text-[#1A1A18]">Test akkauntlari</p>
+          <p className="text-xs font-bold text-[#1A1A18]">{t("onboarding.test_accounts")}</p>
           {testAccounts.map(([role, accountEmail, password]) => (
             <button
               type="button"
@@ -444,24 +442,24 @@ export const LoginScreen = ({ onLogin }: { onLogin?: (email: string, password: s
 
         <div className="flex items-center gap-3">
           <div className="flex-1 h-px bg-[var(--border)]" />
-          <span className="text-xs text-[var(--muted)]">또는</span>
+          <span className="text-xs text-[var(--muted)]">{t("onboarding.or")}</span>
           <div className="flex-1 h-px bg-[var(--border)]" />
         </div>
 
         <div className="space-y-2.5">
           <button className="w-full flex items-center gap-3 py-3.5 px-5 rounded-2xl font-bold text-sm" style={{ backgroundColor: "#FEE500", color: "#1A1A18" }}>
             <svg width="20" height="20" viewBox="0 0 20 20" fill="#1A1A18"><path d="M10 2C5.8 2 2.5 4.7 2.5 8C2.5 10 3.6 11.7 5.4 12.8L4.7 15.7L7.9 13.7C8.6 13.9 9.3 14 10 14C14.2 14 17.5 11.3 17.5 8C17.5 4.7 14.2 2 10 2Z"/></svg>
-            카카오로 로그인
+            {t("onboarding.kakao_login")}
           </button>
           <button className="w-full flex items-center gap-3 py-3.5 px-5 rounded-2xl font-semibold text-sm bg-white border border-[var(--border)] text-[#1A1A18]">
             <svg width="18" height="18" viewBox="0 0 18 18"><path d="M17.64 9.2a10 10 0 00-.16-1.7H9v3.22h4.84a4.14 4.14 0 01-1.8 2.72v2.26h2.9A8.78 8.78 0 0017.64 9.2z" fill="#4285F4"/><path d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26A5.43 5.43 0 019 14.4a5.4 5.4 0 01-5.07-3.73H.96v2.33A9 9 0 009 18z" fill="#34A853"/><path d="M3.93 10.67A5.41 5.41 0 013.65 9a5.41 5.41 0 01.28-1.67V5H.96A9 9 0 000 9a9 9 0 00.96 4l2.97-2.33z" fill="#FBBC05"/><path d="M9 3.58a4.86 4.86 0 013.44 1.35l2.58-2.58A8.64 8.64 0 009 0 9 9 0 00.96 5l2.97 2.33A5.4 5.4 0 019 3.58z" fill="#EA4335"/></svg>
-            Google로 로그인
+            {t("onboarding.google_login")}
           </button>
         </div>
 
         <p className="text-center text-sm text-[var(--muted)]">
-          계정이 없으신가요?{" "}
-          <span className="font-semibold" style={{ color: "var(--green)" }}>회원가입</span>
+          {t("onboarding.no_account")}{" "}
+          <span className="font-semibold" style={{ color: "var(--green)" }}>{t("onboarding.signup_cta")}</span>
         </p>
       </form>
     </div>
@@ -469,43 +467,34 @@ export const LoginScreen = ({ onLogin }: { onLogin?: (email: string, password: s
 };
 
 // ── 5. Language Selection ─────────────────────────────────────────────────────
-const languages = [
-  { code: "ko", flag: "🇰🇷", name: "한국어", sub: "Korean" },
-  { code: "en", flag: "🇺🇸", name: "English", sub: "English" },
-  { code: "uz", flag: "🇺🇿", name: "O'zbek", sub: "Uzbek" },
-  { code: "ar", flag: "🇸🇦", name: "العربية", sub: "Arabic", rtl: true },
-  { code: "id", flag: "🇮🇩", name: "Bahasa Indonesia", sub: "Indonesian" },
-  { code: "bn", flag: "🇧🇩", name: "বাংলা", sub: "Bengali" },
-];
-
 export const LanguageScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
-  const [selected, setSelected] = useState("ko");
+  const { lang, setLang, t } = useLanguage();
 
   return (
     <div className="flex flex-col h-full bg-[var(--cream)]">
       <StatusBar />
       <div className="px-5 pt-4 pb-2">
-        <h1 className="font-bold text-2xl text-[#1A1A18]">언어 선택</h1>
-        <p className="text-sm text-[var(--muted)] mt-0.5">Select Language · اختر اللغة</p>
+        <h1 className="font-bold text-2xl text-[#1A1A18]">{t("onboarding.language_title")}</h1>
+        <p className="text-sm text-[var(--muted)] mt-0.5">{t("onboarding.language_subtitle")}</p>
       </div>
 
       <div className="flex-1 phone-scroll px-5 py-3 space-y-2">
-        {languages.map((lang) => (
+        {LANGUAGES.map((language) => (
           <button
-            key={lang.code}
-            onClick={() => setSelected(lang.code)}
+            key={language.code}
+            onClick={() => setLang(language.code)}
             className="w-full flex items-center gap-4 p-4 rounded-2xl bg-white border transition-all text-left"
             style={{
-              borderColor: selected === lang.code ? "var(--green)" : "var(--border)",
-              boxShadow: selected === lang.code ? "0 0 0 2px rgba(27,107,74,0.15)" : "none",
+              borderColor: lang === language.code ? "var(--green)" : "var(--border)",
+              boxShadow: lang === language.code ? "0 0 0 2px rgba(27,107,74,0.15)" : "none",
             }}
           >
-            <span className="text-2xl flex-shrink-0">{lang.flag}</span>
-            <div className="flex-1" dir={lang.rtl ? "rtl" : "ltr"}>
-              <p className={`font-semibold text-base text-[#1A1A18] ${lang.rtl ? "font-arabic" : ""}`}>{lang.name}</p>
-              <p className="text-sm text-[var(--muted)]">{lang.sub}</p>
+            <span className="text-2xl flex-shrink-0">{language.flag}</span>
+            <div className="flex-1">
+              <p className="font-semibold text-base text-[#1A1A18]">{language.name}</p>
+              <p className="text-sm text-[var(--muted)]">{language.sub}</p>
             </div>
-            {selected === lang.code && (
+            {lang === language.code && (
               <div
                 className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0"
                 style={{ backgroundColor: "var(--green)" }}
@@ -525,7 +514,7 @@ export const LanguageScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
           className="w-full py-4 rounded-2xl font-bold text-white text-base shadow-sm"
           style={{ backgroundColor: "var(--green)" }}
         >
-          계속하기 · Continue
+          {t("onboarding.language_continue")}
         </button>
       </div>
     </div>

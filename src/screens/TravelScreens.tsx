@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { GeometricPattern, StatusBar, BackButton, Toggle } from "../components/Shared";
 import type { ScreenId } from "../App";
+import { useLanguage } from "../i18n/LanguageContext";
 
 // ── 8. Travel Planner ──────────────────────────────────────────────────────────
 const savedTrips = [
@@ -17,6 +18,7 @@ const nearbySpots = [
 ];
 
 export const TravelPlannerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
+  const { t } = useLanguage();
   const [city, setCity] = useState("부산");
   const [dates, setDates] = useState("12월 8일 – 10일");
 
@@ -28,7 +30,7 @@ export const TravelPlannerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId)
         <div className="relative z-10 px-5 pb-6">
           <div className="flex items-center gap-3 mb-4">
             <BackButton dark onBack={() => onNavigate?.("home")} />
-            <h1 className="font-bold text-lg text-white">여행 계획</h1>
+            <h1 className="font-bold text-lg text-white">{t("travel.trip_planner_title")}</h1>
           </div>
 
           {/* Destination inputs */}
@@ -37,7 +39,7 @@ export const TravelPlannerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId)
               <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--green)">
                 <path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6C3.5 9.5 8 14.5 8 14.5C8 14.5 12.5 9.5 12.5 6C12.5 3.5 10.5 1.5 8 1.5ZM8 7.5C7.2 7.5 6.5 6.8 6.5 6C6.5 5.2 7.2 4.5 8 4.5C8.8 4.5 9.5 5.2 9.5 6C9.5 6.8 8.8 7.5 8 7.5Z"/>
               </svg>
-              <input value={city} onChange={e => setCity(e.target.value)} className="flex-1 text-sm text-[#1A1A18] outline-none bg-transparent font-semibold" placeholder="도시 입력..." />
+              <input value={city} onChange={e => setCity(e.target.value)} className="flex-1 text-sm text-[#1A1A18] outline-none bg-transparent font-semibold" placeholder={t("travel.city_placeholder")} />
             </div>
             <div className="flex items-center gap-3 bg-white rounded-xl px-4 py-3">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--gold)" strokeWidth="1.5">
@@ -45,7 +47,7 @@ export const TravelPlannerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId)
                 <line x1="5" y1="1" x2="5" y2="3"/><line x1="11" y1="1" x2="11" y2="3"/>
                 <line x1="2" y1="6" x2="14" y2="6"/>
               </svg>
-              <input value={dates} onChange={e => setDates(e.target.value)} className="flex-1 text-sm text-[#1A1A18] outline-none bg-transparent" placeholder="날짜 입력..." />
+              <input value={dates} onChange={e => setDates(e.target.value)} className="flex-1 text-sm text-[#1A1A18] outline-none bg-transparent" placeholder={t("travel.date_placeholder")} />
             </div>
           </div>
         </div>
@@ -55,8 +57,8 @@ export const TravelPlannerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId)
         {/* Saved trips */}
         <div>
           <div className="flex items-center justify-between mb-2">
-            <p className="font-bold text-sm text-[#1A1A18]">저장된 여행</p>
-            <button className="text-xs font-medium" style={{ color: "var(--green)" }}>+ 새 여행</button>
+            <p className="font-bold text-sm text-[#1A1A18]">{t("travel.saved_trips")}</p>
+            <button className="text-xs font-medium" style={{ color: "var(--green)" }}>{t("travel.new_trip")}</button>
           </div>
           <div className="flex gap-3 overflow-x-auto scrollbar-hide">
             {savedTrips.map((trip, i) => (
@@ -66,7 +68,7 @@ export const TravelPlannerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId)
                 <div className="absolute bottom-0 left-0 p-2.5">
                   <p className="text-white font-bold text-sm">{trip.city}</p>
                   <p className="text-white/70 text-[10px]">{trip.dates}</p>
-                  <p className="text-white/60 text-[10px]">{trip.spots}곳 저장</p>
+                  <p className="text-white/60 text-[10px]">{t("travel.spots_saved").replace("{count}", String(trip.spots))}</p>
                 </div>
               </div>
             ))}
@@ -126,7 +128,7 @@ export const TravelPlannerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId)
                   {spot.badge && (
                     <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full"
                       style={{ backgroundColor: "var(--green-light)", color: "var(--green)" }}>
-                      {spot.badge === "certified" ? "인증" : "프렌들리"}
+                      {spot.badge === "certified" ? t("travel.badge_certified") : t("travel.badge_friendly")}
                     </span>
                   )}
                   <button className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: "var(--cream)" }}>
@@ -142,10 +144,10 @@ export const TravelPlannerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId)
 
         <div className="flex gap-3">
           <button className="flex-1 py-4 rounded-2xl font-bold text-white text-sm" style={{ backgroundColor: "var(--green)" }}>
-            여행 저장
+            {t("travel.save_trip")}
           </button>
           <button className="flex-1 py-4 rounded-2xl font-semibold text-sm border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>
-            공유하기
+            {t("travel.share")}
           </button>
         </div>
         <div className="h-4" />
@@ -173,6 +175,7 @@ const offlinePrayers = [
 ];
 
 export const OfflinePrayerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
+  const { t } = useLanguage();
   const [downloading, setDownloading] = useState<string | null>(null);
   const [downloaded, setDownloaded] = useState<string[]>(["서울 Seoul", "부산 Busan"]);
 
@@ -191,8 +194,8 @@ export const OfflinePrayerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId)
         <div className="flex items-center gap-3 px-4 pb-3">
           <BackButton onBack={() => onNavigate?.("home")} />
           <div className="flex-1">
-            <h1 className="font-bold text-lg">오프라인 기도 시간</h1>
-            <p className="text-xs text-[var(--muted)]">인터넷 없이 사용 가능</p>
+            <h1 className="font-bold text-lg">{t("travel.offline_prayer_title")}</h1>
+            <p className="text-xs text-[var(--muted)]">{t("travel.offline_prayer_subtitle")}</p>
           </div>
         </div>
       </div>
@@ -206,8 +209,8 @@ export const OfflinePrayerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId)
               📡
             </div>
             <div className="flex-1">
-              <p className="text-white font-bold">오프라인 모드</p>
-              <p className="text-white/60 text-xs mt-0.5">인터넷 없이도 기도 시간 확인 가능</p>
+              <p className="text-white font-bold">{t("travel.offline_mode")}</p>
+              <p className="text-white/60 text-xs mt-0.5">{t("travel.offline_mode_desc")}</p>
             </div>
             <div className="w-2 h-2 rounded-full" style={{ backgroundColor: "var(--green)" }} />
           </div>
@@ -217,7 +220,7 @@ export const OfflinePrayerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId)
         <div className="bg-white rounded-2xl p-4 shadow-sm">
           <div className="flex items-center justify-between mb-3">
             <p className="font-bold text-sm text-[#1A1A18]">서울 · 오늘 기도 시간</p>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ backgroundColor: "var(--green-light)", color: "var(--green)" }}>오프라인 저장됨</span>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ backgroundColor: "var(--green-light)", color: "var(--green)" }}>{t("travel.offline_saved_badge")}</span>
           </div>
           <div className="space-y-2">
             {offlinePrayers.map((p, i) => (
@@ -231,7 +234,7 @@ export const OfflinePrayerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId)
 
         {/* Download cities */}
         <div>
-          <p className="font-bold text-sm text-[#1A1A18] mb-2">도시별 다운로드</p>
+          <p className="font-bold text-sm text-[#1A1A18] mb-2">{t("travel.download_by_city")}</p>
           <div className="space-y-2">
             {cities.map((city) => {
               const isDownloaded = downloaded.includes(city.name);
@@ -245,17 +248,19 @@ export const OfflinePrayerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId)
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold text-sm text-[#1A1A18]">{city.name}</p>
                     <p className="text-xs text-[var(--muted)]">
-                      {isDownloaded ? `업데이트: ${city.updated} · ${city.size}` : `${city.size} · 2024년 기도 시간`}
+                      {isDownloaded
+                        ? t("travel.updated_label").replace("{updated}", String(city.updated)).replace("{size}", city.size)
+                        : t("travel.size_year_label").replace("{size}", city.size)}
                     </p>
                   </div>
                   {isDownloading ? (
                     <div className="flex items-center gap-1.5">
                       <div className="w-4 h-4 rounded-full border-2 border-[var(--green)] border-t-transparent animate-spin" />
-                      <span className="text-xs text-[var(--muted)]">받는 중...</span>
+                      <span className="text-xs text-[var(--muted)]">{t("travel.downloading")}</span>
                     </div>
                   ) : isDownloaded ? (
                     <div className="flex items-center gap-1.5">
-                      <button className="text-xs text-[var(--muted)]">삭제</button>
+                      <button className="text-xs text-[var(--muted)]">{t("travel.delete")}</button>
                       <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ backgroundColor: "var(--green)" }}>
                         <svg width="10" height="8" viewBox="0 0 10 8" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round"><path d="M1 4l2.5 2.5L9 1"/></svg>
                       </div>
@@ -280,13 +285,13 @@ export const OfflinePrayerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId)
 
         {/* Settings */}
         <div className="bg-white rounded-2xl p-4 shadow-sm space-y-3">
-          <p className="font-bold text-sm text-[#1A1A18]">자동 업데이트</p>
+          <p className="font-bold text-sm text-[#1A1A18]">{t("travel.auto_update")}</p>
           <div className="flex items-center justify-between">
-            <p className="text-sm text-[var(--muted)]">Wi-Fi 연결 시 자동 업데이트</p>
+            <p className="text-sm text-[var(--muted)]">{t("travel.auto_update_wifi")}</p>
             <Toggle on={true} />
           </div>
           <div className="flex items-center justify-between">
-            <p className="text-sm text-[var(--muted)]">앱 시작 시 동기화</p>
+            <p className="text-sm text-[var(--muted)]">{t("travel.auto_update_sync")}</p>
             <Toggle on={true} />
           </div>
         </div>

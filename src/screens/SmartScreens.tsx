@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { GeometricPattern, StatusBar, BackButton, HalalBadge, PriceTag, Toggle } from "../components/Shared";
 import type { ScreenId } from "../App";
+import { useLanguage } from "../i18n/LanguageContext";
 
 // ── 4. AI Meal Recommendations ─────────────────────────────────────────────────
 const mealCards = [
@@ -36,7 +37,10 @@ const mealCards = [
   },
 ];
 
+const contextChipKeys = ["chip_rainy", "chip_dinner", "chip_within_2km", "chip_under_budget"];
+
 export const AIMealScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
+  const { t } = useLanguage();
   const [cardIdx, setCardIdx] = useState(0);
   const [swipeDir, setSwipeDir] = useState<null | "left" | "right">(null);
   const card = mealCards[cardIdx % mealCards.length];
@@ -57,7 +61,7 @@ export const AIMealScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => voi
         <div className="flex items-center gap-3 px-4 pb-3">
           <BackButton onBack={() => onNavigate?.("home")} />
           <div className="flex-1">
-            <h1 className="font-bold text-lg">AI 맞춤 추천</h1>
+            <h1 className="font-bold text-lg">{t("smart.ai_meal_title")}</h1>
             <p className="text-xs text-[var(--muted)]">오늘 오후 5:47 · 이태원 · 🌧️ 12°C</p>
           </div>
           <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ backgroundColor: "var(--green-light)" }}>
@@ -71,8 +75,8 @@ export const AIMealScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => voi
       <div className="flex-1 flex flex-col px-6 py-4 gap-4">
         {/* Context chips */}
         <div className="flex flex-wrap gap-2">
-          {["🌧️ 비 오는 날", "⏰ 저녁 식사", "📍 2km 이내", "💰 ₩20,000 이하"].map((c) => (
-            <span key={c} className="text-xs font-medium px-3 py-1.5 rounded-full bg-white border border-[var(--border)] text-[#1A1A18]">{c}</span>
+          {contextChipKeys.map((k) => (
+            <span key={k} className="text-xs font-medium px-3 py-1.5 rounded-full bg-white border border-[var(--border)] text-[#1A1A18]">{t(`smart.${k}`)}</span>
           ))}
         </div>
 
@@ -97,7 +101,7 @@ export const AIMealScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => voi
               {/* Match score */}
               <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-white/95 backdrop-blur px-3 py-1.5 rounded-full">
                 <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: "var(--green)" }} />
-                <span className="text-xs font-bold text-[#1A1A18]">AI 매칭 {card.match}%</span>
+                <span className="text-xs font-bold text-[#1A1A18]">{t("smart.ai_match_label").replace("{match}", String(card.match))}</span>
               </div>
 
               <div className="absolute bottom-3 left-3 right-3">
@@ -118,10 +122,10 @@ export const AIMealScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => voi
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <PriceTag amount={card.price} className="text-lg" />
-                  <p className="text-xs text-[var(--muted)]">배달 {card.eta} · 배달비 ₩2,000</p>
+                  <p className="text-xs text-[var(--muted)]">{t("smart.delivery_info").replace("{eta}", card.eta)}</p>
                 </div>
                 <button className="px-5 py-3 rounded-xl font-bold text-white text-sm" style={{ backgroundColor: "var(--green)" }}>
-                  바로 주문
+                  {t("smart.order_now")}
                 </button>
               </div>
             </div>
@@ -157,7 +161,7 @@ export const AIMealScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => voi
           </button>
         </div>
 
-        <p className="text-center text-xs text-[var(--muted)]">← 건너뛰기 · 추가하기 →</p>
+        <p className="text-center text-xs text-[var(--muted)]">{t("smart.swipe_hint")}</p>
       </div>
     </div>
   );
@@ -172,6 +176,7 @@ const groupMembers = [
 ];
 
 export const GroupOrderScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
+  const { t } = useLanguage();
   const [tab, setTab] = useState<"order" | "split">("order");
   const readyCount = groupMembers.filter(m => m.ready).length;
   const grandTotal = groupMembers.reduce((acc, m) => acc + m.total, 0);
@@ -184,21 +189,21 @@ export const GroupOrderScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =>
         <div className="flex items-center gap-3 px-4 pb-3">
           <BackButton onBack={() => onNavigate?.("home")} />
           <div className="flex-1">
-            <h1 className="font-bold text-lg">그룹 주문</h1>
+            <h1 className="font-bold text-lg">{t("smart.group_order_title")}</h1>
             <p className="text-xs text-[var(--muted)]">신당 할랄 키친</p>
           </div>
           <button className="text-sm font-bold px-3 py-1.5 rounded-xl" style={{ backgroundColor: "var(--green-light)", color: "var(--green)" }}>
-            초대 링크
+            {t("smart.invite_link")}
           </button>
         </div>
 
         {/* Tabs */}
         <div className="flex bg-[var(--cream)] mx-4 mb-3 rounded-xl p-1">
-          {(["order", "split"] as const).map((t) => (
-            <button key={t} onClick={() => setTab(t)}
+          {(["order", "split"] as const).map((tabId) => (
+            <button key={tabId} onClick={() => setTab(tabId)}
               className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all"
-              style={{ backgroundColor: tab === t ? "var(--green)" : "transparent", color: tab === t ? "white" : "var(--muted)" }}>
-              {t === "order" ? "주문 현황" : "계산 분배"}
+              style={{ backgroundColor: tab === tabId ? "var(--green)" : "transparent", color: tab === tabId ? "white" : "var(--muted)" }}>
+              {tabId === "order" ? t("smart.tab_order_status") : t("smart.tab_split_bill")}
             </button>
           ))}
         </div>
@@ -210,8 +215,8 @@ export const GroupOrderScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =>
             {/* Progress */}
             <div className="bg-white rounded-2xl p-4 shadow-sm">
               <div className="flex items-center justify-between mb-2">
-                <p className="font-semibold text-sm text-[#1A1A18]">참여 현황</p>
-                <p className="text-sm font-bold" style={{ color: "var(--green)" }}>{readyCount}/{groupMembers.length}명 완료</p>
+                <p className="font-semibold text-sm text-[#1A1A18]">{t("smart.participation_status")}</p>
+                <p className="text-sm font-bold" style={{ color: "var(--green)" }}>{t("smart.members_done").replace("{ready}", String(readyCount)).replace("{total}", String(groupMembers.length))}</p>
               </div>
               <div className="h-2 bg-[var(--cream)] rounded-full overflow-hidden">
                 <div className="h-full rounded-full transition-all" style={{ width: `${(readyCount / groupMembers.length) * 100}%`, backgroundColor: "var(--green)" }} />
@@ -241,11 +246,11 @@ export const GroupOrderScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =>
                   <div className="flex-1">
                     <p className="font-bold text-sm text-[#1A1A18]">{m.name}</p>
                     {m.ready ? (
-                      <span className="text-[10px] font-bold" style={{ color: "var(--green)" }}>주문 완료 ✓</span>
+                      <span className="text-[10px] font-bold" style={{ color: "var(--green)" }}>{t("smart.order_done")}</span>
                     ) : m.items.length === 0 ? (
-                      <span className="text-[10px] text-[var(--muted)]">아직 선택 중...</span>
+                      <span className="text-[10px] text-[var(--muted)]">{t("smart.still_choosing")}</span>
                     ) : (
-                      <span className="text-[10px] text-[var(--gold)]">수정 중 ✏️</span>
+                      <span className="text-[10px] text-[var(--gold)]">{t("smart.editing")}</span>
                     )}
                   </div>
                   {m.total > 0 && <PriceTag amount={m.total} className="text-sm font-bold" />}
@@ -267,7 +272,7 @@ export const GroupOrderScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =>
           <>
             {/* Split bill */}
             <div className="bg-white rounded-2xl p-5 shadow-sm space-y-3">
-              <p className="font-bold text-base text-[#1A1A18]">계산 분배</p>
+              <p className="font-bold text-base text-[#1A1A18]">{t("smart.tab_split_bill")}</p>
               {groupMembers.filter(m => m.total > 0).map((m, i) => (
                 <div key={i} className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full bg-[var(--cream)] flex items-center justify-center text-base flex-shrink-0">{m.avatar}</div>
@@ -283,15 +288,15 @@ export const GroupOrderScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =>
                 </div>
               ))}
               <div className="pt-3 border-t border-[var(--border)] space-y-1.5 text-sm">
-                <div className="flex justify-between text-[var(--muted)]"><span>소계</span><span>₩{grandTotal.toLocaleString()}</span></div>
-                <div className="flex justify-between text-[var(--muted)]"><span>배달비 균등 분배</span><span>₩{deliveryFee.toLocaleString()}</span></div>
-                <div className="flex justify-between font-bold text-base text-[#1A1A18]"><span>총합</span><span>₩{(grandTotal + deliveryFee).toLocaleString()}</span></div>
+                <div className="flex justify-between text-[var(--muted)]"><span>{t("smart.subtotal")}</span><span>₩{grandTotal.toLocaleString()}</span></div>
+                <div className="flex justify-between text-[var(--muted)]"><span>{t("smart.delivery_fee_split")}</span><span>₩{deliveryFee.toLocaleString()}</span></div>
+                <div className="flex justify-between font-bold text-base text-[#1A1A18]"><span>{t("smart.grand_total")}</span><span>₩{(grandTotal + deliveryFee).toLocaleString()}</span></div>
               </div>
             </div>
 
             <div className="bg-white rounded-2xl p-4 flex gap-3">
-              <button className="flex-1 py-3 rounded-xl text-sm font-bold text-white" style={{ backgroundColor: "var(--green)" }}>카카오페이 요청</button>
-              <button className="flex-1 py-3 rounded-xl text-sm font-semibold border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>토스 정산</button>
+              <button className="flex-1 py-3 rounded-xl text-sm font-bold text-white" style={{ backgroundColor: "var(--green)" }}>{t("smart.kakaopay_request")}</button>
+              <button className="flex-1 py-3 rounded-xl text-sm font-semibold border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>{t("smart.toss_settle")}</button>
             </div>
           </>
         )}
@@ -300,7 +305,9 @@ export const GroupOrderScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =>
       {/* Bottom CTA */}
       <div className="px-4 pb-8 pt-3 bg-white border-t border-[var(--border)] flex-shrink-0">
         <button className="w-full py-4 rounded-2xl font-bold text-white text-base" style={{ backgroundColor: readyCount === groupMembers.length ? "var(--green)" : "#9CA3AF" }}>
-          {readyCount === groupMembers.length ? `₩${(grandTotal + deliveryFee).toLocaleString()} 그룹 주문 완료` : `${groupMembers.length - readyCount}명 대기중...`}
+          {readyCount === groupMembers.length
+            ? t("smart.group_order_complete").replace("{amount}", `₩${(grandTotal + deliveryFee).toLocaleString()}`)
+            : t("smart.waiting_members").replace("{count}", String(groupMembers.length - readyCount))}
         </button>
       </div>
     </div>
@@ -316,7 +323,17 @@ const mealPlan = [
   { day: "금", meal: "치킨 커리", rest: "델리 스파이스", delivered: false },
 ];
 
+const weekKeys = ["week_this", "week_next", "week_after_next"];
+const dietPrefKeys = ["pref_meat", "pref_vegetarian", "pref_korean_focus", "pref_no_spicy"];
+const dietPrefOn = [true, false, true, false];
+const mealSubPlans = [
+  { id: "silver", meals: "주 3회", price: 45000 },
+  { id: "gold", meals: "주 5회", price: 69000 },
+  { id: "platinum", meals: "주 7회", price: 95000 },
+];
+
 export const MealPlansScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
+  const { t } = useLanguage();
   const [activeWeek, setActiveWeek] = useState(0);
 
   return (
@@ -327,7 +344,7 @@ export const MealPlansScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => 
         <div className="relative z-10 px-5 pb-5">
           <div className="flex items-center gap-3 mb-3">
             <BackButton dark onBack={() => onNavigate?.("home")} />
-            <h1 className="font-bold text-lg text-white">밀플랜 구독</h1>
+            <h1 className="font-bold text-lg text-white">{t("smart.meal_plan_title")}</h1>
           </div>
           <div className="bg-white/15 rounded-2xl p-4 flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center text-2xl">🍽️</div>
@@ -335,7 +352,7 @@ export const MealPlansScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => 
               <p className="text-white font-bold">할랄 주간 구독 — 골드</p>
               <p className="text-white/70 text-xs mt-0.5">주 5회 배달 · ₩69,000/주</p>
             </div>
-            <span className="text-xs font-bold px-2 py-1 rounded-full" style={{ backgroundColor: "var(--gold)", color: "white" }}>구독중</span>
+            <span className="text-xs font-bold px-2 py-1 rounded-full" style={{ backgroundColor: "var(--gold)", color: "white" }}>{t("smart.subscribed")}</span>
           </div>
         </div>
       </div>
@@ -343,15 +360,15 @@ export const MealPlansScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => 
       <div className="flex-1 phone-scroll px-4 py-4 space-y-4">
         {/* Week selector */}
         <div className="flex gap-2">
-          {["이번 주", "다음 주", "2주 후"].map((w, i) => (
-            <button key={w} onClick={() => setActiveWeek(i)}
+          {weekKeys.map((wk, i) => (
+            <button key={wk} onClick={() => setActiveWeek(i)}
               className="flex-1 py-2.5 rounded-xl text-sm font-semibold border transition-all"
               style={{
                 backgroundColor: activeWeek === i ? "var(--green)" : "white",
                 color: activeWeek === i ? "white" : "var(--muted)",
                 borderColor: activeWeek === i ? "var(--green)" : "var(--border)",
               }}>
-              {w}
+              {t(`smart.${wk}`)}
             </button>
           ))}
         </div>
@@ -377,10 +394,10 @@ export const MealPlansScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => 
                 <p className="text-xs text-[var(--muted)] truncate">{day.rest}</p>
               </div>
               <div className="flex items-center gap-2">
-                {day.today && <span className="text-[10px] font-bold px-2 py-1 rounded-full text-white" style={{ backgroundColor: "var(--green)" }}>오늘</span>}
-                {day.delivered && <span className="text-[10px] font-bold px-2 py-1 rounded-full" style={{ backgroundColor: "var(--green-light)", color: "var(--green)" }}>배달완료</span>}
+                {day.today && <span className="text-[10px] font-bold px-2 py-1 rounded-full text-white" style={{ backgroundColor: "var(--green)" }}>{t("smart.today")}</span>}
+                {day.delivered && <span className="text-[10px] font-bold px-2 py-1 rounded-full" style={{ backgroundColor: "var(--green-light)", color: "var(--green)" }}>{t("smart.delivered")}</span>}
                 {!day.delivered && !day.today && (
-                  <button className="text-xs text-[var(--muted)] underline">변경</button>
+                  <button className="text-xs text-[var(--muted)] underline">{t("smart.change")}</button>
                 )}
               </div>
             </div>
@@ -389,45 +406,39 @@ export const MealPlansScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => 
 
         {/* Dietary preferences */}
         <div className="bg-white rounded-2xl p-4 shadow-sm space-y-3">
-          <p className="font-bold text-sm text-[#1A1A18]">식단 설정</p>
-          {[
-            { label: "소고기 / 닭고기 포함", on: true },
-            { label: "채식 메뉴 포함", on: false },
-            { label: "한국 음식 위주", on: true },
-            { label: "매운 음식 제외", on: false },
-          ].map((pref) => (
-            <div key={pref.label} className="flex items-center justify-between">
-              <p className="text-sm text-[#1A1A18]">{pref.label}</p>
-              <Toggle on={pref.on} />
+          <p className="font-bold text-sm text-[#1A1A18]">{t("smart.diet_settings")}</p>
+          {dietPrefKeys.map((k, i) => (
+            <div key={k} className="flex items-center justify-between">
+              <p className="text-sm text-[#1A1A18]">{t(`smart.${k}`)}</p>
+              <Toggle on={dietPrefOn[i]} />
             </div>
           ))}
         </div>
 
         {/* Plan options */}
         <div className="space-y-2.5">
-          <p className="font-bold text-sm text-[#1A1A18]">플랜 변경</p>
-          {[
-            { name: "실버", meals: "주 3회", price: 45000, current: false },
-            { name: "골드", meals: "주 5회", price: 69000, current: true },
-            { name: "플래티넘", meals: "주 7회", price: 95000, current: false },
-          ].map((plan) => (
-            <div key={plan.name} className="flex items-center gap-3 p-3.5 rounded-2xl border transition-all"
-              style={{ borderColor: plan.current ? "var(--green)" : "var(--border)", backgroundColor: plan.current ? "var(--green-light)" : "white" }}>
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center text-sm flex-shrink-0"
-                style={{ backgroundColor: plan.name === "실버" ? "#C0C0C0" : plan.name === "골드" ? "var(--gold)" : "#E8E0F0" }}>
-                {plan.name === "실버" ? "🥈" : plan.name === "골드" ? "🥇" : "💎"}
+          <p className="font-bold text-sm text-[#1A1A18]">{t("smart.change_plan")}</p>
+          {mealSubPlans.map((plan) => {
+            const isCurrent = plan.id === "gold";
+            return (
+              <div key={plan.id} className="flex items-center gap-3 p-3.5 rounded-2xl border transition-all"
+                style={{ borderColor: isCurrent ? "var(--green)" : "var(--border)", backgroundColor: isCurrent ? "var(--green-light)" : "white" }}>
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center text-sm flex-shrink-0"
+                  style={{ backgroundColor: plan.id === "silver" ? "#C0C0C0" : plan.id === "gold" ? "var(--gold)" : "#E8E0F0" }}>
+                  {plan.id === "silver" ? "🥈" : plan.id === "gold" ? "🥇" : "💎"}
+                </div>
+                <div className="flex-1">
+                  <p className="font-bold text-sm text-[#1A1A18]">{t(`smart.tier_${plan.id}`)}</p>
+                  <p className="text-xs text-[var(--muted)]">{plan.meals} · ₩{plan.price.toLocaleString()}/주</p>
+                </div>
+                {isCurrent ? (
+                  <span className="text-[10px] font-bold px-2 py-1 rounded-full text-white" style={{ backgroundColor: "var(--green)" }}>{t("smart.current")}</span>
+                ) : (
+                  <button className="text-xs font-bold" style={{ color: "var(--green)" }}>{t("smart.select")}</button>
+                )}
               </div>
-              <div className="flex-1">
-                <p className="font-bold text-sm text-[#1A1A18]">{plan.name}</p>
-                <p className="text-xs text-[var(--muted)]">{plan.meals} · ₩{plan.price.toLocaleString()}/주</p>
-              </div>
-              {plan.current ? (
-                <span className="text-[10px] font-bold px-2 py-1 rounded-full text-white" style={{ backgroundColor: "var(--green)" }}>현재</span>
-              ) : (
-                <button className="text-xs font-bold" style={{ color: "var(--green)" }}>선택</button>
-              )}
-            </div>
-          ))}
+            );
+          })}
         </div>
         <div className="h-4" />
       </div>
@@ -449,6 +460,7 @@ const products = [
 ];
 
 export const GroceryScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<"stores" | "products">("stores");
 
@@ -459,18 +471,18 @@ export const GroceryScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
         <div className="px-4 pb-3">
           <div className="flex items-center gap-3 mb-3">
             <BackButton onBack={() => onNavigate?.("home")} />
-            <h1 className="font-bold text-lg flex-1">할랄 식료품</h1>
+            <h1 className="font-bold text-lg flex-1">{t("smart.grocery_title")}</h1>
           </div>
           <div className="flex items-center gap-2 bg-[var(--cream)] border border-[var(--border)] rounded-xl px-4 py-3 mb-3">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--muted)" strokeWidth="1.8"><circle cx="7" cy="7" r="5"/><path d="M12 12L15 15" strokeLinecap="round"/></svg>
-            <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="제품 또는 브랜드 검색..." className="flex-1 bg-transparent text-sm outline-none" />
+            <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder={t("smart.search_placeholder")} className="flex-1 bg-transparent text-sm outline-none" />
           </div>
           <div className="flex bg-[var(--cream)] rounded-xl p-1">
-            {(["stores", "products"] as const).map((t) => (
-              <button key={t} onClick={() => setActiveTab(t)}
+            {(["stores", "products"] as const).map((tabId) => (
+              <button key={tabId} onClick={() => setActiveTab(tabId)}
                 className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all"
-                style={{ backgroundColor: activeTab === t ? "var(--green)" : "transparent", color: activeTab === t ? "white" : "var(--muted)" }}>
-                {t === "stores" ? "🏪 할랄 마트" : "🛒 제품 검색"}
+                style={{ backgroundColor: activeTab === tabId ? "var(--green)" : "transparent", color: activeTab === tabId ? "white" : "var(--muted)" }}>
+                {tabId === "stores" ? t("smart.tab_stores") : t("smart.tab_products")}
               </button>
             ))}
           </div>
@@ -487,7 +499,7 @@ export const GroceryScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
                   <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent" />
                   <div className="absolute top-3 left-3">
                     <span className="text-[10px] font-bold px-2 py-1 rounded-full text-white" style={{ backgroundColor: "var(--green)" }}>
-                      할랄 섹션 있음
+                      {t("smart.halal_section_available")}
                     </span>
                   </div>
                 </div>
@@ -503,10 +515,10 @@ export const GroceryScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
                   </div>
                   <div className="flex items-center justify-between mt-3">
                     <p className="text-sm font-medium" style={{ color: "var(--green)" }}>
-                      할랄 제품 {store.products}종
+                      {t("smart.halal_products_count").replace("{count}", String(store.products))}
                     </p>
                     <button className="text-xs font-bold px-3 py-1.5 rounded-xl" style={{ backgroundColor: "var(--green-light)", color: "var(--green)" }}>
-                      제품 보기
+                      {t("smart.view_products")}
                     </button>
                   </div>
                 </div>
@@ -515,7 +527,7 @@ export const GroceryScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
           </>
         ) : (
           <>
-            <p className="text-xs text-[var(--muted)]">주변 할랄 제품 {products.length}가지</p>
+            <p className="text-xs text-[var(--muted)]">{t("smart.nearby_products_count").replace("{count}", String(products.length))}</p>
             {products.map((prod, i) => (
               <div key={i} className="bg-white rounded-2xl p-4 shadow-sm flex gap-3">
                 <div className="w-16 h-16 rounded-xl bg-[#E8E6E1] flex-shrink-0 overflow-hidden">
@@ -526,7 +538,7 @@ export const GroceryScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
                   <p className="text-xs text-[var(--muted)]">{prod.brand}</p>
                   <div className="flex items-center gap-2">
                     <PriceTag amount={prod.price} className="text-sm" />
-                    <span className="text-[10px] text-[var(--muted)]">· {prod.stores}개 마트</span>
+                    <span className="text-[10px] text-[var(--muted)]">· {t("smart.stores_count").replace("{count}", String(prod.stores))}</span>
                   </div>
                   <span
                     className="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full"
@@ -535,7 +547,7 @@ export const GroceryScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
                       color: prod.available ? "var(--green)" : "var(--danger)",
                     }}
                   >
-                    {prod.available ? "재고 있음" : "재고 없음"}
+                    {prod.available ? t("smart.in_stock") : t("smart.out_of_stock")}
                   </span>
                 </div>
                 <button className="w-8 h-8 rounded-xl flex items-center justify-center self-end flex-shrink-0" style={{ backgroundColor: prod.available ? "var(--green)" : "#E5E7EB" }}>

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { StatusBar, BackButton } from "../components/Shared";
 import type { ScreenId } from "../App";
+import { useLanguage } from "../i18n/LanguageContext";
 
 // ── 15. Onboarding Tutorial ──────────────────────────────────────────────────
 const tutorialSteps = [
@@ -240,6 +241,7 @@ const langs = [
 ];
 
 export const MultilingualScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
+  const { t } = useLanguage();
   const [activePreview, setActivePreview] = useState<"split" | "ko" | "en" | "ar">("split");
 
   return (
@@ -250,7 +252,7 @@ export const MultilingualScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
         <div className="flex items-center gap-3 px-4 pb-3">
           <BackButton onBack={() => onNavigate?.("home")} />
           <div className="flex-1">
-            <h1 className="font-bold text-base text-[#1A1A18]">다국어 콘텐츠 미리보기</h1>
+            <h1 className="font-bold text-base text-[#1A1A18]">{t("accessibility.multilingual_title")}</h1>
             <p className="text-[11px] text-[var(--muted)]">한국어 · English · العربية</p>
           </div>
         </div>
@@ -258,7 +260,7 @@ export const MultilingualScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
         {/* View selector */}
         <div className="flex gap-1 px-4 pb-3 overflow-x-auto scrollbar-hide">
           {[
-            { id: "split", label: "분할 보기" },
+            { id: "split", label: t("accessibility.split_view") },
             ...langs.map(l => ({ id: l.code, label: `${l.flag} ${l.label}` })),
           ].map((v) => (
             <button key={v.id} onClick={() => setActivePreview(v.id as typeof activePreview)}
@@ -353,10 +355,9 @@ export const MultilingualScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
           <div className="rounded-xl p-3 flex items-start gap-2" style={{ backgroundColor: "var(--green-light)" }}>
             <span className="text-base mt-0.5">🌐</span>
             <div>
-              <p className="font-bold text-xs text-[#1A1A18] mb-0.5">다국어 자동 번역</p>
+              <p className="font-bold text-xs text-[#1A1A18] mb-0.5">{t("accessibility.translation_note_title")}</p>
               <p className="text-[11px] text-[var(--muted)] leading-relaxed">
-                식당 메뉴가 한국어, 영어, 아랍어, 우즈베크어, 인도네시아어로 자동 번역됩니다.
-                식당 관리자가 직접 등록한 번역이 있으면 AI 번역보다 우선 표시됩니다.
+                {t("accessibility.translation_note_desc")}
               </p>
             </div>
           </div>

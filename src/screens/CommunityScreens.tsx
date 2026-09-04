@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { GeometricPattern, StatusBar, BackButton, HalalBadge, StarRating } from "../components/Shared";
+import { useLanguage } from "../i18n/LanguageContext";
 import type { ScreenId } from "../App";
 
 // ── 1. Restaurant Reviews ──────────────────────────────────────────────────────
@@ -54,8 +55,12 @@ const ratingDist = [
   { stars: 1, pct: 2 },
 ];
 
+const sortKeys = ["sort_latest", "sort_recommended", "sort_photos_only", "sort_high_rating"];
+
 export const ReviewsScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
-  const [sortBy, setSortBy] = useState("최신순");
+  const { t } = useLanguage();
+  const sortOptions = sortKeys.map((k) => t(`community.${k}`));
+  const [sortBy, setSortBy] = useState(sortOptions[0]);
   const [helpful, setHelpful] = useState<Record<number, boolean>>({});
 
   return (
@@ -65,11 +70,11 @@ export const ReviewsScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
         <div className="flex items-center gap-3 px-4 pb-3">
           <BackButton onBack={() => onNavigate?.("home")} />
           <div className="flex-1">
-            <h1 className="font-bold text-lg">리뷰</h1>
+            <h1 className="font-bold text-lg">{t("community.reviews_title")}</h1>
             <p className="text-xs text-[var(--muted)]">신당 할랄 키친</p>
           </div>
           <button className="text-sm font-bold px-3 py-1.5 rounded-xl text-white" style={{ backgroundColor: "var(--green)" }}>
-            리뷰 쓰기
+            {t("community.write_review")}
           </button>
         </div>
       </div>
@@ -88,7 +93,7 @@ export const ReviewsScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
                   </svg>
                 ))}
               </div>
-              <p className="text-xs text-[var(--muted)] mt-1">3,241개 리뷰</p>
+              <p className="text-xs text-[var(--muted)] mt-1">{t("community.review_count").replace("{count}", "3,241")}</p>
             </div>
 
             {/* Distribution */}
@@ -107,7 +112,7 @@ export const ReviewsScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
           </div>
 
           {/* Halal-specific categories */}
-          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide mb-3">카테고리별 평가</p>
+          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide mb-3">{t("community.category_ratings_title")}</p>
           <div className="grid grid-cols-2 gap-2">
             {ratingCategories.map((cat) => (
               <div key={cat.key} className="flex items-center justify-between p-3 rounded-xl" style={{ backgroundColor: "var(--cream)" }}>
@@ -130,7 +135,7 @@ export const ReviewsScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
 
         {/* Sort + filter */}
         <div className="flex items-center gap-2 px-4 py-3">
-          {["최신순", "추천순", "사진만", "높은 평점"].map((s) => (
+          {sortOptions.map((s) => (
             <button key={s} onClick={() => setSortBy(s)}
               className="flex-shrink-0 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all"
               style={{
@@ -195,7 +200,7 @@ export const ReviewsScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
 
               {/* Helpful */}
               <div className="flex items-center justify-between pt-1 border-t border-[var(--border)]">
-                <p className="text-xs text-[var(--muted)]">도움이 되었나요?</p>
+                <p className="text-xs text-[var(--muted)]">{t("community.helpful_prompt")}</p>
                 <button
                   onClick={() => setHelpful(h => ({ ...h, [i]: !h[i] }))}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all"
@@ -208,7 +213,7 @@ export const ReviewsScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
                   <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.6">
                     <path d="M4 5V10M4 5L7 2a1 1 0 011 1v1h2a1 1 0 011 1l-.5 4A1 1 0 019.5 10H4M4 5H2a1 1 0 00-1 1v3a1 1 0 001 1h2" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
-                  도움됨 {rev.helpful + (helpful[i] ? 1 : 0)}
+                  {t("community.helpful_count").replace("{count}", String(rev.helpful + (helpful[i] ? 1 : 0)))}
                 </button>
               </div>
             </div>
@@ -279,10 +284,12 @@ const posts = [
   },
 ];
 
-const categories = ["전체", "레스토랑 발견", "식료품 정보", "모스크 정보", "생활 팁", "할랄 스캔"];
+const categoryKeys = ["category_all", "category_restaurant_discovery", "category_grocery_info", "category_mosque_info", "category_life_tips", "category_halal_scan"];
 
 export const CommunityScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
-  const [activeCategory, setActiveCategory] = useState("전체");
+  const { t } = useLanguage();
+  const categories = categoryKeys.map((k) => t(`community.${k}`));
+  const [activeCategory, setActiveCategory] = useState(categories[0]);
   const [liked, setLiked] = useState<Record<number, boolean>>({});
 
   return (
@@ -292,12 +299,12 @@ export const CommunityScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => 
         <div className="px-5 pb-2">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <h1 className="font-bold text-xl text-[#1A1A18]">커뮤니티</h1>
-              <p className="text-xs text-[var(--muted)]">한국 무슬림 할랄 생활 정보</p>
+              <h1 className="font-bold text-xl text-[#1A1A18]">{t("community.community_title")}</h1>
+              <p className="text-xs text-[var(--muted)]">{t("community.community_subtitle")}</p>
             </div>
             <button className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-bold text-white" style={{ backgroundColor: "var(--green)" }}>
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round"><line x1="7" y1="2" x2="7" y2="12"/><line x1="2" y1="7" x2="12" y2="7"/></svg>
-              글쓰기
+              {t("community.write_post")}
             </button>
           </div>
           <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
@@ -322,7 +329,7 @@ export const CommunityScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => 
             {post.pinned && (
               <div className="px-4 pt-2.5 pb-0 flex items-center gap-1.5">
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="var(--gold)"><path d="M6 1l1.1 2.3L10 3.7 8 5.7l.5 3L6 7.5 3.5 8.7 4 5.7 2 3.7l2.9-.4L6 1z"/></svg>
-                <span className="text-[10px] font-bold text-[var(--gold)]">고정 게시글</span>
+                <span className="text-[10px] font-bold text-[var(--gold)]">{t("community.pinned_label")}</span>
               </div>
             )}
             <div className="p-4 space-y-3">
@@ -381,7 +388,7 @@ export const CommunityScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => 
                     <circle cx="11" cy="3" r="1.5"/><circle cx="3" cy="7" r="1.5"/><circle cx="11" cy="11" r="1.5"/>
                     <line x1="9.5" y1="4" x2="4.5" y2="6"/><line x1="9.5" y1="10" x2="4.5" y2="8"/>
                   </svg>
-                  공유
+                  {t("community.share")}
                 </button>
               </div>
             </div>
@@ -394,17 +401,19 @@ export const CommunityScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => 
 };
 
 // ── 3. Share Restaurant / Mosque ───────────────────────────────────────────────
-const shareTargets = [
-  { icon: "💬", label: "카카오톡", color: "#FEE500", textColor: "#1A1A18" },
-  { icon: "📷", label: "인스타그램", color: "linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)", textColor: "white" },
-  { icon: "🟢", label: "WhatsApp", color: "#25D366", textColor: "white" },
-  { icon: "✉️", label: "이메일", color: "#6B7280", textColor: "white" },
-  { icon: "🔗", label: "링크 복사", color: "var(--cream)", textColor: "var(--charcoal)" },
-  { icon: "📨", label: "더보기", color: "var(--cream)", textColor: "var(--charcoal)" },
+const shareTargetKeys = [
+  { icon: "💬", key: "share_target_kakao", color: "#FEE500", textColor: "#1A1A18" },
+  { icon: "📷", key: "share_target_instagram", color: "linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)", textColor: "white" },
+  { icon: "🟢", key: "share_target_whatsapp", color: "#25D366", textColor: "white" },
+  { icon: "✉️", key: "share_target_email", color: "#6B7280", textColor: "white" },
+  { icon: "🔗", key: "share_target_copy_link", color: "var(--cream)", textColor: "var(--charcoal)" },
+  { icon: "📨", key: "share_target_more", color: "var(--cream)", textColor: "var(--charcoal)" },
 ];
 
 export const ShareScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
+  const { t } = useLanguage();
   const [copied, setCopied] = useState(false);
+  const shareTargets = shareTargetKeys.map((target) => ({ ...target, label: t(`community.${target.key}`) }));
 
   const handleCopy = () => {
     setCopied(true);
@@ -417,14 +426,14 @@ export const ShareScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
           <BackButton onBack={() => onNavigate?.("home")} />
-          <h1 className="font-bold text-lg">공유하기</h1>
+          <h1 className="font-bold text-lg">{t("community.share_title")}</h1>
         </div>
       </div>
 
       <div className="flex-1 phone-scroll px-4 py-4 space-y-4">
         {/* Deep link card preview */}
         <div>
-          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide mb-2">공유 카드 미리보기</p>
+          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide mb-2">{t("community.card_preview_label")}</p>
           {/* KakaoTalk card */}
           <div className="bg-white rounded-2xl overflow-hidden shadow-md border border-[var(--border)]">
             <div className="h-40 bg-[#D8D4CC] relative">
@@ -453,7 +462,7 @@ export const ShareScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void
                 <div className="w-5 h-5 rounded flex items-center justify-center" style={{ backgroundColor: "var(--green)" }}>
                   <p className="font-arabic text-[10px] font-bold text-white">ح</p>
                 </div>
-                <p className="text-xs text-[var(--muted)]">HalalMap Korea에서 찾은 할랄 식당</p>
+                <p className="text-xs text-[var(--muted)]">{t("community.app_footer_text")}</p>
               </div>
             </div>
           </div>
@@ -461,7 +470,7 @@ export const ShareScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void
 
         {/* Instagram Stories preview */}
         <div>
-          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide mb-2">인스타그램 스토리</p>
+          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide mb-2">{t("community.instagram_story_label")}</p>
           <div className="relative h-48 rounded-2xl overflow-hidden shadow-md" style={{ background: "linear-gradient(160deg, var(--green) 0%, #0A3D28 100%)" }}>
             <GeometricPattern color="white" opacity={0.06} />
             <div className="relative z-10 p-5 h-full flex flex-col justify-between">
@@ -487,18 +496,18 @@ export const ShareScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void
 
         {/* Share targets grid */}
         <div>
-          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide mb-3">앱으로 공유</p>
+          <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide mb-3">{t("community.share_via_app_label")}</p>
           <div className="grid grid-cols-3 gap-3">
-            {shareTargets.map((t) => (
-              <button key={t.label} onClick={t.label === "링크 복사" ? handleCopy : undefined}
+            {shareTargets.map((target) => (
+              <button key={target.key} onClick={target.key === "share_target_copy_link" ? handleCopy : undefined}
                 className="flex flex-col items-center gap-2 py-4 bg-white rounded-2xl border border-[var(--border)] transition-all active:scale-95">
                 <div
                   className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
-                  style={{ background: t.color, color: t.textColor }}
+                  style={{ background: target.color, color: target.textColor }}
                 >
-                  {t.icon}
+                  {target.icon}
                 </div>
-                <p className="text-xs font-semibold text-[#1A1A18]">{t.label === "링크 복사" && copied ? "복사됨! ✓" : t.label}</p>
+                <p className="text-xs font-semibold text-[#1A1A18]">{target.key === "share_target_copy_link" && copied ? t("community.copied_check") : target.label}</p>
               </button>
             ))}
           </div>
@@ -506,11 +515,11 @@ export const ShareScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void
 
         {/* Deep link */}
         <div className="bg-white rounded-2xl p-4 border border-[var(--border)] space-y-2">
-          <p className="text-xs font-semibold text-[var(--muted)]">직접 링크</p>
+          <p className="text-xs font-semibold text-[var(--muted)]">{t("community.direct_link_label")}</p>
           <div className="flex items-center gap-2 bg-[var(--cream)] rounded-xl px-3 py-2.5">
             <p className="flex-1 text-xs text-[#1A1A18] font-mono truncate">halalmap.kr/r/sindang-halal</p>
             <button onClick={handleCopy} className="text-xs font-bold flex-shrink-0" style={{ color: "var(--green)" }}>
-              {copied ? "복사됨!" : "복사"}
+              {copied ? t("community.copied") : t("community.copy")}
             </button>
           </div>
         </div>

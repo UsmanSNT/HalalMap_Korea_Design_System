@@ -17,6 +17,7 @@ import { TravelPlannerScreen, OfflinePrayerScreen } from "./screens/TravelScreen
 import { NotificationsScreen, RamadanScreen, EidScreen } from "./screens/EngagementScreens";
 import { LoyaltyScreen, ReferralScreen } from "./screens/RewardsScreens";
 import { TutorialScreen, MultilingualScreen } from "./screens/AccessibilityScreens";
+import { LanguageProvider, useLanguage } from "./i18n/LanguageContext";
 
 export type ScreenId =
   | "splash" | "onboarding" | "signup" | "language"
@@ -158,12 +159,35 @@ export default function App() {
   };
 
   return (
+    <LanguageProvider>
+      <AppShell current={current} setCurrent={setCurrent} setHistory={setHistory} handleTabChange={handleTabChange} handleLogout={handleLogout} handleNavigate={handleNavigate} />
+    </LanguageProvider>
+  );
+}
+
+function AppShell({
+  current,
+  setCurrent,
+  setHistory,
+  handleTabChange,
+  handleLogout,
+  handleNavigate,
+}: {
+  current: ScreenId;
+  setCurrent: (s: ScreenId) => void;
+  setHistory: (h: ScreenId[]) => void;
+  handleTabChange: (tab: TabId) => void;
+  handleLogout: () => void;
+  handleNavigate: NavFn;
+}) {
+  const { t } = useLanguage();
+  return (
     <div className="relative min-h-dvh bg-[#EDEAE5]">
       <div className="fixed right-3 top-3 z-50 flex items-center gap-2 rounded-xl border border-[var(--border)] bg-white/95 p-2 shadow-lg backdrop-blur">
         <select value={current} onChange={(event) => { setHistory([]); setCurrent(event.target.value as ScreenId); }} aria-label="Ekranni tanlash" className="max-w-40 rounded-lg bg-[var(--cream)] px-2 py-1.5 text-xs font-semibold outline-none">
           {SCREEN_GROUPS.map((group) => <optgroup key={group.section} label={group.section}>{group.screens.map((screen) => <option key={screen.id} value={screen.id}>{screen.label}</option>)}</optgroup>)}
         </select>
-        <button onClick={handleLogout} className="rounded-lg bg-[var(--danger)] px-3 py-1.5 text-xs font-bold text-white">Chiqish</button>
+        <button onClick={handleLogout} className="rounded-lg bg-[var(--danger)] px-3 py-1.5 text-xs font-bold text-white">{t("common.logout")}</button>
       </div>
       <main className="mx-auto h-dvh w-full max-w-[390px] overflow-hidden bg-[var(--cream)]">
         <CustomerScreen id={current} onTabChange={handleTabChange} onLogout={handleLogout} onNavigate={handleNavigate} />

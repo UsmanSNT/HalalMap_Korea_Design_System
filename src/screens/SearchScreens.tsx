@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { StatusBar, BottomNav, MapPin, RestaurantCardV, RestaurantCardH, HalalBadge, BackButton, TabId } from "../components/Shared";
 import { getRestaurants, getRestaurant, type Restaurant } from "@/api/restaurants";
+import { useLanguage } from "../i18n/LanguageContext";
 import type { ScreenId } from "../App";
 
 const extractImageId = (url: string): string => {
@@ -11,21 +12,23 @@ const halalBadgeMap = (status: string) =>
   status === "certified" ? "certified" as const
     : status === "muslim-owned" ? "owned" as const
     : "friendly" as const;
-const formatFee = (fee: number) => fee === 0 ? "무료" : `₩${fee.toLocaleString()}`;
+const formatFee = (fee: number, freeLabel: string) => fee === 0 ? freeLabel : `₩${fee.toLocaleString()}`;
 
 // ── 14. Search Screen ──────────────────────────────────────────────────────────
 const recentSearches = ["이태원 할랄", "케밥", "모스크 근처 식당", "할랄 치킨"];
 const trending = ["신당 할랄 키친", "이스탄불 케밥", "비빔밥 할랄", "인도 커리", "삼계탕 할랄", "나시고렝", "피데", "팔라펠"];
-const quickCategories = [
-  { icon: "🍖", label: "한식 할랄" },
-  { icon: "🥙", label: "터키" },
-  { icon: "🍛", label: "인도" },
-  { icon: "🍜", label: "인도네시아" },
-  { icon: "🕌", label: "모스크" },
-  { icon: "🔍", label: "스캐너" },
+const quickCategoryKeys = [
+  { icon: "🍖", key: "cat_korean" },
+  { icon: "🥙", key: "cat_turkish" },
+  { icon: "🍛", key: "cat_indian" },
+  { icon: "🍜", key: "cat_indonesian" },
+  { icon: "🕌", key: "cat_mosque" },
+  { icon: "🔍", key: "cat_scanner" },
 ];
 
 export const SearchScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabId) => void; onNavigate?: (s: ScreenId) => void }) => {
+  const { t } = useLanguage();
+  const quickCategories = quickCategoryKeys.map((c) => ({ icon: c.icon, label: t(`search.${c.key}`) }));
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Restaurant[]>([]);
   const [searching, setSearching] = useState(false);
@@ -49,7 +52,7 @@ export const SearchScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: Ta
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="px-4 pb-4">
-          <h1 className="font-bold text-xl text-[#1A1A18] mb-3">검색</h1>
+          <h1 className="font-bold text-xl text-[#1A1A18] mb-3">{t("search.title")}</h1>
           <div className="flex items-center gap-2 bg-[var(--cream)] border border-[var(--border)] rounded-xl px-4 py-3">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--muted)" strokeWidth="1.8">
               <circle cx="8" cy="8" r="5.5"/>
@@ -58,7 +61,7 @@ export const SearchScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: Ta
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="할랄 음식, 레스토랑, 모스크 검색..."
+              placeholder={t("search.search_placeholder")}
               className="flex-1 bg-transparent text-sm text-[#1A1A18] outline-none placeholder:text-[var(--muted)]"
             />
             {query && (
@@ -74,16 +77,16 @@ export const SearchScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: Ta
         {showResults ? (
           <div>
             {searching ? (
-              <p className="text-sm text-[var(--muted)]">검색중...</p>
+              <p className="text-sm text-[var(--muted)]">{t("search.searching")}</p>
             ) : results.length === 0 ? (
               <div className="text-center py-8">
                 <p className="text-3xl mb-2">🔍</p>
-                <p className="font-semibold text-sm text-[#1A1A18]">"{query}" 검색 결과가 없습니다</p>
-                <p className="text-xs text-[var(--muted)] mt-1">다른 키워드로 검색해 보세요</p>
+                <p className="font-semibold text-sm text-[#1A1A18]">{t("search.no_results_title").replace("{query}", query)}</p>
+                <p className="text-xs text-[var(--muted)] mt-1">{t("search.no_results_desc")}</p>
               </div>
             ) : (
               <>
-                <p className="text-xs text-[var(--muted)] font-medium">검색 결과 {results.length}개</p>
+                <p className="text-xs text-[var(--muted)] font-medium">{t("search.results_count").replace("{count}", String(results.length))}</p>
                 <div className="space-y-3">
                   {results.map((r) => (
                     <div key={r.id} onClick={() => onNavigate?.("restaurant-detail")} className="cursor-pointer">
@@ -95,7 +98,7 @@ export const SearchScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: Ta
                         count={r.reviewCount}
                         distance={r.distance}
                         eta={r.deliveryTime}
-                        fee={formatFee(r.deliveryFee)}
+                        fee={formatFee(r.deliveryFee, t("common.free"))}
                         cuisine={r.category}
                       />
                     </div>
@@ -117,15 +120,15 @@ export const SearchScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: Ta
                     <line x1="9" y1="21" x2="15" y2="21" strokeLinecap="round"/>
                   </svg>
                 </div>
-                <p className="text-xs font-medium text-[var(--muted)]">음성 검색</p>
+                <p className="text-xs font-medium text-[var(--muted)]">{t("search.voice_search")}</p>
               </button>
             </div>
 
             {/* Recent */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <h3 className="font-bold text-sm text-[#1A1A18]">최근 검색</h3>
-                <button className="text-xs font-medium" style={{ color: "var(--muted)" }}>전체 삭제</button>
+                <h3 className="font-bold text-sm text-[#1A1A18]">{t("search.recent_searches")}</h3>
+                <button className="text-xs font-medium" style={{ color: "var(--muted)" }}>{t("search.clear_all")}</button>
               </div>
               <div className="space-y-1">
                 {recentSearches.map((s) => (
@@ -144,14 +147,14 @@ export const SearchScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: Ta
 
             {/* Trending */}
             <div>
-              <h3 className="font-bold text-sm text-[#1A1A18] mb-2">🔥 인기 검색어</h3>
+              <h3 className="font-bold text-sm text-[#1A1A18] mb-2">{t("search.trending_searches")}</h3>
               <div className="space-y-2">
-                {trending.map((t, i) => (
-                  <button key={t} onClick={() => { setQuery(t); onNavigate?.("restaurant-list"); }} className="flex items-center gap-3 py-1.5 w-full text-left">
+                {trending.map((term, i) => (
+                  <button key={term} onClick={() => { setQuery(term); onNavigate?.("restaurant-list"); }} className="flex items-center gap-3 py-1.5 w-full text-left">
                     <span className="text-sm font-bold w-5 text-center" style={{ color: i < 3 ? "var(--danger)" : "var(--muted)" }}>{i + 1}</span>
-                    <span className="flex-1 text-sm text-[#1A1A18]">{t}</span>
+                    <span className="flex-1 text-sm text-[#1A1A18]">{term}</span>
                     {i < 3 && (
-                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ backgroundColor: "var(--danger)", color: "white" }}>인기</span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ backgroundColor: "var(--danger)", color: "white" }}>{t("search.trending_badge")}</span>
                     )}
                   </button>
                 ))}
@@ -160,7 +163,7 @@ export const SearchScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: Ta
 
             {/* Quick categories */}
             <div>
-              <h3 className="font-bold text-sm text-[#1A1A18] mb-2">카테고리</h3>
+              <h3 className="font-bold text-sm text-[#1A1A18] mb-2">{t("search.categories")}</h3>
               <div className="grid grid-cols-3 gap-2">
                 {quickCategories.map((c) => (
                   <button key={c.label} onClick={() => onNavigate?.("restaurant-list")} className="flex flex-col items-center gap-2 py-4 bg-white rounded-2xl border border-[var(--border)] active:scale-95 transition-transform">
@@ -216,8 +219,12 @@ const mapPins: { x: number; y: number; type: "restaurant" | "mosque" | "user"; l
   { x: 330, y: 250, type: "mosque", label: "이태원 마스지드" },
 ];
 
+const mapFilterKeys = ["filter_restaurant", "filter_mosque", "filter_prayer_room"];
+
 export const MapViewScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabId) => void; onNavigate?: (s: ScreenId) => void }) => {
-  const [activeFilter, setActiveFilter] = useState("레스토랑");
+  const { t } = useLanguage();
+  const mapFilters = mapFilterKeys.map((k) => t(`search.${k}`));
+  const [activeFilter, setActiveFilter] = useState(mapFilters[0]);
   const [nearby, setNearby] = useState<Restaurant[]>([]);
 
   useEffect(() => {
@@ -246,7 +253,7 @@ export const MapViewScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: T
               <circle cx="7" cy="7" r="5"/>
               <path d="M12 12L15 15" strokeLinecap="round"/>
             </svg>
-            <span className="text-sm text-[var(--muted)]">이 지역 검색</span>
+            <span className="text-sm text-[var(--muted)]">{t("search.search_this_area")}</span>
           </div>
           <button className="w-10 h-10 bg-white/95 backdrop-blur rounded-xl flex items-center justify-center shadow-sm">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--charcoal)" strokeWidth="1.8">
@@ -258,7 +265,7 @@ export const MapViewScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: T
         </div>
 
         <div className="flex gap-2 mt-2 overflow-x-auto scrollbar-hide">
-          {["레스토랑", "모스크", "기도실"].map((f) => (
+          {mapFilters.map((f) => (
             <button
               key={f}
               onClick={() => setActiveFilter(f)}
@@ -290,7 +297,7 @@ export const MapViewScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: T
           <div className="w-10 h-1 bg-[var(--border)] rounded-full" />
         </div>
         <div className="px-4 pb-4">
-          <p className="font-bold text-sm text-[#1A1A18] mb-3">주변 결과 {nearby.length}개</p>
+          <p className="font-bold text-sm text-[#1A1A18] mb-3">{t("search.nearby_results").replace("{count}", String(nearby.length))}</p>
           <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-1">
             {nearby.slice(0, 3).map((r) => (
               <RestaurantCardV
@@ -302,7 +309,7 @@ export const MapViewScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: T
                 count={r.reviewCount}
                 distance={r.distance}
                 eta={r.deliveryTime}
-                fee={formatFee(r.deliveryFee)}
+                fee={formatFee(r.deliveryFee, t("common.free"))}
                 onClick={() => onNavigate?.("restaurant-detail")}
               />
             ))}
@@ -326,7 +333,12 @@ const cities = [
 ];
 
 export const CitySelectorScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
+  const { t } = useLanguage();
   const [search, setSearch] = useState("");
+  const savedCities = [
+    { name: "서울 이태원", tag: t("search.tag_frequent") },
+    { name: "부산 서면", tag: t("search.tag_saved") },
+  ];
 
   return (
     <div className="flex flex-col h-full bg-[var(--cream)]">
@@ -334,7 +346,7 @@ export const CitySelectorScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
           <BackButton onBack={() => onNavigate?.("home")} />
-          <h1 className="font-bold text-lg flex-1">방문 도시 선택</h1>
+          <h1 className="font-bold text-lg flex-1">{t("search.select_city_title")}</h1>
         </div>
         <div className="px-4 pb-4">
           <div className="flex items-center gap-2 bg-[var(--cream)] border border-[var(--border)] rounded-xl px-4 py-3">
@@ -345,7 +357,7 @@ export const CitySelectorScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="도시 또는 지역 검색..."
+              placeholder={t("search.city_search_placeholder")}
               className="flex-1 bg-transparent text-sm outline-none placeholder:text-[var(--muted)]"
             />
           </div>
@@ -355,9 +367,9 @@ export const CitySelectorScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
       <div className="flex-1 phone-scroll px-4 py-4 space-y-5">
         {/* Saved */}
         <div>
-          <h3 className="font-bold text-sm text-[#1A1A18] mb-2">저장된 도시</h3>
+          <h3 className="font-bold text-sm text-[#1A1A18] mb-2">{t("search.saved_cities")}</h3>
           <div className="space-y-2">
-            {[{ name: "서울 이태원", tag: "자주 방문" }, { name: "부산 서면", tag: "저장됨" }].map((s) => (
+            {savedCities.map((s) => (
               <div key={s.name} className="flex items-center gap-3 bg-white p-3.5 rounded-xl border border-[var(--border)]">
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: "var(--green-light)" }}>
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--green)">
@@ -375,17 +387,17 @@ export const CitySelectorScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
         <div className="rounded-2xl p-4 flex items-start gap-3" style={{ backgroundColor: "var(--gold-light)", border: "1px solid #D4963F30" }}>
           <span className="text-xl">✈️</span>
           <div>
-            <p className="font-bold text-sm" style={{ color: "#7A5220" }}>다음 주 부산 방문 예정이신가요?</p>
-            <p className="text-xs mt-0.5" style={{ color: "#9A6830" }}>부산역 근처 할랄 식당을 미리 확인해 보세요</p>
+            <p className="font-bold text-sm" style={{ color: "#7A5220" }}>{t("search.travel_suggestion_title")}</p>
+            <p className="text-xs mt-0.5" style={{ color: "#9A6830" }}>{t("search.travel_suggestion_desc")}</p>
             <button className="mt-2 text-xs font-bold px-3 py-1.5 rounded-lg" style={{ backgroundColor: "var(--gold)", color: "white" }}>
-              부산 할랄 보기 →
+              {t("search.travel_suggestion_cta")}
             </button>
           </div>
         </div>
 
         {/* Popular cities grid */}
         <div>
-          <h3 className="font-bold text-sm text-[#1A1A18] mb-2">인기 도시</h3>
+          <h3 className="font-bold text-sm text-[#1A1A18] mb-2">{t("search.popular_cities")}</h3>
           <div className="grid grid-cols-2 gap-2.5">
             {cities.map((city) => (
               <button key={city.name} className="relative h-24 rounded-2xl overflow-hidden text-left">
@@ -399,7 +411,7 @@ export const CitySelectorScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
                 </div>
                 <div className="absolute bottom-0 left-0 p-3">
                   <p className="text-white font-bold text-sm">{city.name}</p>
-                  <p className="text-white/70 text-xs">{city.count}개 할랄</p>
+                  <p className="text-white/70 text-xs">{t("search.city_halal_count").replace("{count}", city.count)}</p>
                 </div>
               </button>
             ))}
@@ -413,6 +425,7 @@ export const CitySelectorScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
 
 // ── 17. Restaurant Map Detail ──────────────────────────────────────────────────
 export const RestaurantMapDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
+  const { t } = useLanguage();
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
 
   useEffect(() => {
@@ -426,7 +439,7 @@ export const RestaurantMapDetailScreen = ({ onNavigate }: { onNavigate?: (s: Scr
         <div className="absolute" style={{ left: 100, top: 160 }}>
           <div className="flex flex-col items-center">
             <div className="bg-white rounded-xl px-3 py-1.5 shadow-lg mb-1 border-2" style={{ borderColor: "var(--green)" }}>
-              <p className="text-xs font-bold text-[#1A1A18]">{restaurant?.nameKo ?? "로딩중..."}</p>
+              <p className="text-xs font-bold text-[#1A1A18]">{restaurant?.nameKo ?? t("common.loading")}</p>
             </div>
             <div className="w-12 h-12 rounded-full border-3 border-white shadow-lg flex items-center justify-center" style={{ backgroundColor: "var(--green)" }}>
               <svg width="20" height="20" viewBox="0 0 20 20" fill="white">
@@ -463,7 +476,7 @@ export const RestaurantMapDetailScreen = ({ onNavigate }: { onNavigate?: (s: Scr
           </div>
           <div className="flex-1 space-y-1.5">
             {restaurant && <HalalBadge variant={halalBadgeMap(restaurant.halalStatus)} />}
-            <h2 className="font-bold text-lg text-[#1A1A18] leading-tight">{restaurant?.nameKo ?? "로딩중..."}</h2>
+            <h2 className="font-bold text-lg text-[#1A1A18] leading-tight">{restaurant?.nameKo ?? t("common.loading")}</h2>
             {restaurant && (
               <div className="flex items-center gap-2 text-xs text-[var(--muted)]">
                 <span>⭐ {restaurant.rating}</span>
@@ -474,8 +487,8 @@ export const RestaurantMapDetailScreen = ({ onNavigate }: { onNavigate?: (s: Scr
               </div>
             )}
             <div className="flex gap-2 pt-1">
-              <button className="flex-1 py-2.5 rounded-xl font-bold text-white text-sm" style={{ backgroundColor: "var(--green)" }}>메뉴 보기</button>
-              <button className="flex-1 py-2.5 rounded-xl font-semibold text-sm border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>길 찾기</button>
+              <button className="flex-1 py-2.5 rounded-xl font-bold text-white text-sm" style={{ backgroundColor: "var(--green)" }}>{t("search.view_menu")}</button>
+              <button className="flex-1 py-2.5 rounded-xl font-semibold text-sm border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>{t("search.get_directions")}</button>
             </div>
           </div>
         </div>

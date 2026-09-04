@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { StatusBar, BackButton } from "../components/Shared";
+import { useLanguage } from "../i18n/LanguageContext";
 import type { ScreenId } from "../App";
 
 // ── 22. Scanner Screen ─────────────────────────────────────────────────────────
 export const ScannerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
+  const { t } = useLanguage();
   const [flash, setFlash] = useState(false);
 
   return (
@@ -13,7 +15,7 @@ export const ScannerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
       {/* Controls */}
       <div className="flex items-center justify-between px-5 pb-4 relative z-20">
         <BackButton dark onBack={() => onNavigate?.("home")} />
-        <h1 className="font-bold text-white text-lg">할랄 스캐너</h1>
+        <h1 className="font-bold text-white text-lg">{t("scanner.title")}</h1>
         <button
           onClick={() => setFlash(!flash)}
           className="w-9 h-9 rounded-full flex items-center justify-center transition-colors"
@@ -65,7 +67,7 @@ export const ScannerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
         {/* Instructions */}
         <div className="mt-8 px-6 py-3 rounded-2xl" style={{ backgroundColor: "rgba(255,255,255,0.1)" }}>
           <p className="text-white text-sm font-medium text-center leading-relaxed">
-            바코드 또는 성분표를 스캔하세요
+            {t("scanner.instructions")}
           </p>
         </div>
 
@@ -83,7 +85,7 @@ export const ScannerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
             <img src="https://images.unsplash.com/photo-1567620905572-d1d0d6ca9ea0?w=80&h=80&fit=crop&auto=format&q=80" alt="scan" className="w-full h-full object-cover" />
           </div>
           <div className="flex-1">
-            <p className="text-white/60 text-[10px] font-medium">최근 스캔</p>
+            <p className="text-white/60 text-[10px] font-medium">{t("scanner.recent_scan_label")}</p>
             <p className="text-white text-sm font-semibold">오리온 초코파이 정 (12개입)</p>
           </div>
           <span className="text-[10px] font-bold px-2 py-1 rounded-full" style={{ backgroundColor: "var(--green)", color: "white" }}>HALAL</span>
@@ -97,7 +99,7 @@ export const ScannerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
               <circle cx="6.5" cy="6.5" r="1.5"/>
               <path d="M2 12l4-4 3 3 2-2 4 4" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-            갤러리에서 선택
+            {t("scanner.choose_from_gallery")}
           </button>
         </div>
       </div>
@@ -108,30 +110,24 @@ export const ScannerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
 // ── 23. Scan Result ────────────────────────────────────────────────────────────
 type Verdict = "halal" | "haram" | "mashbooh";
 
-const verdictConfig: Record<Verdict, { label: string; labelKo: string; color: string; bg: string; icon: string; desc: string }> = {
+const verdictConfig: Record<Verdict, { label: string; color: string; bg: string; icon: string }> = {
   halal: {
     label: "HALAL",
-    labelKo: "할랄 인증",
     color: "#1B6B4A",
     bg: "#E8F3ED",
     icon: "✅",
-    desc: "이 제품은 이슬람 율법에 따라 할랄 인증을 받았습니다.",
   },
   haram: {
     label: "HARAM",
-    labelKo: "하람 (금지)",
     color: "#D94F4F",
     bg: "#FEE2E2",
     icon: "❌",
-    desc: "이 제품에는 이슬람 율법에 따라 금지된 성분이 포함되어 있습니다.",
   },
   mashbooh: {
     label: "MASHBOOH",
-    labelKo: "의심 (확인 필요)",
     color: "#D97706",
     bg: "#FEF3C7",
     icon: "⚠️",
-    desc: "일부 성분의 출처를 확인할 수 없습니다. 추가 확인이 필요합니다.",
   },
 };
 
@@ -147,7 +143,15 @@ const ingredients = [
 ];
 
 export const ScanResultScreen = ({ verdict = "halal", onNavigate }: { verdict?: Verdict; onNavigate?: (s: ScreenId) => void }) => {
+  const { t } = useLanguage();
   const cfg = verdictConfig[verdict];
+  const verdictLabel = t(`scanner.verdict_${verdict}_label`);
+  const verdictDesc = t(`scanner.verdict_${verdict}_desc`);
+  const confirmedNotes = [
+    t("scanner.note_no_pork_gelatin"),
+    t("scanner.note_no_alcohol"),
+    t("scanner.note_no_cross_contamination"),
+  ];
 
   return (
     <div className="flex flex-col h-full bg-[var(--cream)]">
@@ -155,8 +159,8 @@ export const ScanResultScreen = ({ verdict = "halal", onNavigate }: { verdict?: 
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
           <BackButton onBack={() => onNavigate?.("home")} />
-          <h1 className="font-bold text-lg flex-1">스캔 결과</h1>
-          <button className="text-sm font-medium" style={{ color: "var(--muted)" }}>공유</button>
+          <h1 className="font-bold text-lg flex-1">{t("scanner.scan_result_title")}</h1>
+          <button className="text-sm font-medium" style={{ color: "var(--muted)" }}>{t("scanner.share")}</button>
         </div>
       </div>
 
@@ -193,8 +197,8 @@ export const ScanResultScreen = ({ verdict = "halal", onNavigate }: { verdict?: 
             </div>
             <div className="flex-1">
               <span className="text-xs font-bold tracking-widest" style={{ color: cfg.color }}>{cfg.label}</span>
-              <p className="font-bold text-xl text-[#1A1A18] mt-0.5">{cfg.labelKo}</p>
-              <p className="text-xs text-[var(--muted)] mt-1 leading-relaxed">{cfg.desc}</p>
+              <p className="font-bold text-xl text-[#1A1A18] mt-0.5">{verdictLabel}</p>
+              <p className="text-xs text-[var(--muted)] mt-1 leading-relaxed">{verdictDesc}</p>
             </div>
           </div>
 
@@ -203,7 +207,7 @@ export const ScanResultScreen = ({ verdict = "halal", onNavigate }: { verdict?: 
               <svg width="14" height="14" viewBox="0 0 14 14" fill={cfg.color}>
                 <path d="M7 1L8.5 5H12.5L9.5 7.5L10.5 12L7 9.5L3.5 12L4.5 7.5L1.5 5H5.5L7 1Z"/>
               </svg>
-              <p className="text-xs font-semibold" style={{ color: cfg.color }}>인증 기관: 한국이슬람교중앙회 (KMF)</p>
+              <p className="text-xs font-semibold" style={{ color: cfg.color }}>{t("scanner.cert_authority_prefix")}한국이슬람교중앙회 (KMF)</p>
             </div>
           )}
         </div>
@@ -211,8 +215,8 @@ export const ScanResultScreen = ({ verdict = "halal", onNavigate }: { verdict?: 
         {/* Ingredients */}
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
           <div className="px-4 py-3 border-b border-[var(--border)]">
-            <p className="font-semibold text-sm text-[#1A1A18]">성분 분석</p>
-            <p className="text-xs text-[var(--muted)] mt-0.5">{ingredients.length}개 성분 확인됨</p>
+            <p className="font-semibold text-sm text-[#1A1A18]">{t("scanner.ingredients_analysis_title")}</p>
+            <p className="text-xs text-[var(--muted)] mt-0.5">{t("scanner.ingredients_count").replace("{count}", String(ingredients.length))}</p>
           </div>
           <div className="divide-y divide-[var(--border)]">
             {ingredients.map((ing) => (
@@ -231,7 +235,7 @@ export const ScanResultScreen = ({ verdict = "halal", onNavigate }: { verdict?: 
                 </div>
                 <p className="text-sm text-[#1A1A18] flex-1">{ing.name}</p>
                 {ing.status === "warn" && (
-                  <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ backgroundColor: "var(--gold-light)", color: "#92400E" }}>확인 필요</span>
+                  <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ backgroundColor: "var(--gold-light)", color: "#92400E" }}>{t("scanner.needs_check")}</span>
                 )}
               </div>
             ))}
@@ -241,8 +245,8 @@ export const ScanResultScreen = ({ verdict = "halal", onNavigate }: { verdict?: 
         {/* Positive notes */}
         {verdict === "halal" && (
           <div className="bg-white rounded-2xl px-4 py-3 shadow-sm space-y-2">
-            <p className="font-semibold text-sm text-[#1A1A18]">확인 사항</p>
-            {["돼지 젤라틴 없음", "알코올 성분 없음", "교차 오염 없음 (KMF 인증)"].map((note) => (
+            <p className="font-semibold text-sm text-[#1A1A18]">{t("scanner.confirmed_items_title")}</p>
+            {confirmedNotes.map((note) => (
               <div key={note} className="flex items-center gap-2 text-sm" style={{ color: "var(--green)" }}>
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M2 7l3.5 3.5L12 4"/></svg>
                 {note}
@@ -254,12 +258,12 @@ export const ScanResultScreen = ({ verdict = "halal", onNavigate }: { verdict?: 
         {/* Source */}
         <div className="bg-white rounded-2xl px-4 py-3 shadow-sm flex items-center justify-between">
           <div>
-            <p className="text-xs text-[var(--muted)]">데이터 출처</p>
+            <p className="text-xs text-[var(--muted)]">{t("scanner.data_source_label")}</p>
             <p className="text-sm font-semibold text-[#1A1A18]">KMF 할랄 데이터베이스</p>
-            <p className="text-xs text-[var(--muted)]">2024년 10월 업데이트</p>
+            <p className="text-xs text-[var(--muted)]">{t("scanner.last_updated")}</p>
           </div>
           <button className="text-xs font-medium px-3 py-2 rounded-xl border border-[var(--border)]" style={{ color: "var(--muted)" }}>
-            오류 신고
+            {t("scanner.report_error")}
           </button>
         </div>
 
@@ -267,7 +271,7 @@ export const ScanResultScreen = ({ verdict = "halal", onNavigate }: { verdict?: 
           className="w-full py-4 rounded-2xl font-bold text-white text-base"
           style={{ backgroundColor: "var(--green)" }}
         >
-          다시 스캔하기
+          {t("scanner.scan_again")}
         </button>
         <div className="h-2" />
       </div>
@@ -284,14 +288,17 @@ const scanHistory = [
   { name: "해태 허니버터칩", brand: "해태제과", date: "11월 17일", verdict: "halal" as Verdict },
 ];
 
-export const ScanHistoryScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => (
+export const ScanHistoryScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
+  const { t } = useLanguage();
+
+  return (
   <div className="flex flex-col h-full bg-[var(--cream)]">
     <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
       <StatusBar />
       <div className="flex items-center gap-3 px-4 pb-3">
         <BackButton onBack={() => onNavigate?.("home")} />
-        <h1 className="font-bold text-lg flex-1">스캔 기록</h1>
-        <button className="text-sm font-medium" style={{ color: "var(--danger)" }}>전체 삭제</button>
+        <h1 className="font-bold text-lg flex-1">{t("scanner.history_title")}</h1>
+        <button className="text-sm font-medium" style={{ color: "var(--danger)" }}>{t("scanner.clear_all")}</button>
       </div>
     </div>
 
@@ -323,4 +330,5 @@ export const ScanHistoryScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =
       <div className="h-4" />
     </div>
   </div>
-);
+  );
+};

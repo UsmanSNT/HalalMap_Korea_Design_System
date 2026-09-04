@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { GeometricPattern, StatusBar, BackButton } from "../components/Shared";
 import type { ScreenId } from "../App";
+import { useLanguage } from "../i18n/LanguageContext";
 
 // Tier config
 const tiers = [
@@ -98,7 +99,23 @@ const currentPoints = 7840;
 const currentTier = tiers[1]; // silver
 
 // ── 13. Loyalty Program ────────────────────────────────────────────────────────
+const earnItemKeys = [
+  { icon: "🛵", labelKey: "earn_order_label", descKey: "earn_order_desc", ptsKey: "earn_order_pts" },
+  { icon: "⭐", labelKey: "earn_review_label", descKey: "earn_review_desc", ptsKey: "earn_review_pts" },
+  { icon: "📸", labelKey: "earn_photo_review_label", descKey: "earn_photo_review_desc", ptsKey: "earn_photo_review_pts" },
+  { icon: "👥", labelKey: "earn_referral_label", descKey: "earn_referral_desc", ptsKey: "earn_referral_pts" },
+  { icon: "📅", labelKey: "earn_streak_label", descKey: "earn_streak_desc", ptsKey: "earn_streak_pts" },
+  { icon: "🔍", labelKey: "earn_scan_label", descKey: "earn_scan_desc", ptsKey: "earn_scan_pts" },
+];
+
+const redeemItemKeys = [
+  { icon: "💳", labelKey: "redeem_payment_label", descKey: "redeem_payment_desc", minKey: "redeem_payment_min" },
+  { icon: "🎟", labelKey: "redeem_coupon_label", descKey: "redeem_coupon_desc", minKey: "redeem_coupon_min" },
+  { icon: "🎁", labelKey: "redeem_donate_label", descKey: "redeem_donate_desc", minKey: "redeem_donate_min" },
+];
+
 export const LoyaltyScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
+  const { t } = useLanguage();
   const [tab, setTab] = useState<"earn" | "redeem" | "tiers">("earn");
   const nextTier = tiers[2];
   const progress = ((currentPoints - currentTier.min) / (nextTier.min - currentTier.min)) * 100;
@@ -112,27 +129,27 @@ export const LoyaltyScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
         <div className="relative z-10 px-5 pb-6">
           <div className="flex items-center gap-3 mb-4">
             <BackButton dark onBack={() => onNavigate?.("home")} />
-            <h1 className="font-bold text-lg text-white flex-1">할랄 포인트</h1>
+            <h1 className="font-bold text-lg text-white flex-1">{t("rewards.loyalty_title")}</h1>
           </div>
 
           {/* Points balance card */}
           <div className="bg-white/10 backdrop-blur rounded-2xl p-4 space-y-3">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-white/60 text-xs">현재 포인트</p>
+                <p className="text-white/60 text-xs">{t("rewards.current_points")}</p>
                 <p className="text-white font-bold text-4xl tabular-nums">{currentPoints.toLocaleString()}</p>
-                <p className="text-white/60 text-xs">≈ ₩{currentPoints.toLocaleString()} 현금 가치</p>
+                <p className="text-white/60 text-xs">{t("rewards.cash_value").replace("{value}", currentPoints.toLocaleString())}</p>
               </div>
               <div className="flex flex-col items-center gap-1">
                 {currentTier.badge}
-                <p className="text-white/80 text-xs font-bold">{currentTier.name}</p>
+                <p className="text-white/80 text-xs font-bold">{t(`rewards.tier_${currentTier.id}`)}</p>
               </div>
             </div>
 
             {/* Progress to next tier */}
             <div>
               <div className="flex justify-between text-xs text-white/60 mb-1.5">
-                <span>골드까지 {(nextTier.min - currentPoints).toLocaleString()}P 더 필요</span>
+                <span>{t("rewards.progress_to_gold").replace("{remaining}", (nextTier.min - currentPoints).toLocaleString())}</span>
                 <span>{Math.round(progress)}%</span>
               </div>
               <div className="h-2 bg-white/20 rounded-full overflow-hidden">
@@ -149,11 +166,11 @@ export const LoyaltyScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
 
       {/* Tabs */}
       <div className="flex border-b border-[var(--border)] bg-white flex-shrink-0">
-        {(["earn", "redeem", "tiers"] as const).map((t) => (
-          <button key={t} onClick={() => setTab(t)}
+        {(["earn", "redeem", "tiers"] as const).map((tabId) => (
+          <button key={tabId} onClick={() => setTab(tabId)}
             className="flex-1 py-3 text-xs font-bold transition-colors border-b-2"
-            style={{ borderColor: tab === t ? "var(--green)" : "transparent", color: tab === t ? "var(--green)" : "var(--muted)" }}>
-            {t === "earn" ? "적립" : t === "redeem" ? "사용" : "등급"}
+            style={{ borderColor: tab === tabId ? "var(--green)" : "transparent", color: tab === tabId ? "var(--green)" : "var(--muted)" }}>
+            {tabId === "earn" ? t("rewards.tab_earn") : tabId === "redeem" ? t("rewards.tab_redeem") : t("rewards.tab_tiers")}
           </button>
         ))}
       </div>
@@ -161,25 +178,18 @@ export const LoyaltyScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
       <div className="flex-1 phone-scroll px-4 py-4 space-y-3">
         {tab === "earn" && (
           <>
-            <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide">포인트 적립 방법</p>
-            {[
-              { icon: "🛵", label: "주문 시 적립", desc: "주문 금액의 2% 포인트 적립 (실버 등급)", pts: "최대 500P/주문" },
-              { icon: "⭐", label: "리뷰 작성", desc: "식당 이용 후 리뷰 작성 시", pts: "+50P" },
-              { icon: "📸", label: "포토 리뷰", desc: "사진 포함 리뷰 작성 시 추가", pts: "+100P" },
-              { icon: "👥", label: "친구 초대", desc: "초대한 친구 첫 주문 완료 시", pts: "+500P" },
-              { icon: "📅", label: "연속 주문", desc: "7일 연속 주문 달성 시", pts: "+200P" },
-              { icon: "🔍", label: "스캔 활동", desc: "일별 첫 번째 제품 스캔 시", pts: "+10P" },
-            ].map((item) => (
-              <div key={item.label} className="bg-white rounded-2xl p-4 flex items-center gap-3 shadow-sm">
+            <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide">{t("rewards.earn_section_title")}</p>
+            {earnItemKeys.map((item) => (
+              <div key={item.labelKey} className="bg-white rounded-2xl p-4 flex items-center gap-3 shadow-sm">
                 <div className="w-11 h-11 rounded-xl flex items-center justify-center text-2xl" style={{ backgroundColor: "var(--green-light)" }}>
                   {item.icon}
                 </div>
                 <div className="flex-1">
-                  <p className="font-bold text-sm text-[#1A1A18]">{item.label}</p>
-                  <p className="text-xs text-[var(--muted)]">{item.desc}</p>
+                  <p className="font-bold text-sm text-[#1A1A18]">{t(`rewards.${item.labelKey}`)}</p>
+                  <p className="text-xs text-[var(--muted)]">{t(`rewards.${item.descKey}`)}</p>
                 </div>
                 <div className="text-right">
-                  <p className="font-bold text-sm" style={{ color: "var(--green)" }}>{item.pts}</p>
+                  <p className="font-bold text-sm" style={{ color: "var(--green)" }}>{t(`rewards.${item.ptsKey}`)}</p>
                 </div>
               </div>
             ))}
@@ -188,25 +198,21 @@ export const LoyaltyScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
 
         {tab === "redeem" && (
           <>
-            <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide">포인트 사용</p>
-            {[
-              { icon: "💳", label: "결제 시 사용", desc: "주문 금액에서 포인트 차감 (100P = ₩100)", min: "1,000P부터" },
-              { icon: "🎟", label: "쿠폰으로 전환", desc: "1,000P → 배달비 무료 쿠폰 1장", min: "1,000P" },
-              { icon: "🎁", label: "기부", desc: "국내외 무슬림 NGO에 포인트 기부", min: "100P부터" },
-            ].map((item) => (
-              <div key={item.label} className="bg-white rounded-2xl p-4 shadow-sm space-y-3">
+            <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide">{t("rewards.redeem_section_title")}</p>
+            {redeemItemKeys.map((item) => (
+              <div key={item.labelKey} className="bg-white rounded-2xl p-4 shadow-sm space-y-3">
                 <div className="flex items-center gap-3">
                   <div className="w-11 h-11 rounded-xl flex items-center justify-center text-2xl" style={{ backgroundColor: "var(--gold-light)" }}>
                     {item.icon}
                   </div>
                   <div className="flex-1">
-                    <p className="font-bold text-sm text-[#1A1A18]">{item.label}</p>
-                    <p className="text-xs text-[var(--muted)]">{item.desc}</p>
+                    <p className="font-bold text-sm text-[#1A1A18]">{t(`rewards.${item.labelKey}`)}</p>
+                    <p className="text-xs text-[var(--muted)]">{t(`rewards.${item.descKey}`)}</p>
                   </div>
-                  <span className="text-[10px] font-bold px-2 py-1 rounded-full" style={{ backgroundColor: "var(--gold-light)", color: "var(--gold)" }}>{item.min}</span>
+                  <span className="text-[10px] font-bold px-2 py-1 rounded-full" style={{ backgroundColor: "var(--gold-light)", color: "var(--gold)" }}>{t(`rewards.${item.minKey}`)}</span>
                 </div>
                 <button className="w-full py-2.5 rounded-xl font-bold text-sm" style={{ backgroundColor: "var(--gold)", color: "white" }}>
-                  사용하기
+                  {t("rewards.use_button")}
                 </button>
               </div>
             ))}
@@ -221,13 +227,13 @@ export const LoyaltyScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
                 <div className="flex-shrink-0">{tier.badge}</div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <p className="font-bold text-sm text-[#1A1A18]">{tier.name}</p>
+                    <p className="font-bold text-sm text-[#1A1A18]">{t(`rewards.tier_${tier.id}`)}</p>
                     {tier.id === currentTier.id && (
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full text-white" style={{ backgroundColor: tier.color }}>현재</span>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full text-white" style={{ backgroundColor: tier.color }}>{t("rewards.current")}</span>
                     )}
                   </div>
-                  <p className="text-xs text-[var(--muted)] mt-0.5">{tier.min.toLocaleString()}P{tier.max < Infinity ? ` – ${tier.max.toLocaleString()}P` : " 이상"}</p>
-                  <p className="text-xs mt-1" style={{ color: tier.color }}>{tier.perk}</p>
+                  <p className="text-xs text-[var(--muted)] mt-0.5">{tier.min.toLocaleString()}P{tier.max < Infinity ? ` – ${tier.max.toLocaleString()}P` : ` ${t("rewards.and_above")}`}</p>
+                  <p className="text-xs mt-1" style={{ color: tier.color }}>{t(`rewards.perk_${tier.id}`)}</p>
                 </div>
               </div>
             ))}
@@ -242,12 +248,22 @@ export const LoyaltyScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
 
 // ── 14. Referral Program ────────────────────────────────────────────────────────
 const referrals = [
-  { name: "Ahmed K.", avatar: "AK", joined: "2024.11.20", status: "완료", earned: 500 },
-  { name: "Lin W.", avatar: "LW", joined: "2024.11.18", status: "완료", earned: 500 },
-  { name: "Siti R.", avatar: "SR", joined: "2024.11.15", status: "대기중", earned: 0 },
+  { name: "Ahmed K.", avatar: "AK", joined: "2024.11.20", statusKey: "completed", earned: 500 },
+  { name: "Lin W.", avatar: "LW", joined: "2024.11.18", statusKey: "completed", earned: 500 },
+  { name: "Siti R.", avatar: "SR", joined: "2024.11.15", statusKey: "pending", earned: 0 },
 ];
 
+const shareOptionKeys = [
+  { icon: "💬", labelKey: "share_kakao", bg: "#FEE500", fg: "#000" },
+  { icon: "📱", labelKey: "share_sms", bg: "#34C759", fg: "#fff" },
+  { icon: "📷", labelKey: "share_instagram", bg: "#E1306C", fg: "#fff" },
+  { icon: "🔗", labelKey: "share_link", bg: "var(--green)", fg: "#fff" },
+];
+
+const howItWorksKeys = ["step1", "step2", "step3"];
+
 export const ReferralScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
+  const { t } = useLanguage();
   const [copied, setCopied] = useState(false);
   const referralCode = "HALAL-KIM7840";
 
@@ -265,19 +281,19 @@ export const ReferralScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
         <div className="relative z-10 px-5 pb-6">
           <div className="flex items-center gap-3 mb-4">
             <BackButton dark onBack={() => onNavigate?.("home")} />
-            <h1 className="font-bold text-lg text-white flex-1">친구 초대</h1>
+            <h1 className="font-bold text-lg text-white flex-1">{t("rewards.referral_title")}</h1>
           </div>
 
           {/* Main headline */}
           <div className="text-center space-y-2 py-2">
             <p className="text-5xl">👥</p>
-            <p className="text-white font-bold text-2xl">친구 초대하고<br />둘 다 ₩5,000!</p>
-            <p className="text-white/60 text-sm">친구가 첫 주문 완료 시 서로 ₩5,000 쿠폰 증정</p>
+            <p className="text-white font-bold text-2xl">{t("rewards.refer_headline_line1")}<br />{t("rewards.refer_headline_line2")}</p>
+            <p className="text-white/60 text-sm">{t("rewards.refer_desc")}</p>
           </div>
 
           {/* Referral code */}
           <div className="mt-4 bg-white/10 backdrop-blur rounded-2xl p-4 space-y-3">
-            <p className="text-white/60 text-xs text-center">나의 초대 코드</p>
+            <p className="text-white/60 text-xs text-center">{t("rewards.my_referral_code")}</p>
             <div className="flex items-center gap-2">
               <div className="flex-1 bg-white/10 rounded-xl px-4 py-3 text-center">
                 <p className="font-bold text-xl tracking-widest text-white">{referralCode}</p>
@@ -285,7 +301,7 @@ export const ReferralScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
               <button onClick={handleCopy}
                 className="px-4 py-3 rounded-xl font-bold text-sm transition-all"
                 style={{ backgroundColor: copied ? "var(--green)" : "var(--gold)", color: "white" }}>
-                {copied ? "복사됨!" : "복사"}
+                {copied ? t("rewards.copied") : t("rewards.copy")}
               </button>
             </div>
           </div>
@@ -295,19 +311,14 @@ export const ReferralScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
       <div className="flex-1 phone-scroll px-4 py-4 space-y-4">
         {/* Share options */}
         <div className="bg-white rounded-2xl p-4 shadow-sm space-y-3">
-          <p className="font-bold text-sm text-[#1A1A18]">공유하기</p>
+          <p className="font-bold text-sm text-[#1A1A18]">{t("rewards.share_title")}</p>
           <div className="grid grid-cols-4 gap-2">
-            {[
-              { icon: "💬", label: "카카오", bg: "#FEE500", fg: "#000" },
-              { icon: "📱", label: "문자", bg: "#34C759", fg: "#fff" },
-              { icon: "📷", label: "인스타", bg: "#E1306C", fg: "#fff" },
-              { icon: "🔗", label: "링크", bg: "var(--green)", fg: "#fff" },
-            ].map((s) => (
-              <button key={s.label} className="flex flex-col items-center gap-1.5">
+            {shareOptionKeys.map((s) => (
+              <button key={s.labelKey} className="flex flex-col items-center gap-1.5">
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl" style={{ backgroundColor: s.bg }}>
                   {s.icon}
                 </div>
-                <span className="text-[10px] text-[var(--muted)]">{s.label}</span>
+                <span className="text-[10px] text-[var(--muted)]">{t(`rewards.${s.labelKey}`)}</span>
               </button>
             ))}
           </div>
@@ -315,18 +326,14 @@ export const ReferralScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
 
         {/* How it works */}
         <div className="bg-white rounded-2xl p-4 shadow-sm space-y-3">
-          <p className="font-bold text-sm text-[#1A1A18]">이용 방법</p>
+          <p className="font-bold text-sm text-[#1A1A18]">{t("rewards.how_it_works")}</p>
           <div className="space-y-2.5">
-            {[
-              { step: "1", text: "초대 코드 또는 링크를 친구에게 공유하세요" },
-              { step: "2", text: "친구가 코드로 가입하면 양쪽 모두 ₩5,000 쿠폰이 지급됩니다" },
-              { step: "3", text: "친구가 첫 주문 완료 시 500 할랄 포인트도 추가 지급됩니다" },
-            ].map((s) => (
-              <div key={s.step} className="flex items-start gap-3">
+            {howItWorksKeys.map((k, i) => (
+              <div key={k} className="flex items-start gap-3">
                 <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0 mt-0.5" style={{ backgroundColor: "var(--green)" }}>
-                  {s.step}
+                  {i + 1}
                 </div>
-                <p className="text-sm text-[#1A1A18] leading-relaxed">{s.text}</p>
+                <p className="text-sm text-[#1A1A18] leading-relaxed">{t(`rewards.${k}`)}</p>
               </div>
             ))}
           </div>
@@ -335,13 +342,13 @@ export const ReferralScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
         {/* Stats */}
         <div className="grid grid-cols-3 gap-2">
           {[
-            { label: "총 초대", value: "3명" },
-            { label: "완료", value: "2명" },
-            { label: "적립 포인트", value: "1,000P" },
+            { labelKey: "stat_total_invited", value: "3명" },
+            { labelKey: "stat_completed", value: "2명" },
+            { labelKey: "stat_points_earned", value: "1,000P" },
           ].map((s) => (
-            <div key={s.label} className="bg-white rounded-xl p-3 text-center shadow-sm">
+            <div key={s.labelKey} className="bg-white rounded-xl p-3 text-center shadow-sm">
               <p className="font-bold text-base text-[#1A1A18]">{s.value}</p>
-              <p className="text-[10px] text-[var(--muted)]">{s.label}</p>
+              <p className="text-[10px] text-[var(--muted)]">{t(`rewards.${s.labelKey}`)}</p>
             </div>
           ))}
         </div>
@@ -349,7 +356,7 @@ export const ReferralScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
         {/* Referral list */}
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
           <div className="px-4 py-3 border-b border-[var(--border)]">
-            <p className="font-bold text-sm text-[#1A1A18]">초대 현황</p>
+            <p className="font-bold text-sm text-[#1A1A18]">{t("rewards.referral_status_title")}</p>
           </div>
           {referrals.map((r, i) => (
             <div key={i} className="flex items-center gap-3 px-4 py-3 border-b border-[var(--border)] last:border-none">
@@ -364,10 +371,10 @@ export const ReferralScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
               <div className="text-right">
                 <span className="text-xs font-bold px-2 py-0.5 rounded-full"
                   style={{
-                    backgroundColor: r.status === "완료" ? "var(--green-light)" : "var(--gold-light)",
-                    color: r.status === "완료" ? "var(--green)" : "var(--gold)",
+                    backgroundColor: r.statusKey === "completed" ? "var(--green-light)" : "var(--gold-light)",
+                    color: r.statusKey === "completed" ? "var(--green)" : "var(--gold)",
                   }}>
-                  {r.status}
+                  {r.statusKey === "completed" ? t("rewards.status_completed") : t("rewards.status_pending")}
                 </span>
                 {r.earned > 0 && <p className="text-[10px] text-[var(--muted)] mt-0.5">+{r.earned}P</p>}
               </div>

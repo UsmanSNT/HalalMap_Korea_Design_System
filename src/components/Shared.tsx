@@ -1,4 +1,5 @@
 import React from "react";
+import { useLanguage } from "../i18n/LanguageContext";
 
 // ── Geometric Pattern ────────────────────────────────────────────────────────
 export const GeometricPattern = ({
@@ -70,11 +71,10 @@ export const StatusBar = ({ dark = false }: { dark?: boolean }) => {
 // ── Bottom Navigation ────────────────────────────────────────────────────────
 type TabId = "home" | "search" | "orders" | "prayer" | "profile";
 
-const tabs: { id: TabId; label: string; labelKo: string; icon: (filled: boolean) => React.ReactNode }[] = [
+const tabs: { id: TabId; key: string; icon: (filled: boolean) => React.ReactNode }[] = [
   {
     id: "home",
-    label: "Home",
-    labelKo: "홈",
+    key: "common.nav_home",
     icon: (f) => (
       <svg width="24" height="24" viewBox="0 0 24 24" fill={f ? "var(--green)" : "none"} stroke={f ? "var(--green)" : "var(--muted)"} strokeWidth="1.8">
         <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
@@ -84,8 +84,7 @@ const tabs: { id: TabId; label: string; labelKo: string; icon: (filled: boolean)
   },
   {
     id: "search",
-    label: "Search",
-    labelKo: "검색",
+    key: "common.nav_search",
     icon: (f) => (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={f ? "var(--green)" : "var(--muted)"} strokeWidth="1.8">
         <circle cx="11" cy="11" r="7" fill={f ? "var(--green-light)" : "none"}/>
@@ -95,8 +94,7 @@ const tabs: { id: TabId; label: string; labelKo: string; icon: (filled: boolean)
   },
   {
     id: "orders",
-    label: "Orders",
-    labelKo: "주문",
+    key: "common.nav_orders",
     icon: (f) => (
       <svg width="24" height="24" viewBox="0 0 24 24" fill={f ? "var(--green)" : "none"} stroke={f ? "var(--green)" : "var(--muted)"} strokeWidth="1.8">
         <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
@@ -107,8 +105,7 @@ const tabs: { id: TabId; label: string; labelKo: string; icon: (filled: boolean)
   },
   {
     id: "prayer",
-    label: "Prayer",
-    labelKo: "기도",
+    key: "common.nav_prayer",
     icon: (f) => (
       <svg width="24" height="24" viewBox="0 0 24 24" fill={f ? "var(--green)" : "none"} stroke={f ? "var(--green)" : "var(--muted)"} strokeWidth="1.8">
         <path d="M12 3C9 3 6.5 5.5 6.5 8.5C6.5 12 9.5 14.5 12 17C14.5 14.5 17.5 12 17.5 8.5C17.5 5.5 15 3 12 3Z"/>
@@ -120,8 +117,7 @@ const tabs: { id: TabId; label: string; labelKo: string; icon: (filled: boolean)
   },
   {
     id: "profile",
-    label: "Profile",
-    labelKo: "프로필",
+    key: "common.nav_profile",
     icon: (f) => (
       <svg width="24" height="24" viewBox="0 0 24 24" fill={f ? "var(--green)" : "none"} stroke={f ? "var(--green)" : "var(--muted)"} strokeWidth="1.8">
         <circle cx="12" cy="8" r="4" fill={f ? "var(--green-light)" : "none"}/>
@@ -137,38 +133,42 @@ export const BottomNav = ({
 }: {
   active: TabId;
   onTabChange?: (id: TabId) => void;
-}) => (
-  <div className="flex items-center border-t border-[#E8E6E1] bg-white px-1 pt-2 pb-5 flex-shrink-0">
-    {tabs.map((t) => (
-      <button
-        key={t.id}
-        onClick={() => onTabChange?.(t.id)}
-        className="flex flex-col items-center gap-0.5 flex-1 py-0.5 transition-opacity active:opacity-70"
-      >
-        {t.icon(active === t.id)}
-        <span
-          className="text-[10px] font-medium"
-          style={{ color: active === t.id ? "var(--green)" : "var(--muted)" }}
+}) => {
+  const { t } = useLanguage();
+  return (
+    <div className="flex items-center border-t border-[#E8E6E1] bg-white px-1 pt-2 pb-5 flex-shrink-0">
+      {tabs.map((tab) => (
+        <button
+          key={tab.id}
+          onClick={() => onTabChange?.(tab.id)}
+          className="flex flex-col items-center gap-0.5 flex-1 py-0.5 transition-opacity active:opacity-70"
         >
-          {t.labelKo}
-        </span>
-        {active === t.id && (
-          <span className="w-1 h-1 rounded-full" style={{ backgroundColor: "var(--green)" }} />
-        )}
-      </button>
-    ))}
-  </div>
-);
+          {tab.icon(active === tab.id)}
+          <span
+            className="text-[10px] font-medium"
+            style={{ color: active === tab.id ? "var(--green)" : "var(--muted)" }}
+          >
+            {t(tab.key)}
+          </span>
+          {active === tab.id && (
+            <span className="w-1 h-1 rounded-full" style={{ backgroundColor: "var(--green)" }} />
+          )}
+        </button>
+      ))}
+    </div>
+  );
+};
 
 // ── Halal Badge ──────────────────────────────────────────────────────────────
 type BadgeVariant = "certified" | "owned" | "friendly";
-const badgeConfig: Record<BadgeVariant, { label: string; bg: string; text: string; border: string }> = {
-  certified: { label: "HALAL CERTIFIED", bg: "#E8F3ED", text: "#1B6B4A", border: "#1B6B4A" },
-  owned: { label: "MUSLIM-OWNED", bg: "#FDF3E4", text: "#8A5E1A", border: "#C4883A" },
-  friendly: { label: "HALAL FRIENDLY", bg: "#EEF4FF", text: "#2C5ECC", border: "#2C5ECC" },
+const badgeConfig: Record<BadgeVariant, { key: string; bg: string; text: string; border: string }> = {
+  certified: { key: "common.halal_certified", bg: "#E8F3ED", text: "#1B6B4A", border: "#1B6B4A" },
+  owned: { key: "common.muslim_owned", bg: "#FDF3E4", text: "#8A5E1A", border: "#C4883A" },
+  friendly: { key: "common.halal_friendly", bg: "#EEF4FF", text: "#2C5ECC", border: "#2C5ECC" },
 };
 
 export const HalalBadge = ({ variant = "certified" }: { variant?: BadgeVariant }) => {
+  const { t } = useLanguage();
   const cfg = badgeConfig[variant];
   return (
     <span
@@ -178,7 +178,7 @@ export const HalalBadge = ({ variant = "certified" }: { variant?: BadgeVariant }
       <svg width="8" height="10" viewBox="0 0 8 10" fill={cfg.text}>
         <path d="M4 0L7.5 1.5V5C7.5 7.2 6 9 4 10C2 9 0.5 7.2 0.5 5V1.5L4 0Z"/>
       </svg>
-      {cfg.label}
+      {t(cfg.key)}
     </span>
   );
 };
@@ -339,22 +339,23 @@ export const MosqueCard = ({
 
 // ── Order Status Chip ────────────────────────────────────────────────────────
 type OrderStatus = "pending" | "preparing" | "delivering" | "delivered" | "cancelled";
-const statusConfig: Record<OrderStatus, { label: string; labelKo: string; bg: string; text: string }> = {
-  pending: { label: "Pending", labelKo: "대기중", bg: "#FEF3C7", text: "#92400E" },
-  preparing: { label: "Preparing", labelKo: "조리중", bg: "#DBEAFE", text: "#1E40AF" },
-  delivering: { label: "On the Way", labelKo: "배달중", bg: "#EDE9FE", text: "#5B21B6" },
-  delivered: { label: "Delivered", labelKo: "배달완료", bg: "#D1FAE5", text: "#065F46" },
-  cancelled: { label: "Cancelled", labelKo: "취소됨", bg: "#FEE2E2", text: "#991B1B" },
+const statusConfig: Record<OrderStatus, { key: string; bg: string; text: string }> = {
+  pending: { key: "common.status_pending", bg: "#FEF3C7", text: "#92400E" },
+  preparing: { key: "common.status_preparing", bg: "#DBEAFE", text: "#1E40AF" },
+  delivering: { key: "common.status_delivering", bg: "#EDE9FE", text: "#5B21B6" },
+  delivered: { key: "common.status_delivered", bg: "#D1FAE5", text: "#065F46" },
+  cancelled: { key: "common.status_cancelled", bg: "#FEE2E2", text: "#991B1B" },
 };
 
 export const OrderStatusChip = ({ status }: { status: OrderStatus }) => {
+  const { t } = useLanguage();
   const cfg = statusConfig[status];
   return (
     <span
       className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold"
       style={{ backgroundColor: cfg.bg, color: cfg.text }}
     >
-      {cfg.labelKo}
+      {t(cfg.key)}
     </span>
   );
 };

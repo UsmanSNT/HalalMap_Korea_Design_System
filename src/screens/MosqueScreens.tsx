@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { GeometricPattern, StatusBar, BottomNav, BackButton, Toggle, TabId } from "../components/Shared";
 import { getMosques, getMosque, getPrayerTimes, type Mosque, type PrayerTimesData } from "@/api/mosques";
+import { useLanguage } from "../i18n/LanguageContext";
 import type { ScreenId } from "../App";
 
 // ── 18. Mosque List ────────────────────────────────────────────────────────────
 export const MosqueListScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabId) => void; onNavigate?: (s: ScreenId) => void }) => {
+  const { t } = useLanguage();
   const [tab, setTab] = useState<"mosque" | "prayer-room">("mosque");
   const [mosqueList, setMosqueList] = useState<Mosque[]>([]);
   const [loading, setLoading] = useState(true);
@@ -24,7 +26,7 @@ export const MosqueListScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t
         <StatusBar />
         <div className="px-5 pb-3">
           <div className="flex items-center justify-between mb-3">
-            <h1 className="font-bold text-xl text-[#1A1A18]">모스크 · 기도실</h1>
+            <h1 className="font-bold text-xl text-[#1A1A18]">{t("mosque.title")}</h1>
             <button className="w-9 h-9 rounded-xl bg-[var(--cream)] flex items-center justify-center">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--charcoal)" strokeWidth="1.8">
                 <rect x="2" y="2" width="6" height="6" rx="1.5"/>
@@ -35,17 +37,17 @@ export const MosqueListScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t
             </button>
           </div>
           <div className="flex bg-[var(--cream)] rounded-xl p-1">
-            {(["mosque", "prayer-room"] as const).map((t) => (
+            {(["mosque", "prayer-room"] as const).map((tabId) => (
               <button
-                key={t}
-                onClick={() => setTab(t)}
+                key={tabId}
+                onClick={() => setTab(tabId)}
                 className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all"
                 style={{
-                  backgroundColor: tab === t ? "var(--green)" : "transparent",
-                  color: tab === t ? "white" : "var(--muted)",
+                  backgroundColor: tab === tabId ? "var(--green)" : "transparent",
+                  color: tab === tabId ? "white" : "var(--muted)",
                 }}
               >
-                {t === "mosque" ? "🕌 모스크" : "🙏 기도실"}
+                {tabId === "mosque" ? t("mosque.tab_mosque") : t("mosque.tab_prayer_room")}
               </button>
             ))}
           </div>
@@ -54,7 +56,7 @@ export const MosqueListScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t
 
       <div className="flex-1 phone-scroll px-4 py-4 space-y-3">
         {loading ? (
-          <p className="text-sm text-[var(--muted)]">로딩중...</p>
+          <p className="text-sm text-[var(--muted)]">{t("common.loading")}</p>
         ) : (
           filtered.map((m) => (
             <div key={m.id} onClick={() => onNavigate?.("mosque-detail")} className="bg-white rounded-2xl overflow-hidden shadow-sm cursor-pointer active:scale-[0.98] transition-transform">
@@ -69,7 +71,7 @@ export const MosqueListScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                 <div className="absolute bottom-3 left-3">
                   <span className="text-[10px] font-bold px-2 py-1 rounded-full text-white" style={{ backgroundColor: m.type === "mosque" ? "var(--gold)" : "var(--info)" }}>
-                    {m.type === "mosque" ? "모스크" : "기도실"}
+                    {m.type === "mosque" ? t("mosque.type_mosque") : t("mosque.type_prayer_room")}
                   </span>
                 </div>
               </div>
@@ -103,6 +105,7 @@ export const MosqueListScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t
 
 // ── 19. Mosque Detail ──────────────────────────────────────────────────────────
 export const MosqueDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
+  const { t } = useLanguage();
   const [mosque, setMosque] = useState<Mosque | null>(null);
   const [prayerData, setPrayerData] = useState<PrayerTimesData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -123,7 +126,7 @@ export const MosqueDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
   if (loading || !mosque) {
     return (
       <div className="flex flex-col h-full bg-[var(--cream)] items-center justify-center">
-        <p className="text-sm text-[var(--muted)]">로딩중...</p>
+        <p className="text-sm text-[var(--muted)]">{t("common.loading")}</p>
       </div>
     );
   }
@@ -186,7 +189,7 @@ export const MosqueDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
             >
               <span className="text-xl">🌟</span>
               <div>
-                <p className="font-bold text-sm" style={{ color: "#7A5220" }}>주마 예배</p>
+                <p className="font-bold text-sm" style={{ color: "#7A5220" }}>{t("mosque.juma_prayer")}</p>
                 <p className="text-xs" style={{ color: "#9A6830" }}>{mosque.juma}</p>
               </div>
             </div>
@@ -195,7 +198,7 @@ export const MosqueDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
 
         <div className="bg-white mt-2 px-5 py-4">
           <div className="flex items-center justify-between mb-3">
-            <p className="font-semibold text-sm text-[#1A1A18]">오늘의 기도 시간</p>
+            <p className="font-semibold text-sm text-[#1A1A18]">{t("mosque.todays_prayer_times")}</p>
             {prayerData && <p className="text-xs text-[var(--muted)]">{prayerData.hijriDate}</p>}
           </div>
           <div className="space-y-1">
@@ -220,7 +223,7 @@ export const MosqueDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
                   </div>
                   <div className="flex items-center gap-2">
                     <p className={`text-sm font-bold tabular-nums ${isNext ? "text-[var(--green)]" : "text-[#1A1A18]"}`}>{p.time}</p>
-                    {isNext && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full text-white" style={{ backgroundColor: "var(--green)" }}>다음</span>}
+                    {isNext && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full text-white" style={{ backgroundColor: "var(--green)" }}>{t("mosque.next_badge")}</span>}
                   </div>
                 </div>
               );
@@ -229,7 +232,7 @@ export const MosqueDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
         </div>
 
         <div className="bg-white mt-2 px-5 py-4">
-          <p className="font-semibold text-sm text-[#1A1A18] mb-3">시설</p>
+          <p className="font-semibold text-sm text-[#1A1A18] mb-3">{t("mosque.facilities")}</p>
           <div className="flex flex-wrap gap-2">
             {mosque.facilities.map((f) => (
               <span key={f} className="text-xs font-medium px-3 py-2 rounded-xl bg-[var(--cream)] text-[#1A1A18]">{f}</span>
@@ -239,10 +242,10 @@ export const MosqueDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
 
         <div className="px-4 py-4 flex gap-3">
           <button className="flex-1 py-4 rounded-2xl font-bold text-white" style={{ backgroundColor: "var(--green)" }}>
-            🗺️ 길 찾기
+            {t("mosque.get_directions")}
           </button>
           <button className="flex-1 py-4 rounded-2xl font-semibold border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>
-            공유하기
+            {t("mosque.share")}
           </button>
         </div>
         <div className="h-4" />
@@ -257,6 +260,7 @@ const prayerIconMap: Record<string, string> = {
 };
 
 export const PrayerTimesScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabId) => void; onNavigate?: (s: ScreenId) => void }) => {
+  const { t } = useLanguage();
   const [notifState, setNotifState] = useState<Record<string, boolean>>({
     fajr: true, sunrise: false, dhuhr: false, asr: true, maghrib: true, isha: false,
   });
@@ -289,15 +293,15 @@ export const PrayerTimesScreen = ({ onTabChange, onNavigate }: { onTabChange?: (
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="px-5 pb-3">
-          <h1 className="font-bold text-xl text-[#1A1A18]">기도 시간</h1>
-          <p className="text-xs text-[var(--muted)] mt-0.5">{location || "로딩중..."}{prayerData ? ` · ${prayerData.gregorianDate}` : ""}</p>
+          <h1 className="font-bold text-xl text-[#1A1A18]">{t("mosque.prayer_times_title")}</h1>
+          <p className="text-xs text-[var(--muted)] mt-0.5">{location || t("common.loading")}{prayerData ? ` · ${prayerData.gregorianDate}` : ""}</p>
         </div>
       </div>
 
       <div className="flex-1 phone-scroll">
         {loading ? (
           <div className="flex items-center justify-center py-12">
-            <p className="text-sm text-[var(--muted)]">로딩중...</p>
+            <p className="text-sm text-[var(--muted)]">{t("common.loading")}</p>
           </div>
         ) : (
           <>
@@ -309,12 +313,12 @@ export const PrayerTimesScreen = ({ onTabChange, onNavigate }: { onTabChange?: (
               <div className="relative z-10">
                 <div className="flex items-center justify-between mb-4">
                   <div>
-                    <p className="text-white/70 text-xs">هجري · 히즈리력</p>
+                    <p className="text-white/70 text-xs">{t("mosque.hijri_label")}</p>
                     <p className="text-white font-semibold text-sm mt-0.5">{prayerData?.hijriDate ?? ""}</p>
                   </div>
                   <span className="text-3xl">🌙</span>
                 </div>
-                <p className="text-white/70 text-xs font-medium mb-1">다음 기도까지</p>
+                <p className="text-white/70 text-xs font-medium mb-1">{t("mosque.until_next_prayer")}</p>
                 <p className="text-white font-bold text-lg mb-1">{nextPrayer?.name ?? ""} {nextPrayer?.nameEn ?? ""}</p>
                 <p className="text-white font-bold tabular-nums" style={{ fontSize: "36px", lineHeight: 1 }}>{nextPrayer?.time ?? "--:--"}</p>
               </div>
@@ -339,7 +343,7 @@ export const PrayerTimesScreen = ({ onTabChange, onNavigate }: { onTabChange?: (
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
                         <p className={`font-semibold text-sm ${isNext ? "text-[var(--green)]" : "text-[#1A1A18]"}`}>{p.name}</p>
-                        {isNext && <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full text-white" style={{ backgroundColor: "var(--green)" }}>다음</span>}
+                        {isNext && <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full text-white" style={{ backgroundColor: "var(--green)" }}>{t("mosque.next_badge")}</span>}
                       </div>
                       <p className="text-xs text-[var(--muted)]">{p.nameEn}</p>
                     </div>
@@ -354,7 +358,7 @@ export const PrayerTimesScreen = ({ onTabChange, onNavigate }: { onTabChange?: (
 
             <div className="bg-white mx-4 mt-3 rounded-2xl p-4 shadow-sm">
               <div className="flex items-center justify-between mb-3">
-                <p className="font-semibold text-sm text-[#1A1A18]">{now.getMonth() + 1}월 {now.getFullYear()}</p>
+                <p className="font-semibold text-sm text-[#1A1A18]">{t("mosque.month_year").replace("{month}", String(now.getMonth() + 1)).replace("{year}", String(now.getFullYear()))}</p>
                 <div className="flex gap-1">
                   <button className="w-7 h-7 rounded-lg bg-[var(--cream)] flex items-center justify-center">
                     <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="var(--charcoal)" strokeWidth="1.8"><path d="M8 9L5 6l3-3" strokeLinecap="round"/></svg>
@@ -365,8 +369,8 @@ export const PrayerTimesScreen = ({ onTabChange, onNavigate }: { onTabChange?: (
                 </div>
               </div>
               <div className="grid grid-cols-7 gap-1 text-center">
-                {["일","월","화","수","목","금","토"].map((d) => (
-                  <p key={d} className="text-[10px] font-semibold text-[var(--muted)] py-1">{d}</p>
+                {["weekday_0","weekday_1","weekday_2","weekday_3","weekday_4","weekday_5","weekday_6"].map((d) => (
+                  <p key={d} className="text-[10px] font-semibold text-[var(--muted)] py-1">{t(`mosque.${d}`)}</p>
                 ))}
                 {[0,1,2,3,4].map((i) => <div key={i} />)}
                 {Array.from({ length: 30 }, (_, i) => i + 1).map((d) => (
@@ -392,14 +396,14 @@ export const PrayerTimesScreen = ({ onTabChange, onNavigate }: { onTabChange?: (
                 className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-white text-sm"
                 style={{ backgroundColor: "var(--green)" }}
               >
-                🧭 키블라 방향
+                {t("mosque.quick_qibla")}
               </button>
               <button
                 onClick={() => onNavigate?.("mosque-list")}
                 className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-semibold text-sm border"
                 style={{ color: "var(--green)", borderColor: "var(--green)" }}
               >
-                🕌 근처 모스크
+                {t("mosque.quick_nearby_mosque")}
               </button>
             </div>
           </>
@@ -413,6 +417,7 @@ export const PrayerTimesScreen = ({ onTabChange, onNavigate }: { onTabChange?: (
 
 // ── 21. Qibla Compass ─────────────────────────────────────────────────────────
 export const QiblaScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabId) => void; onNavigate?: (s: ScreenId) => void }) => {
+  const { t } = useLanguage();
   const qiblaAngle = 292.4;
 
   return (
@@ -428,8 +433,8 @@ export const QiblaScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: Tab
       <div className="relative z-10 flex items-center gap-3 px-5 pt-2 pb-4">
         <BackButton dark onBack={() => onNavigate?.("home")} />
         <div>
-          <h1 className="font-bold text-lg text-white">키블라 Qibla</h1>
-          <p className="text-xs text-white/50">서울에서 메카 방향</p>
+          <h1 className="font-bold text-lg text-white">{t("mosque.qibla_header")}</h1>
+          <p className="text-xs text-white/50">{t("mosque.direction_to_mecca")}</p>
         </div>
       </div>
 
@@ -479,7 +484,7 @@ export const QiblaScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: Tab
                   <rect x="10" y="18" width="8" height="6" fill="rgba(196,136,58,0.8)"/>
                 </svg>
               </div>
-              <p className="text-white/60 text-[10px] font-medium">메카 Mecca</p>
+              <p className="text-white/60 text-[10px] font-medium">{t("mosque.mecca_label")}</p>
             </div>
 
             {/* Needle */}
@@ -499,17 +504,17 @@ export const QiblaScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: Tab
 
         {/* Info */}
         <div className="text-center space-y-2">
-          <p className="text-white/50 text-xs">키블라 방향</p>
+          <p className="text-white/50 text-xs">{t("mosque.qibla_direction_label")}</p>
           <p className="text-white font-bold text-3xl">{qiblaAngle}°</p>
-          <p className="text-white/60 text-sm">현재 방향: 147° (남동쪽)</p>
+          <p className="text-white/60 text-sm">{t("mosque.current_direction").replace("{deg}", "147").replace("{dir}", t("mosque.direction_southeast"))}</p>
         </div>
 
         <div
           className="w-full rounded-2xl px-5 py-4 text-center"
           style={{ backgroundColor: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }}
         >
-          <p className="text-white/50 text-xs mb-1">캘리브레이션 안내</p>
-          <p className="text-white/70 text-sm leading-relaxed">기기를 들고 8자 모양으로 천천히 움직여 나침반을 보정하세요</p>
+          <p className="text-white/50 text-xs mb-1">{t("mosque.calibration_guide")}</p>
+          <p className="text-white/70 text-sm leading-relaxed">{t("mosque.calibration_desc")}</p>
         </div>
       </div>
 
