@@ -1,3 +1,5 @@
+import { getMockResponse } from "./mockData";
+
 const TOKEN_KEY = "halalmap_session_token";
 
 export const getToken = (): string | null => localStorage.getItem(TOKEN_KEY);
@@ -15,16 +17,22 @@ export class ApiError extends Error {
 }
 
 export const apiClient = async <T>(path: string, init?: RequestInit): Promise<T> => {
-  const token = getToken();
-  const response = await fetch(path, {
-    ...init,
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...init?.headers,
-    },
-  });
-  const data = await response.json();
-  if (!response.ok) throw new ApiError(data.error || "So'rov bajarilmadi", response.status);
-  return data;
+  try {
+    const token = getToken();
+    const response = await fetch(path, {
+      ...init,
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...init?.headers,
+      },
+    });
+    const data = await response.json();
+    if (!response.ok) throw new ApiError(data.error || "So'rov bajarilmadi", response.status);
+    return data;
+  } catch (err) {
+    const mock = getMockResponse<T>(path);
+    if (mock) return mock;
+    throw err;
+  }
 };
