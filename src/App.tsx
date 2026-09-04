@@ -17,7 +17,9 @@ import { TravelPlannerScreen, OfflinePrayerScreen } from "./screens/TravelScreen
 import { NotificationsScreen, RamadanScreen, EidScreen } from "./screens/EngagementScreens";
 import { LoyaltyScreen, ReferralScreen } from "./screens/RewardsScreens";
 import { TutorialScreen, MultilingualScreen } from "./screens/AccessibilityScreens";
+import HomeDesktop from "./screens/HomeDesktop";
 import { LanguageProvider, useLanguage } from "./i18n/LanguageContext";
+import { useIsDesktop } from "./hooks/useIsDesktop";
 
 export type ScreenId =
   | "splash" | "onboarding" | "signup" | "language"
@@ -181,6 +183,9 @@ function AppShell({
   handleNavigate: NavFn;
 }) {
   const { t } = useLanguage();
+  const isDesktop = useIsDesktop();
+  const showDesktopHome = isDesktop && current === "home";
+
   return (
     <div className="relative min-h-dvh bg-[#EDEAE5]">
       <div className="fixed right-3 top-3 z-50 flex items-center gap-2 rounded-xl border border-[var(--border)] bg-white/95 p-2 shadow-lg backdrop-blur">
@@ -189,9 +194,13 @@ function AppShell({
         </select>
         <button onClick={handleLogout} className="rounded-lg bg-[var(--danger)] px-3 py-1.5 text-xs font-bold text-white">{t("common.logout")}</button>
       </div>
-      <main className="mx-auto h-dvh w-full max-w-[390px] overflow-hidden bg-[var(--cream)]">
-        <CustomerScreen id={current} onTabChange={handleTabChange} onLogout={handleLogout} onNavigate={handleNavigate} />
-      </main>
+      {showDesktopHome ? (
+        <HomeDesktop onNavigate={handleNavigate} />
+      ) : (
+        <main className={isDesktop ? "mx-auto h-dvh w-full max-w-[390px] overflow-hidden bg-[var(--cream)] shadow-2xl" : "mx-auto h-dvh w-full max-w-[390px] overflow-hidden bg-[var(--cream)]"}>
+          <CustomerScreen id={current} onTabChange={handleTabChange} onLogout={handleLogout} onNavigate={handleNavigate} />
+        </main>
+      )}
     </div>
   );
 }
