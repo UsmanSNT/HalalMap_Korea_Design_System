@@ -77,7 +77,7 @@ export const HomeScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabI
                 <path d="M3 5l3 3 3-3"/>
               </svg>
             </button>
-            <button className="relative w-9 h-9 bg-white/20 rounded-full flex items-center justify-center">
+            <button onClick={() => onNavigate?.("notifications")} className="relative w-9 h-9 bg-white/20 rounded-full flex items-center justify-center">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white" strokeWidth="1.6">
                 <path d="M4 4h12v8a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"/>
                 <path d="M8 4V2M12 4V2"/>
@@ -135,7 +135,8 @@ export const HomeScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabI
             {categories.map((c, i) => (
               <button
                 key={i}
-                className="flex-shrink-0 flex flex-col items-center gap-1.5 px-4 py-3 rounded-2xl bg-white border border-[var(--border)] min-w-fit"
+                onClick={() => onNavigate?.(c.label === "전체" ? "restaurant-list" : "search")}
+                className="flex-shrink-0 flex flex-col items-center gap-1.5 px-4 py-3 rounded-2xl bg-white border border-[var(--border)] min-w-fit active:scale-95 transition-transform"
               >
                 <span className="text-xl">{c.icon}</span>
                 <span className="text-xs font-medium text-[#1A1A18] whitespace-nowrap">{c.label}</span>
@@ -191,10 +192,37 @@ export const HomeScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabI
           </div>
         </div>
 
+        {/* Quick services grid */}
+        <div className="pt-5 px-4">
+          <h3 className="font-bold text-base text-[#1A1A18] mb-3">서비스</h3>
+          <div className="grid grid-cols-4 gap-2">
+            {[
+              { icon: "📷", label: "할랄 스캔", screen: "scanner" as ScreenId },
+              { icon: "🤖", label: "AI 식단", screen: "ai-meal" as ScreenId },
+              { icon: "👥", label: "그룹 주문", screen: "group-order" as ScreenId },
+              { icon: "🛒", label: "식료품", screen: "grocery" as ScreenId },
+              { icon: "✈️", label: "여행 플래너", screen: "travel-planner" as ScreenId },
+              { icon: "🌙", label: "라마단", screen: "ramadan" as ScreenId },
+              { icon: "⭐", label: "리뷰", screen: "reviews" as ScreenId },
+              { icon: "🎁", label: "리워드", screen: "loyalty" as ScreenId },
+            ].map((s) => (
+              <button
+                key={s.label}
+                onClick={() => onNavigate?.(s.screen)}
+                className="flex flex-col items-center gap-1.5 py-3 rounded-2xl bg-white border border-[var(--border)] active:scale-95 transition-transform"
+              >
+                <span className="text-xl">{s.icon}</span>
+                <span className="text-[10px] font-medium text-[#1A1A18] leading-tight text-center">{s.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Promo banner */}
         <div className="px-4 pt-5 pb-6">
           <div
-            className="relative rounded-2xl p-5 overflow-hidden"
+            className="relative rounded-2xl p-5 overflow-hidden cursor-pointer"
+            onClick={() => onNavigate?.("restaurant-list")}
             style={{ background: "linear-gradient(135deg, var(--gold) 0%, #A0692A 100%)" }}
           >
             <GeometricPattern color="white" opacity={0.08} />

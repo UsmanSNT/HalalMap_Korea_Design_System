@@ -21,6 +21,11 @@ const profileNavMap: Record<string, ScreenId> = {
   "주문 내역": "order-history",
   "저장된 식당 · 모스크": "saved-places",
   "배달 주소 관리": "address",
+  "결제 수단": "settings",
+  "알림 설정": "notifications",
+  "언어 설정": "language",
+  "쿠폰 · 포인트": "loyalty",
+  "고객센터": "community",
   "설정": "settings",
 };
 

@@ -147,7 +147,7 @@ export const SearchScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: Ta
               <h3 className="font-bold text-sm text-[#1A1A18] mb-2">🔥 인기 검색어</h3>
               <div className="space-y-2">
                 {trending.map((t, i) => (
-                  <button key={t} onClick={() => setQuery(t)} className="flex items-center gap-3 py-1.5 w-full text-left">
+                  <button key={t} onClick={() => { setQuery(t); onNavigate?.("restaurant-list"); }} className="flex items-center gap-3 py-1.5 w-full text-left">
                     <span className="text-sm font-bold w-5 text-center" style={{ color: i < 3 ? "var(--danger)" : "var(--muted)" }}>{i + 1}</span>
                     <span className="flex-1 text-sm text-[#1A1A18]">{t}</span>
                     {i < 3 && (
@@ -163,7 +163,7 @@ export const SearchScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: Ta
               <h3 className="font-bold text-sm text-[#1A1A18] mb-2">카테고리</h3>
               <div className="grid grid-cols-3 gap-2">
                 {quickCategories.map((c) => (
-                  <button key={c.label} className="flex flex-col items-center gap-2 py-4 bg-white rounded-2xl border border-[var(--border)]">
+                  <button key={c.label} onClick={() => onNavigate?.("restaurant-list")} className="flex flex-col items-center gap-2 py-4 bg-white rounded-2xl border border-[var(--border)] active:scale-95 transition-transform">
                     <span className="text-2xl">{c.icon}</span>
                     <span className="text-xs font-semibold text-[#1A1A18]">{c.label}</span>
                   </button>
@@ -303,6 +303,7 @@ export const MapViewScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: T
                 distance={r.distance}
                 eta={r.deliveryTime}
                 fee={formatFee(r.deliveryFee)}
+                onClick={() => onNavigate?.("restaurant-detail")}
               />
             ))}
           </div>
