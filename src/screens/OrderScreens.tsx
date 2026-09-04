@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { StatusBar, BottomNav, BackButton, OrderStatusChip, TabId } from "../components/Shared";
 import { getOrders, getOrder, type Order } from "../api/orders";
+import { useLanguage } from "../i18n/LanguageContext";
 import type { ScreenId } from "../App";
 
 // ── 25. Active Order Tracking ──────────────────────────────────────────────────
@@ -38,15 +39,19 @@ const RouteSVG = () => (
   </svg>
 );
 
-const trackSteps = [
-  { label: "주문 접수", done: true },
-  { label: "조리중", done: true, active: false },
-  { label: "픽업 완료", done: false, active: false },
-  { label: "배달중", done: false, active: true },
-  { label: "배달 완료", done: false },
+const trackStepKeys = [
+  { key: "received", done: true },
+  { key: "preparing", done: true, active: false },
+  { key: "pickup", done: false, active: false },
+  { key: "delivering", done: false, active: true },
+  { key: "delivered", done: false },
 ];
 
-export const OrderTrackingScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabId) => void; onNavigate?: (s: ScreenId) => void }) => (
+export const OrderTrackingScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabId) => void; onNavigate?: (s: ScreenId) => void }) => {
+  const { t } = useLanguage();
+  const trackSteps = trackStepKeys.map((s) => ({ ...s, label: t(`order.track_step_${s.key}`) }));
+
+  return (
   <div className="flex flex-col h-full bg-[var(--cream)]">
     {/* Map */}
     <div className="relative h-72 flex-shrink-0">
@@ -55,7 +60,7 @@ export const OrderTrackingScreen = ({ onTabChange, onNavigate }: { onTabChange?:
         <StatusBar dark />
         <div className="flex items-center px-4 gap-3">
           <BackButton dark onBack={() => onNavigate?.("home")} />
-          <h1 className="font-bold text-white text-lg">주문 추적</h1>
+          <h1 className="font-bold text-white text-lg">{t("order.tracking_title")}</h1>
         </div>
       </div>
     </div>
@@ -70,15 +75,15 @@ export const OrderTrackingScreen = ({ onTabChange, onNavigate }: { onTabChange?:
       <div className="px-5 pb-6 space-y-4">
         {/* ETA */}
         <div className="text-center pt-1">
-          <p className="text-xs font-medium text-[var(--muted)]">도착까지 약</p>
-          <p className="font-bold text-4xl text-[#1A1A18] mt-1">18분</p>
-          <p className="text-sm text-[var(--muted)] mt-0.5">오후 3:05 도착 예정</p>
+          <p className="text-xs font-medium text-[var(--muted)]">{t("order.arriving_in_label")}</p>
+          <p className="font-bold text-4xl text-[#1A1A18] mt-1">{t("order.eta_minutes")}</p>
+          <p className="text-sm text-[var(--muted)] mt-0.5">{t("order.arrival_time_estimate")}</p>
         </div>
 
         {/* Status stepper */}
         <div className="flex items-center justify-between py-3">
           {trackSteps.map((step, i) => (
-            <div key={step.label} className="flex flex-col items-center gap-1.5 relative flex-1">
+            <div key={step.key} className="flex flex-col items-center gap-1.5 relative flex-1">
               {i < trackSteps.length - 1 && (
                 <div
                   className="absolute top-3.5 left-1/2 w-full h-0.5"
@@ -113,7 +118,7 @@ export const OrderTrackingScreen = ({ onTabChange, onNavigate }: { onTabChange?:
 
         {/* Courier card */}
         <div className="bg-white border border-[var(--border)] rounded-2xl p-4">
-          <p className="text-xs font-medium text-[var(--muted)] mb-3">배달 기사 정보</p>
+          <p className="text-xs font-medium text-[var(--muted)] mb-3">{t("order.courier_info_label")}</p>
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-full bg-[#E8E6E1] flex items-center justify-center text-xl flex-shrink-0">
               👨‍🦱
@@ -123,7 +128,7 @@ export const OrderTrackingScreen = ({ onTabChange, onNavigate }: { onTabChange?:
               <div className="flex items-center gap-1.5 mt-0.5">
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="#C4883A"><path d="M6 1l1.2 2.5 2.8.4-2 2 .5 2.7L6 7.3 3.5 8.6l.5-2.7-2-2 2.8-.4L6 1z"/></svg>
                 <span className="text-xs font-semibold text-[#1A1A18]">4.9</span>
-                <span className="text-xs text-[var(--muted)]">· 8,241회 배달</span>
+                <span className="text-xs text-[var(--muted)]">· {t("order.courier_deliveries").replace("{count}", "8,241")}</span>
               </div>
             </div>
             <div className="flex gap-2">
@@ -148,10 +153,12 @@ export const OrderTrackingScreen = ({ onTabChange, onNavigate }: { onTabChange?:
 
     <BottomNav active="orders" onTabChange={onTabChange} />
   </div>
-);
+  );
+};
 
 // ── 26. Order History ──────────────────────────────────────────────────────────
 export const OrderHistoryScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabId) => void; onNavigate?: (s: ScreenId) => void }) => {
+  const { t } = useLanguage();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -165,14 +172,19 @@ export const OrderHistoryScreen = ({ onTabChange, onNavigate }: { onTabChange?: 
   const delivered = orders.filter((o) => o.status === "delivered" || o.status === "cancelled");
   const active = orders.filter((o) => o.status === "preparing" || o.status === "delivering");
 
+  const historyTabs = [
+    t("order.in_progress_tab").replace("{count}", String(active.length)),
+    t("order.completed_tab").replace("{count}", String(delivered.length)),
+  ];
+
   return (
   <div className="flex flex-col h-full bg-[var(--cream)]">
     <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
       <StatusBar />
       <div className="px-5 pb-3">
-        <h1 className="font-bold text-xl text-[#1A1A18]">주문 내역</h1>
+        <h1 className="font-bold text-xl text-[#1A1A18]">{t("order.history_title")}</h1>
         <div className="flex gap-4 mt-3">
-          {[`진행중 (${active.length})`, `완료 (${delivered.length})`].map((tab, i) => (
+          {historyTabs.map((tab, i) => (
             <button
               key={tab}
               className="pb-2 text-sm font-semibold border-b-2 transition-all"
@@ -190,7 +202,7 @@ export const OrderHistoryScreen = ({ onTabChange, onNavigate }: { onTabChange?: 
 
     <div className="flex-1 phone-scroll px-4 py-4 space-y-3">
       {loading ? (
-        <p className="text-center text-sm text-[var(--muted)] py-8">로딩중...</p>
+        <p className="text-center text-sm text-[var(--muted)] py-8">{t("common.loading")}</p>
       ) : (
         orders.map((order) => (
           <div key={order.id} className="bg-white rounded-2xl shadow-sm overflow-hidden">
@@ -213,7 +225,7 @@ export const OrderHistoryScreen = ({ onTabChange, onNavigate }: { onTabChange?: 
                       </svg>
                     ))}
                   </div>
-                  <p className="text-xs font-medium flex-1" style={{ color: "#7A5220" }}>이 주문 어떠셨나요? 리뷰 남기기</p>
+                  <p className="text-xs font-medium flex-1" style={{ color: "#7A5220" }}>{t("order.rate_prompt")}</p>
                 </div>
               )}
             </div>
@@ -221,10 +233,10 @@ export const OrderHistoryScreen = ({ onTabChange, onNavigate }: { onTabChange?: 
             {order.status !== "cancelled" && (
               <div className="flex border-t border-[var(--border)] divide-x divide-[var(--border)]">
                 <button className="flex-1 py-3 text-sm font-semibold" style={{ color: "var(--green)" }}>
-                  재주문
+                  {t("order.reorder")}
                 </button>
                 <button className="flex-1 py-3 text-sm font-medium text-[var(--muted)]">
-                  영수증
+                  {t("order.receipt")}
                 </button>
               </div>
             )}
@@ -241,6 +253,7 @@ export const OrderHistoryScreen = ({ onTabChange, onNavigate }: { onTabChange?: 
 
 // ── 27. Order Detail ───────────────────────────────────────────────────────────
 export const OrderDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
+  const { t } = useLanguage();
   const [order, setOrder] = useState<Order | null>(null);
 
   useEffect(() => {
@@ -254,21 +267,21 @@ export const OrderDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =
           <StatusBar />
           <div className="flex items-center gap-3 px-4 pb-3">
             <BackButton onBack={() => onNavigate?.("home")} />
-            <h1 className="font-bold text-lg flex-1">주문 상세</h1>
+            <h1 className="font-bold text-lg flex-1">{t("order.detail_title")}</h1>
           </div>
         </div>
         <div className="flex-1 flex items-center justify-center">
-          <p className="text-sm text-[var(--muted)]">로딩중...</p>
+          <p className="text-sm text-[var(--muted)]">{t("common.loading")}</p>
         </div>
       </div>
     );
   }
 
   const paymentRows = [
-    { label: "소계", val: `₩${(order.subtotal ?? 0).toLocaleString()}` },
-    { label: "배달비", val: `₩${(order.deliveryFee ?? 0).toLocaleString()}` },
-    { label: "쿠폰 할인", val: `-₩${(order.couponDiscount ?? 0).toLocaleString()}`, accent: true },
-    { label: "팁", val: `₩${(order.tip ?? 0).toLocaleString()}` },
+    { label: t("order.subtotal"), val: `₩${(order.subtotal ?? 0).toLocaleString()}` },
+    { label: t("order.delivery_fee"), val: `₩${(order.deliveryFee ?? 0).toLocaleString()}` },
+    { label: t("order.coupon_discount"), val: `-₩${(order.couponDiscount ?? 0).toLocaleString()}`, accent: true },
+    { label: t("order.tip"), val: `₩${(order.tip ?? 0).toLocaleString()}` },
   ];
 
   return (
@@ -277,8 +290,8 @@ export const OrderDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =
       <StatusBar />
       <div className="flex items-center gap-3 px-4 pb-3">
         <BackButton onBack={() => onNavigate?.("home")} />
-        <h1 className="font-bold text-lg flex-1">주문 상세</h1>
-        <button className="text-sm font-medium" style={{ color: "var(--green)" }}>영수증</button>
+        <h1 className="font-bold text-lg flex-1">{t("order.detail_title")}</h1>
+        <button className="text-sm font-medium" style={{ color: "var(--green)" }}>{t("order.receipt")}</button>
       </div>
     </div>
 
@@ -286,14 +299,14 @@ export const OrderDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =
       <div className="bg-white rounded-2xl p-4 shadow-sm">
         <div className="flex items-center justify-between mb-3">
           <div>
-            <p className="text-xs text-[var(--muted)]">주문번호</p>
+            <p className="text-xs text-[var(--muted)]">{t("order.order_number_label")}</p>
             <p className="font-bold text-base text-[#1A1A18]">{order.orderNumber}</p>
           </div>
           <OrderStatusChip status={order.status} />
         </div>
         <div className="text-xs text-[var(--muted)] space-y-0.5">
-          <p>주문일시: {order.orderDate}</p>
-          {order.deliveredDate && <p>배달완료: {order.deliveredDate}</p>}
+          <p>{t("order.order_date_prefix")}{order.orderDate}</p>
+          {order.deliveredDate && <p>{t("order.delivered_date_prefix")}{order.deliveredDate}</p>}
         </div>
       </div>
 
@@ -308,14 +321,14 @@ export const OrderDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =
       {order.orderItems && (
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
           <div className="px-4 py-3 border-b border-[var(--border)]">
-            <p className="font-semibold text-sm text-[#1A1A18]">주문 항목</p>
+            <p className="font-semibold text-sm text-[#1A1A18]">{t("order.order_items_title")}</p>
           </div>
           <div className="divide-y divide-[var(--border)]">
             {order.orderItems.map((item) => (
               <div key={item.name} className="flex items-center justify-between px-4 py-3">
                 <div>
                   <p className="text-sm font-medium text-[#1A1A18]">{item.name}</p>
-                  <p className="text-xs text-[var(--muted)]">{item.option} · {item.qty}개</p>
+                  <p className="text-xs text-[var(--muted)]">{item.option} · {item.qty}{t("order.qty_unit")}</p>
                 </div>
                 <p className="text-sm font-semibold text-[#1A1A18]">₩{(item.price * item.qty).toLocaleString()}</p>
               </div>
@@ -325,7 +338,7 @@ export const OrderDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =
       )}
 
       <div className="bg-white rounded-2xl p-4 shadow-sm space-y-2.5">
-        <p className="font-semibold text-sm text-[#1A1A18]">결제 내역</p>
+        <p className="font-semibold text-sm text-[#1A1A18]">{t("order.payment_history_title")}</p>
         {paymentRows.map((row) => (
           <div key={row.label} className="flex justify-between text-sm">
             <span style={{ color: "var(--muted)" }}>{row.label}</span>
@@ -333,26 +346,26 @@ export const OrderDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =
           </div>
         ))}
         <div className="flex justify-between font-bold text-base pt-2 border-t border-[var(--border)]">
-          <span>합계</span>
+          <span>{t("order.total")}</span>
           <span>₩{order.total.toLocaleString()}</span>
         </div>
-        {order.paymentMethod && <p className="text-xs text-[var(--muted)]">결제 수단: {order.paymentMethod}</p>}
+        {order.paymentMethod && <p className="text-xs text-[var(--muted)]">{t("order.payment_method_prefix")}{order.paymentMethod}</p>}
       </div>
 
       {order.deliveryAddress && (
         <div className="bg-white rounded-2xl p-4 shadow-sm space-y-2">
-          <p className="font-semibold text-sm text-[#1A1A18]">배달 정보</p>
+          <p className="font-semibold text-sm text-[#1A1A18]">{t("order.delivery_info_title")}</p>
           <p className="text-sm text-[var(--muted)]">📍 {order.deliveryAddress}</p>
-          {order.courier && <p className="text-sm text-[var(--muted)]">🛵 배달 기사: {order.courier.name} · ⭐ {order.courier.rating}</p>}
+          {order.courier && <p className="text-sm text-[var(--muted)]">{t("order.courier_prefix")}{order.courier.name} · ⭐ {order.courier.rating}</p>}
         </div>
       )}
 
       <div className="flex gap-3">
         <button className="flex-1 py-4 rounded-2xl font-bold text-white text-base" style={{ backgroundColor: "var(--green)" }}>
-          재주문
+          {t("order.reorder")}
         </button>
         <button className="flex-1 py-4 rounded-2xl font-semibold text-sm border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>
-          리뷰 쓰기
+          {t("order.write_review")}
         </button>
       </div>
       <div className="h-4" />

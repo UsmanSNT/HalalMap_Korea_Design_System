@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { GeometricPattern, StatusBar, BackButton, Toggle } from "../components/Shared";
 import type { ScreenId } from "../App";
+import { useLanguage } from "../i18n/LanguageContext";
 
 // ── 10. Push Notification Designs ─────────────────────────────────────────────
 const notifications = [
@@ -11,7 +12,7 @@ const notifications = [
     title: "배달 기사가 출발했습니다!",
     body: "신당 할랄 키친 · 예상 도착 18분 · 주문 #8847",
     time: "방금",
-    cta: "주문 추적",
+    ctaKey: "cta_track_order",
     ctaColor: "#5B21B6",
     unread: true,
   },
@@ -22,7 +23,7 @@ const notifications = [
     title: "마그립 기도 시간 알림",
     body: "마그립 Maghrib · 17:48 · 지금부터 10분 후",
     time: "5분 전",
-    cta: "기도 방향",
+    ctaKey: "cta_qibla_direction",
     ctaColor: "var(--green)",
     unread: true,
   },
@@ -33,7 +34,7 @@ const notifications = [
     title: "근처에 새 할랄 식당이 생겼어요!",
     body: "마포구 할랄 팔라펠 · 이태원에서 2.1km · 4.7★",
     time: "1시간 전",
-    cta: "메뉴 보기",
+    ctaKey: "cta_view_menu",
     ctaColor: "var(--gold)",
     unread: false,
   },
@@ -44,7 +45,7 @@ const notifications = [
     title: "오늘만! ₩3,000 추가 할인",
     body: "인증된 할랄 식당 최초 주문 시 코드: HALAL3K",
     time: "2시간 전",
-    cta: "쿠폰 받기",
+    ctaKey: "cta_get_coupon",
     ctaColor: "var(--danger)",
     unread: false,
   },
@@ -55,13 +56,17 @@ const notifications = [
     title: "라마단 무바락! 특별 이프타르 메뉴",
     body: "라마단 기간 파트너 식당 20곳의 특별 이프타르 세트",
     time: "어제",
-    cta: "이프타르 보기",
+    ctaKey: "cta_view_iftar",
     ctaColor: "#1B3A6B",
     unread: false,
   },
 ];
 
+const notifSettingKeys = ["notif_order_updates", "notif_prayer_reminder", "notif_new_restaurant", "notif_promotions", "notif_ramadan_special"];
+const notifSettingOn = [true, true, false, false, true];
+
 export const NotificationsScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
+  const { t } = useLanguage();
   const [dismissed, setDismissed] = useState<number[]>([]);
 
   return (
@@ -70,36 +75,30 @@ export const NotificationsScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId)
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
           <BackButton onBack={() => onNavigate?.("home")} />
-          <h1 className="font-bold text-lg flex-1">알림</h1>
-          <button className="text-sm font-medium" style={{ color: "var(--green)" }}>모두 읽음</button>
+          <h1 className="font-bold text-lg flex-1">{t("engagement.notifications_title")}</h1>
+          <button className="text-sm font-medium" style={{ color: "var(--green)" }}>{t("engagement.mark_all_read")}</button>
         </div>
       </div>
 
       <div className="flex-1 phone-scroll px-4 py-3 space-y-2">
         {/* Unread section */}
-        <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide">읽지 않음</p>
+        <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide">{t("engagement.unread_section")}</p>
         {notifications.filter(n => n.unread && !dismissed.includes(notifications.indexOf(n))).map((n, i) => (
           <NotifCard key={i} notif={n} onDismiss={() => setDismissed(d => [...d, i])} />
         ))}
 
-        <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide pt-1">이전 알림</p>
+        <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide pt-1">{t("engagement.previous_section")}</p>
         {notifications.filter(n => !n.unread).map((n, i) => (
           <NotifCard key={i + 100} notif={n} dim />
         ))}
 
         {/* Notification Settings */}
         <div className="bg-white rounded-2xl p-4 shadow-sm mt-4 space-y-3">
-          <p className="font-bold text-sm text-[#1A1A18]">알림 설정</p>
-          {[
-            { label: "주문 업데이트", on: true },
-            { label: "기도 시간 알림", on: true },
-            { label: "신규 식당 알림", on: false },
-            { label: "프로모션", on: false },
-            { label: "라마단 특별 알림", on: true },
-          ].map((s) => (
-            <div key={s.label} className="flex items-center justify-between">
-              <p className="text-sm text-[#1A1A18]">{s.label}</p>
-              <Toggle on={s.on} />
+          <p className="font-bold text-sm text-[#1A1A18]">{t("engagement.notification_settings")}</p>
+          {notifSettingKeys.map((k, i) => (
+            <div key={k} className="flex items-center justify-between">
+              <p className="text-sm text-[#1A1A18]">{t(`engagement.${k}`)}</p>
+              <Toggle on={notifSettingOn[i]} />
             </div>
           ))}
         </div>
@@ -109,38 +108,42 @@ export const NotificationsScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId)
   );
 };
 
-const NotifCard = ({ notif, dim, onDismiss }: { notif: typeof notifications[0]; dim?: boolean; onDismiss?: () => void }) => (
-  <div className="bg-white rounded-2xl p-4 shadow-sm flex gap-3 relative overflow-hidden" style={{ opacity: dim ? 0.65 : 1 }}>
-    {notif.unread && !dim && (
-      <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl" style={{ backgroundColor: notif.ctaColor }} />
-    )}
-    <div className="w-11 h-11 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
-      style={{ backgroundColor: notif.iconBg }}>
-      {notif.icon}
-    </div>
-    <div className="flex-1 min-w-0">
-      <div className="flex items-start justify-between gap-2">
-        <p className="font-bold text-sm text-[#1A1A18] leading-tight">{notif.title}</p>
-        <p className="text-[10px] text-[var(--muted)] flex-shrink-0">{notif.time}</p>
+const NotifCard = ({ notif, dim, onDismiss }: { notif: typeof notifications[0]; dim?: boolean; onDismiss?: () => void }) => {
+  const { t } = useLanguage();
+  return (
+    <div className="bg-white rounded-2xl p-4 shadow-sm flex gap-3 relative overflow-hidden" style={{ opacity: dim ? 0.65 : 1 }}>
+      {notif.unread && !dim && (
+        <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl" style={{ backgroundColor: notif.ctaColor }} />
+      )}
+      <div className="w-11 h-11 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+        style={{ backgroundColor: notif.iconBg }}>
+        {notif.icon}
       </div>
-      <p className="text-xs text-[var(--muted)] mt-0.5 leading-relaxed">{notif.body}</p>
-      <div className="flex items-center gap-2 mt-2">
-        <button className="text-xs font-bold px-3 py-1.5 rounded-lg text-white" style={{ backgroundColor: notif.ctaColor }}>
-          {notif.cta}
-        </button>
-        {onDismiss && (
-          <button onClick={onDismiss} className="text-xs text-[var(--muted)]">닫기</button>
-        )}
+      <div className="flex-1 min-w-0">
+        <div className="flex items-start justify-between gap-2">
+          <p className="font-bold text-sm text-[#1A1A18] leading-tight">{notif.title}</p>
+          <p className="text-[10px] text-[var(--muted)] flex-shrink-0">{notif.time}</p>
+        </div>
+        <p className="text-xs text-[var(--muted)] mt-0.5 leading-relaxed">{notif.body}</p>
+        <div className="flex items-center gap-2 mt-2">
+          <button className="text-xs font-bold px-3 py-1.5 rounded-lg text-white" style={{ backgroundColor: notif.ctaColor }}>
+            {t(`engagement.${notif.ctaKey}`)}
+          </button>
+          {onDismiss && (
+            <button onClick={onDismiss} className="text-xs text-[var(--muted)]">{t("engagement.close")}</button>
+          )}
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 // ── 11. Ramadan Mode ───────────────────────────────────────────────────────────
 const iftarTime = "18:54";
 const suhoorTime = "04:41";
 
 export const RamadanScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
+  const { t } = useLanguage();
   const [ramadanMode, setRamadanMode] = useState(true);
 
   return (
@@ -168,7 +171,7 @@ export const RamadanScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
           <div className="flex items-center justify-between mb-4">
             <BackButton dark onBack={() => onNavigate?.("home")} />
             <div className="flex items-center gap-2">
-              <span className="text-white/70 text-xs">라마단 모드</span>
+              <span className="text-white/70 text-xs">{t("engagement.ramadan_mode_label")}</span>
               <Toggle on={ramadanMode} onToggle={() => setRamadanMode(!ramadanMode)} />
             </div>
           </div>
@@ -177,8 +180,8 @@ export const RamadanScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
           <div className="text-center space-y-2 py-2">
             <div className="text-5xl">☪️</div>
             <p className="font-arabic text-3xl font-bold" style={{ color: "var(--gold)" }}>رمضان مبارك</p>
-            <p className="text-white/80 font-semibold">라마단 무바락!</p>
-            <p className="text-white/50 text-xs">1446년 라마단 17일째</p>
+            <p className="text-white/80 font-semibold">{t("engagement.ramadan_mubarak")}</p>
+            <p className="text-white/50 text-xs">{t("engagement.ramadan_day_progress")}</p>
           </div>
 
           {/* Iftar countdown */}
@@ -187,15 +190,15 @@ export const RamadanScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
               {[
                 { label: "수후르 Suhoor", time: suhoorTime, icon: "🌄" },
                 { label: "이프타르 Iftar", time: iftarTime, icon: "🌅" },
-              ].map((t) => (
-                <div key={t.label} className="flex-1 text-center">
-                  <p className="text-white/60 text-xs">{t.icon} {t.label}</p>
-                  <p className="text-white font-bold text-xl tabular-nums">{t.time}</p>
+              ].map((entry) => (
+                <div key={entry.label} className="flex-1 text-center">
+                  <p className="text-white/60 text-xs">{entry.icon} {entry.label}</p>
+                  <p className="text-white font-bold text-xl tabular-nums">{entry.time}</p>
                 </div>
               ))}
             </div>
             <div className="text-center pt-2 border-t border-white/10">
-              <p className="text-white/60 text-xs mb-0.5">이프타르까지</p>
+              <p className="text-white/60 text-xs mb-0.5">{t("engagement.until_iftar")}</p>
               <p className="text-white font-bold text-2xl tabular-nums" style={{ color: "var(--gold)" }}>1:47:23</p>
             </div>
           </div>
@@ -205,7 +208,7 @@ export const RamadanScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
       <div className="flex-1 phone-scroll px-4 py-4 space-y-4">
         {/* Special menu section */}
         <div>
-          <p className="font-bold text-sm mb-2" style={{ color: ramadanMode ? "white" : "#1A1A18" }}>🌙 이프타르 특별 세트</p>
+          <p className="font-bold text-sm mb-2" style={{ color: ramadanMode ? "white" : "#1A1A18" }}>{t("engagement.iftar_special_menu")}</p>
           <div className="flex gap-3 overflow-x-auto scrollbar-hide">
             {[
               { name: "이프타르 한식 세트", rest: "신당 할랄 키친", price: 35000, imageId: "1498654896293-37c98e7f5fe4", saves: "₩8,000 할인" },
@@ -220,7 +223,7 @@ export const RamadanScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
                   <p className="font-bold text-sm text-[#1A1A18]">{item.name}</p>
                   <p className="text-xs text-[var(--muted)]">{item.rest}</p>
                   <p className="font-bold text-sm text-[#1A1A18]">₩{item.price.toLocaleString()}</p>
-                  <button className="w-full py-2 rounded-xl text-xs font-bold text-white mt-1" style={{ backgroundColor: "var(--green)" }}>주문하기</button>
+                  <button className="w-full py-2 rounded-xl text-xs font-bold text-white mt-1" style={{ backgroundColor: "var(--green)" }}>{t("engagement.order_button")}</button>
                 </div>
               </div>
             ))}
@@ -229,7 +232,7 @@ export const RamadanScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
 
         {/* Prayer schedule */}
         <div className="rounded-2xl p-4 shadow-sm" style={{ backgroundColor: ramadanMode ? "rgba(255,255,255,0.06)" : "white", border: ramadanMode ? "1px solid rgba(255,255,255,0.08)" : "none" }}>
-          <p className="font-bold text-sm mb-3" style={{ color: ramadanMode ? "white" : "#1A1A18" }}>오늘 기도 시간</p>
+          <p className="font-bold text-sm mb-3" style={{ color: ramadanMode ? "white" : "#1A1A18" }}>{t("engagement.today_prayer_schedule")}</p>
           <div className="space-y-2">
             {[
               { name: "수후르 (파즈르)", time: "04:41", passed: true },
@@ -252,12 +255,12 @@ export const RamadanScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
 
         {/* Community */}
         <div className="rounded-2xl p-4 shadow-sm" style={{ backgroundColor: ramadanMode ? "rgba(255,255,255,0.06)" : "white", border: ramadanMode ? "1px solid rgba(255,255,255,0.08)" : "none" }}>
-          <p className="font-bold text-sm mb-2" style={{ color: ramadanMode ? "white" : "#1A1A18" }}>커뮤니티 이프타르 🍽️</p>
+          <p className="font-bold text-sm mb-2" style={{ color: ramadanMode ? "white" : "#1A1A18" }}>{t("engagement.community_iftar")}</p>
           <p className="text-sm" style={{ color: ramadanMode ? "rgba(255,255,255,0.6)" : "var(--muted)" }}>
             오늘 서울 무슬림 커뮤니티에서 이프타르 모임이 있습니다. 장소: 서울중앙성원 · 18:50
           </p>
           <button className="mt-3 px-4 py-2 rounded-xl text-xs font-bold" style={{ backgroundColor: "var(--gold)", color: "white" }}>
-            참여 신청
+            {t("engagement.join_now")}
           </button>
         </div>
         <div className="h-4" />
@@ -267,7 +270,15 @@ export const RamadanScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
 };
 
 // ── 12. Eid Special ────────────────────────────────────────────────────────────
+const eidDealKeys = [
+  { labelKey: "deal_coupon_label", descKey: "deal_coupon_desc", value: "₩10,000" },
+  { labelKey: "deal_mosque_events_label", descKey: "deal_mosque_events_desc", value: "5개" },
+  { labelKey: "deal_special_menu_label", descKey: "deal_special_menu_desc", value: "30+" },
+  { labelKey: "deal_free_delivery_label", descKey: "deal_free_delivery_desc", valueKey: "value_today_only" },
+];
+
 export const EidScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
+  const { t } = useLanguage();
   const [greeting, setGreeting] = useState<"fitr" | "adha">("fitr");
 
   return (
@@ -297,7 +308,7 @@ export const EidScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }
               backgroundColor: greeting === e ? "var(--gold)" : "rgba(255,255,255,0.1)",
               color: greeting === e ? "black" : "rgba(255,255,255,0.6)",
             }}>
-            {e === "fitr" ? "이드 알피트르" : "이드 알아드하"}
+            {e === "fitr" ? t("engagement.eid_fitr") : t("engagement.eid_adha")}
           </button>
         ))}
       </div>
@@ -324,8 +335,8 @@ export const EidScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }
         </div>
 
         <div className="text-center space-y-1">
-          <p className="text-white font-bold text-2xl">{greeting === "fitr" ? "이드 알피트르 무바락!" : "이드 알아드하 무바락!"}</p>
-          <p className="text-white/60 text-sm">{greeting === "fitr" ? "라마단이 끝나고 찾아온 기쁜 이드!" : "희생과 헌신의 이드!"}</p>
+          <p className="text-white font-bold text-2xl">{greeting === "fitr" ? t("engagement.eid_fitr_mubarak") : t("engagement.eid_adha_mubarak")}</p>
+          <p className="text-white/60 text-sm">{greeting === "fitr" ? t("engagement.eid_fitr_desc") : t("engagement.eid_adha_desc")}</p>
         </div>
 
         {/* Emoji decoration */}
@@ -337,28 +348,23 @@ export const EidScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }
       <div className="relative z-10 px-4 pb-6 space-y-3">
         {/* Deals section */}
         <div className="rounded-2xl p-4 space-y-3" style={{ backgroundColor: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.1)" }}>
-          <p className="font-bold text-white text-sm">🎁 이드 특별 혜택</p>
+          <p className="font-bold text-white text-sm">{t("engagement.eid_deals_title")}</p>
           <div className="grid grid-cols-2 gap-2">
-            {[
-              { label: "이드 쿠폰", value: "₩10,000", desc: "전 주문 10% 할인" },
-              { label: "모스크 행사", value: "5개", desc: "서울 이드 예배 안내" },
-              { label: "특별 메뉴", value: "30+", desc: "파트너 식당 이드 세트" },
-              { label: "배달 무료", value: "오늘만", desc: "이드 당일 전 주문" },
-            ].map((item) => (
-              <div key={item.label} className="rounded-xl p-3" style={{ backgroundColor: "rgba(255,255,255,0.06)" }}>
-                <p className="text-[10px] text-white/50">{item.label}</p>
-                <p className="font-bold text-white text-base">{item.value}</p>
-                <p className="text-[10px] text-white/50 mt-0.5">{item.desc}</p>
+            {eidDealKeys.map((item) => (
+              <div key={item.labelKey} className="rounded-xl p-3" style={{ backgroundColor: "rgba(255,255,255,0.06)" }}>
+                <p className="text-[10px] text-white/50">{t(`engagement.${item.labelKey}`)}</p>
+                <p className="font-bold text-white text-base">{"value" in item ? item.value : t(`engagement.${item.valueKey}`)}</p>
+                <p className="text-[10px] text-white/50 mt-0.5">{t(`engagement.${item.descKey}`)}</p>
               </div>
             ))}
           </div>
         </div>
 
         <button className="w-full py-4 rounded-2xl font-bold text-black text-base" style={{ backgroundColor: "var(--gold)" }}>
-          이드 특별 메뉴 보기
+          {t("engagement.view_special_menu")}
         </button>
         <button className="w-full py-3 rounded-2xl font-semibold text-sm border border-white/20 text-white">
-          이드 인사 공유하기
+          {t("engagement.share_eid_greeting")}
         </button>
       </div>
     </div>
