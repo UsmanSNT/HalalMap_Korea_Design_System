@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { GeometricPattern, StatusBar, BottomNav, BackButton, Toggle, TabId } from "../components/Shared";
 import { getMosques, getMosque, getPrayerTimes, type Mosque, type PrayerTimesData } from "@/api/mosques";
 import type { ScreenId } from "../App";
+import { LocalizedText as T } from "../i18n";
 
 // ── 18. Mosque List ────────────────────────────────────────────────────────────
 export const MosqueListScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabId) => void; onNavigate?: (s: ScreenId) => void }) => {
@@ -24,7 +25,7 @@ export const MosqueListScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t
         <StatusBar />
         <div className="px-5 pb-3">
           <div className="flex items-center justify-between mb-3">
-            <h1 className="font-bold text-xl text-[#1A1A18]">모스크 · 기도실</h1>
+            <h1 className="font-bold text-xl text-[#1A1A18]"><T ko="모스크 · 기도실" en="Mosques · Prayer rooms" uz="Masjidlar · Namozxonalar" /></h1>
             <button className="w-9 h-9 rounded-xl bg-[var(--cream)] flex items-center justify-center">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--charcoal)" strokeWidth="1.8">
                 <rect x="2" y="2" width="6" height="6" rx="1.5"/>
@@ -54,7 +55,7 @@ export const MosqueListScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t
 
       <div className="flex-1 phone-scroll px-4 py-4 space-y-3">
         {loading ? (
-          <p className="text-sm text-[var(--muted)]">로딩중...</p>
+          <p className="text-sm text-[var(--muted)]"><T ko="로딩중..." en="Loading..." uz="Yuklanmoqda..." /></p>
         ) : (
           filtered.map((m) => (
             <div key={m.id} onClick={() => onNavigate?.("mosque-detail")} className="bg-white rounded-2xl overflow-hidden shadow-sm cursor-pointer active:scale-[0.98] transition-transform">
@@ -123,7 +124,7 @@ export const MosqueDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
   if (loading || !mosque) {
     return (
       <div className="flex flex-col h-full bg-[var(--cream)] items-center justify-center">
-        <p className="text-sm text-[var(--muted)]">로딩중...</p>
+        <p className="text-sm text-[var(--muted)]"><T ko="로딩중..." en="Loading..." uz="Yuklanmoqda..." /></p>
       </div>
     );
   }
@@ -186,7 +187,7 @@ export const MosqueDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
             >
               <span className="text-xl">🌟</span>
               <div>
-                <p className="font-bold text-sm" style={{ color: "#7A5220" }}>주마 예배</p>
+                <p className="font-bold text-sm" style={{ color: "#7A5220" }}><T ko="주마 예배" en="Friday prayer" uz="Juma namozi" /></p>
                 <p className="text-xs" style={{ color: "#9A6830" }}>{mosque.juma}</p>
               </div>
             </div>
@@ -195,7 +196,7 @@ export const MosqueDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
 
         <div className="bg-white mt-2 px-5 py-4">
           <div className="flex items-center justify-between mb-3">
-            <p className="font-semibold text-sm text-[#1A1A18]">오늘의 기도 시간</p>
+            <p className="font-semibold text-sm text-[#1A1A18]"><T ko="오늘의 기도 시간" en="Today's prayer times" uz="Bugungi namoz vaqtlari" /></p>
             {prayerData && <p className="text-xs text-[var(--muted)]">{prayerData.hijriDate}</p>}
           </div>
           <div className="space-y-1">
@@ -229,7 +230,7 @@ export const MosqueDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
         </div>
 
         <div className="bg-white mt-2 px-5 py-4">
-          <p className="font-semibold text-sm text-[#1A1A18] mb-3">시설</p>
+          <p className="font-semibold text-sm text-[#1A1A18] mb-3"><T ko="시설" en="Facilities" uz="Qulayliklar" /></p>
           <div className="flex flex-wrap gap-2">
             {mosque.facilities.map((f) => (
               <span key={f} className="text-xs font-medium px-3 py-2 rounded-xl bg-[var(--cream)] text-[#1A1A18]">{f}</span>
@@ -239,10 +240,10 @@ export const MosqueDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
 
         <div className="px-4 py-4 flex gap-3">
           <button className="flex-1 py-4 rounded-2xl font-bold text-white" style={{ backgroundColor: "var(--green)" }}>
-            🗺️ 길 찾기
+            🗺️ <T ko="길 찾기" en="Directions" uz="Yo'l topish" />
           </button>
           <button className="flex-1 py-4 rounded-2xl font-semibold border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>
-            공유하기
+            <T ko="공유하기" en="Share" uz="Ulashish" />
           </button>
         </div>
         <div className="h-4" />
@@ -289,7 +290,7 @@ export const PrayerTimesScreen = ({ onTabChange, onNavigate }: { onTabChange?: (
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="px-5 pb-3">
-          <h1 className="font-bold text-xl text-[#1A1A18]">기도 시간</h1>
+          <h1 className="font-bold text-xl text-[#1A1A18]"><T ko="기도 시간" en="Prayer times" uz="Namoz vaqtlari" /></h1>
           <p className="text-xs text-[var(--muted)] mt-0.5">{location || "로딩중..."}{prayerData ? ` · ${prayerData.gregorianDate}` : ""}</p>
         </div>
       </div>
@@ -314,7 +315,7 @@ export const PrayerTimesScreen = ({ onTabChange, onNavigate }: { onTabChange?: (
                   </div>
                   <span className="text-3xl">🌙</span>
                 </div>
-                <p className="text-white/70 text-xs font-medium mb-1">다음 기도까지</p>
+                <p className="text-white/70 text-xs font-medium mb-1"><T ko="다음 기도까지" en="Until next prayer" uz="Keyingi namozgacha" /></p>
                 <p className="text-white font-bold text-lg mb-1">{nextPrayer?.name ?? ""} {nextPrayer?.nameEn ?? ""}</p>
                 <p className="text-white font-bold tabular-nums" style={{ fontSize: "36px", lineHeight: 1 }}>{nextPrayer?.time ?? "--:--"}</p>
               </div>
@@ -392,14 +393,14 @@ export const PrayerTimesScreen = ({ onTabChange, onNavigate }: { onTabChange?: (
                 className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-white text-sm"
                 style={{ backgroundColor: "var(--green)" }}
               >
-                🧭 키블라 방향
+                🧭 <T ko="키블라 방향" en="Qibla direction" uz="Qibla yo'nalishi" />
               </button>
               <button
                 onClick={() => onNavigate?.("mosque-list")}
                 className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-semibold text-sm border"
                 style={{ color: "var(--green)", borderColor: "var(--green)" }}
               >
-                🕌 근처 모스크
+                🕌 <T ko="근처 모스크" en="Nearby mosques" uz="Yaqin masjidlar" />
               </button>
             </div>
           </>
@@ -429,7 +430,7 @@ export const QiblaScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: Tab
         <BackButton dark onBack={() => onNavigate?.("home")} />
         <div>
           <h1 className="font-bold text-lg text-white">키블라 Qibla</h1>
-          <p className="text-xs text-white/50">서울에서 메카 방향</p>
+          <p className="text-xs text-white/50"><T ko="서울에서 메카 방향" en="Direction to Mecca from Seoul" uz="Seuldan Makka yo'nalishi" /></p>
         </div>
       </div>
 
@@ -499,7 +500,7 @@ export const QiblaScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: Tab
 
         {/* Info */}
         <div className="text-center space-y-2">
-          <p className="text-white/50 text-xs">키블라 방향</p>
+          <p className="text-white/50 text-xs"><T ko="키블라 방향" en="Qibla direction" uz="Qibla yo'nalishi" /></p>
           <p className="text-white font-bold text-3xl">{qiblaAngle}°</p>
           <p className="text-white/60 text-sm">현재 방향: 147° (남동쪽)</p>
         </div>
@@ -508,8 +509,8 @@ export const QiblaScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: Tab
           className="w-full rounded-2xl px-5 py-4 text-center"
           style={{ backgroundColor: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }}
         >
-          <p className="text-white/50 text-xs mb-1">캘리브레이션 안내</p>
-          <p className="text-white/70 text-sm leading-relaxed">기기를 들고 8자 모양으로 천천히 움직여 나침반을 보정하세요</p>
+          <p className="text-white/50 text-xs mb-1"><T ko="캘리브레이션 안내" en="Calibration guide" uz="Kalibrlash yo'riqnomasi" /></p>
+          <p className="text-white/70 text-sm leading-relaxed"><T ko="기기를 들고 8자 모양으로 천천히 움직여 나침반을 보정하세요" en="Move your device slowly in a figure eight to calibrate the compass." uz="Kompasni sozlash uchun qurilmani sakkiz shaklida sekin harakatlantiring." /></p>
         </div>
       </div>
 

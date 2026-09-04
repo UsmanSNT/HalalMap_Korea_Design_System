@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { StatusBar, BottomNav, MapPin, RestaurantCardV, RestaurantCardH, HalalBadge, BackButton, TabId } from "../components/Shared";
 import { getRestaurants, getRestaurant, type Restaurant } from "@/api/restaurants";
 import type { ScreenId } from "../App";
+import { LocalizedText as T } from "../i18n";
 
 const extractImageId = (url: string): string => {
   const match = url.match(/photo-([^?]+)/);
@@ -49,7 +50,7 @@ export const SearchScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: Ta
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="px-4 pb-4">
-          <h1 className="font-bold text-xl text-[#1A1A18] mb-3">검색</h1>
+          <h1 className="font-bold text-xl text-[#1A1A18] mb-3"><T ko="검색" en="Search" uz="Qidiruv" /></h1>
           <div className="flex items-center gap-2 bg-[var(--cream)] border border-[var(--border)] rounded-xl px-4 py-3">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--muted)" strokeWidth="1.8">
               <circle cx="8" cy="8" r="5.5"/>
@@ -74,12 +75,12 @@ export const SearchScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: Ta
         {showResults ? (
           <div>
             {searching ? (
-              <p className="text-sm text-[var(--muted)]">검색중...</p>
+              <p className="text-sm text-[var(--muted)]"><T ko="검색중..." en="Searching..." uz="Qidirilmoqda..." /></p>
             ) : results.length === 0 ? (
               <div className="text-center py-8">
                 <p className="text-3xl mb-2">🔍</p>
                 <p className="font-semibold text-sm text-[#1A1A18]">"{query}" 검색 결과가 없습니다</p>
-                <p className="text-xs text-[var(--muted)] mt-1">다른 키워드로 검색해 보세요</p>
+                <p className="text-xs text-[var(--muted)] mt-1"><T ko="다른 키워드로 검색해 보세요" en="Try a different keyword" uz="Boshqa kalit so'zni sinab ko'ring" /></p>
               </div>
             ) : (
               <>
@@ -117,15 +118,15 @@ export const SearchScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: Ta
                     <line x1="9" y1="21" x2="15" y2="21" strokeLinecap="round"/>
                   </svg>
                 </div>
-                <p className="text-xs font-medium text-[var(--muted)]">음성 검색</p>
+                <p className="text-xs font-medium text-[var(--muted)]"><T ko="음성 검색" en="Voice search" uz="Ovozli qidiruv" /></p>
               </button>
             </div>
 
             {/* Recent */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <h3 className="font-bold text-sm text-[#1A1A18]">최근 검색</h3>
-                <button className="text-xs font-medium" style={{ color: "var(--muted)" }}>전체 삭제</button>
+                <h3 className="font-bold text-sm text-[#1A1A18]"><T ko="최근 검색" en="Recent searches" uz="So'nggi qidiruvlar" /></h3>
+                <button className="text-xs font-medium" style={{ color: "var(--muted)" }}><T ko="전체 삭제" en="Clear all" uz="Barchasini tozalash" /></button>
               </div>
               <div className="space-y-1">
                 {recentSearches.map((s) => (
@@ -144,7 +145,7 @@ export const SearchScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: Ta
 
             {/* Trending */}
             <div>
-              <h3 className="font-bold text-sm text-[#1A1A18] mb-2">🔥 인기 검색어</h3>
+              <h3 className="font-bold text-sm text-[#1A1A18] mb-2">🔥 <T ko="인기 검색어" en="Trending searches" uz="Ommabop qidiruvlar" /></h3>
               <div className="space-y-2">
                 {trending.map((t, i) => (
                   <button key={t} onClick={() => { setQuery(t); onNavigate?.("restaurant-list"); }} className="flex items-center gap-3 py-1.5 w-full text-left">
@@ -160,7 +161,7 @@ export const SearchScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: Ta
 
             {/* Quick categories */}
             <div>
-              <h3 className="font-bold text-sm text-[#1A1A18] mb-2">카테고리</h3>
+              <h3 className="font-bold text-sm text-[#1A1A18] mb-2"><T ko="카테고리" en="Categories" uz="Kategoriyalar" /></h3>
               <div className="grid grid-cols-3 gap-2">
                 {quickCategories.map((c) => (
                   <button key={c.label} onClick={() => onNavigate?.("restaurant-list")} className="flex flex-col items-center gap-2 py-4 bg-white rounded-2xl border border-[var(--border)] active:scale-95 transition-transform">
@@ -246,7 +247,7 @@ export const MapViewScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: T
               <circle cx="7" cy="7" r="5"/>
               <path d="M12 12L15 15" strokeLinecap="round"/>
             </svg>
-            <span className="text-sm text-[var(--muted)]">이 지역 검색</span>
+            <span className="text-sm text-[var(--muted)]"><T ko="이 지역 검색" en="Search this area" uz="Shu hududdan qidirish" /></span>
           </div>
           <button className="w-10 h-10 bg-white/95 backdrop-blur rounded-xl flex items-center justify-center shadow-sm">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--charcoal)" strokeWidth="1.8">
@@ -334,7 +335,7 @@ export const CitySelectorScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
           <BackButton onBack={() => onNavigate?.("home")} />
-          <h1 className="font-bold text-lg flex-1">방문 도시 선택</h1>
+          <h1 className="font-bold text-lg flex-1"><T ko="방문 도시 선택" en="Choose a city" uz="Shaharni tanlang" /></h1>
         </div>
         <div className="px-4 pb-4">
           <div className="flex items-center gap-2 bg-[var(--cream)] border border-[var(--border)] rounded-xl px-4 py-3">
@@ -355,7 +356,7 @@ export const CitySelectorScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
       <div className="flex-1 phone-scroll px-4 py-4 space-y-5">
         {/* Saved */}
         <div>
-          <h3 className="font-bold text-sm text-[#1A1A18] mb-2">저장된 도시</h3>
+          <h3 className="font-bold text-sm text-[#1A1A18] mb-2"><T ko="저장된 도시" en="Saved cities" uz="Saqlangan shaharlar" /></h3>
           <div className="space-y-2">
             {[{ name: "서울 이태원", tag: "자주 방문" }, { name: "부산 서면", tag: "저장됨" }].map((s) => (
               <div key={s.name} className="flex items-center gap-3 bg-white p-3.5 rounded-xl border border-[var(--border)]">
@@ -385,7 +386,7 @@ export const CitySelectorScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
 
         {/* Popular cities grid */}
         <div>
-          <h3 className="font-bold text-sm text-[#1A1A18] mb-2">인기 도시</h3>
+          <h3 className="font-bold text-sm text-[#1A1A18] mb-2"><T ko="인기 도시" en="Popular cities" uz="Mashhur shaharlar" /></h3>
           <div className="grid grid-cols-2 gap-2.5">
             {cities.map((city) => (
               <button key={city.name} className="relative h-24 rounded-2xl overflow-hidden text-left">
@@ -474,8 +475,8 @@ export const RestaurantMapDetailScreen = ({ onNavigate }: { onNavigate?: (s: Scr
               </div>
             )}
             <div className="flex gap-2 pt-1">
-              <button className="flex-1 py-2.5 rounded-xl font-bold text-white text-sm" style={{ backgroundColor: "var(--green)" }}>메뉴 보기</button>
-              <button className="flex-1 py-2.5 rounded-xl font-semibold text-sm border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>길 찾기</button>
+              <button className="flex-1 py-2.5 rounded-xl font-bold text-white text-sm" style={{ backgroundColor: "var(--green)" }}><T ko="메뉴 보기" en="View menu" uz="Menyuni ko'rish" /></button>
+              <button className="flex-1 py-2.5 rounded-xl font-semibold text-sm border" style={{ color: "var(--green)", borderColor: "var(--green)" }}><T ko="길 찾기" en="Directions" uz="Yo'l topish" /></button>
             </div>
           </div>
         </div>
