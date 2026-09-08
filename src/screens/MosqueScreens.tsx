@@ -340,14 +340,14 @@ export const PrayerTimesScreen = ({ onTabChange, onNavigate }: { onTabChange?: (
                       style={{ backgroundColor: isNext ? "var(--green)" : "var(--cream)" }}>
                       <span className="text-sm">{prayerIconMap[p.id] ?? "🕐"}</span>
                     </div>
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <p className={`font-semibold text-sm ${isNext ? "text-[var(--green)]" : "text-[#1A1A18]"}`}>{p.name}</p>
-                        {isNext && <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full text-white" style={{ backgroundColor: "var(--green)" }}>{t("mosque.next_badge")}</span>}
+                        <p className={`font-semibold text-sm truncate ${isNext ? "text-[var(--green)]" : "text-[#1A1A18]"}`}>{p.name}</p>
+                        {isNext && <span className="flex-shrink-0 text-[9px] font-bold px-1.5 py-0.5 rounded-full text-white" style={{ backgroundColor: "var(--green)" }}>{t("mosque.next_badge")}</span>}
                       </div>
-                      <p className="text-xs text-[var(--muted)]">{p.nameEn}</p>
+                      <p className="text-xs text-[var(--muted)] truncate">{p.nameEn}</p>
                     </div>
-                    <p className={`font-bold text-base tabular-nums ${isNext ? "text-[var(--green)]" : "text-[#1A1A18]"}`}>{p.time}</p>
+                    <p className={`flex-shrink-0 font-bold text-base tabular-nums ${isNext ? "text-[var(--green)]" : "text-[#1A1A18]"}`}>{p.time}</p>
                     {p.id !== "sunrise" && (
                       <Toggle on={notifState[p.id] ?? false} onToggle={() => setNotifState(s => ({ ...s, [p.id]: !s[p.id] }))} />
                     )}
