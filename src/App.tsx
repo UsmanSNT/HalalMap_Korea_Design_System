@@ -20,6 +20,7 @@ import { TutorialScreen, MultilingualScreen } from "./screens/AccessibilityScree
 import HomeDesktop from "./screens/HomeDesktop";
 import { LanguageProvider, useLanguage } from "./i18n/LanguageContext";
 import { useIsDesktop } from "./hooks/useIsDesktop";
+import { navigateTo, useRouteScreen } from "./services/navigation";
 
 export type ScreenId =
   | "splash" | "onboarding" | "signup" | "language"
@@ -55,6 +56,8 @@ const SCREEN_GROUPS: { section: string; screens: { id: ScreenId; label: string }
 const TAB_SCREENS: Record<TabId, ScreenId> = {
   home: "home", search: "search", orders: "order-history", prayer: "prayer-times", profile: "profile",
 };
+
+const ALL_SCREEN_IDS: ScreenId[] = SCREEN_GROUPS.flatMap((group) => group.screens.map((screen) => screen.id));
 
 const DEMO_USER: AuthUser = { id: 1, email: "demo@halalmap.test", name: "Demo User", role: "user" };
 
@@ -123,9 +126,8 @@ function CustomerScreen({ id, onTabChange, onLogout, onNavigate }: { id: ScreenI
 export default function App() {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [restoringSession, setRestoringSession] = useState(true);
-  const [current, setCurrent] = useState<ScreenId>("splash");
-  const [history, setHistory] = useState<ScreenId[]>([]);
   const [viewMode, setViewMode] = useState<ViewMode>("role");
+  const current = useRouteScreen(ALL_SCREEN_IDS, "splash");
 
   useEffect(() => {
     getCurrentUser()
@@ -137,12 +139,12 @@ export default function App() {
   const handleLogin = async (email: string, password: string) => {
     try {
       setUser(await login(email, password));
-      setCurrent("home");
+      navigateTo("home", true);
       setViewMode("role");
       return true;
     } catch {
       setUser(DEMO_USER);
-      setCurrent("home");
+      navigateTo("home", true);
       setViewMode("role");
       return true;
     }
@@ -151,15 +153,11 @@ export default function App() {
   const handleLogout = async () => {
     try { await logout(); } catch {}
     setUser(DEMO_USER);
-    setCurrent("splash");
-    setHistory([]);
+    navigateTo("splash", true);
     setViewMode("role");
   };
 
-  const handleNavigate = (screen: ScreenId) => {
-    setHistory((prev) => [...prev, current]);
-    setCurrent(screen);
-  };
+  const handleNavigate = (screen: ScreenId) => navigateTo(screen);
 
   const switchToCustomer = () => setViewMode("customer");
   const switchToRole = () => setViewMode("role");
@@ -170,22 +168,17 @@ export default function App() {
   if (user?.role === "courier" && viewMode === "role") return <CourierApp onSwitch={switchToCustomer} />;
   if (user?.role === "admin" && viewMode === "role") return <AdminApp onSwitch={switchToCustomer} />;
 
-  const handleTabChange = (tab: TabId) => {
-    setHistory([]);
-    setCurrent(TAB_SCREENS[tab]);
-  };
+  const handleTabChange = (tab: TabId) => navigateTo(TAB_SCREENS[tab], true);
 
   return (
     <LanguageProvider>
-      <AppShell current={current} setCurrent={setCurrent} setHistory={setHistory} handleTabChange={handleTabChange} handleLogout={handleLogout} handleNavigate={handleNavigate} role={user?.role} switchToRole={switchToRole} />
+      <AppShell current={current} handleTabChange={handleTabChange} handleLogout={handleLogout} handleNavigate={handleNavigate} role={user?.role} switchToRole={switchToRole} />
     </LanguageProvider>
   );
 }
 
 function AppShell({
   current,
-  setCurrent,
-  setHistory,
   handleTabChange,
   handleLogout,
   handleNavigate,
@@ -193,8 +186,6 @@ function AppShell({
   switchToRole,
 }: {
   current: ScreenId;
-  setCurrent: (s: ScreenId) => void;
-  setHistory: (h: ScreenId[]) => void;
   handleTabChange: (tab: TabId) => void;
   handleLogout: () => void;
   handleNavigate: NavFn;
@@ -217,7 +208,7 @@ function AppShell({
           </button>
         ) : (
           <div className="flex items-center gap-2 rounded-xl border border-[var(--border)] bg-white/95 p-2 shadow-lg backdrop-blur">
-            <select value={current} onChange={(event) => { setHistory([]); setCurrent(event.target.value as ScreenId); }} aria-label="Ekranni tanlash" className="max-w-40 rounded-lg bg-[var(--cream)] px-2 py-1.5 text-xs font-semibold outline-none">
+            <select value={current} onChange={(event) => navigateTo(event.target.value, true)} aria-label="Ekranni tanlash" className="max-w-40 rounded-lg bg-[var(--cream)] px-2 py-1.5 text-xs font-semibold outline-none">
               {SCREEN_GROUPS.map((group) => <optgroup key={group.section} label={group.section}>{group.screens.map((screen) => <option key={screen.id} value={screen.id}>{screen.label}</option>)}</optgroup>)}
             </select>
             <button onClick={handleLogout} className="rounded-lg bg-[var(--danger)] px-3 py-1.5 text-xs font-bold text-white">{t("common.logout")}</button>
