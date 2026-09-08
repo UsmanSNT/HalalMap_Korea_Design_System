@@ -58,6 +58,14 @@ const TAB_SCREENS: Record<TabId, ScreenId> = {
 
 const DEMO_USER: AuthUser = { id: 1, email: "demo@halalmap.test", name: "Demo User", role: "user" };
 
+const ROLE_DASHBOARD_LABELS: Partial<Record<AuthUser["role"], string>> = {
+  owner: "🍽️ Oshxona paneliga qaytish",
+  courier: "🏍️ Kuryer paneliga qaytish",
+  admin: "🛠️ Admin paneliga qaytish",
+};
+
+type ViewMode = "customer" | "role";
+
 type NavFn = (screen: ScreenId) => void;
 
 function CustomerScreen({ id, onTabChange, onLogout, onNavigate }: { id: ScreenId; onTabChange: (tab: TabId) => void; onLogout: () => void; onNavigate: NavFn }) {
@@ -117,6 +125,7 @@ export default function App() {
   const [restoringSession, setRestoringSession] = useState(true);
   const [current, setCurrent] = useState<ScreenId>("splash");
   const [history, setHistory] = useState<ScreenId[]>([]);
+  const [viewMode, setViewMode] = useState<ViewMode>("role");
 
   useEffect(() => {
     getCurrentUser()
@@ -129,10 +138,12 @@ export default function App() {
     try {
       setUser(await login(email, password));
       setCurrent("home");
+      setViewMode("role");
       return true;
     } catch {
       setUser(DEMO_USER);
       setCurrent("home");
+      setViewMode("role");
       return true;
     }
   };
@@ -142,6 +153,7 @@ export default function App() {
     setUser(DEMO_USER);
     setCurrent("splash");
     setHistory([]);
+    setViewMode("role");
   };
 
   const handleNavigate = (screen: ScreenId) => {
@@ -149,11 +161,14 @@ export default function App() {
     setCurrent(screen);
   };
 
+  const switchToCustomer = () => setViewMode("customer");
+  const switchToRole = () => setViewMode("role");
+
   if (restoringSession) return <main className="grid min-h-dvh place-items-center bg-[var(--cream)] text-sm font-semibold text-[var(--green)]">Session tekshirilmoqda…</main>;
 
-  if (user?.role === "owner") return <DashboardApp onSwitch={handleLogout} />;
-  if (user?.role === "courier") return <CourierApp onSwitch={handleLogout} />;
-  if (user?.role === "admin") return <AdminApp onSwitch={handleLogout} />;
+  if (user?.role === "owner" && viewMode === "role") return <DashboardApp onSwitch={switchToCustomer} />;
+  if (user?.role === "courier" && viewMode === "role") return <CourierApp onSwitch={switchToCustomer} />;
+  if (user?.role === "admin" && viewMode === "role") return <AdminApp onSwitch={switchToCustomer} />;
 
   const handleTabChange = (tab: TabId) => {
     setHistory([]);
@@ -162,7 +177,7 @@ export default function App() {
 
   return (
     <LanguageProvider>
-      <AppShell current={current} setCurrent={setCurrent} setHistory={setHistory} handleTabChange={handleTabChange} handleLogout={handleLogout} handleNavigate={handleNavigate} />
+      <AppShell current={current} setCurrent={setCurrent} setHistory={setHistory} handleTabChange={handleTabChange} handleLogout={handleLogout} handleNavigate={handleNavigate} role={user?.role} switchToRole={switchToRole} />
     </LanguageProvider>
   );
 }
@@ -174,6 +189,8 @@ function AppShell({
   handleTabChange,
   handleLogout,
   handleNavigate,
+  role,
+  switchToRole,
 }: {
   current: ScreenId;
   setCurrent: (s: ScreenId) => void;
@@ -181,19 +198,38 @@ function AppShell({
   handleTabChange: (tab: TabId) => void;
   handleLogout: () => void;
   handleNavigate: NavFn;
+  role?: AuthUser["role"];
+  switchToRole: () => void;
 }) {
   const { t } = useLanguage();
   const isDesktop = useIsDesktop();
   const showDesktopHome = isDesktop && current === "home";
+  const roleDashboardLabel = role && ROLE_DASHBOARD_LABELS[role];
+  const [devPanelOpen, setDevPanelOpen] = useState(false);
 
   return (
     <div className="relative min-h-dvh bg-[#EDEAE5]">
-      <div className="fixed right-3 top-3 z-50 flex items-center gap-2 rounded-xl border border-[var(--border)] bg-white/95 p-2 shadow-lg backdrop-blur">
-        <select value={current} onChange={(event) => { setHistory([]); setCurrent(event.target.value as ScreenId); }} aria-label="Ekranni tanlash" className="max-w-40 rounded-lg bg-[var(--cream)] px-2 py-1.5 text-xs font-semibold outline-none">
-          {SCREEN_GROUPS.map((group) => <optgroup key={group.section} label={group.section}>{group.screens.map((screen) => <option key={screen.id} value={screen.id}>{screen.label}</option>)}</optgroup>)}
-        </select>
-        <button onClick={handleLogout} className="rounded-lg bg-[var(--danger)] px-3 py-1.5 text-xs font-bold text-white">{t("common.logout")}</button>
+      <div className="fixed right-3 top-3 z-50">
+        {!devPanelOpen ? (
+          <button onClick={() => setDevPanelOpen(true)} aria-label="QA panelini ochish" title="QA panel (dizaynni Figma bilan solishtirish uchun)"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border)] bg-white/95 text-base shadow-lg backdrop-blur">
+            🛠️
+          </button>
+        ) : (
+          <div className="flex items-center gap-2 rounded-xl border border-[var(--border)] bg-white/95 p-2 shadow-lg backdrop-blur">
+            <select value={current} onChange={(event) => { setHistory([]); setCurrent(event.target.value as ScreenId); }} aria-label="Ekranni tanlash" className="max-w-40 rounded-lg bg-[var(--cream)] px-2 py-1.5 text-xs font-semibold outline-none">
+              {SCREEN_GROUPS.map((group) => <optgroup key={group.section} label={group.section}>{group.screens.map((screen) => <option key={screen.id} value={screen.id}>{screen.label}</option>)}</optgroup>)}
+            </select>
+            <button onClick={handleLogout} className="rounded-lg bg-[var(--danger)] px-3 py-1.5 text-xs font-bold text-white">{t("common.logout")}</button>
+            <button onClick={() => setDevPanelOpen(false)} aria-label="QA panelini yopish" className="rounded-lg border border-[var(--border)] px-2 py-1.5 text-xs font-bold text-[var(--muted)]">✕</button>
+          </div>
+        )}
       </div>
+      {roleDashboardLabel && (
+        <button onClick={switchToRole} className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-full bg-[var(--green)] px-4 py-3 text-xs font-bold text-white shadow-xl">
+          {roleDashboardLabel}
+        </button>
+      )}
       {showDesktopHome ? (
         <HomeDesktop onNavigate={handleNavigate} />
       ) : (
