@@ -1,3 +1,4 @@
+import { navigate } from "../services/navigation";
 import React, { useState } from "react";
 
 // ── Courier color palette ──────────────────────────────────────────────────────
@@ -51,10 +52,10 @@ const NAV_ITEMS: { id: CourierTab; label: string; icon: (active: boolean) => Rea
 ];
 
 export const CBottomNav = ({ active, onTabChange }: { active: CourierTab; onTabChange?: (t: CourierTab) => void }) => (
-  <div className="flex-shrink-0 flex items-center justify-around px-2 pt-2 pb-3"
+  <div className="courier-bottom-nav lg:hidden flex-shrink-0 flex items-center justify-around px-2 pt-2 pb-3"
     style={{ backgroundColor: C.surface, borderTop: `1px solid ${C.border}` }}>
     {NAV_ITEMS.map(item => (
-      <button key={item.id} onClick={() => onTabChange?.(item.id)}
+      <button key={item.id} onClick={() => onTabChange ? onTabChange(item.id) : navigate(`/courier/${({ home: "go-online", deliveries: "history", earnings: "earnings", profile: "courier-profile" })[item.id]}`)}
         className="flex flex-col items-center gap-1 flex-1 py-1 transition-opacity active:opacity-70">
         {item.icon(active === item.id)}
         <span className="text-[10px] font-semibold" style={{ color: active === item.id ? C.green : C.muted }}>
@@ -81,8 +82,8 @@ export const SwipeConfirm = ({
   };
 
   return (
-    <div onClick={trigger}
-      className="relative h-16 rounded-2xl overflow-hidden cursor-pointer select-none"
+    <button type="button" onClick={trigger} disabled={disabled || state !== "idle"}
+      className="relative w-full h-16 rounded-2xl overflow-hidden cursor-pointer select-none"
       style={{
         backgroundColor: state === "done" ? color : C.card,
         border: `1.5px solid ${state !== "idle" ? color : C.borderBright}`,
@@ -112,7 +113,7 @@ export const SwipeConfirm = ({
           {state === "done" ? "✓ 완료!" : label}
         </span>
       </div>
-    </div>
+    </button>
   );
 };
 

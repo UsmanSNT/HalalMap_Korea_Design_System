@@ -1,14 +1,22 @@
+import { useLocalState } from "../services/localState";
+import { explainUnavailable, showNotice, editFields } from "../components/ActionDialog";
 import React, { useState } from "react";
 
 // ── 7. Restaurant Settings ─────────────────────────────────────────────────────
 const DAYS = ["월요일", "화요일", "수요일", "목요일", "금요일", "토요일", "일요일"];
 
 export const RestaurantSettings = () => {
+const [saved, setSaved] = useLocalState("owner-settings-draft", { info: {} as Record<string, string>, description: "", categories: ["한식", "퓨전"], hours: DAYS.map((_, i) => ({ open: i < 5, from: "09:00", to: "22:00" })), deliveryFee: "2000", minOrder: "10000", deliveryRadius: "5", notifications: {} as Record<string, boolean> });
+ const [info, setInfo] = useState(saved.info);
+ const [description, setDescription] = useState(saved.description);
+ const [categories, setCategories] = useState(saved.categories);
+ const [notifications, setNotifications] = useState(saved.notifications);
+
   const [tab, setTab] = useState<"basic" | "hours" | "delivery" | "notifications">("basic");
-  const [hours, setHours] = useState(DAYS.map((_, i) => ({ open: i < 5, from: "09:00", to: "22:00" })));
-  const [deliveryFee, setDeliveryFee] = useState("2000");
-  const [minOrder, setMinOrder] = useState("10000");
-  const [deliveryRadius, setDeliveryRadius] = useState("5");
+  const [hours, setHours] = useState(saved.hours);
+  const [deliveryFee, setDeliveryFee] = useState(saved.deliveryFee);
+  const [minOrder, setMinOrder] = useState(saved.minOrder);
+  const [deliveryRadius, setDeliveryRadius] = useState(saved.deliveryRadius);
 
   const tabs = [
     { id: "basic", label: "기본 정보" },
@@ -49,7 +57,7 @@ export const RestaurantSettings = () => {
                       <div className="w-12 h-12 rounded-xl flex items-center justify-center text-xl font-bold text-white" style={{ backgroundColor: "var(--green)" }}>신</div>
                     </div>
                     <p className="text-[11px] text-[var(--muted)]">로고 (200×200)</p>
-                    <button className="text-[11px] font-semibold px-2.5 py-1 rounded-lg border border-[var(--border)] hover:bg-[var(--cream)]">변경</button>
+                    <button type="button" onClick={() => explainUnavailable("Restoran rasmini yuklash")} className="text-[11px] font-semibold px-2.5 py-1 rounded-lg border border-[var(--border)] hover:bg-[var(--cream)]">변경</button>
                   </div>
                   {/* Cover */}
                   <div className="flex-1">
@@ -76,7 +84,7 @@ export const RestaurantSettings = () => {
                 ].map(field => (
                   <div key={field.label} className="space-y-1">
                     <label className="text-xs font-semibold text-[var(--muted)]">{field.label}</label>
-                    <input defaultValue={field.value}
+                    <input value={info[field.label] ?? field.value} onChange={event => setInfo(old => ({ ...old, [field.label]: event.target.value }))}
                       className="w-full px-3 py-2.5 rounded-xl border border-[var(--border)] text-sm text-[#1A1A18] outline-none focus:border-[var(--green)] transition-colors" />
                   </div>
                 ))}
@@ -85,19 +93,19 @@ export const RestaurantSettings = () => {
                   <label className="text-xs font-semibold text-[var(--muted)]">음식 종류</label>
                   <div className="flex flex-wrap gap-2">
                     {["한식", "터키", "우즈베크", "인도", "아랍", "퓨전"].map(c => (
-                      <button key={c}
+                      <button type="button" onClick={() => setCategories(old => old.includes(c) ? old.filter(value => value !== c) : [...old, c])} key={c}
                         className="px-3 py-1.5 rounded-full text-xs font-semibold transition-all"
-                        style={{ backgroundColor: ["한식", "퓨전"].includes(c) ? "var(--green)" : "var(--cream)", color: ["한식", "퓨전"].includes(c) ? "white" : "#1A1A18", border: ["한식", "퓨전"].includes(c) ? "none" : "1px solid var(--border)" }}>
+                        style={{ backgroundColor: categories.includes(c) ? "var(--green)" : "var(--cream)", color: categories.includes(c) ? "white" : "#1A1A18", border: categories.includes(c) ? "none" : "1px solid var(--border)" }}>
                         {c}
                       </button>
                     ))}
-                    <button className="px-3 py-1.5 rounded-full text-xs font-semibold border border-dashed border-[var(--border)] hover:border-[var(--green)] transition-colors text-[var(--muted)]">+ 추가</button>
+                    <button type="button" onClick={async () => { const value = await editFields("Kategoriya", [{ name: "category", label: "Nom" }]); if (value) setCategories(old => [...new Set([...old, value.category.trim()])]); }} className="px-3 py-1.5 rounded-full text-xs font-semibold border border-dashed border-[var(--border)] hover:border-[var(--green)] transition-colors text-[var(--muted)]">+ 추가</button>
                   </div>
                 </div>
 
                 <div className="space-y-1">
                   <label className="text-xs font-semibold text-[var(--muted)]">식당 소개</label>
-                  <textarea rows={3} defaultValue="이슬람 식품청(KMF) 인증 할랄 한식 전문점. 돼지고기 및 알코올 성분을 완전히 배제하고, 무슬림 고객도 안심하고 즐길 수 있는 정통 한식을 제공합니다."
+                  <textarea rows={3} value={description} onChange={event => setDescription(event.target.value)}
                     className="w-full px-3 py-2.5 rounded-xl border border-[var(--border)] text-sm text-[#1A1A18] outline-none resize-none focus:border-[var(--green)] transition-colors" />
                 </div>
               </div>
@@ -220,9 +228,9 @@ export const RestaurantSettings = () => {
                     <p className="text-xs text-[var(--muted)] mt-0.5">{setting.desc}</p>
                   </div>
                   <div className="w-12 h-6 rounded-full cursor-pointer transition-all relative flex-shrink-0 mt-0.5"
-                    style={{ backgroundColor: setting.on ? "var(--green)" : "#D1D5DB" }}>
+                    role="switch" tabIndex={0} aria-checked={notifications[setting.label] ?? setting.on} onClick={() => setNotifications(old => ({ ...old, [setting.label]: !(old[setting.label] ?? setting.on) }))} onKeyDown={event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); setNotifications(old => ({ ...old, [setting.label]: !(old[setting.label] ?? setting.on) })); } }} style={{ backgroundColor: (notifications[setting.label] ?? setting.on) ? "var(--green)" : "#D1D5DB" }}>
                     <div className="absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all"
-                      style={{ left: setting.on ? "calc(100% - 22px)" : "2px" }} />
+                      style={{ left: (notifications[setting.label] ?? setting.on) ? "calc(100% - 22px)" : "2px" }} />
                   </div>
                 </div>
               ))}
@@ -231,10 +239,10 @@ export const RestaurantSettings = () => {
 
           {/* Save button */}
           <div className="flex justify-end gap-3 pb-4">
-            <button className="px-5 py-3 rounded-xl text-sm font-semibold border border-[var(--border)] bg-white hover:bg-[var(--cream)] transition-colors">
+            <button type="button" onClick={() => { setInfo(saved.info); setDescription(saved.description); setCategories(saved.categories); setHours(saved.hours); setDeliveryFee(saved.deliveryFee); setMinOrder(saved.minOrder); setDeliveryRadius(saved.deliveryRadius); setNotifications(saved.notifications); }} className="px-5 py-3 rounded-xl text-sm font-semibold border border-[var(--border)] bg-white hover:bg-[var(--cream)] transition-colors">
               변경 취소
             </button>
-            <button className="px-6 py-3 rounded-xl text-sm font-bold text-white" style={{ backgroundColor: "var(--green)" }}>
+            <button type="button" onClick={() => { setSaved({ info, description, categories, hours, deliveryFee, minOrder, deliveryRadius, notifications }); showNotice("Qoralama saqlandi", "Sozlamalar shu qurilmada saqlandi; serverga yuborilmadi."); }} className="px-6 py-3 rounded-xl text-sm font-bold text-white" style={{ backgroundColor: "var(--green)" }}>
               저장하기
             </button>
           </div>
@@ -303,7 +311,7 @@ export const HalalCertification = () => {
               </svg>
               <p className="text-[10px] font-bold text-[var(--muted)]">KMF 인증서</p>
               <p className="text-[9px] text-[var(--muted)]">PDF</p>
-              <button className="absolute bottom-1.5 text-[10px] font-bold px-2 py-0.5 rounded-full text-white" style={{ backgroundColor: "var(--green)" }}>
+              <button type="button" onClick={() => explainUnavailable("Sertifikat faylini ochish")} className="absolute bottom-1.5 text-[10px] font-bold px-2 py-0.5 rounded-full text-white" style={{ backgroundColor: "var(--green)" }}>
                 보기
               </button>
             </div>
@@ -357,7 +365,7 @@ export const HalalCertification = () => {
               <p className="font-semibold text-sm text-[#1A1A18]">인증서 파일을 드래그하거나 클릭</p>
               <p className="text-xs text-[var(--muted)] mt-0.5">PDF, JPG, PNG · 최대 10MB</p>
             </div>
-            <button className="px-4 py-2 rounded-xl text-xs font-bold border border-[var(--border)] bg-white hover:bg-[var(--cream)]">파일 선택</button>
+            <button type="button" onClick={() => explainUnavailable("Sertifikat yuklash")} className="px-4 py-2 rounded-xl text-xs font-bold border border-[var(--border)] bg-white hover:bg-[var(--cream)]">파일 선택</button>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -376,7 +384,7 @@ export const HalalCertification = () => {
             </div>
           </div>
 
-          <button className="w-full py-3 rounded-xl text-sm font-bold text-white" style={{ backgroundColor: "var(--green)" }}>
+          <button type="button" onClick={() => explainUnavailable("Sertifikat tekshiruvini so‘rash")} className="w-full py-3 rounded-xl text-sm font-bold text-white" style={{ backgroundColor: "var(--green)" }}>
             검토 요청 제출
           </button>
         </div>

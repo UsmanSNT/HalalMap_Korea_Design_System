@@ -1,3 +1,7 @@
+import { navigate, readRoute, goBack } from "../services/navigation";
+import { useLocalState, readLocal, writeLocal } from "../services/localState";
+import { explainUnavailable, showNotice } from "../components/ActionDialog";
+import { shareLink } from "../services/shareService";
 import React, { useState } from "react";
 import { GeometricPattern, StatusBar, BackButton, HalalBadge, StarRating } from "../components/Shared";
 
@@ -67,7 +71,7 @@ export const ReviewsScreen = () => {
             <h1 className="font-bold text-lg">리뷰</h1>
             <p className="text-xs text-[var(--muted)]">신당 할랄 키친</p>
           </div>
-          <button className="text-sm font-bold px-3 py-1.5 rounded-xl text-white" style={{ backgroundColor: "var(--green)" }}>
+          <button type="button" onClick={() => explainUnavailable("Sharh yuborish")} className="text-sm font-bold px-3 py-1.5 rounded-xl text-white" style={{ backgroundColor: "var(--green)" }}>
             리뷰 쓰기
           </button>
         </div>
@@ -282,7 +286,7 @@ const categories = ["전체", "레스토랑 발견", "식료품 정보", "모스
 
 export const CommunityScreen = () => {
   const [activeCategory, setActiveCategory] = useState("전체");
-  const [liked, setLiked] = useState<Record<number, boolean>>({});
+  const [liked, setLiked] = useLocalState<Record<number, boolean>>("community-likes", {});
 
   return (
     <div className="flex flex-col h-full bg-[var(--cream)]">
@@ -294,7 +298,7 @@ export const CommunityScreen = () => {
               <h1 className="font-bold text-xl text-[#1A1A18]">커뮤니티</h1>
               <p className="text-xs text-[var(--muted)]">한국 무슬림 할랄 생활 정보</p>
             </div>
-            <button className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-bold text-white" style={{ backgroundColor: "var(--green)" }}>
+            <button type="button" onClick={() => explainUnavailable("Hamjamiyatga post yuborish")} className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-bold text-white" style={{ backgroundColor: "var(--green)" }}>
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round"><line x1="7" y1="2" x2="7" y2="12"/><line x1="2" y1="7" x2="12" y2="7"/></svg>
               글쓰기
             </button>
@@ -316,7 +320,7 @@ export const CommunityScreen = () => {
       </div>
 
       <div className="flex-1 phone-scroll px-4 py-3 space-y-3 lg:mx-auto lg:grid lg:w-full lg:max-w-[1040px] lg:grid-cols-2 lg:content-start lg:gap-4 lg:space-y-0 lg:px-5 lg:py-4">
-        {posts.map((post, i) => (
+        {posts.filter(post => activeCategory === "전체" || post.category === activeCategory).map((post) => { const i = posts.indexOf(post); return (
           <article key={i} className="self-start overflow-hidden rounded-2xl border border-[var(--border)] bg-white shadow-sm transition-shadow hover:shadow-md">
             {post.pinned && (
               <div className="px-4 pt-2.5 pb-0 flex items-center gap-1.5">
@@ -369,13 +373,13 @@ export const CommunityScreen = () => {
                   </svg>
                   {post.likes + (liked[i] ? 1 : 0)}
                 </button>
-                <button className="flex items-center gap-1.5 text-xs font-semibold text-[var(--muted)]">
+                <button type="button" onClick={() => showNotice(post.title, post.body + " · Izohlar API xizmati hali ulanmagan.")} className="flex items-center gap-1.5 text-xs font-semibold text-[var(--muted)]">
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.6">
                     <path d="M1 2.5C1 1.7 1.7 1 2.5 1h9A1.5 1.5 0 0113 2.5v6A1.5 1.5 0 0111.5 10H8L5 13v-3H2.5A1.5 1.5 0 011 8.5v-6z" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                   {post.comments}
                 </button>
-                <button className="flex items-center gap-1.5 text-xs font-semibold text-[var(--muted)] ml-auto">
+                <button type="button" onClick={() => navigate("share", { target: "/customer/community" })} className="flex items-center gap-1.5 text-xs font-semibold text-[var(--muted)] ml-auto">
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.6">
                     <circle cx="11" cy="3" r="1.5"/><circle cx="3" cy="7" r="1.5"/><circle cx="11" cy="11" r="1.5"/>
                     <line x1="9.5" y1="4" x2="4.5" y2="6"/><line x1="9.5" y1="10" x2="4.5" y2="8"/>
@@ -385,7 +389,7 @@ export const CommunityScreen = () => {
               </div>
             </div>
           </article>
-        ))}
+        ); })}
         <div className="h-4 lg:hidden" />
       </div>
     </div>
@@ -405,10 +409,11 @@ const shareTargets = [
 export const ShareScreen = () => {
   const [copied, setCopied] = useState(false);
 
-  const handleCopy = () => {
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+  const target = readRoute().params.get("target") ?? "/customer/home";
+  const safeTarget = target.startsWith("/customer/") ? target : "/customer/home";
+  const link = new URL(window.location.href); link.hash = safeTarget;
+  const handleCopy = async () => { try { await navigator.clipboard.writeText(link.href); setCopied(true); } catch { showNotice("Ulashish", "Havola: " + link.href); } };
+  const handleShare = () => shareLink("HalalMap Korea", link.href).then(message => showNotice("Ulashish", message)).catch(() => showNotice("Ulashish", "Havola: " + link.href));
 
   return (
     <div className="flex flex-col h-full bg-[var(--cream)]">
@@ -477,7 +482,7 @@ export const ShareScreen = () => {
               </div>
               <div className="flex items-center gap-2">
                 <div className="flex-1 h-px bg-white/20" />
-                <p className="text-white/50 text-[10px]">halalmap.kr/restaurant/sindang</p>
+                <p className="text-white/50 text-[10px]">{link.href}</p>
                 <div className="flex-1 h-px bg-white/20" />
               </div>
             </div>
@@ -489,7 +494,7 @@ export const ShareScreen = () => {
           <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide mb-3">앱으로 공유</p>
           <div className="grid grid-cols-3 gap-3">
             {shareTargets.map((t) => (
-              <button key={t.label} onClick={t.label === "링크 복사" ? handleCopy : undefined}
+              <button key={t.label} onClick={t.label === "링크 복사" ? handleCopy : handleShare}
                 className="flex flex-col items-center gap-2 py-4 bg-white rounded-2xl border border-[var(--border)] transition-all active:scale-95">
                 <div
                   className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
@@ -507,7 +512,7 @@ export const ShareScreen = () => {
         <div className="bg-white rounded-2xl p-4 border border-[var(--border)] space-y-2">
           <p className="text-xs font-semibold text-[var(--muted)]">직접 링크</p>
           <div className="flex items-center gap-2 bg-[var(--cream)] rounded-xl px-3 py-2.5">
-            <p className="flex-1 text-xs text-[#1A1A18] font-mono truncate">halalmap.kr/r/sindang-halal</p>
+            <p className="flex-1 text-xs text-[#1A1A18] font-mono truncate">{link.href}</p>
             <button onClick={handleCopy} className="text-xs font-bold flex-shrink-0" style={{ color: "var(--green)" }}>
               {copied ? "복사됨!" : "복사"}
             </button>

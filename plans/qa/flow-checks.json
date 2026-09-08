@@ -1,0 +1,9 @@
+{
+  "passed": [
+    "API session survives reload",
+    "Favorites persist across routes and reload",
+    "Menu quantity updates preserve customized cart items and reload state",
+    "Checkout preview and browser back/forward",
+    "Grocery tab and out-of-stock guard"
+  ]
+}

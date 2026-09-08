@@ -1,3 +1,5 @@
+import { exportCsv } from "../services/exportService";
+import { explainUnavailable } from "../components/ActionDialog";
 import React, { useState } from "react";
 import {
   A, AdminTable, Column, StatusChip, SearchBar, FilterChips, Card, PageHeader,
@@ -108,7 +110,7 @@ export const RestaurantList = ({ onDetail }: { onDetail?: (id: string) => void }
         breadcrumb={["HalalMap Admin", "레스토랑 관리", "레스토랑 목록"]}
         title="레스토랑 목록"
         subtitle={`총 ${RESTAURANTS.length}개 등록됨`}
-        actions={<Btn variant="primary" size="md">+ 직접 등록</Btn>}
+        actions={<Btn onClick={() => explainUnavailable("+ 직접 등록")} variant="primary" size="md">+ 직접 등록</Btn>}
       />
 
       <Card>
@@ -116,7 +118,7 @@ export const RestaurantList = ({ onDetail }: { onDetail?: (id: string) => void }
           <FilterChips options={["전체", "활성", "대기", "정지", "인증만료"]} value={filter} onChange={setFilter} />
           <div className="flex items-center gap-2">
             <SearchBar value={search} onChange={setSearch} placeholder="이름, 대표자, 지역 검색..." width={240} />
-            <Btn variant="secondary">내보내기</Btn>
+            <Btn onClick={() => exportCsv("halalmap-RestaurantScreens.csv", filtered)} variant="secondary">내보내기</Btn>
           </div>
         </div>
         <AdminTable columns={columns} data={filtered} onRowClick={r => onDetail?.(r.id)} />
@@ -201,7 +203,7 @@ export const RestaurantApproval = () => {
                 style={{ backgroundColor: A.bg, border: `2px dashed ${A.border}` }}>
                 <span className="text-4xl">📄</span>
                 <span className="text-xs font-medium" style={{ color: A.muted }}>halal_certificate.pdf</span>
-                <button className="text-xs font-semibold px-3 py-1.5 rounded-lg mt-1"
+                <button type="button" onClick={() => explainUnavailable("열기")} className="text-xs font-semibold px-3 py-1.5 rounded-lg mt-1"
                   style={{ backgroundColor: A.greenLight, color: A.greenText }}>열기</button>
               </div>
               <div className="space-y-3">
@@ -255,7 +257,7 @@ export const RestaurantApproval = () => {
                 <Btn variant="danger" size="md" onClick={() => setRejectOpen(true)}>
                   ✕ 거절
                 </Btn>
-                <Btn variant="warning" size="md">
+                <Btn onClick={() => explainUnavailable("ℹ 추가 정보 요청")} variant="warning" size="md">
                   ℹ 추가 정보 요청
                 </Btn>
               </div>
@@ -305,7 +307,7 @@ export const RestaurantDetail = ({ restaurantId = "r1" }: { restaurantId?: strin
         subtitle={`${r.cuisine} · ${r.area}`}
         actions={
           <div className="flex gap-2">
-            <Btn variant="secondary" size="md">수정</Btn>
+            <Btn onClick={() => explainUnavailable("수정")} variant="secondary" size="md">수정</Btn>
             <Btn variant="danger" size="md" onClick={() => setSuspendOpen(true)}>
               {r.status === "active" ? "정지" : "활성화"}
             </Btn>
@@ -383,7 +385,7 @@ export const RestaurantDetail = ({ restaurantId = "r1" }: { restaurantId?: strin
                   <p className="text-xs" style={{ color: A.muted }}>만료일</p>
                   <p className="text-sm font-medium mt-0.5" style={{ color: A.text }}>2025.08.15</p>
                 </div>
-                <Btn variant="secondary">인증서 보기</Btn>
+                <Btn onClick={() => explainUnavailable("인증서 보기")} variant="secondary">인증서 보기</Btn>
               </div>
             </Card>
             <Card>

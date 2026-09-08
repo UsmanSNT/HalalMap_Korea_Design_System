@@ -1,0 +1,4255 @@
+[
+  {
+    "name": "TutorialScreen",
+    "file": "src/screens/AccessibilityScreens.tsx",
+    "line": 107,
+    "links": [],
+    "controls": [
+      {
+        "line": 180,
+        "tag": "button",
+        "text": "setStep(s => s - 1)} className=\"flex-1 py-3 rounded-2xl font-bold text-sm bg-white/20 text-white backdrop-blur\"> 이전",
+        "props": "onClick={() => setStep(s => s - 1)} className=\"flex-1 py-3 rounded-2xl font-bold text-sm bg-white/20 text-white backdrop-blur\"",
+        "wired": true
+      },
+      {
+        "line": 184,
+        "tag": "button",
+        "text": "!isLast && setStep(s => s + 1)} className=\"flex-1 py-3 rounded-2xl font-bold text-sm text-white\" style={{ backgroundColor: isLast ? \"var(--gold)\" : \"var(--green)\" }}> {isLast ? \"시작",
+        "props": "onClick={() => !isLast && setStep(s => s + 1)} className=\"flex-1 py-3 rounded-2xl font-bold text-sm text-white\" style={{ backgroundColor: isLast ? \"var(--gold)\" : \"var(--green)\" }}",
+        "wired": true
+      },
+      {
+        "line": 192,
+        "tag": "button",
+        "text": "건너뛰기",
+        "props": "className=\"w-full py-2 text-white/50 text-xs font-medium\"",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "MultilingualScreen",
+    "file": "src/screens/AccessibilityScreens.tsx",
+    "line": 224,
+    "links": [],
+    "controls": [
+      {
+        "line": 233,
+        "tag": "BackButton",
+        "text": "다국어 콘텐츠 미리보기 한국어 · English · العربية",
+        "props": "",
+        "wired": false
+      },
+      {
+        "line": 246,
+        "tag": "button",
+        "text": "setActivePreview(v.id as typeof activePreview)} className=\"px-3 py-1.5 rounded-full text-xs font-bold flex-shrink-0 transition-all\" style={{ backgroundColor: activePreview === v.id",
+        "props": "key={v.id} onClick={() => setActivePreview(v.id as typeof activePreview)} className=\"px-3 py-1.5 rounded-full text-xs font-bold flex-shrink-0 transition-all\" style={{ backgroundColor: activePreview === v.id ? \"var(--green)\" : \"transparent\", color: activePrevie",
+        "wired": true
+      },
+      {
+        "line": 327,
+        "tag": "button",
+        "text": "+",
+        "props": "className=\"w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-lg\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "ReviewsScreen",
+    "file": "src/screens/CommunityScreens.tsx",
+    "line": 56,
+    "links": [],
+    "controls": [
+      {
+        "line": 65,
+        "tag": "BackButton",
+        "text": "리뷰 신당 할랄 키친 리뷰 쓰기",
+        "props": "",
+        "wired": false
+      },
+      {
+        "line": 70,
+        "tag": "button",
+        "text": "리뷰 쓰기",
+        "props": "className=\"text-sm font-bold px-3 py-1.5 rounded-xl text-white\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": false
+      },
+      {
+        "line": 133,
+        "tag": "button",
+        "text": "setSortBy(s)} className=\"flex-shrink-0 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all\" style={{ backgroundColor: sortBy === s ? \"var(--green)\" : \"white\", color:",
+        "props": "key={s} onClick={() => setSortBy(s)} className=\"flex-shrink-0 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all\" style={{ backgroundColor: sortBy === s ? \"var(--green)\" : \"white\", color: sortBy === s ? \"white\" : \"var(--muted)\", borderColor: so",
+        "wired": true
+      },
+      {
+        "line": 198,
+        "tag": "button",
+        "text": "setHelpful(h => ({ ...h, [i]: !h[i] }))} className=\"flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all\" style={{ borderColor: helpful[i] ?",
+        "props": "onClick={() => setHelpful(h => ({ ...h, [i]: !h[i] }))} className=\"flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all\" style={{ borderColor: helpful[i] ? \"var(--green)\" : \"var(--border)\", backgroundColor: helpful[i] ? ",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "CommunityScreen",
+    "file": "src/screens/CommunityScreens.tsx",
+    "line": 283,
+    "links": [],
+    "controls": [
+      {
+        "line": 297,
+        "tag": "button",
+        "text": "글쓰기",
+        "props": "className=\"flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-bold text-white\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": false
+      },
+      {
+        "line": 304,
+        "tag": "button",
+        "text": "setActiveCategory(c)} className=\"flex-shrink-0 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all\" style={{ backgroundColor: activeCategory === c ? \"var(--green)\" :",
+        "props": "key={c} onClick={() => setActiveCategory(c)} className=\"flex-shrink-0 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all\" style={{ backgroundColor: activeCategory === c ? \"var(--green)\" : \"white\", color: activeCategory === c ? \"white\" : \"var(--",
+        "wired": true
+      },
+      {
+        "line": 362,
+        "tag": "button",
+        "text": "setLiked(l => ({ ...l, [i]: !l[i] }))} className=\"flex items-center gap-1.5 text-xs font-semibold transition-colors\" style={{ color: liked[i] ? \"var(--danger)\" : \"var(--muted)\" }} ",
+        "props": "onClick={() => setLiked(l => ({ ...l, [i]: !l[i] }))} className=\"flex items-center gap-1.5 text-xs font-semibold transition-colors\" style={{ color: liked[i] ? \"var(--danger)\" : \"var(--muted)\" }}",
+        "wired": true
+      },
+      {
+        "line": 372,
+        "tag": "button",
+        "text": "{post.comments}",
+        "props": "className=\"flex items-center gap-1.5 text-xs font-semibold text-[var(--muted)]\"",
+        "wired": false
+      },
+      {
+        "line": 378,
+        "tag": "button",
+        "text": "공유",
+        "props": "className=\"flex items-center gap-1.5 text-xs font-semibold text-[var(--muted)] ml-auto\"",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "ShareScreen",
+    "file": "src/screens/CommunityScreens.tsx",
+    "line": 405,
+    "links": [],
+    "controls": [
+      {
+        "line": 418,
+        "tag": "BackButton",
+        "text": "공유하기",
+        "props": "",
+        "wired": false
+      },
+      {
+        "line": 492,
+        "tag": "button",
+        "text": "{t.icon} {t.label === \"링크 복사\" && copied ? \"복사됨! ✓\" : t.label}",
+        "props": "key={t.label} onClick={t.label === \"링크 복사\" ? handleCopy : undefined} className=\"flex flex-col items-center gap-2 py-4 bg-white rounded-2xl border border-[var(--border)] transition-all active:scale-95\"",
+        "wired": true
+      },
+      {
+        "line": 511,
+        "tag": "button",
+        "text": "{copied ? \"복사됨!\" : \"복사\"}",
+        "props": "onClick={handleCopy} className=\"text-xs font-bold flex-shrink-0\" style={{ color: \"var(--green)\" }}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "NotificationsScreen",
+    "file": "src/screens/EngagementScreens.tsx",
+    "line": 63,
+    "links": [],
+    "controls": [
+      {
+        "line": 71,
+        "tag": "BackButton",
+        "text": "알림 모두 읽음",
+        "props": "",
+        "wired": false
+      },
+      {
+        "line": 73,
+        "tag": "button",
+        "text": "모두 읽음",
+        "props": "className=\"text-sm font-medium\" style={{ color: \"var(--green)\" }}",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "RamadanScreen",
+    "file": "src/screens/EngagementScreens.tsx",
+    "line": 142,
+    "links": [],
+    "controls": [
+      {
+        "line": 168,
+        "tag": "BackButton",
+        "text": "라마단 모드 setRamadanMode(!ramadanMode)} />",
+        "props": "dark",
+        "wired": false
+      },
+      {
+        "line": 222,
+        "tag": "button",
+        "text": "주문하기",
+        "props": "className=\"w-full py-2 rounded-xl text-xs font-bold text-white mt-1\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": false
+      },
+      {
+        "line": 258,
+        "tag": "button",
+        "text": "참여 신청",
+        "props": "className=\"mt-3 px-4 py-2 rounded-xl text-xs font-bold\" style={{ backgroundColor: \"var(--gold)\", color: \"white\" }}",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "EidScreen",
+    "file": "src/screens/EngagementScreens.tsx",
+    "line": 269,
+    "links": [],
+    "controls": [
+      {
+        "line": 293,
+        "tag": "button",
+        "text": "setGreeting(e)} className=\"px-4 py-1.5 rounded-full text-xs font-bold transition-all\" style={{ backgroundColor: greeting === e ? \"var(--gold)\" : \"rgba(255,255,255,0.1)\", color: gre",
+        "props": "key={e} onClick={() => setGreeting(e)} className=\"px-4 py-1.5 rounded-full text-xs font-bold transition-all\" style={{ backgroundColor: greeting === e ? \"var(--gold)\" : \"rgba(255,255,255,0.1)\", color: greeting === e ? \"black\" : \"rgba(255,255,255,0.6)\", }}",
+        "wired": true
+      },
+      {
+        "line": 356,
+        "tag": "button",
+        "text": "이드 특별 메뉴 보기",
+        "props": "className=\"w-full py-4 rounded-2xl font-bold text-black text-base\" style={{ backgroundColor: \"var(--gold)\" }}",
+        "wired": false
+      },
+      {
+        "line": 359,
+        "tag": "button",
+        "text": "이드 인사 공유하기",
+        "props": "className=\"w-full py-3 rounded-2xl font-semibold text-sm border border-white/20 text-white\"",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "HomeAndroid",
+    "file": "src/screens/HomeAndroid.tsx",
+    "line": 120,
+    "links": [],
+    "controls": [
+      {
+        "line": 194,
+        "tag": "button",
+        "text": "setActiveCategory(i)} style={{ flexShrink: 0, height: 32, padding: \"0 12px\", borderRadius: 8, border: `1px solid ${isActive ? \"transparent\" : M.outlineVar}`, backgroundColor: isAct",
+        "props": "key={i} onClick={() => setActiveCategory(i)} style={{ flexShrink: 0, height: 32, padding: \"0 12px\", borderRadius: 8, border: `1px solid ${isActive ? \"transparent\" : M.outlineVar}`, backgroundColor: isActive ? M.greenContainer : \"transparent\", display: \"flex\", ",
+        "wired": true
+      },
+      {
+        "line": 209,
+        "tag": "button",
+        "text": "더보기",
+        "props": "style={{ display: \"flex\", alignItems: \"center\", gap: 2, background: \"none\", border: \"none\", cursor: \"pointer\" }}",
+        "wired": false
+      },
+      {
+        "line": 252,
+        "tag": "button",
+        "text": "지도 보기",
+        "props": "style={{ display: \"flex\", alignItems: \"center\", gap: 2, background: \"none\", border: \"none\", cursor: \"pointer\" }}",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "HomeDesktop",
+    "file": "src/screens/HomeDesktop.tsx",
+    "line": 339,
+    "links": [
+      "restaurant-list",
+      "scanner",
+      "restaurant-detail",
+      "map-view"
+    ],
+    "controls": [
+      {
+        "line": 359,
+        "tag": "button",
+        "text": "onNavigate(\"restaurant-list\")} style={{ padding: \"9px 20px\", backgroundColor: G.gold, borderRadius: 10, color: \"white\", fontSize: 13, fontWeight: 700, border: \"none\", cursor: \"poin",
+        "props": "onClick={() => onNavigate(\"restaurant-list\")} style={{ padding: \"9px 20px\", backgroundColor: G.gold, borderRadius: 10, color: \"white\", fontSize: 13, fontWeight: 700, border: \"none\", cursor: \"pointer\" }}",
+        "wired": true
+      },
+      {
+        "line": 360,
+        "tag": "button",
+        "text": "onNavigate(\"scanner\")} style={{ padding: \"9px 20px\", backgroundColor: \"rgba(255,255,255,0.15)\", borderRadius: 10, color: \"white\", fontSize: 13, fontWeight: 600, border: \"1px solid ",
+        "props": "onClick={() => onNavigate(\"scanner\")} style={{ padding: \"9px 20px\", backgroundColor: \"rgba(255,255,255,0.15)\", borderRadius: 10, color: \"white\", fontSize: 13, fontWeight: 600, border: \"1px solid rgba(255,255,255,0.3)\", cursor: \"pointer\", backdropFilter: \"blur(",
+        "wired": true
+      },
+      {
+        "line": 384,
+        "tag": "button",
+        "text": "setActiveCategory(i)} style={{ height: 34, padding: \"0 14px\", borderRadius: 99, border: `1.5px solid ${isActive ? G.green : G.border}`, backgroundColor: isActive ? G.greenLight : G",
+        "props": "key={i} onClick={() => setActiveCategory(i)} style={{ height: 34, padding: \"0 14px\", borderRadius: 99, border: `1.5px solid ${isActive ? G.green : G.border}`, backgroundColor: isActive ? G.greenLight : G.surface, color: isActive ? G.green : G.textMid, fontSize",
+        "wired": true
+      },
+      {
+        "line": 397,
+        "tag": "button",
+        "text": "{s}",
+        "props": "key={s} style={{ height: 30, padding: \"0 12px\", borderRadius: 8, border: `1px solid ${i === 0 ? G.green : G.border}`, backgroundColor: i === 0 ? G.greenLight : G.surface, color: i === 0 ? G.green : G.muted, fontSize: 11, fontWeight: i === 0 ? 700 : 500, cursor",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "HomeScreen",
+    "file": "src/screens/HomeScreens.tsx",
+    "line": 19,
+    "links": [
+      "city-selector",
+      "notifications",
+      "search",
+      "restaurant-list",
+      "restaurant-detail",
+      "map-view",
+      "mosque-detail"
+    ],
+    "controls": [
+      {
+        "line": 28,
+        "tag": "button",
+        "text": "onNavigate?.(\"city-selector\")} className=\"flex items-center gap-1.5 bg-white/20 px-3 py-1.5 rounded-full\"> 이태원동, 용산구",
+        "props": "onClick={() => onNavigate?.(\"city-selector\")} className=\"flex items-center gap-1.5 bg-white/20 px-3 py-1.5 rounded-full\"",
+        "wired": true
+      },
+      {
+        "line": 37,
+        "tag": "button",
+        "text": "onNavigate?.(\"notifications\")} className=\"relative w-9 h-9 bg-white/20 rounded-full flex items-center justify-center\">",
+        "props": "onClick={() => onNavigate?.(\"notifications\")} className=\"relative w-9 h-9 bg-white/20 rounded-full flex items-center justify-center\"",
+        "wired": true
+      },
+      {
+        "line": 69,
+        "tag": "button",
+        "text": "onNavigate?.(\"search\")} className=\"flex items-center gap-2 bg-white rounded-xl px-4 py-3 w-full text-left\"> 할랄 음식, 레스토랑 검색...",
+        "props": "onClick={() => onNavigate?.(\"search\")} className=\"flex items-center gap-2 bg-white rounded-xl px-4 py-3 w-full text-left\"",
+        "wired": true
+      },
+      {
+        "line": 91,
+        "tag": "button",
+        "text": "{c.icon} {c.label}",
+        "props": "key={i} className=\"flex-shrink-0 flex flex-col items-center gap-1.5 px-4 py-3 rounded-2xl bg-white border border-[var(--border)] min-w-fit\"",
+        "wired": false
+      },
+      {
+        "line": 132,
+        "tag": "button",
+        "text": "onNavigate?.(\"restaurant-list\")} className=\"mt-3 px-4 py-2 bg-white rounded-xl text-xs font-bold\" style={{ color: \"var(--gold)\" }}> 지금 주문하기 →",
+        "props": "onClick={() => onNavigate?.(\"restaurant-list\")} className=\"mt-3 px-4 py-2 bg-white rounded-xl text-xs font-bold\" style={{ color: \"var(--gold)\" }}",
+        "wired": true
+      },
+      {
+        "line": 140,
+        "tag": "BottomNav",
+        "text": "{/* Sticky Header */} {/* Location + bell */} onNavigate?.(\"city-selector\")} className=\"flex items-center gap-1.5 bg-white/20 px-3 py-1.5 rounded-full\"> 이태원동, 용산구 onNavigate?.(\"not",
+        "props": "active=\"home\" onTabChange={onTabChange}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "RestaurantListScreen",
+    "file": "src/screens/HomeScreens.tsx",
+    "line": 155,
+    "links": [
+      "home",
+      "submit-place",
+      "restaurant-detail"
+    ],
+    "controls": [
+      {
+        "line": 164,
+        "tag": "BackButton",
+        "text": "onNavigate?.(\"home\")} /> 할랄 레스토랑 onNavigate?.(\"submit-place\")} title=\"Joy qo‘shish\" className=\"flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--green-light)] text-xl f",
+        "props": "onBack={() => onNavigate?.(\"home\")}",
+        "wired": true
+      },
+      {
+        "line": 166,
+        "tag": "button",
+        "text": "onNavigate?.(\"submit-place\")} title=\"Joy qo‘shish\" className=\"flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--green-light)] text-xl font-bold text-[var(--green)]\">+",
+        "props": "onClick={() => onNavigate?.(\"submit-place\")} title=\"Joy qo‘shish\" className=\"flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--green-light)] text-xl font-bold text-[var(--green)]\"",
+        "wired": true
+      },
+      {
+        "line": 170,
+        "tag": "button",
+        "text": "빠른배달순",
+        "props": "className=\"flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border border-[var(--green)] text-[var(--green)] bg-[var(--green-light)]\"",
+        "wired": false
+      },
+      {
+        "line": 181,
+        "tag": "button",
+        "text": "setActiveFilter(f)} className=\"flex-shrink-0 px-3 py-2 rounded-xl text-xs font-semibold border transition-all\" style={{ backgroundColor: activeFilter === f ? \"var(--green)\" : \"whit",
+        "props": "key={f} onClick={() => setActiveFilter(f)} className=\"flex-shrink-0 px-3 py-2 rounded-xl text-xs font-semibold border transition-all\" style={{ backgroundColor: activeFilter === f ? \"var(--green)\" : \"white\", color: activeFilter === f ? \"white\" : \"var(--charcoal",
+        "wired": true
+      },
+      {
+        "line": 205,
+        "tag": "BottomNav",
+        "text": "{/* Header */} onNavigate?.(\"home\")} /> 할랄 레스토랑 onNavigate?.(\"submit-place\")} title=\"Joy qo‘shish\" className=\"flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--green-li",
+        "props": "active=\"home\"",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "RestaurantDetailScreen",
+    "file": "src/screens/HomeScreens.tsx",
+    "line": 213,
+    "links": [
+      "restaurant-list",
+      "menu"
+    ],
+    "controls": [
+      {
+        "line": 233,
+        "tag": "BackButton",
+        "text": "onNavigate?.(\"restaurant-list\")} />",
+        "props": "dark onBack={() => onNavigate?.(\"restaurant-list\")}",
+        "wired": true
+      },
+      {
+        "line": 236,
+        "tag": "button",
+        "text": "",
+        "props": "className=\"w-9 h-9 rounded-full bg-white/20 backdrop-blur flex items-center justify-center\"",
+        "wired": false
+      },
+      {
+        "line": 241,
+        "tag": "button",
+        "text": "",
+        "props": "className=\"w-9 h-9 rounded-full bg-white/20 backdrop-blur flex items-center justify-center\"",
+        "wired": false
+      },
+      {
+        "line": 289,
+        "tag": "button",
+        "text": "setActiveTab(t)} className=\"flex-shrink-0 px-4 py-2 rounded-xl text-sm font-semibold transition-all\" style={{ backgroundColor: activeTab === t ? \"var(--green)\" : \"transparent\", col",
+        "props": "key={t} onClick={() => setActiveTab(t)} className=\"flex-shrink-0 px-4 py-2 rounded-xl text-sm font-semibold transition-all\" style={{ backgroundColor: activeTab === t ? \"var(--green)\" : \"transparent\", color: activeTab === t ? \"white\" : \"var(--muted)\", }}",
+        "wired": true
+      },
+      {
+        "line": 321,
+        "tag": "button",
+        "text": "+",
+        "props": "className=\"w-7 h-7 rounded-full flex items-center justify-center text-white text-lg font-light shadow-sm\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": false
+      },
+      {
+        "line": 336,
+        "tag": "button",
+        "text": "onNavigate?.(\"menu\")} className=\"w-full py-4 rounded-2xl font-bold text-white text-base\" style={{ backgroundColor: \"var(--green)\" }}> 메뉴 전체 보기",
+        "props": "onClick={() => onNavigate?.(\"menu\")} className=\"w-full py-4 rounded-2xl font-bold text-white text-base\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "MenuScreen",
+    "file": "src/screens/HomeScreens.tsx",
+    "line": 353,
+    "links": [
+      "restaurant-detail",
+      "cart"
+    ],
+    "controls": [
+      {
+        "line": 365,
+        "tag": "BackButton",
+        "text": "onNavigate?.(\"restaurant-detail\")} /> 신당 할랄 키친 메뉴 선택 {cartCount > 0 && ( {cartCount} )}",
+        "props": "onBack={() => onNavigate?.(\"restaurant-detail\")}",
+        "wired": true
+      },
+      {
+        "line": 370,
+        "tag": "button",
+        "text": "{cartCount > 0 && ( {cartCount} )}",
+        "props": "className=\"relative\"",
+        "wired": false
+      },
+      {
+        "line": 387,
+        "tag": "button",
+        "text": "setActiveTab(t)} className=\"flex-shrink-0 px-4 py-2 rounded-xl text-sm font-semibold transition-all\" style={{ backgroundColor: activeTab === t ? \"var(--green)\" : \"transparent\", col",
+        "props": "key={t} onClick={() => setActiveTab(t)} className=\"flex-shrink-0 px-4 py-2 rounded-xl text-sm font-semibold transition-all\" style={{ backgroundColor: activeTab === t ? \"var(--green)\" : \"transparent\", color: activeTab === t ? \"white\" : \"var(--muted)\", }}",
+        "wired": true
+      },
+      {
+        "line": 425,
+        "tag": "button",
+        "text": "setCart(c => ({ ...c, [item.name]: Math.max(0, (c[item.name] || 0) - 1) }))} className=\"w-7 h-7 rounded-full border border-[var(--border)] flex items-center justify-center text-sm ",
+        "props": "onClick={() => setCart(c => ({ ...c, [item.name]: Math.max(0, (c[item.name] || 0) - 1) }))} className=\"w-7 h-7 rounded-full border border-[var(--border)] flex items-center justify-center text-sm font-bold text-[var(--green)]\"",
+        "wired": true
+      },
+      {
+        "line": 428,
+        "tag": "button",
+        "text": "setCart(c => ({ ...c, [item.name]: (c[item.name] || 0) + 1 }))} className=\"w-7 h-7 rounded-full flex items-center justify-center text-white text-sm font-bold\" style={{ backgroundCo",
+        "props": "onClick={() => setCart(c => ({ ...c, [item.name]: (c[item.name] || 0) + 1 }))} className=\"w-7 h-7 rounded-full flex items-center justify-center text-white text-sm font-bold\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": true
+      },
+      {
+        "line": 432,
+        "tag": "button",
+        "text": "setCart(c => ({ ...c, [item.name]: 1 }))} className=\"w-7 h-7 rounded-full flex items-center justify-center text-white text-lg font-light\" style={{ backgroundColor: \"var(--green)\" }",
+        "props": "onClick={() => setCart(c => ({ ...c, [item.name]: 1 }))} className=\"w-7 h-7 rounded-full flex items-center justify-center text-white text-lg font-light\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": true
+      },
+      {
+        "line": 445,
+        "tag": "button",
+        "text": "onNavigate?.(\"cart\")} className=\"w-full py-4 rounded-2xl font-bold text-white text-base flex items-center justify-between px-5\" style={{ backgroundColor: \"var(--green)\" }}> {cartCo",
+        "props": "onClick={() => onNavigate?.(\"cart\")} className=\"w-full py-4 rounded-2xl font-bold text-white text-base flex items-center justify-between px-5\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "ItemDetailScreen",
+    "file": "src/screens/HomeScreens.tsx",
+    "line": 457,
+    "links": [
+      "menu",
+      "cart"
+    ],
+    "controls": [
+      {
+        "line": 479,
+        "tag": "BackButton",
+        "text": "onNavigate?.(\"menu\")} />",
+        "props": "dark onBack={() => onNavigate?.(\"menu\")}",
+        "wired": true
+      },
+      {
+        "line": 498,
+        "tag": "button",
+        "text": "setSize(s.label.split(\" \")[0])} className=\"w-full flex items-center justify-between p-3.5 rounded-xl border transition-all\" style={{ borderColor: size === s.label.split(\" \")[0] ? \"",
+        "props": "key={s.label} onClick={() => setSize(s.label.split(\" \")[0])} className=\"w-full flex items-center justify-between p-3.5 rounded-xl border transition-all\" style={{ borderColor: size === s.label.split(\" \")[0] ? \"var(--green)\" : \"var(--border)\", backgroundColor: s",
+        "wired": true
+      },
+      {
+        "line": 518,
+        "tag": "button",
+        "text": "toggleExtra(ex)} className=\"w-full flex items-center gap-3 p-3.5 rounded-xl border transition-all\" style={{ borderColor: extras.includes(ex) ? \"var(--green)\" : \"var(--border)\", bac",
+        "props": "key={ex} onClick={() => toggleExtra(ex)} className=\"w-full flex items-center gap-3 p-3.5 rounded-xl border transition-all\" style={{ borderColor: extras.includes(ex) ? \"var(--green)\" : \"var(--border)\", backgroundColor: extras.includes(ex) ? \"var(--green-light)\"",
+        "wired": true
+      },
+      {
+        "line": 536,
+        "tag": "button",
+        "text": "setSpice(s)} className=\"flex-1 py-3 rounded-xl text-sm font-semibold border transition-all\" style={{ borderColor: spice === s ? \"var(--green)\" : \"var(--border)\", backgroundColor: s",
+        "props": "key={s} onClick={() => setSpice(s)} className=\"flex-1 py-3 rounded-xl text-sm font-semibold border transition-all\" style={{ borderColor: spice === s ? \"var(--green)\" : \"var(--border)\", backgroundColor: spice === s ? \"var(--green)\" : \"white\", color: spice === s",
+        "wired": true
+      },
+      {
+        "line": 548,
+        "tag": "textarea",
+        "text": "특별 요청사항",
+        "props": "className=\"w-full border border-[var(--border)] rounded-xl px-4 py-3 text-sm text-[#1A1A18] bg-white outline-none resize-none focus:border-[var(--green)]\" rows={3} placeholder=\"가게에 요청할 사항을 적어주세요...\" defaultValue=\"\"",
+        "wired": false
+      },
+      {
+        "line": 561,
+        "tag": "button",
+        "text": "setQty(Math.max(1, qty - 1))} className=\"w-7 h-7 rounded-full border border-[var(--border)] flex items-center justify-center font-bold text-sm\">−",
+        "props": "onClick={() => setQty(Math.max(1, qty - 1))} className=\"w-7 h-7 rounded-full border border-[var(--border)] flex items-center justify-center font-bold text-sm\"",
+        "wired": true
+      },
+      {
+        "line": 563,
+        "tag": "button",
+        "text": "setQty(qty + 1)} className=\"w-7 h-7 rounded-full flex items-center justify-center text-white font-bold text-sm\" style={{ backgroundColor: \"var(--green)\" }}>+",
+        "props": "onClick={() => setQty(qty + 1)} className=\"w-7 h-7 rounded-full flex items-center justify-center text-white font-bold text-sm\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": true
+      },
+      {
+        "line": 565,
+        "tag": "button",
+        "text": "onNavigate?.(\"cart\")} className=\"flex-1 py-4 rounded-2xl font-bold text-white flex items-center justify-between px-5\" style={{ backgroundColor: \"var(--green)\" }}> 장바구니 담기",
+        "props": "onClick={() => onNavigate?.(\"cart\")} className=\"flex-1 py-4 rounded-2xl font-bold text-white flex items-center justify-between px-5\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "CartScreen",
+    "file": "src/screens/HomeScreens.tsx",
+    "line": 576,
+    "links": [
+      "menu",
+      "checkout"
+    ],
+    "controls": [
+      {
+        "line": 598,
+        "tag": "BackButton",
+        "text": "onNavigate?.(\"menu\")} /> 장바구니 {items.length}개",
+        "props": "onBack={() => onNavigate?.(\"menu\")}",
+        "wired": true
+      },
+      {
+        "line": 626,
+        "tag": "button",
+        "text": "updateQty(i, -1)} className=\"w-7 h-7 rounded-full border border-[var(--border)] flex items-center justify-center text-sm font-bold\">−",
+        "props": "onClick={() => updateQty(i, -1)} className=\"w-7 h-7 rounded-full border border-[var(--border)] flex items-center justify-center text-sm font-bold\"",
+        "wired": true
+      },
+      {
+        "line": 628,
+        "tag": "button",
+        "text": "updateQty(i, 1)} className=\"w-7 h-7 rounded-full flex items-center justify-center text-white text-sm font-bold\" style={{ backgroundColor: \"var(--green)\" }}>+",
+        "props": "onClick={() => updateQty(i, 1)} className=\"w-7 h-7 rounded-full flex items-center justify-center text-white text-sm font-bold\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": true
+      },
+      {
+        "line": 632,
+        "tag": "button",
+        "text": "+ 다른 메뉴 추가",
+        "props": "className=\"w-full py-4 text-sm font-semibold text-center\" style={{ color: \"var(--green)\" }}",
+        "wired": false
+      },
+      {
+        "line": 641,
+        "tag": "input",
+        "text": "setCoupon(e.target.value)} placeholder=\"쿠폰 코드 입력 (예: HALAL3000)\" className=\"flex-1 border border-[var(--border)] rounded-xl px-4 py-3 text-sm outline-none focus:border-[var(--green",
+        "props": "value={coupon} onChange={(e) => setCoupon(e.target.value)} placeholder=\"쿠폰 코드 입력 (예: HALAL3000)\" className=\"flex-1 border border-[var(--border)] rounded-xl px-4 py-3 text-sm outline-none focus:border-[var(--green)] bg-[var(--cream)]\"",
+        "wired": true
+      },
+      {
+        "line": 647,
+        "tag": "button",
+        "text": "적용",
+        "props": "className=\"px-4 py-3 rounded-xl text-sm font-bold text-white\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": false
+      },
+      {
+        "line": 649,
+        "tag": "textarea",
+        "text": "할인 코드 setCoupon(e.target.value)} placeholder=\"쿠폰 코드 입력 (예: HALAL3000)\" className=\"flex-1 border border-[var(--border)] rounded-xl px-4 py-3 text-sm outline-none focus:border-[var(-",
+        "props": "value={note} onChange={(e) => setNote(e.target.value)} placeholder=\"가게에 요청사항을 남겨주세요...\" className=\"w-full border border-[var(--border)] rounded-xl px-4 py-3 text-sm outline-none resize-none bg-[var(--cream)]\" rows={2}",
+        "wired": true
+      },
+      {
+        "line": 682,
+        "tag": "button",
+        "text": "onNavigate?.(\"checkout\")} className=\"w-full py-4 rounded-2xl font-bold text-white text-base flex items-center justify-between px-6\" style={{ backgroundColor: \"var(--green)\" }}> 주문하",
+        "props": "onClick={() => onNavigate?.(\"checkout\")} className=\"w-full py-4 rounded-2xl font-bold text-white text-base flex items-center justify-between px-6\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "CheckoutScreen",
+    "file": "src/screens/HomeScreens.tsx",
+    "line": 699,
+    "links": [
+      "cart",
+      "order-confirmation"
+    ],
+    "controls": [
+      {
+        "line": 709,
+        "tag": "BackButton",
+        "text": "onNavigate?.(\"cart\")} /> 결제",
+        "props": "onBack={() => onNavigate?.(\"cart\")}",
+        "wired": true
+      },
+      {
+        "line": 726,
+        "tag": "button",
+        "text": "",
+        "props": "className=\"text-[var(--green)]\"",
+        "wired": false
+      },
+      {
+        "line": 737,
+        "tag": "button",
+        "text": "{opt}",
+        "props": "key={opt} className=\"py-3 px-4 rounded-xl text-sm font-semibold border transition-all\" style={{ borderColor: i === 0 ? \"var(--green)\" : \"var(--border)\", backgroundColor: i === 0 ? \"var(--green-light)\" : \"white\", color: i === 0 ? \"var(--green)\" : \"var(--muted)\"",
+        "wired": false
+      },
+      {
+        "line": 749,
+        "tag": "button",
+        "text": "setPayment(pm.id)} className=\"w-full flex items-center gap-3 p-3.5 rounded-xl border transition-all\" style={{ borderColor: payment === pm.id ? \"var(--green)\" : \"var(--border)\", bac",
+        "props": "key={pm.id} onClick={() => setPayment(pm.id)} className=\"w-full flex items-center gap-3 p-3.5 rounded-xl border transition-all\" style={{ borderColor: payment === pm.id ? \"var(--green)\" : \"var(--border)\", backgroundColor: payment === pm.id ? \"var(--green-light)",
+        "wired": true
+      },
+      {
+        "line": 762,
+        "tag": "button",
+        "text": "+ 결제수단 추가",
+        "props": "className=\"w-full py-3 rounded-xl border border-dashed border-[var(--border)] text-sm font-medium\" style={{ color: \"var(--muted)\" }}",
+        "wired": false
+      },
+      {
+        "line": 772,
+        "tag": "button",
+        "text": "setTip(t)} className=\"py-3 rounded-xl text-sm font-bold border transition-all\" style={{ borderColor: tip === t ? \"var(--green)\" : \"var(--border)\", backgroundColor: tip === t ? \"var",
+        "props": "key={t} onClick={() => setTip(t)} className=\"py-3 rounded-xl text-sm font-bold border transition-all\" style={{ borderColor: tip === t ? \"var(--green)\" : \"var(--border)\", backgroundColor: tip === t ? \"var(--green)\" : \"white\", color: tip === t ? \"white\" : \"var(-",
+        "wired": true
+      },
+      {
+        "line": 794,
+        "tag": "button",
+        "text": "onNavigate?.(\"order-confirmation\")} className=\"w-full py-4 rounded-2xl font-bold text-white text-base flex items-center justify-between px-6\" style={{ backgroundColor: \"var(--green",
+        "props": "onClick={() => onNavigate?.(\"order-confirmation\")} className=\"w-full py-4 rounded-2xl font-bold text-white text-base flex items-center justify-between px-6\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "OrderConfirmationScreen",
+    "file": "src/screens/HomeScreens.tsx",
+    "line": 806,
+    "links": [
+      "order-tracking",
+      "home"
+    ],
+    "controls": [
+      {
+        "line": 865,
+        "tag": "button",
+        "text": "onNavigate?.(\"order-tracking\")} className=\"w-full py-4 rounded-2xl font-bold text-white text-base border-2 border-white/40\"> 주문 추적하기",
+        "props": "onClick={() => onNavigate?.(\"order-tracking\")} className=\"w-full py-4 rounded-2xl font-bold text-white text-base border-2 border-white/40\"",
+        "wired": true
+      },
+      {
+        "line": 868,
+        "tag": "button",
+        "text": "onNavigate?.(\"home\")} className=\"w-full py-3 rounded-2xl font-semibold text-sm bg-white\" style={{ color: \"var(--green)\" }}> 홈으로 돌아가기",
+        "props": "onClick={() => onNavigate?.(\"home\")} className=\"w-full py-3 rounded-2xl font-semibold text-sm bg-white\" style={{ color: \"var(--green)\" }}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "MosqueListScreen",
+    "file": "src/screens/MosqueScreens.tsx",
+    "line": 14,
+    "links": [
+      "submit-place"
+    ],
+    "controls": [
+      {
+        "line": 24,
+        "tag": "button",
+        "text": "onNavigate?.(\"submit-place\")} title=\"Joy qo‘shish\" className=\"w-9 h-9 rounded-xl bg-[var(--green-light)] text-[var(--green)] flex items-center justify-center font-bold text-xl\">+",
+        "props": "onClick={() => onNavigate?.(\"submit-place\")} title=\"Joy qo‘shish\" className=\"w-9 h-9 rounded-xl bg-[var(--green-light)] text-[var(--green)] flex items-center justify-center font-bold text-xl\"",
+        "wired": true
+      },
+      {
+        "line": 28,
+        "tag": "button",
+        "text": "setTab(t)} className=\"flex-1 py-2 rounded-lg text-sm font-semibold transition-all\" style={{ backgroundColor: tab === t ? \"var(--green)\" : \"transparent\", color: tab === t ? \"white\" ",
+        "props": "key={t} onClick={() => setTab(t)} className=\"flex-1 py-2 rounded-lg text-sm font-semibold transition-all\" style={{ backgroundColor: tab === t ? \"var(--green)\" : \"transparent\", color: tab === t ? \"white\" : \"var(--muted)\", }}",
+        "wired": true
+      },
+      {
+        "line": 85,
+        "tag": "BottomNav",
+        "text": "모스크 · 기도실 onNavigate?.(\"submit-place\")} title=\"Joy qo‘shish\" className=\"w-9 h-9 rounded-xl bg-[var(--green-light)] text-[var(--green)] flex items-center justify-center font-bold te",
+        "props": "active=\"prayer\" onTabChange={onTabChange}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "MosqueDetailScreen",
+    "file": "src/screens/MosqueScreens.tsx",
+    "line": 99,
+    "links": [],
+    "controls": [
+      {
+        "line": 115,
+        "tag": "BackButton",
+        "text": "",
+        "props": "dark",
+        "wired": false
+      },
+      {
+        "line": 118,
+        "tag": "button",
+        "text": "",
+        "props": "className=\"w-9 h-9 rounded-full bg-white/20 backdrop-blur flex items-center justify-center\"",
+        "wired": false
+      },
+      {
+        "line": 197,
+        "tag": "button",
+        "text": "🗺️ 길 찾기",
+        "props": "className=\"flex-1 py-4 rounded-2xl font-bold text-white\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": false
+      },
+      {
+        "line": 200,
+        "tag": "button",
+        "text": "공유하기",
+        "props": "className=\"flex-1 py-4 rounded-2xl font-semibold border\" style={{ color: \"var(--green)\", borderColor: \"var(--green)\" }}",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "PrayerTimesScreen",
+    "file": "src/screens/MosqueScreens.tsx",
+    "line": 215,
+    "links": [],
+    "controls": [
+      {
+        "line": 241,
+        "tag": "button",
+        "text": "현재 위치",
+        "props": "onClick={useCurrentLocation} className=\"rounded-lg bg-[var(--green-light)] px-2 py-1 text-[10px] font-bold text-[var(--green)]\"",
+        "wired": true
+      },
+      {
+        "line": 309,
+        "tag": "button",
+        "text": "",
+        "props": "className=\"w-7 h-7 rounded-lg bg-[var(--cream)] flex items-center justify-center\"",
+        "wired": false
+      },
+      {
+        "line": 312,
+        "tag": "button",
+        "text": "",
+        "props": "className=\"w-7 h-7 rounded-lg bg-[var(--cream)] flex items-center justify-center\"",
+        "wired": false
+      },
+      {
+        "line": 324,
+        "tag": "button",
+        "text": "{d}",
+        "props": "key={d} className=\"aspect-square rounded-full text-xs font-medium flex items-center justify-center transition-all\" style={{ backgroundColor: d === calendarToday ? \"var(--green)\" : \"transparent\", color: d === calendarToday ? \"white\" : new Date(calendarYear, cal",
+        "wired": false
+      },
+      {
+        "line": 343,
+        "tag": "BottomNav",
+        "text": "기도 시간 {location} · {data?.date.readable ?? \"Loading…\"} 현재 위치 {error && {error} } {/* Hijri date + countdown */} هجري · 히즈리력 {data ? `${data.date.hijri.year} ${data.date.hijri.month",
+        "props": "active=\"prayer\" onTabChange={onTabChange}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "QiblaScreen",
+    "file": "src/screens/MosqueScreens.tsx",
+    "line": 349,
+    "links": [],
+    "controls": [
+      {
+        "line": 363,
+        "tag": "BackButton",
+        "text": "키블라 Qibla 서울에서 메카 방향",
+        "props": "dark",
+        "wired": false
+      },
+      {
+        "line": 450,
+        "tag": "BottomNav",
+        "text": "{/* Geometric pattern accent */} {/* Header */} 키블라 Qibla 서울에서 메카 방향 {/* Compass */} {/* Outer decorative ring */} {/* Compass face */} {/* Kaaba icon */} 메카 Mecca {/* Needle */} {",
+        "props": "active=\"prayer\" onTabChange={onTabChange}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "SplashScreen",
+    "file": "src/screens/OnboardingScreens.tsx",
+    "line": 6,
+    "links": [],
+    "controls": []
+  },
+  {
+    "name": "OnboardingScreen",
+    "file": "src/screens/OnboardingScreens.tsx",
+    "line": 152,
+    "links": [],
+    "controls": [
+      {
+        "line": 161,
+        "tag": "button",
+        "text": "건너뛰기",
+        "props": "className=\"text-sm font-medium\" style={{ color: \"var(--muted)\" }}",
+        "wired": false
+      },
+      {
+        "line": 181,
+        "tag": "button",
+        "text": "setSlide(i)} className=\"rounded-full transition-all duration-300\" style={{ width: i === slide ? \"24px\" : \"8px\", height: \"8px\", backgroundColor: i === slide ? \"var(--green)\" : \"var(",
+        "props": "key={i} onClick={() => setSlide(i)} className=\"rounded-full transition-all duration-300\" style={{ width: i === slide ? \"24px\" : \"8px\", height: \"8px\", backgroundColor: i === slide ? \"var(--green)\" : \"var(--border)\", }}",
+        "wired": true
+      },
+      {
+        "line": 198,
+        "tag": "button",
+        "text": "setSlide(slide + 1)} className=\"w-full py-4 rounded-2xl font-bold text-white text-base shadow-sm\" style={{ backgroundColor: \"var(--green)\" }} > 다음",
+        "props": "onClick={() => setSlide(slide + 1)} className=\"w-full py-4 rounded-2xl font-bold text-white text-base shadow-sm\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": true
+      },
+      {
+        "line": 207,
+        "tag": "button",
+        "text": "시작하기",
+        "props": "className=\"w-full py-4 rounded-2xl font-bold text-white text-base shadow-sm\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": false
+      },
+      {
+        "line": 213,
+        "tag": "button",
+        "text": "로그인",
+        "props": "className=\"w-full py-3 rounded-2xl font-semibold text-base border\" style={{ color: \"var(--green)\", borderColor: \"var(--green)\" }}",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "SignUpScreen",
+    "file": "src/screens/OnboardingScreens.tsx",
+    "line": 227,
+    "links": [],
+    "controls": [
+      {
+        "line": 250,
+        "tag": "button",
+        "text": "setTab(t)} className=\"flex-1 py-2 rounded-lg text-sm font-semibold transition-all\" style={{ backgroundColor: tab === t ? \"var(--green)\" : \"transparent\", color: tab === t ? \"white\" ",
+        "props": "key={t} onClick={() => setTab(t)} className=\"flex-1 py-2 rounded-lg text-sm font-semibold transition-all\" style={{ backgroundColor: tab === t ? \"var(--green)\" : \"transparent\", color: tab === t ? \"white\" : \"var(--muted)\", }}",
+        "wired": true
+      },
+      {
+        "line": 268,
+        "tag": "input",
+        "text": "이름 setName(e.target.value)} />",
+        "props": "className=\"w-full bg-transparent text-sm text-[#1A1A18] outline-none\" value={name} onChange={e => setName(e.target.value)}",
+        "wired": true
+      },
+      {
+        "line": 272,
+        "tag": "input",
+        "text": "{tab === \"email\" ? \"이메일\" : \"전화번호\"} setEmail(e.target.value)} />",
+        "props": "className=\"w-full bg-transparent text-sm text-[#1A1A18] outline-none\" value={email} onChange={e => setEmail(e.target.value)}",
+        "wired": true
+      },
+      {
+        "line": 276,
+        "tag": "input",
+        "text": "비밀번호 setPw(e.target.value)} />",
+        "props": "type=\"password\" className=\"w-full bg-transparent text-sm text-[#1A1A18] outline-none\" value={pw} onChange={e => setPw(e.target.value)}",
+        "wired": true
+      },
+      {
+        "line": 289,
+        "tag": "button",
+        "text": "카카오로 시작하기",
+        "props": "className=\"w-full flex items-center gap-3 py-3.5 px-5 rounded-2xl font-bold text-sm\" style={{ backgroundColor: \"#FEE500\", color: \"#1A1A18\" }}",
+        "wired": false
+      },
+      {
+        "line": 296,
+        "tag": "button",
+        "text": "Google로 시작하기",
+        "props": "className=\"w-full flex items-center gap-3 py-3.5 px-5 rounded-2xl font-semibold text-sm bg-white border border-[var(--border)] text-[#1A1A18]\"",
+        "wired": false
+      },
+      {
+        "line": 306,
+        "tag": "button",
+        "text": "Apple로 시작하기",
+        "props": "className=\"w-full flex items-center gap-3 py-3.5 px-5 rounded-2xl font-semibold text-sm bg-[#1A1A18] text-white\"",
+        "wired": false
+      },
+      {
+        "line": 315,
+        "tag": "button",
+        "text": "setAgreed(!agreed)} className=\"flex items-start gap-3 text-left\" > {agreed && } 이용약관 및 개인정보처리방침 에 동의합니다",
+        "props": "onClick={() => setAgreed(!agreed)} className=\"flex items-start gap-3 text-left\"",
+        "wired": true
+      },
+      {
+        "line": 334,
+        "tag": "button",
+        "text": "회원가입",
+        "props": "className=\"w-full py-4 rounded-2xl font-bold text-white text-base shadow-sm\" style={{ backgroundColor: agreed ? \"var(--green)\" : \"#9CA3AF\" }}",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "LoginScreen",
+    "file": "src/screens/OnboardingScreens.tsx",
+    "line": 351,
+    "links": [],
+    "controls": [
+      {
+        "line": 404,
+        "tag": "input",
+        "text": "{copy.email} setEmail(e.target.value)} />",
+        "props": "className=\"w-full bg-transparent text-sm text-[#1A1A18] outline-none\" value={email} onChange={e => setEmail(e.target.value)}",
+        "wired": true
+      },
+      {
+        "line": 408,
+        "tag": "input",
+        "text": "{copy.password} setPw(e.target.value)} />",
+        "props": "type=\"password\" className=\"w-full bg-transparent text-sm text-[#1A1A18] outline-none\" value={pw} onChange={e => setPw(e.target.value)}",
+        "wired": true
+      },
+      {
+        "line": 413,
+        "tag": "button",
+        "text": "{copy.forgot}",
+        "props": "type=\"button\" className=\"text-sm font-medium\" style={{ color: \"var(--green)\" }}",
+        "wired": false
+      },
+      {
+        "line": 416,
+        "tag": "button",
+        "text": "{submitting ? copy.checking : copy.login}",
+        "props": "type=\"submit\" disabled={submitting} className=\"w-full py-4 rounded-2xl font-bold text-white text-base shadow-sm disabled:opacity-60\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": false
+      },
+      {
+        "line": 430,
+        "tag": "button",
+        "text": "{ setEmail(accountEmail); setPw(password); setError(\"\"); }} className=\"w-full rounded-xl bg-[var(--cream)] px-3 py-2 text-left\" > {role} {accountEmail} · {password}",
+        "props": "type=\"button\" key={accountEmail} onClick={() => { setEmail(accountEmail); setPw(password); setError(\"\"); }} className=\"w-full rounded-xl bg-[var(--cream)] px-3 py-2 text-left\"",
+        "wired": true
+      },
+      {
+        "line": 449,
+        "tag": "button",
+        "text": "{copy.kakao}",
+        "props": "className=\"w-full flex items-center gap-3 py-3.5 px-5 rounded-2xl font-bold text-sm\" style={{ backgroundColor: \"#FEE500\", color: \"#1A1A18\" }}",
+        "wired": false
+      },
+      {
+        "line": 453,
+        "tag": "button",
+        "text": "{copy.google}",
+        "props": "className=\"w-full flex items-center gap-3 py-3.5 px-5 rounded-2xl font-semibold text-sm bg-white border border-[var(--border)] text-[#1A1A18]\"",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "LanguageScreen",
+    "file": "src/screens/OnboardingScreens.tsx",
+    "line": 477,
+    "links": [],
+    "controls": [
+      {
+        "line": 490,
+        "tag": "button",
+        "text": "setSelected(lang.code)} className=\"w-full flex items-center gap-4 p-4 rounded-2xl bg-white border transition-all text-left\" style={{ borderColor: selected === lang.code ? \"var(--gr",
+        "props": "key={lang.code} onClick={() => setSelected(lang.code)} className=\"w-full flex items-center gap-4 p-4 rounded-2xl bg-white border transition-all text-left\" style={{ borderColor: selected === lang.code ? \"var(--green)\" : \"var(--border)\", boxShadow: selected === ",
+        "wired": true
+      },
+      {
+        "line": 519,
+        "tag": "button",
+        "text": "계속하기 · Continue",
+        "props": "className=\"w-full py-4 rounded-2xl font-bold text-white text-base shadow-sm\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "OrderTrackingScreen",
+    "file": "src/screens/OrderScreens.tsx",
+    "line": 47,
+    "links": [],
+    "controls": [
+      {
+        "line": 55,
+        "tag": "BackButton",
+        "text": "주문 추적",
+        "props": "dark",
+        "wired": false
+      },
+      {
+        "line": 128,
+        "tag": "button",
+        "text": "",
+        "props": "className=\"w-10 h-10 rounded-xl border border-[var(--border)] flex items-center justify-center\"",
+        "wired": false
+      },
+      {
+        "line": 133,
+        "tag": "button",
+        "text": "",
+        "props": "className=\"w-10 h-10 rounded-xl border border-[var(--border)] flex items-center justify-center\"",
+        "wired": false
+      },
+      {
+        "line": 147,
+        "tag": "BottomNav",
+        "text": "{/* Map */} 주문 추적 {/* Bottom sheet */} {/* Handle */} {/* ETA */} 도착까지 약 18분 오후 3:05 도착 예정 {/* Status stepper */} {trackSteps.map((step, i) => ( {i )} {step.active ? ( ) : step.don",
+        "props": "active=\"orders\" onTabChange={onTabChange}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "OrderHistoryScreen",
+    "file": "src/screens/OrderScreens.tsx",
+    "line": 187,
+    "links": [],
+    "controls": [
+      {
+        "line": 196,
+        "tag": "button",
+        "text": "{tab}",
+        "props": "key={tab} className=\"pb-2 text-sm font-semibold border-b-2 transition-all\" style={{ borderColor: i === 1 ? \"var(--green)\" : \"transparent\", color: i === 1 ? \"var(--green)\" : \"var(--muted)\", }}",
+        "wired": false
+      },
+      {
+        "line": 242,
+        "tag": "button",
+        "text": "재주문",
+        "props": "className=\"flex-1 py-3 text-sm font-semibold\" style={{ color: \"var(--green)\" }}",
+        "wired": false
+      },
+      {
+        "line": 245,
+        "tag": "button",
+        "text": "영수증",
+        "props": "className=\"flex-1 py-3 text-sm font-medium text-[var(--muted)]\"",
+        "wired": false
+      },
+      {
+        "line": 255,
+        "tag": "BottomNav",
+        "text": "주문 내역 {/* Tabs */} {[\"진행중 (1)\", \"완료 (12)\"].map((tab, i) => ( {tab} ))} {orderHistory.map((order, i) => ( {order.restaurant} {order.date} · {order.items} ₩{order.total.toLocaleStrin",
+        "props": "active=\"orders\" onTabChange={onTabChange}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "OrderDetailScreen",
+    "file": "src/screens/OrderScreens.tsx",
+    "line": 260,
+    "links": [],
+    "controls": [
+      {
+        "line": 265,
+        "tag": "BackButton",
+        "text": "주문 상세 영수증",
+        "props": "",
+        "wired": false
+      },
+      {
+        "line": 267,
+        "tag": "button",
+        "text": "영수증",
+        "props": "className=\"text-sm font-medium\" style={{ color: \"var(--green)\" }}",
+        "wired": false
+      },
+      {
+        "line": 347,
+        "tag": "button",
+        "text": "재주문",
+        "props": "className=\"flex-1 py-4 rounded-2xl font-bold text-white text-base\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": false
+      },
+      {
+        "line": 350,
+        "tag": "button",
+        "text": "리뷰 쓰기",
+        "props": "className=\"flex-1 py-4 rounded-2xl font-semibold text-sm border\" style={{ color: \"var(--green)\", borderColor: \"var(--green)\" }}",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "PlaceSubmissionScreen",
+    "file": "src/screens/PlaceSubmissionScreen.tsx",
+    "line": 13,
+    "links": [],
+    "controls": [
+      {
+        "line": 16,
+        "tag": "BackButton",
+        "text": "{c.title}",
+        "props": "",
+        "wired": false
+      },
+      {
+        "line": 17,
+        "tag": "button",
+        "text": "setAction(v)} className={`rounded-xl border px-4 py-3 text-sm font-semibold ${action === v ? \"border-[var(--green)] bg-[var(--green-light)] text-[var(--green)]\" : \"border-[var(--bo",
+        "props": "type=\"button\" key={v} onClick={() => setAction(v)} className={`rounded-xl border px-4 py-3 text-sm font-semibold ${action === v ? \"border-[var(--green)] bg-[var(--green-light)] text-[var(--green)]\" : \"border-[var(--border)] bg-white\"}`}",
+        "wired": true
+      },
+      {
+        "line": 18,
+        "tag": "select",
+        "text": "setType(e.target.value as PlaceType)} className=\"mt-2 w-full rounded-xl border border-[var(--border)] bg-white p-3 font-normal\"> {c.restaurant} {c.mosque} {c.prayer_room}",
+        "props": "value={type} onChange={e => setType(e.target.value as PlaceType)} className=\"mt-2 w-full rounded-xl border border-[var(--border)] bg-white p-3 font-normal\"",
+        "wired": true
+      },
+      {
+        "line": 19,
+        "tag": "input",
+        "text": "{c.name} setName(e.target.value)} className=\"mt-2 w-full rounded-xl border border-[var(--border)] bg-white p-3 font-normal\" />",
+        "props": "required value={name} onChange={e => setName(e.target.value)} className=\"mt-2 w-full rounded-xl border border-[var(--border)] bg-white p-3 font-normal\"",
+        "wired": true
+      },
+      {
+        "line": 20,
+        "tag": "input",
+        "text": "{c.address} setAddress(e.target.value)} className=\"mt-2 w-full rounded-xl border border-[var(--border)] bg-white p-3 font-normal\" />",
+        "props": "required value={address} onChange={e => setAddress(e.target.value)} className=\"mt-2 w-full rounded-xl border border-[var(--border)] bg-white p-3 font-normal\"",
+        "wired": true
+      },
+      {
+        "line": 21,
+        "tag": "textarea",
+        "text": "{c.details} setDetails(e.target.value)} className=\"mt-2 h-28 w-full resize-none rounded-xl border border-[var(--border)] bg-white p-3 font-normal\" />",
+        "props": "value={details} onChange={e => setDetails(e.target.value)} className=\"mt-2 h-28 w-full resize-none rounded-xl border border-[var(--border)] bg-white p-3 font-normal\"",
+        "wired": true
+      },
+      {
+        "line": 22,
+        "tag": "button",
+        "text": "{c.submit}",
+        "props": "disabled={busy} className=\"w-full rounded-xl bg-[var(--green)] py-3.5 font-bold text-white disabled:opacity-60\"",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "ProfileScreen",
+    "file": "src/screens/ProfileScreens.tsx",
+    "line": 17,
+    "links": [],
+    "controls": [
+      {
+        "line": 36,
+        "tag": "button",
+        "text": "",
+        "props": "className=\"w-8 h-8 bg-white/15 rounded-lg flex items-center justify-center\"",
+        "wired": false
+      },
+      {
+        "line": 57,
+        "tag": "button",
+        "text": "{item.icon} {item.label} {item.sub && {item.sub} }",
+        "props": "key={item.label} className=\"w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[var(--cream)]\"",
+        "wired": false
+      },
+      {
+        "line": 74,
+        "tag": "button",
+        "text": "Chiqish",
+        "props": "onClick={onLogout} className=\"w-full py-3 rounded-2xl font-semibold text-sm border border-[var(--danger)] text-[var(--danger)]\"",
+        "wired": true
+      },
+      {
+        "line": 80,
+        "tag": "BottomNav",
+        "text": "{/* Header */} 김 김무함마드 muhammad@example.com 일반 회원 · 3,200 포인트 {/* Stats row */} {[{ label: \"총 주문\", val: \"12회\" }, { label: \"리뷰\", val: \"8개\" }, { label: \"저장\", val: \"5개\" }].map((s) => ",
+        "props": "active=\"profile\" onTabChange={onTabChange}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "SavedPlacesScreen",
+    "file": "src/screens/ProfileScreens.tsx",
+    "line": 96,
+    "links": [],
+    "controls": [
+      {
+        "line": 104,
+        "tag": "BackButton",
+        "text": "저장된 장소",
+        "props": "",
+        "wired": false
+      },
+      {
+        "line": 109,
+        "tag": "button",
+        "text": "setTab(t)} className=\"flex-1 py-2 rounded-lg text-sm font-semibold transition-all\" style={{ backgroundColor: tab === t ? \"var(--green)\" : \"transparent\", color: tab === t ? \"white\" ",
+        "props": "key={t} onClick={() => setTab(t)} className=\"flex-1 py-2 rounded-lg text-sm font-semibold transition-all\" style={{ backgroundColor: tab === t ? \"var(--green)\" : \"transparent\", color: tab === t ? \"white\" : \"var(--muted)\", }}",
+        "wired": true
+      },
+      {
+        "line": 138,
+        "tag": "button",
+        "text": "주문하기",
+        "props": "className=\"flex-1 py-2 rounded-xl text-xs font-bold text-white\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": false
+      },
+      {
+        "line": 139,
+        "tag": "button",
+        "text": "",
+        "props": "className=\"w-8 h-8 rounded-xl border border-[var(--border)] flex items-center justify-center\"",
+        "wired": false
+      },
+      {
+        "line": 156,
+        "tag": "button",
+        "text": "",
+        "props": "className=\"w-8 h-8 rounded-xl border border-[var(--border)] flex items-center justify-center\"",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "AddressScreen",
+    "file": "src/screens/ProfileScreens.tsx",
+    "line": 174,
+    "links": [],
+    "controls": [
+      {
+        "line": 179,
+        "tag": "BackButton",
+        "text": "배달 주소 관리",
+        "props": "",
+        "wired": false
+      },
+      {
+        "line": 204,
+        "tag": "button",
+        "text": "",
+        "props": "className=\"w-8 h-8 rounded-lg bg-[var(--cream)] flex items-center justify-center\"",
+        "wired": false
+      },
+      {
+        "line": 208,
+        "tag": "button",
+        "text": "",
+        "props": "className=\"w-8 h-8 rounded-lg bg-[var(--cream)] flex items-center justify-center\"",
+        "wired": false
+      },
+      {
+        "line": 215,
+        "tag": "button",
+        "text": "기본 주소로 설정",
+        "props": "className=\"mt-2 text-xs font-medium ml-13 pl-13\" style={{ color: \"var(--green)\", paddingLeft: \"52px\" }}",
+        "wired": false
+      },
+      {
+        "line": 223,
+        "tag": "button",
+        "text": "새 주소 추가",
+        "props": "className=\"w-full py-4 rounded-2xl border-2 border-dashed border-[var(--border)] flex items-center justify-center gap-2 font-semibold text-sm\" style={{ color: \"var(--muted)\" }}",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "SettingsScreen",
+    "file": "src/screens/ProfileScreens.tsx",
+    "line": 244,
+    "links": [],
+    "controls": [
+      {
+        "line": 255,
+        "tag": "BackButton",
+        "text": "설정",
+        "props": "",
+        "wired": false
+      },
+      {
+        "line": 301,
+        "tag": "button",
+        "text": "setTheme(t)} className=\"flex-1 py-2.5 rounded-xl text-sm font-semibold border transition-all\" style={{ backgroundColor: theme === t ? \"var(--green)\" : \"white\", color: theme === t ?",
+        "props": "key={t} onClick={() => setTheme(t)} className=\"flex-1 py-2.5 rounded-xl text-sm font-semibold border transition-all\" style={{ backgroundColor: theme === t ? \"var(--green)\" : \"white\", color: theme === t ? \"white\" : \"var(--muted)\", borderColor: theme === t ? \"va",
+        "wired": true
+      },
+      {
+        "line": 317,
+        "tag": "button",
+        "text": "할랄 인증 기관 KMF, JAKIM, IFANCA",
+        "props": "className=\"w-full flex items-center justify-between px-5 py-4\"",
+        "wired": false
+      },
+      {
+        "line": 332,
+        "tag": "button",
+        "text": "{item}",
+        "props": "key={item} className=\"w-full flex items-center justify-between px-5 py-4\"",
+        "wired": false
+      },
+      {
+        "line": 337,
+        "tag": "button",
+        "text": "데이터 삭제 요청",
+        "props": "className=\"w-full flex items-center justify-between px-5 py-4\"",
+        "wired": false
+      },
+      {
+        "line": 348,
+        "tag": "button",
+        "text": "{item}",
+        "props": "key={item} className=\"w-full flex items-center justify-between px-5 py-4\"",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "LoyaltyScreen",
+    "file": "src/screens/RewardsScreens.tsx",
+    "line": 100,
+    "links": [],
+    "controls": [
+      {
+        "line": 113,
+        "tag": "BackButton",
+        "text": "할랄 포인트",
+        "props": "dark",
+        "wired": false
+      },
+      {
+        "line": 152,
+        "tag": "button",
+        "text": "setTab(t)} className=\"flex-1 py-3 text-xs font-bold transition-colors border-b-2\" style={{ borderColor: tab === t ? \"var(--green)\" : \"transparent\", color: tab === t ? \"var(--green)",
+        "props": "key={t} onClick={() => setTab(t)} className=\"flex-1 py-3 text-xs font-bold transition-colors border-b-2\" style={{ borderColor: tab === t ? \"var(--green)\" : \"transparent\", color: tab === t ? \"var(--green)\" : \"var(--muted)\" }}",
+        "wired": true
+      },
+      {
+        "line": 207,
+        "tag": "button",
+        "text": "사용하기",
+        "props": "className=\"w-full py-2.5 rounded-xl font-bold text-sm\" style={{ backgroundColor: \"var(--gold)\", color: \"white\" }}",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "ReferralScreen",
+    "file": "src/screens/RewardsScreens.tsx",
+    "line": 249,
+    "links": [],
+    "controls": [
+      {
+        "line": 266,
+        "tag": "BackButton",
+        "text": "친구 초대",
+        "props": "dark",
+        "wired": false
+      },
+      {
+        "line": 284,
+        "tag": "button",
+        "text": "{copied ? \"복사됨!\" : \"복사\"}",
+        "props": "onClick={handleCopy} className=\"px-4 py-3 rounded-xl font-bold text-sm transition-all\" style={{ backgroundColor: copied ? \"var(--green)\" : \"var(--gold)\", color: \"white\" }}",
+        "wired": true
+      },
+      {
+        "line": 305,
+        "tag": "button",
+        "text": "{s.icon} {s.label}",
+        "props": "key={s.label} className=\"flex flex-col items-center gap-1.5\"",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "RoleApplicationScreen",
+    "file": "src/screens/RoleApplicationScreen.tsx",
+    "line": 6,
+    "links": [],
+    "controls": [
+      {
+        "line": 9,
+        "tag": "BackButton",
+        "text": "{role === \"courier\" ? \"Kuryer portali\" : \"Oshxona egasi portali\"}",
+        "props": "",
+        "wired": false
+      },
+      {
+        "line": 10,
+        "tag": "button",
+        "text": "{ setTab(v); setMessage(\"\"); }} className={`rounded-lg py-2.5 text-sm font-bold ${tab === v ? \"bg-[var(--green)] text-white\" : \"text-[var(--muted)]\"}`}>{v === \"login\" ? \"Kirish\" : ",
+        "props": "type=\"button\" key={v} onClick={() => { setTab(v); setMessage(\"\"); }} className={`rounded-lg py-2.5 text-sm font-bold ${tab === v ? \"bg-[var(--green)] text-white\" : \"text-[var(--muted)]\"}`}",
+        "wired": true
+      },
+      {
+        "line": 13,
+        "tag": "button",
+        "text": "{busy ? \"Tekshirilmoqda…\" : tab === \"login\" ? \"Ish paneliga kirish\" : \"Ro‘yxatdan o‘tish arizasini yuborish\"}",
+        "props": "disabled={busy} className=\"w-full rounded-xl bg-[var(--green)] py-3.5 font-bold text-white disabled:opacity-60\"",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "ScannerScreen",
+    "file": "src/screens/ScannerScreens.tsx",
+    "line": 5,
+    "links": [],
+    "controls": [
+      {
+        "line": 14,
+        "tag": "BackButton",
+        "text": "할랄 스캐너 setFlash(!flash)} className=\"w-9 h-9 rounded-full flex items-center justify-center transition-colors\" style={{ backgroundColor: flash ? \"#FCD34D\" : \"rgba(255,255,255,0.15)\" ",
+        "props": "dark",
+        "wired": false
+      },
+      {
+        "line": 16,
+        "tag": "button",
+        "text": "setFlash(!flash)} className=\"w-9 h-9 rounded-full flex items-center justify-center transition-colors\" style={{ backgroundColor: flash ? \"#FCD34D\" : \"rgba(255,255,255,0.15)\" }} >",
+        "props": "onClick={() => setFlash(!flash)} className=\"w-9 h-9 rounded-full flex items-center justify-center transition-colors\" style={{ backgroundColor: flash ? \"#FCD34D\" : \"rgba(255,255,255,0.15)\" }}",
+        "wired": true
+      },
+      {
+        "line": 93,
+        "tag": "button",
+        "text": "갤러리에서 선택",
+        "props": "className=\"flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl border border-white/20 text-white font-semibold text-sm\"",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "ScanResultScreen",
+    "file": "src/screens/ScannerScreens.tsx",
+    "line": 148,
+    "links": [],
+    "controls": [
+      {
+        "line": 156,
+        "tag": "BackButton",
+        "text": "스캔 결과 공유",
+        "props": "",
+        "wired": false
+      },
+      {
+        "line": 158,
+        "tag": "button",
+        "text": "공유",
+        "props": "className=\"text-sm font-medium\" style={{ color: \"var(--muted)\" }}",
+        "wired": false
+      },
+      {
+        "line": 260,
+        "tag": "button",
+        "text": "오류 신고",
+        "props": "className=\"text-xs font-medium px-3 py-2 rounded-xl border border-[var(--border)]\" style={{ color: \"var(--muted)\" }}",
+        "wired": false
+      },
+      {
+        "line": 265,
+        "tag": "button",
+        "text": "다시 스캔하기",
+        "props": "className=\"w-full py-4 rounded-2xl font-bold text-white text-base\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "ScanHistoryScreen",
+    "file": "src/screens/ScannerScreens.tsx",
+    "line": 286,
+    "links": [],
+    "controls": [
+      {
+        "line": 291,
+        "tag": "BackButton",
+        "text": "스캔 기록 전체 삭제",
+        "props": "",
+        "wired": false
+      },
+      {
+        "line": 293,
+        "tag": "button",
+        "text": "전체 삭제",
+        "props": "className=\"text-sm font-medium\" style={{ color: \"var(--danger)\" }}",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "SearchScreen",
+    "file": "src/screens/SearchScreens.tsx",
+    "line": 14,
+    "links": [],
+    "controls": [
+      {
+        "line": 30,
+        "tag": "input",
+        "text": "setQuery(e.target.value)} placeholder={copy.placeholder} className=\"flex-1 bg-transparent text-sm text-[#1A1A18] outline-none placeholder:text-[var(--muted)]\" /> {query && ( setQue",
+        "props": "value={query} onChange={(e) => setQuery(e.target.value)} placeholder={copy.placeholder} className=\"flex-1 bg-transparent text-sm text-[#1A1A18] outline-none placeholder:text-[var(--muted)]\"",
+        "wired": true
+      },
+      {
+        "line": 37,
+        "tag": "button",
+        "text": "setQuery(\"\")} className=\"text-[var(--muted)]\">",
+        "props": "onClick={() => setQuery(\"\")} className=\"text-[var(--muted)]\"",
+        "wired": true
+      },
+      {
+        "line": 48,
+        "tag": "button",
+        "text": "{copy.voice}",
+        "props": "className=\"flex flex-col items-center gap-2\"",
+        "wired": false
+      },
+      {
+        "line": 65,
+        "tag": "button",
+        "text": "{copy.clear}",
+        "props": "className=\"text-xs font-medium\" style={{ color: \"var(--muted)\" }}",
+        "wired": false
+      },
+      {
+        "line": 77,
+        "tag": "button",
+        "text": "",
+        "props": "className=\"text-[var(--muted)]\"",
+        "wired": false
+      },
+      {
+        "line": 106,
+        "tag": "button",
+        "text": "{categoryIcons[index]} {label}",
+        "props": "key={label} className=\"flex flex-col items-center gap-2 py-4 bg-white rounded-2xl border border-[var(--border)]\"",
+        "wired": false
+      },
+      {
+        "line": 116,
+        "tag": "BottomNav",
+        "text": "{copy.title} {/* Search bar */} setQuery(e.target.value)} placeholder={copy.placeholder} className=\"flex-1 bg-transparent text-sm text-[#1A1A18] outline-none placeholder:text-[var(",
+        "props": "active=\"search\" onTabChange={onTabChange}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "MapViewScreen",
+    "file": "src/screens/SearchScreens.tsx",
+    "line": 157,
+    "links": [],
+    "controls": [
+      {
+        "line": 188,
+        "tag": "button",
+        "text": "",
+        "props": "className=\"w-10 h-10 bg-white/95 backdrop-blur rounded-xl flex items-center justify-center shadow-sm\"",
+        "wired": false
+      },
+      {
+        "line": 200,
+        "tag": "button",
+        "text": "setActiveFilter(f)} className=\"flex-shrink-0 px-4 py-2 rounded-xl text-xs font-semibold shadow-sm transition-all\" style={{ backgroundColor: activeFilter === f ? \"var(--green)\" : \"w",
+        "props": "key={f} onClick={() => setActiveFilter(f)} className=\"flex-shrink-0 px-4 py-2 rounded-xl text-xs font-semibold shadow-sm transition-all\" style={{ backgroundColor: activeFilter === f ? \"var(--green)\" : \"white\", color: activeFilter === f ? \"white\" : \"var(--charc",
+        "wired": true
+      },
+      {
+        "line": 220,
+        "tag": "button",
+        "text": "",
+        "props": "className=\"w-10 h-10 bg-white rounded-xl shadow-md flex items-center justify-center\"",
+        "wired": false
+      },
+      {
+        "line": 243,
+        "tag": "BottomNav",
+        "text": "{/* Map */} {/* Render pins */} {mapPins.map((pin, i) => ( ))} {/* Status bar overlay */} {/* Top search bar */} 이 지역 검색 {/* Filters */} {[\"레스토랑\", \"모스크\", \"기도실\"].map((f) => ( setAct",
+        "props": "active=\"search\" onTabChange={onTabChange}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "CitySelectorScreen",
+    "file": "src/screens/SearchScreens.tsx",
+    "line": 258,
+    "links": [],
+    "controls": [
+      {
+        "line": 266,
+        "tag": "BackButton",
+        "text": "방문 도시 선택",
+        "props": "",
+        "wired": false
+      },
+      {
+        "line": 275,
+        "tag": "input",
+        "text": "setSearch(e.target.value)} placeholder=\"도시 또는 지역 검색...\" className=\"flex-1 bg-transparent text-sm outline-none placeholder:text-[var(--muted)]\" />",
+        "props": "value={search} onChange={(e) => setSearch(e.target.value)} placeholder=\"도시 또는 지역 검색...\" className=\"flex-1 bg-transparent text-sm outline-none placeholder:text-[var(--muted)]\"",
+        "wired": true
+      },
+      {
+        "line": 310,
+        "tag": "button",
+        "text": "부산 할랄 보기 →",
+        "props": "className=\"mt-2 text-xs font-bold px-3 py-1.5 rounded-lg\" style={{ backgroundColor: \"var(--gold)\", color: \"white\" }}",
+        "wired": false
+      },
+      {
+        "line": 321,
+        "tag": "button",
+        "text": "{city.name} {city.count}개 할랄",
+        "props": "key={city.name} className=\"relative h-24 rounded-2xl overflow-hidden text-left\"",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "RestaurantMapDetailScreen",
+    "file": "src/screens/SearchScreens.tsx",
+    "line": 345,
+    "links": [],
+    "controls": [
+      {
+        "line": 375,
+        "tag": "BackButton",
+        "text": "",
+        "props": "",
+        "wired": false
+      },
+      {
+        "line": 401,
+        "tag": "button",
+        "text": "메뉴 보기",
+        "props": "className=\"flex-1 py-2.5 rounded-xl font-bold text-white text-sm\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": false
+      },
+      {
+        "line": 402,
+        "tag": "button",
+        "text": "길 찾기",
+        "props": "className=\"flex-1 py-2.5 rounded-xl font-semibold text-sm border\" style={{ color: \"var(--green)\", borderColor: \"var(--green)\" }}",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "AIMealScreen",
+    "file": "src/screens/SmartScreens.tsx",
+    "line": 38,
+    "links": [],
+    "controls": [
+      {
+        "line": 57,
+        "tag": "BackButton",
+        "text": "AI 맞춤 추천 오늘 오후 5:47 · 이태원 · 🌧️ 12°C",
+        "props": "",
+        "wired": false
+      },
+      {
+        "line": 122,
+        "tag": "button",
+        "text": "바로 주문",
+        "props": "className=\"px-5 py-3 rounded-xl font-bold text-white text-sm\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": false
+      },
+      {
+        "line": 132,
+        "tag": "button",
+        "text": "swipe(\"left\")} className=\"w-14 h-14 rounded-full border-2 border-[#EF4444] flex items-center justify-center shadow-sm\" style={{ backgroundColor: \"white\" }} >",
+        "props": "onClick={() => swipe(\"left\")} className=\"w-14 h-14 rounded-full border-2 border-[#EF4444] flex items-center justify-center shadow-sm\" style={{ backgroundColor: \"white\" }}",
+        "wired": true
+      },
+      {
+        "line": 142,
+        "tag": "button",
+        "text": "",
+        "props": "className=\"w-10 h-10 rounded-full border border-[var(--gold)] flex items-center justify-center\" style={{ backgroundColor: \"var(--gold-light)\" }}",
+        "wired": false
+      },
+      {
+        "line": 148,
+        "tag": "button",
+        "text": "swipe(\"right\")} className=\"w-14 h-14 rounded-full border-2 border-[var(--green)] flex items-center justify-center shadow-sm\" style={{ backgroundColor: \"white\" }} >",
+        "props": "onClick={() => swipe(\"right\")} className=\"w-14 h-14 rounded-full border-2 border-[var(--green)] flex items-center justify-center shadow-sm\" style={{ backgroundColor: \"white\" }}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "GroupOrderScreen",
+    "file": "src/screens/SmartScreens.tsx",
+    "line": 173,
+    "links": [],
+    "controls": [
+      {
+        "line": 184,
+        "tag": "BackButton",
+        "text": "그룹 주문 신당 할랄 키친 초대 링크",
+        "props": "",
+        "wired": false
+      },
+      {
+        "line": 189,
+        "tag": "button",
+        "text": "초대 링크",
+        "props": "className=\"text-sm font-bold px-3 py-1.5 rounded-xl\" style={{ backgroundColor: \"var(--green-light)\", color: \"var(--green)\" }}",
+        "wired": false
+      },
+      {
+        "line": 197,
+        "tag": "button",
+        "text": "setTab(t)} className=\"flex-1 py-2 rounded-lg text-sm font-semibold transition-all\" style={{ backgroundColor: tab === t ? \"var(--green)\" : \"transparent\", color: tab === t ? \"white\" ",
+        "props": "key={t} onClick={() => setTab(t)} className=\"flex-1 py-2 rounded-lg text-sm font-semibold transition-all\" style={{ backgroundColor: tab === t ? \"var(--green)\" : \"transparent\", color: tab === t ? \"white\" : \"var(--muted)\" }}",
+        "wired": true
+      },
+      {
+        "line": 292,
+        "tag": "button",
+        "text": "카카오페이 요청",
+        "props": "className=\"flex-1 py-3 rounded-xl text-sm font-bold text-white\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": false
+      },
+      {
+        "line": 293,
+        "tag": "button",
+        "text": "토스 정산",
+        "props": "className=\"flex-1 py-3 rounded-xl text-sm font-semibold border\" style={{ color: \"var(--green)\", borderColor: \"var(--green)\" }}",
+        "wired": false
+      },
+      {
+        "line": 301,
+        "tag": "button",
+        "text": "{readyCount === groupMembers.length ? `₩${(grandTotal + deliveryFee).toLocaleString()} 그룹 주문 완료` : `${groupMembers.length - readyCount}명 대기중...`}",
+        "props": "className=\"w-full py-4 rounded-2xl font-bold text-white text-base\" style={{ backgroundColor: readyCount === groupMembers.length ? \"var(--green)\" : \"#9CA3AF\" }}",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "MealPlansScreen",
+    "file": "src/screens/SmartScreens.tsx",
+    "line": 318,
+    "links": [],
+    "controls": [
+      {
+        "line": 328,
+        "tag": "BackButton",
+        "text": "밀플랜 구독",
+        "props": "dark",
+        "wired": false
+      },
+      {
+        "line": 346,
+        "tag": "button",
+        "text": "setActiveWeek(i)} className=\"flex-1 py-2.5 rounded-xl text-sm font-semibold border transition-all\" style={{ backgroundColor: activeWeek === i ? \"var(--green)\" : \"white\", color: act",
+        "props": "key={w} onClick={() => setActiveWeek(i)} className=\"flex-1 py-2.5 rounded-xl text-sm font-semibold border transition-all\" style={{ backgroundColor: activeWeek === i ? \"var(--green)\" : \"white\", color: activeWeek === i ? \"white\" : \"var(--muted)\", borderColor: ac",
+        "wired": true
+      },
+      {
+        "line": 382,
+        "tag": "button",
+        "text": "변경",
+        "props": "className=\"text-xs text-[var(--muted)] underline\"",
+        "wired": false
+      },
+      {
+        "line": 426,
+        "tag": "button",
+        "text": "선택",
+        "props": "className=\"text-xs font-bold\" style={{ color: \"var(--green)\" }}",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "GroceryScreen",
+    "file": "src/screens/SmartScreens.tsx",
+    "line": 450,
+    "links": [],
+    "controls": [
+      {
+        "line": 460,
+        "tag": "BackButton",
+        "text": "할랄 식료품",
+        "props": "",
+        "wired": false
+      },
+      {
+        "line": 465,
+        "tag": "input",
+        "text": "setSearchQuery(e.target.value)} placeholder=\"제품 또는 브랜드 검색...\" className=\"flex-1 bg-transparent text-sm outline-none\" />",
+        "props": "value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder=\"제품 또는 브랜드 검색...\" className=\"flex-1 bg-transparent text-sm outline-none\"",
+        "wired": true
+      },
+      {
+        "line": 469,
+        "tag": "button",
+        "text": "setActiveTab(t)} className=\"flex-1 py-2 rounded-lg text-sm font-semibold transition-all\" style={{ backgroundColor: activeTab === t ? \"var(--green)\" : \"transparent\", color: activeTa",
+        "props": "key={t} onClick={() => setActiveTab(t)} className=\"flex-1 py-2 rounded-lg text-sm font-semibold transition-all\" style={{ backgroundColor: activeTab === t ? \"var(--green)\" : \"transparent\", color: activeTab === t ? \"white\" : \"var(--muted)\" }}",
+        "wired": true
+      },
+      {
+        "line": 507,
+        "tag": "button",
+        "text": "제품 보기",
+        "props": "className=\"text-xs font-bold px-3 py-1.5 rounded-xl\" style={{ backgroundColor: \"var(--green-light)\", color: \"var(--green)\" }}",
+        "wired": false
+      },
+      {
+        "line": 540,
+        "tag": "button",
+        "text": "",
+        "props": "className=\"w-8 h-8 rounded-xl flex items-center justify-center self-end flex-shrink-0\" style={{ backgroundColor: prod.available ? \"var(--green)\" : \"#E5E7EB\" }}",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "TravelPlannerScreen",
+    "file": "src/screens/TravelScreens.tsx",
+    "line": 18,
+    "links": [],
+    "controls": [
+      {
+        "line": 29,
+        "tag": "BackButton",
+        "text": "여행 계획",
+        "props": "dark",
+        "wired": false
+      },
+      {
+        "line": 39,
+        "tag": "input",
+        "text": "setCity(e.target.value)} className=\"flex-1 text-sm text-[#1A1A18] outline-none bg-transparent font-semibold\" placeholder=\"도시 입력...\" />",
+        "props": "value={city} onChange={e => setCity(e.target.value)} className=\"flex-1 text-sm text-[#1A1A18] outline-none bg-transparent font-semibold\" placeholder=\"도시 입력...\"",
+        "wired": true
+      },
+      {
+        "line": 47,
+        "tag": "input",
+        "text": "setDates(e.target.value)} className=\"flex-1 text-sm text-[#1A1A18] outline-none bg-transparent\" placeholder=\"날짜 입력...\" />",
+        "props": "value={dates} onChange={e => setDates(e.target.value)} className=\"flex-1 text-sm text-[#1A1A18] outline-none bg-transparent\" placeholder=\"날짜 입력...\"",
+        "wired": true
+      },
+      {
+        "line": 58,
+        "tag": "button",
+        "text": "+ 새 여행",
+        "props": "className=\"text-xs font-medium\" style={{ color: \"var(--green)\" }}",
+        "wired": false
+      },
+      {
+        "line": 131,
+        "tag": "button",
+        "text": "",
+        "props": "className=\"w-7 h-7 rounded-lg flex items-center justify-center\" style={{ backgroundColor: \"var(--cream)\" }}",
+        "wired": false
+      },
+      {
+        "line": 143,
+        "tag": "button",
+        "text": "여행 저장",
+        "props": "className=\"flex-1 py-4 rounded-2xl font-bold text-white text-sm\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": false
+      },
+      {
+        "line": 146,
+        "tag": "button",
+        "text": "공유하기",
+        "props": "className=\"flex-1 py-4 rounded-2xl font-semibold text-sm border\" style={{ color: \"var(--green)\", borderColor: \"var(--green)\" }}",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "OfflinePrayerScreen",
+    "file": "src/screens/TravelScreens.tsx",
+    "line": 174,
+    "links": [],
+    "controls": [
+      {
+        "line": 191,
+        "tag": "BackButton",
+        "text": "오프라인 기도 시간 인터넷 없이 사용 가능",
+        "props": "",
+        "wired": false
+      },
+      {
+        "line": 257,
+        "tag": "button",
+        "text": "삭제",
+        "props": "className=\"text-xs text-[var(--muted)]\"",
+        "wired": false
+      },
+      {
+        "line": 263,
+        "tag": "button",
+        "text": "handleDownload(city.name)} className=\"w-8 h-8 rounded-xl flex items-center justify-center\" style={{ backgroundColor: \"var(--green)\" }} >",
+        "props": "onClick={() => handleDownload(city.name)} className=\"w-8 h-8 rounded-xl flex items-center justify-center\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "CourierApp",
+    "file": "src/courier/CourierApp.tsx",
+    "line": 80,
+    "links": [],
+    "controls": [
+      {
+        "line": 115,
+        "tag": "button",
+        "text": "setActive(screen.id)} className=\"w-full text-left px-3 py-2.5 rounded-xl text-xs font-medium transition-all\" style={{ backgroundColor: active === screen.id ? SIDEBAR_ACTIVE : \"tran",
+        "props": "key={screen.id} onClick={() => setActive(screen.id)} className=\"w-full text-left px-3 py-2.5 rounded-xl text-xs font-medium transition-all\" style={{ backgroundColor: active === screen.id ? SIDEBAR_ACTIVE : \"transparent\", color: active === screen.id ? C.green :",
+        "wired": true
+      },
+      {
+        "line": 133,
+        "tag": "button",
+        "text": "← Asosiy ilovaga qaytish",
+        "props": "onClick={onSwitch} className=\"w-full py-3 rounded-xl text-xs font-bold transition-all\" style={{ backgroundColor: C.card, color: C.muted, border: `1px solid ${C.border}` }}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "CStatusBar",
+    "file": "src/courier/CourierShared.tsx",
+    "line": 29,
+    "links": [],
+    "controls": []
+  },
+  {
+    "name": "CBottomNav",
+    "file": "src/courier/CourierShared.tsx",
+    "line": 53,
+    "links": [],
+    "controls": [
+      {
+        "line": 57,
+        "tag": "button",
+        "text": "onTabChange?.(item.id)} className=\"flex flex-col items-center gap-1 flex-1 py-1 transition-opacity active:opacity-70\"> {item.icon(active === item.id)} {item.label}",
+        "props": "key={item.id} onClick={() => onTabChange?.(item.id)} className=\"flex flex-col items-center gap-1 flex-1 py-1 transition-opacity active:opacity-70\"",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "SwipeConfirm",
+    "file": "src/courier/CourierShared.tsx",
+    "line": 69,
+    "links": [],
+    "controls": []
+  },
+  {
+    "name": "DarkRouteMap",
+    "file": "src/courier/CourierShared.tsx",
+    "line": 120,
+    "links": [],
+    "controls": []
+  },
+  {
+    "name": "EarningsChip",
+    "file": "src/courier/CourierShared.tsx",
+    "line": 226,
+    "links": [],
+    "controls": []
+  },
+  {
+    "name": "CSectionLabel",
+    "file": "src/courier/CourierShared.tsx",
+    "line": 239,
+    "links": [],
+    "controls": []
+  },
+  {
+    "name": "CRow",
+    "file": "src/courier/CourierShared.tsx",
+    "line": 246,
+    "links": [],
+    "controls": [
+      {
+        "line": 249,
+        "tag": "button",
+        "text": "{icon} {label} {value && {value} }",
+        "props": "onClick={onClick} className=\"w-full flex items-center gap-4 px-5 py-4 transition-colors active:opacity-70\" style={{ borderBottom: `1px solid ${C.border}` }}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "CLargeToggle",
+    "file": "src/courier/CourierShared.tsx",
+    "line": 265,
+    "links": [],
+    "controls": []
+  },
+  {
+    "name": "EarningsDashboard",
+    "file": "src/courier/EarningsScreens.tsx",
+    "line": 26,
+    "links": [],
+    "controls": [
+      {
+        "line": 59,
+        "tag": "button",
+        "text": "setTab(t)} className=\"flex-1 py-3 rounded-2xl font-bold text-sm transition-all\" style={{ backgroundColor: tab === t ? C.green : C.card, color: tab === t ? \"#0E1620\" : C.muted, }}> ",
+        "props": "key={t} onClick={() => setTab(t)} className=\"flex-1 py-3 rounded-2xl font-bold text-sm transition-all\" style={{ backgroundColor: tab === t ? C.green : C.card, color: tab === t ? \"#0E1620\" : C.muted, }}",
+        "wired": true
+      },
+      {
+        "line": 151,
+        "tag": "CBottomNav",
+        "text": "{/* Header */} 수익 현황 ₩{displayData.total.toLocaleString()} {/* Tabs */} {([\"today\", \"week\", \"month\"] as const).map(t => ( setTab(t)} className=\"flex-1 py-3 rounded-2xl font-bold te",
+        "props": "active=\"earnings\"",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "DeliveryHistory",
+    "file": "src/courier/EarningsScreens.tsx",
+    "line": 157,
+    "links": [],
+    "controls": [
+      {
+        "line": 170,
+        "tag": "button",
+        "text": "setSelectedFilter(f)} className=\"px-4 py-1.5 rounded-full text-xs font-bold transition-all\" style={{ backgroundColor: selectedFilter === f ? C.green : C.card, color: selectedFilter",
+        "props": "key={f} onClick={() => setSelectedFilter(f)} className=\"px-4 py-1.5 rounded-full text-xs font-bold transition-all\" style={{ backgroundColor: selectedFilter === f ? C.green : C.card, color: selectedFilter === f ? \"#0E1620\" : C.muted, }}",
+        "wired": true
+      },
+      {
+        "line": 237,
+        "tag": "CBottomNav",
+        "text": "{/* Header */} 배달 내역 {filters.map(f => ( setSelectedFilter(f)} className=\"px-4 py-1.5 rounded-full text-xs font-bold transition-all\" style={{ backgroundColor: selectedFilter === f ",
+        "props": "active=\"earnings\"",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "PayoutScreen",
+    "file": "src/courier/EarningsScreens.tsx",
+    "line": 250,
+    "links": [],
+    "controls": [
+      {
+        "line": 274,
+        "tag": "button",
+        "text": "계좌 변경",
+        "props": "className=\"px-4 py-2 rounded-xl text-xs font-bold\" style={{ backgroundColor: C.borderBright, color: C.muted }}",
+        "wired": false
+      },
+      {
+        "line": 332,
+        "tag": "CBottomNav",
+        "text": "정산 내역 {/* Bank account card */} 정산 계좌 💛 카카오뱅크 3333-**** - ****-4521 계좌 변경 {/* Pending payout */} 미정산 금액 정산 예정 ₩426,500 다음 정산일 · 2024년 11월 27일 (수) {/* Payout schedule info */} 정산 안",
+        "props": "active=\"earnings\"",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "GoOnlineScreen",
+    "file": "src/courier/MainFlowScreens.tsx",
+    "line": 5,
+    "links": [],
+    "controls": [
+      {
+        "line": 127,
+        "tag": "CBottomNav",
+        "text": "{/* Zone + date bar */} 이태원 · 한남 11월 24일 일요일 {/* Main toggle area */} {/* Big toggle circle */} {/* Outer pulse ring */} {online && ( <> )} {/* Main button */} {online ? ( <> 배달 중 ",
+        "props": "active=\"home\"",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "OrderFeedScreen",
+    "file": "src/courier/MainFlowScreens.tsx",
+    "line": 140,
+    "links": [],
+    "controls": [
+      {
+        "line": 220,
+        "tag": "button",
+        "text": "accept(order.id)} className=\"w-full py-4 rounded-2xl font-bold text-base transition-opacity active:opacity-80\" style={{ backgroundColor: C.green, color: \"#0E1620\" }}> 수락하기 →",
+        "props": "onClick={() => accept(order.id)} className=\"w-full py-4 rounded-2xl font-bold text-base transition-opacity active:opacity-80\" style={{ backgroundColor: C.green, color: \"#0E1620\" }}",
+        "wired": true
+      },
+      {
+        "line": 241,
+        "tag": "CBottomNav",
+        "text": "{/* Header */} 근처 배달 요청 배달 가능 · {zone} {orders.length}건 {/* Order cards */} {orders.map(order => ( {/* Time limit bar */} {/* Restaurant row */} {order.cuisineEmoji} {order.restaur",
+        "props": "active=\"deliveries\"",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "OrderAcceptedScreen",
+    "file": "src/courier/MainFlowScreens.tsx",
+    "line": 247,
+    "links": [],
+    "controls": [
+      {
+        "line": 283,
+        "tag": "button",
+        "text": "",
+        "props": "className=\"w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0\" style={{ backgroundColor: C.green }}",
+        "wired": false
+      },
+      {
+        "line": 292,
+        "tag": "button",
+        "text": "Naver Map으로 길 안내",
+        "props": "onClick={onArrive} className=\"w-full py-4 rounded-2xl font-bold text-base flex items-center justify-center gap-2\" style={{ backgroundColor: C.blue, color: \"white\" }}",
+        "wired": true
+      },
+      {
+        "line": 301,
+        "tag": "button",
+        "text": "setDetailsOpen(!detailsOpen)} className=\"w-full py-3 rounded-2xl font-semibold text-sm flex items-center justify-center gap-2 transition-all\" style={{ backgroundColor: C.card, colo",
+        "props": "onClick={() => setDetailsOpen(!detailsOpen)} className=\"w-full py-3 rounded-2xl font-semibold text-sm flex items-center justify-center gap-2 transition-all\" style={{ backgroundColor: C.card, color: C.text }}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "AtRestaurantScreen",
+    "file": "src/courier/MainFlowScreens.tsx",
+    "line": 328,
+    "links": [],
+    "controls": [
+      {
+        "line": 355,
+        "tag": "button",
+        "text": "",
+        "props": "className=\"ml-auto w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0\" style={{ backgroundColor: C.greenGlow }}",
+        "wired": false
+      },
+      {
+        "line": 368,
+        "tag": "button",
+        "text": "toggle(i)} className=\"w-full flex items-center gap-4 px-4 py-4 transition-colors active:opacity-70\" style={{ borderBottom: i {checked[i] && ( )} {item}",
+        "props": "key={i} onClick={() => toggle(i)} className=\"w-full flex items-center gap-4 px-4 py-4 transition-colors active:opacity-70\" style={{ borderBottom: i < items.length - 1 ? `1px solid ${C.border}` : \"none\" }}",
+        "wired": true
+      },
+      {
+        "line": 397,
+        "tag": "SwipeConfirm",
+        "text": "{!allChecked && ( 모든 항목을 확인한 후 완료할 수 있어요 )}",
+        "props": "label=\"← 밀어서 픽업 완료\" color={allChecked ? C.green : C.dim} disabled={!allChecked} onConfirm={onPickedUp}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "DeliveringScreen",
+    "file": "src/courier/MainFlowScreens.tsx",
+    "line": 412,
+    "links": [],
+    "controls": [
+      {
+        "line": 471,
+        "tag": "button",
+        "text": "전화",
+        "props": "className=\"py-4 rounded-2xl font-bold text-base flex items-center justify-center gap-2\" style={{ backgroundColor: C.card, color: C.text, border: `1.5px solid ${C.borderBright}` }}",
+        "wired": false
+      },
+      {
+        "line": 478,
+        "tag": "button",
+        "text": "채팅",
+        "props": "className=\"py-4 rounded-2xl font-bold text-base flex items-center justify-center gap-2\" style={{ backgroundColor: C.card, color: C.text, border: `1.5px solid ${C.borderBright}` }}",
+        "wired": false
+      },
+      {
+        "line": 488,
+        "tag": "SwipeConfirm",
+        "text": "{/* ETA countdown */} 도착까지 {mins}:{String(secs).padStart(2, \"0\")} 배달 중 {/* Customer address */} 서울 용산구 이태원로 123 501호 · 이태원 파크빌 {/* Delivery instruction */} 📦 문 앞 두고 벨 눌러주세요 {/* Cu",
+        "props": "label=\"← 밀어서 배달 완료\" color={C.green} onConfirm={onComplete}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "DeliveryCompleteScreen",
+    "file": "src/courier/MainFlowScreens.tsx",
+    "line": 495,
+    "links": [],
+    "controls": [
+      {
+        "line": 538,
+        "tag": "button",
+        "text": "setPhotoTaken(true)} className=\"w-full flex flex-col items-center justify-center py-8 gap-3 active:opacity-70\"> 배달 완료 사진 촬영 문 앞에 놓인 음식 사진을 찍어주세요",
+        "props": "onClick={() => setPhotoTaken(true)} className=\"w-full flex flex-col items-center justify-center py-8 gap-3 active:opacity-70\"",
+        "wired": true
+      },
+      {
+        "line": 575,
+        "tag": "SwipeConfirm",
+        "text": "setConfirmed(true)} /> {confirmed && ( 다음 배달하기 )}",
+        "props": "label=\"← 밀어서 완료 확인\" color={C.green} onConfirm={() => setConfirmed(true)}",
+        "wired": true
+      },
+      {
+        "line": 577,
+        "tag": "button",
+        "text": "다음 배달하기",
+        "props": "onClick={onNext} className=\"w-full py-4 rounded-2xl font-bold text-base\" style={{ backgroundColor: C.surface, color: C.text, border: `1.5px solid ${C.borderBright}` }}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "DeliveryIssueScreen",
+    "file": "src/courier/MainFlowScreens.tsx",
+    "line": 589,
+    "links": [],
+    "controls": [
+      {
+        "line": 622,
+        "tag": "button",
+        "text": "setSelected(issue.id)} className=\"w-full flex items-center gap-4 px-4 py-4 rounded-2xl text-left transition-all active:opacity-70\" style={{ backgroundColor: selected === issue.id ?",
+        "props": "key={issue.id} onClick={() => setSelected(issue.id)} className=\"w-full flex items-center gap-4 px-4 py-4 rounded-2xl text-left transition-all active:opacity-70\" style={{ backgroundColor: selected === issue.id ? C.dangerGlow : C.card, border: `2px solid ${selec",
+        "wired": true
+      },
+      {
+        "line": 645,
+        "tag": "textarea",
+        "text": "추가 설명 (선택) setNote(e.target.value)} placeholder=\"문제 상황을 자세히 설명해주세요...\" rows={3} className=\"w-full px-4 py-3 rounded-2xl text-sm outline-none resize-none\" style={{ backgroundColor: ",
+        "props": "value={note} onChange={e => setNote(e.target.value)} placeholder=\"문제 상황을 자세히 설명해주세요...\" rows={3} className=\"w-full px-4 py-3 rounded-2xl text-sm outline-none resize-none\" style={{ backgroundColor: C.card, color: C.text, border: `1.5px solid ${C.borderBright}` ",
+        "wired": true
+      },
+      {
+        "line": 655,
+        "tag": "button",
+        "text": "신고 제출",
+        "props": "className=\"w-full py-4 rounded-2xl font-bold text-base\" style={{ backgroundColor: C.danger, color: \"white\" }}",
+        "wired": false
+      },
+      {
+        "line": 660,
+        "tag": "button",
+        "text": "고객센터 연결",
+        "props": "className=\"w-full py-4 rounded-2xl font-bold text-base\" style={{ backgroundColor: C.card, color: C.text, border: `1.5px solid ${C.borderBright}` }}",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "CourierRegistrationScreen",
+    "file": "src/courier/OnboardingScreens.tsx",
+    "line": 5,
+    "links": [],
+    "controls": [
+      {
+        "line": 22,
+        "tag": "button",
+        "text": "setStep(s => s - 1)} className=\"w-10 h-10 rounded-xl flex items-center justify-center\" style={{ backgroundColor: C.card }}>",
+        "props": "onClick={() => setStep(s => s - 1)} className=\"w-10 h-10 rounded-xl flex items-center justify-center\" style={{ backgroundColor: C.card }}",
+        "wired": true
+      },
+      {
+        "line": 53,
+        "tag": "input",
+        "text": "{f.label}",
+        "props": "type={f.type || \"text\"} placeholder={f.placeholder} className=\"w-full px-4 py-4 rounded-2xl text-base outline-none\" style={{ backgroundColor: C.card, color: C.text, border: `1.5px solid ${C.borderBright}` }}",
+        "wired": false
+      },
+      {
+        "line": 71,
+        "tag": "button",
+        "text": "setVehicle(v)} className=\"flex flex-col items-center gap-2 py-4 rounded-2xl transition-all\" style={{ backgroundColor: vehicle === v ? C.greenGlow : C.card, border: `2px solid ${veh",
+        "props": "key={v} onClick={() => setVehicle(v)} className=\"flex flex-col items-center gap-2 py-4 rounded-2xl transition-all\" style={{ backgroundColor: vehicle === v ? C.greenGlow : C.card, border: `2px solid ${vehicle === v ? C.green : C.borderBright}`, }}",
+        "wired": true
+      },
+      {
+        "line": 85,
+        "tag": "button",
+        "text": "setStep(2)} className=\"w-full py-4 rounded-2xl font-bold text-base\" style={{ backgroundColor: C.green, color: \"#0E1620\" }}> 다음 →",
+        "props": "onClick={() => setStep(2)} className=\"w-full py-4 rounded-2xl font-bold text-base\" style={{ backgroundColor: C.green, color: \"#0E1620\" }}",
+        "wired": true
+      },
+      {
+        "line": 110,
+        "tag": "button",
+        "text": "파일 선택",
+        "props": "className=\"px-5 py-2.5 rounded-xl font-bold text-sm\" style={{ backgroundColor: C.cardAlt, color: C.text, border: `1px solid ${C.borderBright}` }}",
+        "wired": false
+      },
+      {
+        "line": 120,
+        "tag": "select",
+        "text": "은행 선택 신한은행 국민은행 카카오뱅크 토스뱅크",
+        "props": "className=\"w-full px-4 py-4 rounded-2xl text-sm mb-2 outline-none\" style={{ backgroundColor: C.card, color: C.text, border: `1.5px solid ${C.borderBright}` }}",
+        "wired": false
+      },
+      {
+        "line": 125,
+        "tag": "input",
+        "text": "정산 계좌 은행 선택 신한은행 국민은행 카카오뱅크 토스뱅크",
+        "props": "placeholder=\"계좌번호 (하이픈 없이)\" type=\"tel\" className=\"w-full px-4 py-4 rounded-2xl text-sm outline-none\" style={{ backgroundColor: C.card, color: C.text, border: `1.5px solid ${C.borderBright}` }}",
+        "wired": false
+      },
+      {
+        "line": 131,
+        "tag": "button",
+        "text": "setStep(3)} className=\"w-full py-4 rounded-2xl font-bold text-base\" style={{ backgroundColor: C.green, color: \"#0E1620\" }}> 다음 →",
+        "props": "onClick={() => setStep(3)} className=\"w-full py-4 rounded-2xl font-bold text-base\" style={{ backgroundColor: C.green, color: \"#0E1620\" }}",
+        "wired": true
+      },
+      {
+        "line": 145,
+        "tag": "button",
+        "text": "toggleZone(zone)} className=\"py-4 rounded-2xl font-bold text-sm transition-all\" style={{ backgroundColor: zones.includes(zone) ? C.greenGlow : C.card, border: `2px solid ${zones.in",
+        "props": "key={zone} onClick={() => toggleZone(zone)} className=\"py-4 rounded-2xl font-bold text-sm transition-all\" style={{ backgroundColor: zones.includes(zone) ? C.greenGlow : C.card, border: `2px solid ${zones.includes(zone) ? C.green : C.borderBright}`, color: zone",
+        "wired": true
+      },
+      {
+        "line": 171,
+        "tag": "button",
+        "text": "등록 신청 제출",
+        "props": "className=\"w-full py-4 rounded-2xl font-bold text-base\" style={{ backgroundColor: C.green, color: \"#0E1620\" }}",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "CourierLoginScreen",
+    "file": "src/courier/OnboardingScreens.tsx",
+    "line": 183,
+    "links": [],
+    "controls": [
+      {
+        "line": 214,
+        "tag": "input",
+        "text": "🇰🇷 +82",
+        "props": "type=\"tel\" placeholder=\"010-0000-0000\" className=\"flex-1 px-4 py-4 rounded-2xl text-base outline-none font-mono\" style={{ backgroundColor: C.card, color: C.text, border: `1.5px solid ${C.green}` }}",
+        "wired": false
+      },
+      {
+        "line": 221,
+        "tag": "button",
+        "text": "setStep(\"otp\")} className=\"w-full py-5 rounded-2xl font-bold text-lg\" style={{ backgroundColor: C.green, color: \"#0E1620\" }}> 인증번호 발송",
+        "props": "onClick={() => setStep(\"otp\")} className=\"w-full py-5 rounded-2xl font-bold text-lg\" style={{ backgroundColor: C.green, color: \"#0E1620\" }}",
+        "wired": true
+      },
+      {
+        "line": 232,
+        "tag": "button",
+        "text": "💬 카카오로 로그인",
+        "props": "className=\"w-full py-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2\" style={{ backgroundColor: \"#FEE500\", color: \"#1A1A18\" }}",
+        "wired": false
+      },
+      {
+        "line": 264,
+        "tag": "button",
+        "text": "{k}",
+        "props": "key={k} className=\"py-4 rounded-2xl font-bold text-xl transition-opacity active:opacity-60\" style={{ backgroundColor: k === \"\" ? \"transparent\" : C.card, color: C.text }}",
+        "wired": false
+      },
+      {
+        "line": 272,
+        "tag": "button",
+        "text": "로그인",
+        "props": "className=\"w-full py-5 rounded-2xl font-bold text-lg\" style={{ backgroundColor: C.green, color: \"#0E1620\" }}",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "VerificationPendingScreen",
+    "file": "src/courier/OnboardingScreens.tsx",
+    "line": 288,
+    "links": [],
+    "controls": [
+      {
+        "line": 374,
+        "tag": "button",
+        "text": "카카오톡으로 알림 받기",
+        "props": "className=\"w-full py-4 rounded-2xl font-bold text-base\" style={{ backgroundColor: C.card, color: C.text, border: `1.5px solid ${C.borderBright}` }}",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "CourierProfile",
+    "file": "src/courier/ProfileScreens.tsx",
+    "line": 5,
+    "links": [],
+    "controls": [
+      {
+        "line": 86,
+        "tag": "button",
+        "text": "setActiveTab(t)} className=\"flex-1 py-2.5 rounded-xl font-bold text-sm transition-all\" style={{ backgroundColor: activeTab === t ? C.green : C.card, color: activeTab === t ? \"#0E16",
+        "props": "key={t} onClick={() => setActiveTab(t)} className=\"flex-1 py-2.5 rounded-xl font-bold text-sm transition-all\" style={{ backgroundColor: activeTab === t ? C.green : C.card, color: activeTab === t ? \"#0E1620\" : C.muted }}",
+        "wired": true
+      },
+      {
+        "line": 112,
+        "tag": "button",
+        "text": "프로필 수정",
+        "props": "className=\"w-full py-4 rounded-2xl font-bold text-sm\" style={{ backgroundColor: C.card, color: C.muted, border: `1px solid ${C.border}` }}",
+        "wired": false
+      },
+      {
+        "line": 162,
+        "tag": "CBottomNav",
+        "text": "{/* Profile hero */} {/* Avatar */} 🏍️ {/* Online indicator */} 김민준 {[1,2,3,4,5].map(s => ( ))} 4.92 (329건) 이륜차 · 배달파트너 2년차 {/* Stats row */} {[ { label: \"총 배달\", value: \"1,241건\" }",
+        "props": "active=\"profile\"",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "CourierSettings",
+    "file": "src/courier/ProfileScreens.tsx",
+    "line": 168,
+    "links": [],
+    "controls": [
+      {
+        "line": 176,
+        "tag": "button",
+        "text": "onChange(!value)} className=\"w-14 h-8 rounded-full relative transition-all duration-300 flex-shrink-0\" style={{ backgroundColor: value ? C.green : C.card, border: `1px solid ${valu",
+        "props": "onClick={() => onChange(!value)} className=\"w-14 h-8 rounded-full relative transition-all duration-300 flex-shrink-0\" style={{ backgroundColor: value ? C.green : C.card, border: `1px solid ${value ? C.green : C.border}` }}",
+        "wired": true
+      },
+      {
+        "line": 221,
+        "tag": "button",
+        "text": "{v}",
+        "props": "key={v} className=\"flex-1 py-2 rounded-xl text-xs font-bold\" style={{ backgroundColor: i === 0 ? C.green : C.cardAlt, color: i === 0 ? \"#0E1620\" : C.muted }}",
+        "wired": false
+      },
+      {
+        "line": 254,
+        "tag": "button",
+        "text": "setNavApp(app.id)} className=\"flex items-center gap-4 px-4 py-4 rounded-2xl text-left transition-all\" style={{ backgroundColor: navApp === app.id ? \"#0F2A1A\" : C.card, border: `1.5",
+        "props": "key={app.id} onClick={() => setNavApp(app.id)} className=\"flex items-center gap-4 px-4 py-4 rounded-2xl text-left transition-all\" style={{ backgroundColor: navApp === app.id ? \"#0F2A1A\" : C.card, border: `1.5px solid ${navApp === app.id ? C.green : C.border}`,",
+        "wired": true
+      },
+      {
+        "line": 279,
+        "tag": "button",
+        "text": "setLanguage(l.id)} className=\"flex-1 py-3 rounded-2xl font-bold text-sm transition-all\" style={{ backgroundColor: language === l.id ? C.green : C.card, color: language === l.id ? \"",
+        "props": "key={l.id} onClick={() => setLanguage(l.id)} className=\"flex-1 py-3 rounded-2xl font-bold text-sm transition-all\" style={{ backgroundColor: language === l.id ? C.green : C.card, color: language === l.id ? \"#0E1620\" : C.muted, border: `1px solid ${language === ",
+        "wired": true
+      },
+      {
+        "line": 307,
+        "tag": "button",
+        "text": "로그아웃",
+        "props": "className=\"w-full py-4 rounded-2xl font-bold text-sm\" style={{ backgroundColor: \"#2A0F10\", color: \"#E05050\", border: \"1px solid #3A1A1A\" }}",
+        "wired": false
+      },
+      {
+        "line": 314,
+        "tag": "CBottomNav",
+        "text": "설정 {/* Notifications section */} 알림 및 소리 {/* Order sound - prominent */} 주문 알림 소리 새 주문 도착 시 큰 소리로 알림 (권장) {orderSound && ( {[\"크게\", \"보통\", \"작게\"].map((v, i) => ( {v} ))} )} 푸시 알림 배달 현",
+        "props": "active=\"profile\"",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "SalesAnalytics",
+    "file": "src/dashboard/AnalyticsScreens.tsx",
+    "line": 42,
+    "links": [],
+    "controls": [
+      {
+        "line": 76,
+        "tag": "button",
+        "text": "setRange(r)} className=\"px-4 py-2 text-xs font-semibold transition-colors\" style={{ backgroundColor: range === r ? \"var(--green)\" : \"white\", color: range === r ? \"white\" : \"var(--m",
+        "props": "key={r} onClick={() => setRange(r)} className=\"px-4 py-2 text-xs font-semibold transition-colors\" style={{ backgroundColor: range === r ? \"var(--green)\" : \"white\", color: range === r ? \"white\" : \"var(--muted)\" }}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "ReviewsManagement",
+    "file": "src/dashboard/AnalyticsScreens.tsx",
+    "line": 229,
+    "links": [],
+    "controls": [
+      {
+        "line": 292,
+        "tag": "button",
+        "text": "setFilter(f)} className=\"px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors\" style={{ backgroundColor: filter === f ? \"var(--green-light)\" : \"transparent\", color: filte",
+        "props": "key={f} onClick={() => setFilter(f)} className=\"px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors\" style={{ backgroundColor: filter === f ? \"var(--green-light)\" : \"transparent\", color: filter === f ? \"var(--green)\" : \"var(--muted)\" }}",
+        "wired": true
+      },
+      {
+        "line": 329,
+        "tag": "button",
+        "text": "",
+        "props": "className=\"w-7 h-7 rounded-lg flex items-center justify-center hover:bg-[var(--cream)] transition-colors\"",
+        "wired": false
+      },
+      {
+        "line": 367,
+        "tag": "textarea",
+        "text": "setReplyText(e.target.value)} placeholder=\"리뷰에 답변을 작성하세요...\" rows={3} className=\"w-full px-3 py-2.5 rounded-xl border border-[var(--border)] text-sm text-[#1A1A18] outline-none res",
+        "props": "value={replyText} onChange={e => setReplyText(e.target.value)} placeholder=\"리뷰에 답변을 작성하세요...\" rows={3} className=\"w-full px-3 py-2.5 rounded-xl border border-[var(--border)] text-sm text-[#1A1A18] outline-none resize-none focus:border-[var(--green)] transition",
+        "wired": true
+      },
+      {
+        "line": 373,
+        "tag": "button",
+        "text": "{ setReplyOpen(null); setReplyText(\"\"); }} className=\"px-3 py-2 rounded-lg text-xs font-semibold border border-[var(--border)] hover:bg-[var(--cream)] transition-colors\">취소",
+        "props": "onClick={() => { setReplyOpen(null); setReplyText(\"\"); }} className=\"px-3 py-2 rounded-lg text-xs font-semibold border border-[var(--border)] hover:bg-[var(--cream)] transition-colors\"",
+        "wired": true
+      },
+      {
+        "line": 375,
+        "tag": "button",
+        "text": "답변 등록",
+        "props": "className=\"px-3 py-2 rounded-lg text-xs font-bold text-white\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": false
+      },
+      {
+        "line": 380,
+        "tag": "button",
+        "text": "setReplyOpen(review.id)} className=\"flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-[var(--border)] hover:bg-[var(--cream)] transition-colors t",
+        "props": "onClick={() => setReplyOpen(review.id)} className=\"flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-[var(--border)] hover:bg-[var(--cream)] transition-colors text-[#1A1A18]\"",
+        "wired": true
+      },
+      {
+        "line": 387,
+        "tag": "button",
+        "text": "신고하기",
+        "props": "className=\"flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-[#FECACA] hover:bg-[#FEF2F2] transition-colors\" style={{ color: \"var(--danger)\" }}",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "RestaurantSettings",
+    "file": "src/dashboard/BusinessScreens.tsx",
+    "line": 6,
+    "links": [],
+    "controls": [
+      {
+        "line": 25,
+        "tag": "button",
+        "text": "setTab(t.id)} className=\"py-4 px-4 text-sm font-semibold border-b-2 transition-colors mr-2\" style={{ borderColor: tab === t.id ? \"var(--green)\" : \"transparent\", color: tab === t.id",
+        "props": "key={t.id} onClick={() => setTab(t.id)} className=\"py-4 px-4 text-sm font-semibold border-b-2 transition-colors mr-2\" style={{ borderColor: tab === t.id ? \"var(--green)\" : \"transparent\", color: tab === t.id ? \"var(--green)\" : \"var(--muted)\", }}",
+        "wired": true
+      },
+      {
+        "line": 52,
+        "tag": "button",
+        "text": "변경",
+        "props": "className=\"text-[11px] font-semibold px-2.5 py-1 rounded-lg border border-[var(--border)] hover:bg-[var(--cream)]\"",
+        "wired": false
+      },
+      {
+        "line": 79,
+        "tag": "input",
+        "text": "{field.label}",
+        "props": "defaultValue={field.value} className=\"w-full px-3 py-2.5 rounded-xl border border-[var(--border)] text-sm text-[#1A1A18] outline-none focus:border-[var(--green)] transition-colors\"",
+        "wired": false
+      },
+      {
+        "line": 88,
+        "tag": "button",
+        "text": "{c}",
+        "props": "key={c} className=\"px-3 py-1.5 rounded-full text-xs font-semibold transition-all\" style={{ backgroundColor: [\"한식\", \"퓨전\"].includes(c) ? \"var(--green)\" : \"var(--cream)\", color: [\"한식\", \"퓨전\"].includes(c) ? \"white\" : \"#1A1A18\", border: [\"한식\", \"퓨전\"].includes(c) ? \"n",
+        "wired": false
+      },
+      {
+        "line": 94,
+        "tag": "button",
+        "text": "+ 추가",
+        "props": "className=\"px-3 py-1.5 rounded-full text-xs font-semibold border border-dashed border-[var(--border)] hover:border-[var(--green)] transition-colors text-[var(--muted)]\"",
+        "wired": false
+      },
+      {
+        "line": 100,
+        "tag": "textarea",
+        "text": "식당 소개",
+        "props": "rows={3} defaultValue=\"이슬람 식품청(KMF) 인증 할랄 한식 전문점. 돼지고기 및 알코올 성분을 완전히 배제하고, 무슬림 고객도 안심하고 즐길 수 있는 정통 한식을 제공합니다.\" className=\"w-full px-3 py-2.5 rounded-xl border border-[var(--border)] text-sm text-[#1A1A18] outline-none resize-none focus:border-[var(--green)] tr",
+        "wired": false
+      },
+      {
+        "line": 125,
+        "tag": "input",
+        "text": "setHours(h => h.map((hh, j) => j === i ? { ...hh, from: e.target.value } : hh))} className=\"px-2.5 py-1.5 rounded-lg border border-[var(--border)] text-sm font-mono text-[#1A1A18] ",
+        "props": "type=\"time\" value={hours[i].from} onChange={e => setHours(h => h.map((hh, j) => j === i ? { ...hh, from: e.target.value } : hh))} className=\"px-2.5 py-1.5 rounded-lg border border-[var(--border)] text-sm font-mono text-[#1A1A18] outline-none focus:border-[var(",
+        "wired": true
+      },
+      {
+        "line": 129,
+        "tag": "input",
+        "text": "setHours(h => h.map((hh, j) => j === i ? { ...hh, from: e.target.value } : hh))} className=\"px-2.5 py-1.5 rounded-lg border border-[var(--border)] text-sm font-mono text-[#1A1A18] ",
+        "props": "type=\"time\" value={hours[i].to} onChange={e => setHours(h => h.map((hh, j) => j === i ? { ...hh, to: e.target.value } : hh))} className=\"px-2.5 py-1.5 rounded-lg border border-[var(--border)] text-sm font-mono text-[#1A1A18] outline-none focus:border-[var(--gr",
+        "wired": true
+      },
+      {
+        "line": 156,
+        "tag": "input",
+        "text": "₩ field.setState(e.target.value)} className=\"w-full pl-8 pr-3 py-2.5 rounded-xl border border-[var(--border)] text-sm font-mono font-bold text-[#1A1A18] outline-none focus:border-[",
+        "props": "type=\"number\" value={field.state} onChange={e => field.setState(e.target.value)} className=\"w-full pl-8 pr-3 py-2.5 rounded-xl border border-[var(--border)] text-sm font-mono font-bold text-[#1A1A18] outline-none focus:border-[var(--green)]\"",
+        "wired": true
+      },
+      {
+        "line": 166,
+        "tag": "input",
+        "text": "setDeliveryRadius(e.target.value)} className=\"flex-1 accent-[var(--green)] h-2\" /> {deliveryRadius}km",
+        "props": "type=\"range\" min=\"1\" max=\"15\" value={deliveryRadius} onChange={e => setDeliveryRadius(e.target.value)} className=\"flex-1 accent-[var(--green)] h-2\"",
+        "wired": true
+      },
+      {
+        "line": 234,
+        "tag": "button",
+        "text": "변경 취소",
+        "props": "className=\"px-5 py-3 rounded-xl text-sm font-semibold border border-[var(--border)] bg-white hover:bg-[var(--cream)] transition-colors\"",
+        "wired": false
+      },
+      {
+        "line": 237,
+        "tag": "button",
+        "text": "저장하기",
+        "props": "className=\"px-6 py-3 rounded-xl text-sm font-bold text-white\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "HalalCertification",
+    "file": "src/dashboard/BusinessScreens.tsx",
+    "line": 257,
+    "links": [],
+    "controls": [
+      {
+        "line": 306,
+        "tag": "button",
+        "text": "보기",
+        "props": "className=\"absolute bottom-1.5 text-[10px] font-bold px-2 py-0.5 rounded-full text-white\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": false
+      },
+      {
+        "line": 360,
+        "tag": "button",
+        "text": "파일 선택",
+        "props": "className=\"px-4 py-2 rounded-xl text-xs font-bold border border-[var(--border)] bg-white hover:bg-[var(--cream)]\"",
+        "wired": false
+      },
+      {
+        "line": 366,
+        "tag": "select",
+        "text": "한국이슬람교중앙회 (KMF) JAKIM (말레이시아) MUI (인도네시아) 기타",
+        "props": "className=\"w-full px-3 py-2.5 rounded-xl border border-[var(--border)] text-sm text-[#1A1A18] outline-none focus:border-[var(--green)] bg-white\"",
+        "wired": false
+      },
+      {
+        "line": 375,
+        "tag": "input",
+        "text": "인증 만료일",
+        "props": "type=\"date\" className=\"w-full px-3 py-2.5 rounded-xl border border-[var(--border)] text-sm font-mono text-[#1A1A18] outline-none focus:border-[var(--green)]\"",
+        "wired": false
+      },
+      {
+        "line": 379,
+        "tag": "button",
+        "text": "검토 요청 제출",
+        "props": "className=\"w-full py-3 rounded-xl text-sm font-bold text-white\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "DashboardApp",
+    "file": "src/dashboard/DashboardApp.tsx",
+    "line": 92,
+    "links": [
+      "menu-item-form",
+      "menu-editor",
+      "notifications"
+    ],
+    "controls": [
+      {
+        "line": 169,
+        "tag": "button",
+        "text": "setScreen(item.id)} className=\"w-full flex items-center gap-3 px-5 py-2.5 text-left transition-all relative group\" style={{ backgroundColor: active ? \"rgba(27,107,74,0.2)\" : \"trans",
+        "props": "key={item.id} onClick={() => setScreen(item.id)} className=\"w-full flex items-center gap-3 px-5 py-2.5 text-left transition-all relative group\" style={{ backgroundColor: active ? \"rgba(27,107,74,0.2)\" : \"transparent\", borderLeft: active ? \"2.5px solid var(--gr",
+        "wired": true
+      },
+      {
+        "line": 195,
+        "tag": "button",
+        "text": "고객 앱으로 전환",
+        "props": "onClick={onSwitch} className=\"w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold transition-all hover:bg-white/10\" style={{ color: \"rgba(255,255,255,0.45)\" }}",
+        "wired": true
+      },
+      {
+        "line": 223,
+        "tag": "button",
+        "text": "setScreen(\"notifications\")} className=\"relative w-9 h-9 rounded-xl flex items-center justify-center hover:bg-[var(--cream)] transition-colors\" style={{ color: screen === \"notificat",
+        "props": "onClick={() => setScreen(\"notifications\")} className=\"relative w-9 h-9 rounded-xl flex items-center justify-center hover:bg-[var(--cream)] transition-colors\" style={{ color: screen === \"notifications\" ? \"var(--green)\" : \"#1A1A18\" }}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "MenuEditor",
+    "file": "src/dashboard/MenuScreens.tsx",
+    "line": 33,
+    "links": [],
+    "controls": [
+      {
+        "line": 63,
+        "tag": "button",
+        "text": "setActiveCategory(cat)} className=\"w-full flex items-center justify-between px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-[var(--cream)]\" style={{ color: act",
+        "props": "key={cat} onClick={() => setActiveCategory(cat)} className=\"w-full flex items-center justify-between px-4 py-2.5 text-left text-sm font-medium transition-colors hover:bg-[var(--cream)]\" style={{ color: activeCategory === cat ? \"var(--green)\" : \"#1A1A18\", backg",
+        "wired": true
+      },
+      {
+        "line": 77,
+        "tag": "button",
+        "text": "메뉴 추가",
+        "props": "onClick={onAddItem} className=\"w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-bold text-white transition-opacity hover:opacity-90\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": true
+      },
+      {
+        "line": 97,
+        "tag": "input",
+        "text": "setSearch(e.target.value)} placeholder=\"메뉴 검색...\" className=\"bg-transparent text-sm outline-none w-full text-[#1A1A18] placeholder:text-[var(--muted)]\" />",
+        "props": "value={search} onChange={e => setSearch(e.target.value)} placeholder=\"메뉴 검색...\" className=\"bg-transparent text-sm outline-none w-full text-[#1A1A18] placeholder:text-[var(--muted)]\"",
+        "wired": true
+      },
+      {
+        "line": 104,
+        "tag": "button",
+        "text": "setFilter(f)} className=\"px-3 py-2 text-xs font-semibold transition-colors\" style={{ backgroundColor: filter === f ? \"var(--green)\" : \"white\", color: filter === f ? \"white\" : \"var(",
+        "props": "key={f} onClick={() => setFilter(f)} className=\"px-3 py-2 text-xs font-semibold transition-colors\" style={{ backgroundColor: filter === f ? \"var(--green)\" : \"white\", color: filter === f ? \"white\" : \"var(--muted)\" }}",
+        "wired": true
+      },
+      {
+        "line": 115,
+        "tag": "button",
+        "text": "setViewMode(v)} className=\"w-8 h-8 rounded-lg flex items-center justify-center transition-colors\" style={{ backgroundColor: viewMode === v ? \"var(--green-light)\" : \"transparent\", c",
+        "props": "key={v} onClick={() => setViewMode(v)} className=\"w-8 h-8 rounded-lg flex items-center justify-center transition-colors\" style={{ backgroundColor: viewMode === v ? \"var(--green-light)\" : \"transparent\", color: viewMode === v ? \"var(--green)\" : \"var(--muted)\" }}",
+        "wired": true
+      },
+      {
+        "line": 124,
+        "tag": "button",
+        "text": "메뉴 추가",
+        "props": "onClick={onAddItem} className=\"flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold text-white\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": true
+      },
+      {
+        "line": 148,
+        "tag": "button",
+        "text": "",
+        "props": "className=\"w-7 h-7 rounded-full bg-white shadow flex items-center justify-center\"",
+        "wired": false
+      },
+      {
+        "line": 229,
+        "tag": "button",
+        "text": "편집",
+        "props": "className=\"text-xs font-semibold px-2.5 py-1 rounded-lg border border-[var(--border)] hover:bg-[var(--cream)] transition-colors text-[#1A1A18]\"",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "MenuItemForm",
+    "file": "src/dashboard/MenuScreens.tsx",
+    "line": 244,
+    "links": [],
+    "controls": [
+      {
+        "line": 272,
+        "tag": "button",
+        "text": "메뉴 목록으로",
+        "props": "onClick={onBack} className=\"flex items-center gap-1.5 text-sm font-semibold text-[var(--muted)] hover:text-[#1A1A18] transition-colors\"",
+        "wired": true
+      },
+      {
+        "line": 301,
+        "tag": "button",
+        "text": "파일 선택",
+        "props": "className=\"px-4 py-2 rounded-xl text-xs font-bold border border-[var(--border)] bg-white hover:bg-[var(--cream)]\"",
+        "wired": false
+      },
+      {
+        "line": 319,
+        "tag": "input",
+        "text": "{field.flag} {field.label} setForm(f => ({ ...f, [field.key]: e.target.value }))} placeholder={field.placeholder} className=\"w-full px-3 py-2.5 rounded-xl border border-[var(--bord",
+        "props": "value={form[field.key as keyof typeof form] as string} onChange={e => setForm(f => ({ ...f, [field.key]: e.target.value }))} placeholder={field.placeholder} className=\"w-full px-3 py-2.5 rounded-xl border border-[var(--border)] text-sm text-[#1A1A18] outline-n",
+        "wired": true
+      },
+      {
+        "line": 329,
+        "tag": "textarea",
+        "text": "설명 setForm(f => ({ ...f, description: e.target.value }))} placeholder=\"고객에게 보여질 메뉴 설명을 입력하세요...\" rows={3} className=\"w-full px-3 py-2.5 rounded-xl border border-[var(--border)] tex",
+        "props": "value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} placeholder=\"고객에게 보여질 메뉴 설명을 입력하세요...\" rows={3} className=\"w-full px-3 py-2.5 rounded-xl border border-[var(--border)] text-sm text-[#1A1A18] outline-none resize-non",
+        "wired": true
+      },
+      {
+        "line": 347,
+        "tag": "input",
+        "text": "₩ setForm(f => ({ ...f, price: e.target.value }))} placeholder=\"12000\" className=\"w-full pl-8 pr-3 py-2.5 rounded-xl border border-[var(--border)] text-sm font-mono font-bold text-",
+        "props": "type=\"number\" value={form.price} onChange={e => setForm(f => ({ ...f, price: e.target.value }))} placeholder=\"12000\" className=\"w-full pl-8 pr-3 py-2.5 rounded-xl border border-[var(--border)] text-sm font-mono font-bold text-[#1A1A18] outline-none focus:borde",
+        "wired": true
+      },
+      {
+        "line": 354,
+        "tag": "select",
+        "text": "setForm(f => ({ ...f, category: e.target.value }))} className=\"w-full px-3 py-2.5 rounded-xl border border-[var(--border)] text-sm text-[#1A1A18] outline-none focus:border-[var(--g",
+        "props": "value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value }))} className=\"w-full px-3 py-2.5 rounded-xl border border-[var(--border)] text-sm text-[#1A1A18] outline-none focus:border-[var(--green)] bg-white\"",
+        "wired": true
+      },
+      {
+        "line": 361,
+        "tag": "input",
+        "text": "준비 시간 (분) setForm(f => ({ ...f, prepTime: e.target.value }))} className=\"w-full px-3 py-2.5 rounded-xl border border-[var(--border)] text-sm font-mono font-bold text-[#1A1A18] outl",
+        "props": "type=\"number\" value={form.prepTime} onChange={e => setForm(f => ({ ...f, prepTime: e.target.value }))} className=\"w-full px-3 py-2.5 rounded-xl border border-[var(--border)] text-sm font-mono font-bold text-[#1A1A18] outline-none focus:border-[var(--green)] tr",
+        "wired": true
+      },
+      {
+        "line": 374,
+        "tag": "button",
+        "text": "toggleDietTag(tag)} className=\"px-3 py-1.5 rounded-full text-xs font-semibold transition-all\" style={{ backgroundColor: form.dietaryTags.includes(tag) ? \"var(--green)\" : \"var(--cre",
+        "props": "key={tag} onClick={() => toggleDietTag(tag)} className=\"px-3 py-1.5 rounded-full text-xs font-semibold transition-all\" style={{ backgroundColor: form.dietaryTags.includes(tag) ? \"var(--green)\" : \"var(--cream)\", color: form.dietaryTags.includes(tag) ? \"white\" :",
+        "wired": true
+      },
+      {
+        "line": 388,
+        "tag": "textarea",
+        "text": "할랄 성분 메모 setForm(f => ({ ...f, halalNotes: e.target.value }))} placeholder=\"돼지고기, 알코올 완전 배제. 사용 조미료 및 소스 모두 KMF 인증...\" rows={3} className=\"w-full px-3 py-2.5 rounded-xl border bord",
+        "props": "value={form.halalNotes} onChange={e => setForm(f => ({ ...f, halalNotes: e.target.value }))} placeholder=\"돼지고기, 알코올 완전 배제. 사용 조미료 및 소스 모두 KMF 인증...\" rows={3} className=\"w-full px-3 py-2.5 rounded-xl border border-[var(--border)] text-sm outline-none resize-non",
+        "wired": true
+      },
+      {
+        "line": 405,
+        "tag": "button",
+        "text": "setForm(f => { const d = [...f.availableDays]; d[i] = !d[i]; return { ...f, availableDays: d }; })} className=\"w-9 h-9 rounded-xl text-xs font-bold transition-all\" style={{ backgro",
+        "props": "key={day} onClick={() => setForm(f => { const d = [...f.availableDays]; d[i] = !d[i]; return { ...f, availableDays: d }; })} className=\"w-9 h-9 rounded-xl text-xs font-bold transition-all\" style={{ backgroundColor: form.availableDays[i] ? \"var(--green)\" : \"var",
+        "wired": true
+      },
+      {
+        "line": 420,
+        "tag": "input",
+        "text": "시작 시간 setForm(f => ({ ...f, availableFrom: e.target.value }))} className=\"w-full px-3 py-2.5 rounded-xl border border-[var(--border)] text-sm font-mono text-[#1A1A18] outline-none ",
+        "props": "type=\"time\" value={form.availableFrom} onChange={e => setForm(f => ({ ...f, availableFrom: e.target.value }))} className=\"w-full px-3 py-2.5 rounded-xl border border-[var(--border)] text-sm font-mono text-[#1A1A18] outline-none focus:border-[var(--green)]\"",
+        "wired": true
+      },
+      {
+        "line": 426,
+        "tag": "input",
+        "text": "종료 시간 setForm(f => ({ ...f, availableTo: e.target.value }))} className=\"w-full px-3 py-2.5 rounded-xl border border-[var(--border)] text-sm font-mono text-[#1A1A18] outline-none fo",
+        "props": "type=\"time\" value={form.availableTo} onChange={e => setForm(f => ({ ...f, availableTo: e.target.value }))} className=\"w-full px-3 py-2.5 rounded-xl border border-[var(--border)] text-sm font-mono text-[#1A1A18] outline-none focus:border-[var(--green)]\"",
+        "wired": true
+      },
+      {
+        "line": 434,
+        "tag": "button",
+        "text": "취소",
+        "props": "onClick={onBack} className=\"px-5 py-3 rounded-xl text-sm font-semibold border border-[var(--border)] bg-white hover:bg-[var(--cream)] transition-colors\"",
+        "wired": true
+      },
+      {
+        "line": 437,
+        "tag": "button",
+        "text": "메뉴 저장",
+        "props": "className=\"flex-1 py-3 rounded-xl text-sm font-bold text-white transition-opacity hover:opacity-90\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "MenuAvailability",
+    "file": "src/dashboard/MenuScreens.tsx",
+    "line": 449,
+    "links": [],
+    "controls": [
+      {
+        "line": 479,
+        "tag": "input",
+        "text": "setSearch(e.target.value)} placeholder=\"메뉴 검색...\" className=\"bg-transparent text-sm outline-none w-full placeholder:text-[var(--muted)]\" />",
+        "props": "value={search} onChange={e => setSearch(e.target.value)} placeholder=\"메뉴 검색...\" className=\"bg-transparent text-sm outline-none w-full placeholder:text-[var(--muted)]\"",
+        "wired": true
+      },
+      {
+        "line": 490,
+        "tag": "button",
+        "text": "bulkToggle(true)} className=\"px-3 py-1.5 rounded-lg text-xs font-bold text-white\" style={{ backgroundColor: \"var(--green)\" }}> 일괄 판매 시작",
+        "props": "onClick={() => bulkToggle(true)} className=\"px-3 py-1.5 rounded-lg text-xs font-bold text-white\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": true
+      },
+      {
+        "line": 494,
+        "tag": "button",
+        "text": "bulkToggle(false)} className=\"px-3 py-1.5 rounded-lg text-xs font-bold text-white\" style={{ backgroundColor: \"var(--danger)\" }}> 일괄 품절",
+        "props": "onClick={() => bulkToggle(false)} className=\"px-3 py-1.5 rounded-lg text-xs font-bold text-white\" style={{ backgroundColor: \"var(--danger)\" }}",
+        "wired": true
+      },
+      {
+        "line": 502,
+        "tag": "button",
+        "text": "특별 영업시간 설정",
+        "props": "className=\"flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[var(--border)] text-sm font-semibold hover:bg-[var(--cream)] transition-colors text-[#1A1A18]\"",
+        "wired": false
+      },
+      {
+        "line": 518,
+        "tag": "input",
+        "text": "",
+        "props": "type=\"checkbox\" checked={selected.length === items.length} onChange={toggleAll} className=\"rounded w-4 h-4 cursor-pointer accent-[var(--green)]\"",
+        "wired": true
+      },
+      {
+        "line": 533,
+        "tag": "input",
+        "text": "toggleSelect(item.id)} className=\"rounded w-4 h-4 cursor-pointer accent-[var(--green)]\" />",
+        "props": "type=\"checkbox\" checked={selected.includes(item.id)} onChange={() => toggleSelect(item.id)} className=\"rounded w-4 h-4 cursor-pointer accent-[var(--green)]\"",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "NotificationCenter",
+    "file": "src/dashboard/NotificationCenter.tsx",
+    "line": 45,
+    "links": [
+      "order-board"
+    ],
+    "controls": [
+      {
+        "line": 73,
+        "tag": "button",
+        "text": "onNav(\"order-board\")} className=\"ml-auto px-4 py-2 rounded-xl text-xs font-bold text-white transition-opacity hover:opacity-90\" style={{ backgroundColor: \"#1D4ED8\" }}> 주문 보드로 이동 →",
+        "props": "onClick={() => onNav(\"order-board\")} className=\"ml-auto px-4 py-2 rounded-xl text-xs font-bold text-white transition-opacity hover:opacity-90\" style={{ backgroundColor: \"#1D4ED8\" }}",
+        "wired": true
+      },
+      {
+        "line": 97,
+        "tag": "button",
+        "text": "setFilter(f.id)} className=\"flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors\" style={{ backgroundColor: filter === f.id ? \"var(--green)\" : \"tr",
+        "props": "key={f.id} onClick={() => setFilter(f.id)} className=\"flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors\" style={{ backgroundColor: filter === f.id ? \"var(--green)\" : \"transparent\", color: filter === f.id ? \"white\" : \"var(--",
+        "wired": true
+      },
+      {
+        "line": 115,
+        "tag": "button",
+        "text": "모두 읽음으로 표시",
+        "props": "onClick={markAllRead} className=\"ml-auto text-xs font-semibold hover:underline\" style={{ color: \"var(--green)\" }}",
+        "wired": true
+      },
+      {
+        "line": 172,
+        "tag": "button",
+        "text": "{ e.stopPropagation(); markRead(notif.id); if (notif.cta === \"주문 보기\") onNav(\"order-board\"); }} className=\"mt-2 text-xs font-bold px-3 py-1.5 rounded-lg transition-colors hover:opac",
+        "props": "onClick={e => { e.stopPropagation(); markRead(notif.id); if (notif.cta === \"주문 보기\") onNav(\"order-board\"); }} className=\"mt-2 text-xs font-bold px-3 py-1.5 rounded-lg transition-colors hover:opacity-80\" style={{ backgroundColor: typeCfg.bg, color: typeCfg.color",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "MainDashboard",
+    "file": "src/dashboard/OrderScreens.tsx",
+    "line": 86,
+    "links": [
+      "order-board"
+    ],
+    "controls": [
+      {
+        "line": 138,
+        "tag": "button",
+        "text": "onNav(\"order-board\")} className=\"text-xs font-semibold hover:underline\" style={{ color: \"var(--green)\" }}> 전체 보기 →",
+        "props": "onClick={() => onNav(\"order-board\")} className=\"text-xs font-semibold hover:underline\" style={{ color: \"var(--green)\" }}",
+        "wired": true
+      },
+      {
+        "line": 196,
+        "tag": "button",
+        "text": "rejectOrder(order.id)} className=\"px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors hover:bg-red-50\" style={{ borderColor: \"#FECACA\", color: \"var(--danger)\" }}> 거절",
+        "props": "onClick={() => rejectOrder(order.id)} className=\"px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors hover:bg-red-50\" style={{ borderColor: \"#FECACA\", color: \"var(--danger)\" }}",
+        "wired": true
+      },
+      {
+        "line": 201,
+        "tag": "button",
+        "text": "advanceOrder(order.id)} className=\"px-3 py-1.5 rounded-lg text-xs font-bold text-white transition-colors\" style={{ backgroundColor: \"var(--green)\" }}> 수락하기",
+        "props": "onClick={() => advanceOrder(order.id)} className=\"px-3 py-1.5 rounded-lg text-xs font-bold text-white transition-colors\" style={{ backgroundColor: \"var(--green)\" }}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "OrderBoard",
+    "file": "src/dashboard/OrderScreens.tsx",
+    "line": 249,
+    "links": [],
+    "controls": [
+      {
+        "line": 273,
+        "tag": "button",
+        "text": "필터",
+        "props": "className=\"flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-[var(--border)] hover:bg-[var(--green-light)] transition-colors\" style={{ color: \"var(--green)\" }}",
+        "wired": false
+      },
+      {
+        "line": 339,
+        "tag": "button",
+        "text": "{ e.stopPropagation(); advanceOrder(order.id); }} className=\"px-2.5 py-1 rounded-lg text-[11px] font-bold text-white transition-opacity hover:opacity-90\" style={{ backgroundColor: ",
+        "props": "onClick={(e) => { e.stopPropagation(); advanceOrder(order.id); }} className=\"px-2.5 py-1 rounded-lg text-[11px] font-bold text-white transition-opacity hover:opacity-90\" style={{ backgroundColor: cfg.dot }}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "AdminApp",
+    "file": "src/admin/AdminApp.tsx",
+    "line": 129,
+    "links": [],
+    "controls": [
+      {
+        "line": 179,
+        "tag": "button",
+        "text": "setCollapsed(!collapsed)} className=\"w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors\" style={{ color: A.dim }} onMouseEnter={e => (e.currentTarg",
+        "props": "onClick={() => setCollapsed(!collapsed)} className=\"w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors\" style={{ color: A.dim }} onMouseEnter={e => (e.currentTarget.style.backgroundColor = A.bg)} onMouseLeave={e => (e.currentTa",
+        "wired": true
+      },
+      {
+        "line": 202,
+        "tag": "button",
+        "text": "setCurrent(item.id)} className=\"w-full flex items-center gap-2.5 transition-all relative\" style={{ padding: collapsed ? \"10px 0\" : \"8px 12px 8px 16px\", backgroundColor: isActive ? ",
+        "props": "key={item.id} onClick={() => setCurrent(item.id)} className=\"w-full flex items-center gap-2.5 transition-all relative\" style={{ padding: collapsed ? \"10px 0\" : \"8px 12px 8px 16px\", backgroundColor: isActive ? A.greenLight : \"transparent\", color: isActive ? A.g",
+        "wired": true
+      },
+      {
+        "line": 237,
+        "tag": "button",
+        "text": "고객 앱으로 돌아가기",
+        "props": "onClick={onSwitch} className=\"w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-medium transition-all\" style={{ backgroundColor: A.bg, color: A.muted, border: `1px solid ${A.border}` }}",
+        "wired": true
+      },
+      {
+        "line": 246,
+        "tag": "button",
+        "text": "",
+        "props": "onClick={onSwitch} className=\"w-full flex items-center justify-center py-2\" style={{ color: A.dim }} title=\"고객 앱으로\"",
+        "wired": true
+      },
+      {
+        "line": 263,
+        "tag": "button",
+        "text": "setPaletteOpen(true)} className=\"flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-all\" style={{ backgroundColor: A.bg, border: `1px solid ${A.border}`, color: A.di",
+        "props": "onClick={() => setPaletteOpen(true)} className=\"flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-all\" style={{ backgroundColor: A.bg, border: `1px solid ${A.border}`, color: A.dim, width: 220 }}",
+        "wired": true
+      },
+      {
+        "line": 283,
+        "tag": "button",
+        "text": "(e.currentTarget.style.backgroundColor = A.bg)} onMouseLeave={e => (e.currentTarget.style.backgroundColor = \"transparent\")}> {notifCount > 0 && ( {notifCount} )}",
+        "props": "className=\"relative w-9 h-9 rounded-xl flex items-center justify-center transition-colors\" style={{ color: A.muted }} onMouseEnter={e => (e.currentTarget.style.backgroundColor = A.bg)} onMouseLeave={e => (e.currentTarget.style.backgroundColor = \"transparent\")}",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "StatusChip",
+    "file": "src/admin/AdminShared.tsx",
+    "line": 78,
+    "links": [],
+    "controls": []
+  },
+  {
+    "name": "Breadcrumb",
+    "file": "src/admin/AdminShared.tsx",
+    "line": 90,
+    "links": [],
+    "controls": []
+  },
+  {
+    "name": "KPICard",
+    "file": "src/admin/AdminShared.tsx",
+    "line": 104,
+    "links": [],
+    "controls": []
+  },
+  {
+    "name": "SearchBar",
+    "file": "src/admin/AdminShared.tsx",
+    "line": 139,
+    "links": [],
+    "controls": [
+      {
+        "line": 146,
+        "tag": "input",
+        "text": "onChange(e.target.value)} placeholder={placeholder} className=\"w-full pl-9 pr-3 py-2 text-sm rounded-lg outline-none transition-all\" style={{ backgroundColor: A.bg, border: `1px so",
+        "props": "value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} className=\"w-full pl-9 pr-3 py-2 text-sm rounded-lg outline-none transition-all\" style={{ backgroundColor: A.bg, border: `1px solid ${A.border}`, color: A.text, }}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "AdminTable",
+    "file": "src/admin/AdminShared.tsx",
+    "line": 169,
+    "links": [],
+    "controls": [
+      {
+        "line": 204,
+        "tag": "button",
+        "text": "내보내기",
+        "props": "className=\"px-3 py-1 rounded-lg text-xs font-semibold\" style={{ backgroundColor: A.green, color: \"#fff\" }}",
+        "wired": false
+      },
+      {
+        "line": 205,
+        "tag": "button",
+        "text": "삭제",
+        "props": "className=\"px-3 py-1 rounded-lg text-xs font-semibold\" style={{ backgroundColor: A.dangerLight, color: A.dangerText }}",
+        "wired": false
+      },
+      {
+        "line": 206,
+        "tag": "button",
+        "text": "setSelected(new Set())}>선택 해제",
+        "props": "className=\"ml-auto text-xs\" style={{ color: A.greenText }} onClick={() => setSelected(new Set())}",
+        "wired": true
+      },
+      {
+        "line": 214,
+        "tag": "input",
+        "text": "",
+        "props": "type=\"checkbox\" checked={allSelected} onChange={toggleAll} className=\"w-4 h-4 rounded cursor-pointer accent-green-700\"",
+        "wired": true
+      },
+      {
+        "line": 249,
+        "tag": "input",
+        "text": "{ e.stopPropagation(); toggleRow(row.id); }}> toggleRow(row.id)} className=\"w-4 h-4 rounded cursor-pointer accent-green-700\" />",
+        "props": "type=\"checkbox\" checked={selected.has(row.id)} onChange={() => toggleRow(row.id)} className=\"w-4 h-4 rounded cursor-pointer accent-green-700\"",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "Pagination",
+    "file": "src/admin/AdminShared.tsx",
+    "line": 267,
+    "links": [],
+    "controls": [
+      {
+        "line": 282,
+        "tag": "button",
+        "text": "typeof p === \"number\" && onChange(p)} className=\"w-8 h-8 rounded-lg text-xs font-medium transition-colors\" style={{ backgroundColor: page === p ? A.green : \"transparent\", color: pa",
+        "props": "key={i} onClick={() => typeof p === \"number\" && onChange(p)} className=\"w-8 h-8 rounded-lg text-xs font-medium transition-colors\" style={{ backgroundColor: page === p ? A.green : \"transparent\", color: page === p ? \"#fff\" : A.muted, }}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "Modal",
+    "file": "src/admin/AdminShared.tsx",
+    "line": 298,
+    "links": [],
+    "controls": [
+      {
+        "line": 311,
+        "tag": "button",
+        "text": "(e.currentTarget.style.backgroundColor = A.bg)} onMouseLeave={e => (e.currentTarget.style.backgroundColor = \"transparent\")}>×",
+        "props": "onClick={onClose} className=\"w-8 h-8 rounded-lg flex items-center justify-center text-lg transition-colors\" style={{ color: A.muted }} onMouseEnter={e => (e.currentTarget.style.backgroundColor = A.bg)} onMouseLeave={e => (e.currentTarget.style.backgroundColor ",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "ConfirmModal",
+    "file": "src/admin/AdminShared.tsx",
+    "line": 322,
+    "links": [],
+    "controls": [
+      {
+        "line": 332,
+        "tag": "button",
+        "text": "취소",
+        "props": "onClick={onClose} className=\"px-4 py-2 rounded-lg text-sm font-medium\" style={{ backgroundColor: A.bg, color: A.textMid, border: `1px solid ${A.border}` }}",
+        "wired": true
+      },
+      {
+        "line": 336,
+        "tag": "button",
+        "text": "{ onConfirm(); onClose(); }} className=\"px-4 py-2 rounded-lg text-sm font-medium text-white\" style={{ backgroundColor: variant === \"danger\" ? A.danger : A.green }}> {confirmLabel}",
+        "props": "onClick={() => { onConfirm(); onClose(); }} className=\"px-4 py-2 rounded-lg text-sm font-medium text-white\" style={{ backgroundColor: variant === \"danger\" ? A.danger : A.green }}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "Toast",
+    "file": "src/admin/AdminShared.tsx",
+    "line": 347,
+    "links": [],
+    "controls": [
+      {
+        "line": 362,
+        "tag": "button",
+        "text": "×",
+        "props": "onClick={onClose} style={{ color: cfg.text, opacity: 0.6 }}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "CommandPalette",
+    "file": "src/admin/AdminShared.tsx",
+    "line": 381,
+    "links": [],
+    "controls": [
+      {
+        "line": 408,
+        "tag": "input",
+        "text": "setQ(e.target.value)} placeholder=\"검색하거나 명령을 입력하세요...\" className=\"flex-1 text-sm outline-none\" style={{ color: A.text, backgroundColor: \"transparent\" }}/> ESC",
+        "props": "ref={inputRef} value={q} onChange={e => setQ(e.target.value)} placeholder=\"검색하거나 명령을 입력하세요...\" className=\"flex-1 text-sm outline-none\" style={{ color: A.text, backgroundColor: \"transparent\" }}",
+        "wired": true
+      },
+      {
+        "line": 419,
+        "tag": "button",
+        "text": "{ onNavigate(item.label); onClose(); }} className=\"w-full flex items-center gap-3 px-4 py-2.5 text-sm text-left transition-colors\" style={{ color: A.textMid }} onMouseEnter={e => (",
+        "props": "key={item.label} onClick={() => { onNavigate(item.label); onClose(); }} className=\"w-full flex items-center gap-3 px-4 py-2.5 text-sm text-left transition-colors\" style={{ color: A.textMid }} onMouseEnter={e => (e.currentTarget.style.backgroundColor = A.bg)} o",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "PageHeader",
+    "file": "src/admin/AdminShared.tsx",
+    "line": 440,
+    "links": [],
+    "controls": []
+  },
+  {
+    "name": "Card",
+    "file": "src/admin/AdminShared.tsx",
+    "line": 456,
+    "links": [],
+    "controls": []
+  },
+  {
+    "name": "Btn",
+    "file": "src/admin/AdminShared.tsx",
+    "line": 466,
+    "links": [],
+    "controls": [
+      {
+        "line": 483,
+        "tag": "button",
+        "text": "{icon}{children}",
+        "props": "onClick={onClick} className={`inline-flex items-center gap-1.5 ${pad} ${fs} font-semibold rounded-lg transition-all`} style={{ backgroundColor: cfg.bg, color: cfg.color, border: `1px solid ${cfg.border}` }}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "LineChart",
+    "file": "src/admin/AdminShared.tsx",
+    "line": 492,
+    "links": [],
+    "controls": []
+  },
+  {
+    "name": "BarChart",
+    "file": "src/admin/AdminShared.tsx",
+    "line": 540,
+    "links": [],
+    "controls": []
+  },
+  {
+    "name": "FilterChips",
+    "file": "src/admin/AdminShared.tsx",
+    "line": 582,
+    "links": [],
+    "controls": [
+      {
+        "line": 587,
+        "tag": "button",
+        "text": "onChange(opt)} className=\"px-3 py-1.5 rounded-lg text-xs font-medium transition-all\" style={{ backgroundColor: value === opt ? A.green : A.bg, color: value === opt ? \"#fff\" : A.mut",
+        "props": "key={opt} onClick={() => onChange(opt)} className=\"px-3 py-1.5 rounded-lg text-xs font-medium transition-all\" style={{ backgroundColor: value === opt ? A.green : A.bg, color: value === opt ? \"#fff\" : A.muted, border: `1px solid ${value === opt ? A.green : A.bo",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "StarDisplay",
+    "file": "src/admin/AdminShared.tsx",
+    "line": 601,
+    "links": [],
+    "controls": []
+  },
+  {
+    "name": "PlatformAnalytics",
+    "file": "src/admin/AnalyticsScreens.tsx",
+    "line": 46,
+    "links": [],
+    "controls": []
+  },
+  {
+    "name": "HalalDatabase",
+    "file": "src/admin/ContentScreens.tsx",
+    "line": 28,
+    "links": [],
+    "controls": [
+      {
+        "line": 71,
+        "tag": "Btn",
+        "text": "수정",
+        "props": "variant=\"ghost\"",
+        "wired": false
+      },
+      {
+        "line": 72,
+        "tag": "Btn",
+        "text": "삭제",
+        "props": "variant=\"danger\"",
+        "wired": false
+      },
+      {
+        "line": 86,
+        "tag": "Btn",
+        "text": "CSV 일괄 가져오기",
+        "props": "variant=\"secondary\" size=\"md\"",
+        "wired": false
+      },
+      {
+        "line": 87,
+        "tag": "Btn",
+        "text": "setAddOpen(true)}>+ 제품 추가",
+        "props": "variant=\"primary\" size=\"md\" onClick={() => setAddOpen(true)}",
+        "wired": true
+      },
+      {
+        "line": 94,
+        "tag": "button",
+        "text": "setTab(t)} className=\"px-4 py-2.5 text-sm font-medium relative\" style={{ color: tab === t ? A.green : A.muted }}> {t === \"products\" ? \"제품 목록\" : `커뮤니티 신고 (${COMMUNITY_REPORTS.length",
+        "props": "key={t} onClick={() => setTab(t)} className=\"px-4 py-2.5 text-sm font-medium relative\" style={{ color: tab === t ? A.green : A.muted }}",
+        "wired": true
+      },
+      {
+        "line": 125,
+        "tag": "Btn",
+        "text": "검토 후 수정",
+        "props": "variant=\"warning\"",
+        "wired": false
+      },
+      {
+        "line": 126,
+        "tag": "Btn",
+        "text": "신고 기각",
+        "props": "variant=\"ghost\"",
+        "wired": false
+      },
+      {
+        "line": 143,
+        "tag": "input",
+        "text": "{f.label}",
+        "props": "className=\"w-full px-3 py-2.5 text-sm rounded-lg outline-none\" placeholder={f.placeholder} style={{ backgroundColor: A.bg, border: `1px solid ${A.border}`, color: A.text }}",
+        "wired": false
+      },
+      {
+        "line": 153,
+        "tag": "input",
+        "text": "{s}",
+        "props": "type=\"radio\" name=\"halalStatus\" className=\"accent-green-700\"",
+        "wired": false
+      },
+      {
+        "line": 159,
+        "tag": "Btn",
+        "text": "setAddOpen(false)}>취소",
+        "props": "onClick={() => setAddOpen(false)}",
+        "wired": true
+      },
+      {
+        "line": 160,
+        "tag": "Btn",
+        "text": "{ setAddOpen(false); setToast({ msg: \"제품이 추가되었습니다\", type: \"success\" }); }}> 추가",
+        "props": "variant=\"primary\" size=\"md\" onClick={() => { setAddOpen(false); setToast({ msg: \"제품이 추가되었습니다\", type: \"success\" }); }}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "MosqueManagement",
+    "file": "src/admin/ContentScreens.tsx",
+    "line": 179,
+    "links": [],
+    "controls": [
+      {
+        "line": 189,
+        "tag": "Btn",
+        "text": "setAddOpen(true)}>+ 위치 추가",
+        "props": "variant=\"primary\" size=\"md\" onClick={() => setAddOpen(true)}",
+        "wired": true
+      },
+      {
+        "line": 194,
+        "tag": "button",
+        "text": "setTab(t)} className=\"px-4 py-2.5 text-sm font-medium relative\" style={{ color: tab === t ? A.green : A.muted }}> {t === \"list\" ? \"전체 목록\" : `사용자 제보 대기 (${MOSQUES.filter(m => m.pend",
+        "props": "key={t} onClick={() => setTab(t)} className=\"px-4 py-2.5 text-sm font-medium relative\" style={{ color: tab === t ? A.green : A.muted }}",
+        "wired": true
+      },
+      {
+        "line": 226,
+        "tag": "Btn",
+        "text": "수정",
+        "props": "variant=\"ghost\"",
+        "wired": false
+      },
+      {
+        "line": 227,
+        "tag": "Btn",
+        "text": "승인",
+        "props": "variant=\"primary\"",
+        "wired": false
+      },
+      {
+        "line": 228,
+        "tag": "Btn",
+        "text": "삭제",
+        "props": "variant=\"danger\"",
+        "wired": false
+      },
+      {
+        "line": 242,
+        "tag": "input",
+        "text": "{f.l}",
+        "props": "placeholder={f.p} className=\"w-full px-3 py-2.5 text-sm rounded-lg outline-none\" style={{ backgroundColor: A.bg, border: `1px solid ${A.border}`, color: A.text }}",
+        "wired": false
+      },
+      {
+        "line": 247,
+        "tag": "Btn",
+        "text": "setAddOpen(false)}>취소",
+        "props": "onClick={() => setAddOpen(false)}",
+        "wired": true
+      },
+      {
+        "line": 248,
+        "tag": "Btn",
+        "text": "setAddOpen(false)}>저장",
+        "props": "variant=\"primary\" size=\"md\" onClick={() => setAddOpen(false)}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "PromotionsManagement",
+    "file": "src/admin/ContentScreens.tsx",
+    "line": 264,
+    "links": [],
+    "controls": [
+      {
+        "line": 275,
+        "tag": "Btn",
+        "text": "setCreateOpen(true)}>+ 프로모션 생성",
+        "props": "variant=\"primary\" size=\"md\" onClick={() => setCreateOpen(true)}",
+        "wired": true
+      },
+      {
+        "line": 319,
+        "tag": "Btn",
+        "text": "수정",
+        "props": "variant=\"ghost\"",
+        "wired": false
+      },
+      {
+        "line": 320,
+        "tag": "Btn",
+        "text": "종료",
+        "props": "variant=\"danger\"",
+        "wired": false
+      },
+      {
+        "line": 335,
+        "tag": "button",
+        "text": "setPromoType(t)} className=\"flex-1 py-2.5 rounded-lg text-sm font-medium transition-all\" style={{ backgroundColor: promoType === t ? A.green : A.bg, color: promoType === t ? \"#fff\"",
+        "props": "key={t} onClick={() => setPromoType(t)} className=\"flex-1 py-2.5 rounded-lg text-sm font-medium transition-all\" style={{ backgroundColor: promoType === t ? A.green : A.bg, color: promoType === t ? \"#fff\" : A.muted, border: `1px solid ${promoType === t ? A.gree",
+        "wired": true
+      },
+      {
+        "line": 346,
+        "tag": "input",
+        "text": "{f.l}",
+        "props": "placeholder={f.p} className=\"w-full px-3 py-2.5 text-sm rounded-lg outline-none\" style={{ backgroundColor: A.bg, border: `1px solid ${A.border}`, color: A.text }}",
+        "wired": false
+      },
+      {
+        "line": 351,
+        "tag": "Btn",
+        "text": "setCreateOpen(false)}>취소",
+        "props": "onClick={() => setCreateOpen(false)}",
+        "wired": true
+      },
+      {
+        "line": 352,
+        "tag": "Btn",
+        "text": "{ setCreateOpen(false); setToast({ msg: \"프로모션이 생성되었습니다\", type: \"success\" }); }}> 생성",
+        "props": "variant=\"primary\" size=\"md\" onClick={() => { setCreateOpen(false); setToast({ msg: \"프로모션이 생성되었습니다\", type: \"success\" }); }}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "CourierList",
+    "file": "src/admin/CourierAdminScreens.tsx",
+    "line": 33,
+    "links": [],
+    "controls": [
+      {
+        "line": 92,
+        "tag": "Btn",
+        "text": "onDetail?.(c.id)} variant=\"ghost\">보기",
+        "props": "onClick={() => onDetail?.(c.id)} variant=\"ghost\"",
+        "wired": true
+      },
+      {
+        "line": 93,
+        "tag": "Btn",
+        "text": "setToast({ msg: `${c.name} 정지됨`, type: \"error\" })} variant=\"danger\">정지",
+        "props": "onClick={() => setToast({ msg: `${c.name} 정지됨`, type: \"error\" })} variant=\"danger\"",
+        "wired": true
+      },
+      {
+        "line": 94,
+        "tag": "Btn",
+        "text": "setToast({ msg: `${c.name} 활성화됨`, type: \"success\" })} variant=\"secondary\">활성화",
+        "props": "onClick={() => setToast({ msg: `${c.name} 활성화됨`, type: \"success\" })} variant=\"secondary\"",
+        "wired": true
+      },
+      {
+        "line": 106,
+        "tag": "Btn",
+        "text": "+ 파트너 초대",
+        "props": "variant=\"primary\" size=\"md\"",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "CourierApproval",
+    "file": "src/admin/CourierAdminScreens.tsx",
+    "line": 122,
+    "links": [],
+    "controls": [
+      {
+        "line": 190,
+        "tag": "Btn",
+        "text": "열기",
+        "props": "variant=\"ghost\"",
+        "wired": false
+      },
+      {
+        "line": 201,
+        "tag": "Btn",
+        "text": "setToast({ msg: `${app.name} 파트너 승인 완료`, type: \"success\" })}> ✓ 파트너 승인",
+        "props": "variant=\"primary\" size=\"md\" onClick={() => setToast({ msg: `${app.name} 파트너 승인 완료`, type: \"success\" })}",
+        "wired": true
+      },
+      {
+        "line": 204,
+        "tag": "Btn",
+        "text": "setRejectOpen(true)}> ✕ 거절",
+        "props": "variant=\"danger\" size=\"md\" onClick={() => setRejectOpen(true)}",
+        "wired": true
+      },
+      {
+        "line": 207,
+        "tag": "Btn",
+        "text": "추가 서류 요청",
+        "props": "variant=\"warning\" size=\"md\"",
+        "wired": false
+      },
+      {
+        "line": 218,
+        "tag": "textarea",
+        "text": "거절 사유를 입력하세요. 신청자에게 이메일로 발송됩니다. setReason(e.target.value)} rows={4} placeholder=\"거절 사유...\" className=\"w-full rounded-lg px-3 py-2.5 text-sm resize-none outline-none\" style={{ backg",
+        "props": "value={reason} onChange={e => setReason(e.target.value)} rows={4} placeholder=\"거절 사유...\" className=\"w-full rounded-lg px-3 py-2.5 text-sm resize-none outline-none\" style={{ backgroundColor: A.bg, border: `1px solid ${A.border}`, color: A.text }}",
+        "wired": true
+      },
+      {
+        "line": 223,
+        "tag": "Btn",
+        "text": "setRejectOpen(false)}>취소",
+        "props": "onClick={() => setRejectOpen(false)}",
+        "wired": true
+      },
+      {
+        "line": 224,
+        "tag": "Btn",
+        "text": "{ setRejectOpen(false); setToast({ msg: \"거절 처리됨\", type: \"error\" }); }}> 거절 전송",
+        "props": "variant=\"danger\" size=\"md\" onClick={() => { setRejectOpen(false); setToast({ msg: \"거절 처리됨\", type: \"error\" }); }}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "CourierDetail",
+    "file": "src/admin/CourierAdminScreens.tsx",
+    "line": 236,
+    "links": [],
+    "controls": [
+      {
+        "line": 253,
+        "tag": "Btn",
+        "text": "메시지 보내기",
+        "props": "variant=\"secondary\" size=\"md\"",
+        "wired": false
+      },
+      {
+        "line": 254,
+        "tag": "Btn",
+        "text": "파트너 정지",
+        "props": "variant=\"danger\" size=\"md\"",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "AllOrders",
+    "file": "src/admin/OrdersScreens.tsx",
+    "line": 30,
+    "links": [],
+    "controls": [
+      {
+        "line": 86,
+        "tag": "Btn",
+        "text": "setDetailOrder(o)} variant=\"ghost\">상세",
+        "props": "onClick={() => setDetailOrder(o)} variant=\"ghost\"",
+        "wired": true
+      },
+      {
+        "line": 88,
+        "tag": "Btn",
+        "text": "{ setDetailOrder(o); setRefundOpen(true); }} variant=\"danger\">환불",
+        "props": "onClick={() => { setDetailOrder(o); setRefundOpen(true); }} variant=\"danger\"",
+        "wired": true
+      },
+      {
+        "line": 103,
+        "tag": "Btn",
+        "text": "날짜 범위 선택",
+        "props": "variant=\"secondary\" size=\"md\"",
+        "wired": false
+      },
+      {
+        "line": 104,
+        "tag": "Btn",
+        "text": "CSV 내보내기",
+        "props": "variant=\"secondary\" size=\"md\"",
+        "wired": false
+      },
+      {
+        "line": 118,
+        "tag": "button",
+        "text": "setFilter(s.label === \"완료\" ? \"완료\" : s.label === \"배달중\" ? \"배달중\" : s.label === \"신규 접수\" ? \"신규\" : s.label === \"취소/환불\" ? \"취소/환불\" : \"전체\")} className=\"rounded-xl p-3.5 text-left transition",
+        "props": "key={s.label} onClick={() => setFilter(s.label === \"완료\" ? \"완료\" : s.label === \"배달중\" ? \"배달중\" : s.label === \"신규 접수\" ? \"신규\" : s.label === \"취소/환불\" ? \"취소/환불\" : \"전체\")} className=\"rounded-xl p-3.5 text-left transition-all\" style={{ backgroundColor: A.surface, border: ",
+        "wired": true
+      },
+      {
+        "line": 178,
+        "tag": "Btn",
+        "text": "setRefundOpen(true)}>환불 처리",
+        "props": "variant=\"danger\" size=\"md\" onClick={() => setRefundOpen(true)}",
+        "wired": true
+      },
+      {
+        "line": 180,
+        "tag": "Btn",
+        "text": "배달파트너 재배정",
+        "props": "variant=\"secondary\" size=\"md\"",
+        "wired": false
+      },
+      {
+        "line": 181,
+        "tag": "Btn",
+        "text": "setDetailOrder(null)}>닫기",
+        "props": "variant=\"ghost\" onClick={() => setDetailOrder(null)}",
+        "wired": true
+      },
+      {
+        "line": 194,
+        "tag": "input",
+        "text": "{r}",
+        "props": "type=\"radio\" name=\"refundReason\" className=\"accent-green-700\"",
+        "wired": false
+      },
+      {
+        "line": 199,
+        "tag": "Btn",
+        "text": "setRefundOpen(false)}>취소",
+        "props": "onClick={() => setRefundOpen(false)}",
+        "wired": true
+      },
+      {
+        "line": 200,
+        "tag": "Btn",
+        "text": "{ setRefundOpen(false); setDetailOrder(null); setToast({ msg: \"환불 처리 완료\", type: \"info\" }); }}> 환불 확정",
+        "props": "variant=\"danger\" size=\"md\" onClick={() => { setRefundOpen(false); setDetailOrder(null); setToast({ msg: \"환불 처리 완료\", type: \"info\" }); }}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "LiveOperationsMap",
+    "file": "src/admin/OrdersScreens.tsx",
+    "line": 225,
+    "links": [],
+    "controls": [
+      {
+        "line": 253,
+        "tag": "button",
+        "text": "setHeatmapOn(!heatmapOn)} className=\"px-3 py-1.5 rounded-lg text-xs font-semibold transition-all\" style={{ backgroundColor: heatmapOn ? A.info : A.bg, color: heatmapOn ? \"#fff\" : A",
+        "props": "onClick={() => setHeatmapOn(!heatmapOn)} className=\"px-3 py-1.5 rounded-lg text-xs font-semibold transition-all\" style={{ backgroundColor: heatmapOn ? A.info : A.bg, color: heatmapOn ? \"#fff\" : A.muted, border: `1px solid ${heatmapOn ? A.info : A.border}` }}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "AdminHome",
+    "file": "src/admin/OverviewScreens.tsx",
+    "line": 36,
+    "links": [],
+    "controls": [
+      {
+        "line": 78,
+        "tag": "button",
+        "text": "setChartMetric(m)} className=\"px-3 py-1.5 rounded-lg text-xs font-medium transition-all\" style={{ backgroundColor: chartMetric === m ? A.green : A.bg, color: chartMetric === m ? \"#",
+        "props": "key={m} onClick={() => setChartMetric(m)} className=\"px-3 py-1.5 rounded-lg text-xs font-medium transition-all\" style={{ backgroundColor: chartMetric === m ? A.green : A.bg, color: chartMetric === m ? \"#fff\" : A.muted, }}",
+        "wired": true
+      },
+      {
+        "line": 100,
+        "tag": "button",
+        "text": "모두 보기",
+        "props": "className=\"text-xs font-medium\" style={{ color: A.green }}",
+        "wired": false
+      },
+      {
+        "line": 114,
+        "tag": "button",
+        "text": "{act.action}",
+        "props": "className=\"text-[11px] font-semibold\" style={{ color: A.green }}",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "PlaceSubmissionsScreen",
+    "file": "src/admin/PlaceSubmissionsScreen.tsx",
+    "line": 5,
+    "links": [],
+    "controls": [
+      {
+        "line": 13,
+        "tag": "Btn",
+        "text": "review(item.id, \"approved\")}>Tasdiqlash",
+        "props": "variant=\"primary\" onClick={() => review(item.id, \"approved\")}",
+        "wired": true
+      },
+      {
+        "line": 13,
+        "tag": "Btn",
+        "text": "review(item.id, \"rejected\")}>Rad etish",
+        "props": "variant=\"danger\" onClick={() => review(item.id, \"rejected\")}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "RestaurantList",
+    "file": "src/admin/RestaurantScreens.tsx",
+    "line": 42,
+    "links": [],
+    "controls": [
+      {
+        "line": 97,
+        "tag": "Btn",
+        "text": "onDetail?.(r.id)} variant=\"ghost\">보기",
+        "props": "onClick={() => onDetail?.(r.id)} variant=\"ghost\"",
+        "wired": true
+      },
+      {
+        "line": 98,
+        "tag": "Btn",
+        "text": "setToast({ msg: `${r.name} 정지 처리됨`, type: \"info\" })} variant=\"danger\">정지",
+        "props": "onClick={() => setToast({ msg: `${r.name} 정지 처리됨`, type: \"info\" })} variant=\"danger\"",
+        "wired": true
+      },
+      {
+        "line": 99,
+        "tag": "Btn",
+        "text": "setToast({ msg: `${r.name} 활성화됨`, type: \"success\" })} variant=\"secondary\">활성화",
+        "props": "onClick={() => setToast({ msg: `${r.name} 활성화됨`, type: \"success\" })} variant=\"secondary\"",
+        "wired": true
+      },
+      {
+        "line": 111,
+        "tag": "Btn",
+        "text": "+ 직접 등록",
+        "props": "variant=\"primary\" size=\"md\"",
+        "wired": false
+      },
+      {
+        "line": 119,
+        "tag": "Btn",
+        "text": "내보내기",
+        "props": "variant=\"secondary\"",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "RestaurantApproval",
+    "file": "src/admin/RestaurantScreens.tsx",
+    "line": 132,
+    "links": [],
+    "controls": [
+      {
+        "line": 150,
+        "tag": "button",
+        "text": "setSelected(app)} className=\"w-full text-left rounded-xl p-4 transition-all\" style={{ backgroundColor: selected.id === app.id ? A.greenLight : A.surface, border: `1.5px solid ${sel",
+        "props": "key={app.id} onClick={() => setSelected(app)} className=\"w-full text-left rounded-xl p-4 transition-all\" style={{ backgroundColor: selected.id === app.id ? A.greenLight : A.surface, border: `1.5px solid ${selected.id === app.id ? A.greenBorder : A.border}`, }}",
+        "wired": true
+      },
+      {
+        "line": 204,
+        "tag": "button",
+        "text": "열기",
+        "props": "className=\"text-xs font-semibold px-3 py-1.5 rounded-lg mt-1\" style={{ backgroundColor: A.greenLight, color: A.greenText }}",
+        "wired": false
+      },
+      {
+        "line": 252,
+        "tag": "Btn",
+        "text": "setToast({ msg: `${selected.name} 승인 완료`, type: \"success\" })}> ✓ 승인",
+        "props": "variant=\"primary\" size=\"md\" onClick={() => setToast({ msg: `${selected.name} 승인 완료`, type: \"success\" })}",
+        "wired": true
+      },
+      {
+        "line": 255,
+        "tag": "Btn",
+        "text": "setRejectOpen(true)}> ✕ 거절",
+        "props": "variant=\"danger\" size=\"md\" onClick={() => setRejectOpen(true)}",
+        "wired": true
+      },
+      {
+        "line": 258,
+        "tag": "Btn",
+        "text": "ℹ 추가 정보 요청",
+        "props": "variant=\"warning\" size=\"md\"",
+        "wired": false
+      },
+      {
+        "line": 272,
+        "tag": "textarea",
+        "text": "거절 사유를 입력하면 신청자에게 이메일로 전송됩니다. setRejectReason(e.target.value)} rows={4} placeholder=\"거절 사유를 입력하세요...\" className=\"w-full rounded-lg px-3 py-2.5 text-sm resize-none outline-none\" sty",
+        "props": "value={rejectReason} onChange={e => setRejectReason(e.target.value)} rows={4} placeholder=\"거절 사유를 입력하세요...\" className=\"w-full rounded-lg px-3 py-2.5 text-sm resize-none outline-none\" style={{ backgroundColor: A.bg, border: `1px solid ${A.border}`, color: A.tex",
+        "wired": true
+      },
+      {
+        "line": 277,
+        "tag": "Btn",
+        "text": "setRejectOpen(false)}>취소",
+        "props": "onClick={() => setRejectOpen(false)}",
+        "wired": true
+      },
+      {
+        "line": 278,
+        "tag": "Btn",
+        "text": "{ setRejectOpen(false); setToast({ msg: `${selected.name} 거절 처리됨`, type: \"error\" }); }}> 거절 전송",
+        "props": "variant=\"danger\" size=\"md\" onClick={() => { setRejectOpen(false); setToast({ msg: `${selected.name} 거절 처리됨`, type: \"error\" }); }}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "RestaurantDetail",
+    "file": "src/admin/RestaurantScreens.tsx",
+    "line": 291,
+    "links": [],
+    "controls": [
+      {
+        "line": 308,
+        "tag": "Btn",
+        "text": "수정",
+        "props": "variant=\"secondary\" size=\"md\"",
+        "wired": false
+      },
+      {
+        "line": 309,
+        "tag": "Btn",
+        "text": "setSuspendOpen(true)}> {r.status === \"active\" ? \"정지\" : \"활성화\"}",
+        "props": "variant=\"danger\" size=\"md\" onClick={() => setSuspendOpen(true)}",
+        "wired": true
+      },
+      {
+        "line": 333,
+        "tag": "button",
+        "text": "setActiveTab(tab)} className=\"px-4 py-2.5 text-sm font-medium transition-all relative\" style={{ color: activeTab === tab ? A.green : A.muted }}> {TAB_LABELS[tab]} {activeTab === ta",
+        "props": "key={tab} onClick={() => setActiveTab(tab)} className=\"px-4 py-2.5 text-sm font-medium transition-all relative\" style={{ color: activeTab === tab ? A.green : A.muted }}",
+        "wired": true
+      },
+      {
+        "line": 386,
+        "tag": "Btn",
+        "text": "인증서 보기",
+        "props": "variant=\"secondary\"",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "PlatformSettings",
+    "file": "src/admin/SettingsScreens.tsx",
+    "line": 15,
+    "links": [],
+    "controls": [
+      {
+        "line": 84,
+        "tag": "Btn",
+        "text": "setToast({ msg: \"설정이 저장되었습니다\", type: \"success\" })}> 변경사항 저장",
+        "props": "variant=\"primary\" size=\"md\" onClick={() => setToast({ msg: \"설정이 저장되었습니다\", type: \"success\" })}",
+        "wired": true
+      },
+      {
+        "line": 93,
+        "tag": "button",
+        "text": "setTab(t.id)} className=\"px-4 py-2.5 text-sm font-medium whitespace-nowrap relative\" style={{ color: tab === t.id ? A.green : A.muted }}> {t.label} {tab === t.id && }",
+        "props": "key={t.id} onClick={() => setTab(t.id)} className=\"px-4 py-2.5 text-sm font-medium whitespace-nowrap relative\" style={{ color: tab === t.id ? A.green : A.muted }}",
+        "wired": true
+      },
+      {
+        "line": 116,
+        "tag": "input",
+        "text": "{f.label} setFees(p => ({ ...p, [f.key]: e.target.value }))} className=\"w-full mt-1.5 px-3 py-2.5 text-sm rounded-lg outline-none font-mono\" style={{ backgroundColor: A.bg, border:",
+        "props": "value={fees[f.key]} onChange={e => setFees(p => ({ ...p, [f.key]: e.target.value }))} className=\"w-full mt-1.5 px-3 py-2.5 text-sm rounded-lg outline-none font-mono\" style={{ backgroundColor: A.bg, border: `1px solid ${A.border}`, color: A.text }}",
+        "wired": true
+      },
+      {
+        "line": 137,
+        "tag": "input",
+        "text": "{f.label} setFees(p => ({ ...p, [f.key]: e.target.value }))} className=\"w-full mt-1.5 px-3 py-2.5 text-sm rounded-lg outline-none font-mono\" style={{ backgroundColor: A.bg, border:",
+        "props": "value={fees[f.key]} onChange={e => setFees(p => ({ ...p, [f.key]: e.target.value }))} className=\"w-full mt-1.5 px-3 py-2.5 text-sm rounded-lg outline-none font-mono\" style={{ backgroundColor: A.bg, border: `1px solid ${A.border}`, color: A.text }}",
+        "wired": true
+      },
+      {
+        "line": 152,
+        "tag": "Btn",
+        "text": "+ 지역 추가",
+        "props": "variant=\"primary\"",
+        "wired": false
+      },
+      {
+        "line": 169,
+        "tag": "Btn",
+        "text": "수정",
+        "props": "variant=\"ghost\"",
+        "wired": false
+      },
+      {
+        "line": 169,
+        "tag": "Btn",
+        "text": "비활성화",
+        "props": "variant=\"danger\"",
+        "wired": false
+      },
+      {
+        "line": 236,
+        "tag": "textarea",
+        "text": "PUSH NOTIFICATION 배달이 완료되었습니다! 🎉 주문 #HMK-8901이 이태원동에 배달되었습니다. 음식을 즐겨보세요! 템플릿 저장",
+        "props": "rows={4} defaultValue=\"배달이 완료되었습니다! 🎉\\n주문 #{orderId}이 {area}에 배달되었습니다. 음식을 즐겨보세요!\" className=\"w-full mt-3 px-3 py-2.5 text-sm rounded-lg outline-none resize-none\" style={{ backgroundColor: A.bg, border: `1px solid ${A.border}`, color: A.text }}",
+        "wired": false
+      },
+      {
+        "line": 239,
+        "tag": "Btn",
+        "text": "템플릿 저장",
+        "props": "variant=\"secondary\" size=\"md\"",
+        "wired": false
+      },
+      {
+        "line": 280,
+        "tag": "Btn",
+        "text": "재발급",
+        "props": "variant=\"ghost\"",
+        "wired": false
+      },
+      {
+        "line": 281,
+        "tag": "Btn",
+        "text": "복사",
+        "props": "variant=\"ghost\"",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "AdminUsers",
+    "file": "src/admin/SettingsScreens.tsx",
+    "line": 329,
+    "links": [],
+    "controls": [
+      {
+        "line": 340,
+        "tag": "Btn",
+        "text": "setInviteOpen(true)}>+ 관리자 초대",
+        "props": "variant=\"primary\" size=\"md\" onClick={() => setInviteOpen(true)}",
+        "wired": true
+      },
+      {
+        "line": 411,
+        "tag": "Btn",
+        "text": "수정",
+        "props": "variant=\"ghost\"",
+        "wired": false
+      },
+      {
+        "line": 412,
+        "tag": "Btn",
+        "text": "비활성화",
+        "props": "variant=\"danger\"",
+        "wired": false
+      },
+      {
+        "line": 426,
+        "tag": "input",
+        "text": "이메일",
+        "props": "placeholder=\"newadmin@halalmap.kr\" className=\"w-full mt-1.5 px-3 py-2.5 text-sm rounded-lg outline-none\" style={{ backgroundColor: A.bg, border: `1px solid ${A.border}`, color: A.text }}",
+        "wired": false
+      },
+      {
+        "line": 433,
+        "tag": "button",
+        "text": "setSelectedRole(role)} className=\"py-2.5 px-3 rounded-lg text-xs font-medium text-left transition-all\" style={{ backgroundColor: selectedRole === role ? ROLE_COLORS[role].bg : A.bg",
+        "props": "key={role} onClick={() => setSelectedRole(role)} className=\"py-2.5 px-3 rounded-lg text-xs font-medium text-left transition-all\" style={{ backgroundColor: selectedRole === role ? ROLE_COLORS[role].bg : A.bg, color: selectedRole === role ? ROLE_COLORS[role].tex",
+        "wired": true
+      },
+      {
+        "line": 446,
+        "tag": "Btn",
+        "text": "setInviteOpen(false)}>취소",
+        "props": "onClick={() => setInviteOpen(false)}",
+        "wired": true
+      },
+      {
+        "line": 447,
+        "tag": "Btn",
+        "text": "{ setInviteOpen(false); setToast({ msg: \"초대 이메일이 발송되었습니다\", type: \"success\" }); }}> 초대 전송",
+        "props": "variant=\"primary\" size=\"md\" onClick={() => { setInviteOpen(false); setToast({ msg: \"초대 이메일이 발송되었습니다\", type: \"success\" }); }}",
+        "wired": true
+      }
+    ]
+  },
+  {
+    "name": "UserList",
+    "file": "src/admin/UserScreens.tsx",
+    "line": 27,
+    "links": [],
+    "controls": [
+      {
+        "line": 89,
+        "tag": "Btn",
+        "text": "onDetail?.(u.id)} variant=\"ghost\">보기",
+        "props": "onClick={() => onDetail?.(u.id)} variant=\"ghost\"",
+        "wired": true
+      },
+      {
+        "line": 91,
+        "tag": "Btn",
+        "text": "setToast({ msg: `${u.name} 계정 정지됨`, type: \"error\" })} variant=\"danger\">정지",
+        "props": "onClick={() => setToast({ msg: `${u.name} 계정 정지됨`, type: \"error\" })} variant=\"danger\"",
+        "wired": true
+      },
+      {
+        "line": 92,
+        "tag": "Btn",
+        "text": "setToast({ msg: `${u.name} 계정 활성화됨`, type: \"success\" })} variant=\"secondary\">활성화",
+        "props": "onClick={() => setToast({ msg: `${u.name} 계정 활성화됨`, type: \"success\" })} variant=\"secondary\"",
+        "wired": true
+      },
+      {
+        "line": 106,
+        "tag": "Btn",
+        "text": "CSV 내보내기",
+        "props": "variant=\"secondary\" size=\"md\"",
+        "wired": false
+      },
+      {
+        "line": 107,
+        "tag": "Btn",
+        "text": "+ 관리자 초대",
+        "props": "variant=\"primary\" size=\"md\"",
+        "wired": false
+      }
+    ]
+  },
+  {
+    "name": "UserDetail",
+    "file": "src/admin/UserScreens.tsx",
+    "line": 127,
+    "links": [],
+    "controls": [
+      {
+        "line": 149,
+        "tag": "Btn",
+        "text": "비밀번호 초기화",
+        "props": "variant=\"secondary\" size=\"md\"",
+        "wired": false
+      },
+      {
+        "line": 150,
+        "tag": "Btn",
+        "text": "setSuspendOpen(true)}> {u.status === \"active\" ? \"계정 정지\" : \"계정 활성화\"}",
+        "props": "variant=\"warning\" size=\"md\" onClick={() => setSuspendOpen(true)}",
+        "wired": true
+      },
+      {
+        "line": 153,
+        "tag": "Btn",
+        "text": "setDeleteOpen(true)}>계정 삭제",
+        "props": "variant=\"danger\" size=\"md\" onClick={() => setDeleteOpen(true)}",
+        "wired": true
+      },
+      {
+        "line": 217,
+        "tag": "button",
+        "text": "setActiveTab(tab)} className=\"px-4 py-2.5 text-sm font-medium relative transition-all\" style={{ color: activeTab === tab ? A.green : A.muted }}> {tab === \"orders\" ? \"주문 이력\" : tab =",
+        "props": "key={tab} onClick={() => setActiveTab(tab)} className=\"px-4 py-2.5 text-sm font-medium relative transition-all\" style={{ color: activeTab === tab ? A.green : A.muted }}",
+        "wired": true
+      }
+    ]
+  }
+]

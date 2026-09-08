@@ -1,3 +1,6 @@
+import { useLocalState } from "../services/localState";
+import { navigate } from "../services/navigation";
+import { explainUnavailable } from "../components/ActionDialog";
 import React, { useState } from "react";
 import { C, CStatusBar, CBottomNav } from "./CourierShared";
 
@@ -109,7 +112,7 @@ export const CourierProfile = () => {
                 </div>
               ))}
             </div>
-            <button className="w-full py-4 rounded-2xl font-bold text-sm"
+            <button type="button" onClick={() => explainUnavailable("Kuryer profilini o‘zgartirish")} className="w-full py-4 rounded-2xl font-bold text-sm"
               style={{ backgroundColor: C.card, color: C.muted, border: `1px solid ${C.border}` }}>
               프로필 수정
             </button>
@@ -166,6 +169,8 @@ export const CourierProfile = () => {
 
 // ── 15. Courier Settings ───────────────────────────────────────────────────────
 export const CourierSettings = () => {
+const [volume, setVolume] = useLocalState("courier-volume", "크게");
+
   const [orderSound, setOrderSound] = useState(true);
   const [autoAccept, setAutoAccept] = useState(false);
   const [pushNotifs, setPushNotifs] = useState(true);
@@ -218,9 +223,9 @@ export const CourierSettings = () => {
               {orderSound && (
                 <div className="mt-3 flex gap-2">
                   {["크게", "보통", "작게"].map((v, i) => (
-                    <button key={v}
+                    <button type="button" onClick={() => setVolume(v)} key={v}
                       className="flex-1 py-2 rounded-xl text-xs font-bold"
-                      style={{ backgroundColor: i === 0 ? C.green : C.cardAlt, color: i === 0 ? "#0E1620" : C.muted }}>
+                      style={{ backgroundColor: volume === v ? C.green : C.cardAlt, color: volume === v ? "#0E1620" : C.muted }}>
                       {v}
                     </button>
                   ))}
@@ -304,9 +309,9 @@ export const CourierSettings = () => {
         </div>
 
         {/* Logout */}
-        <button className="w-full py-4 rounded-2xl font-bold text-sm"
+        <button type="button" onClick={() => navigate("/customer/home")} className="w-full py-4 rounded-2xl font-bold text-sm"
           style={{ backgroundColor: "#2A0F10", color: "#E05050", border: "1px solid #3A1A1A" }}>
-          로그아웃
+          Asosiy ilovaga qaytish
         </button>
         <div className="h-4" />
       </div>

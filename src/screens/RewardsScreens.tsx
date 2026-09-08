@@ -1,3 +1,7 @@
+import { navigate, readRoute, goBack } from "../services/navigation";
+import { useLocalState, readLocal, writeLocal } from "../services/localState";
+import { explainUnavailable, showNotice } from "../components/ActionDialog";
+import { shareLink } from "../services/shareService";
 import React, { useState } from "react";
 import { GeometricPattern, StatusBar, BackButton } from "../components/Shared";
 
@@ -204,7 +208,7 @@ export const LoyaltyScreen = () => {
                   </div>
                   <span className="text-[10px] font-bold px-2 py-1 rounded-full" style={{ backgroundColor: "var(--gold-light)", color: "var(--gold)" }}>{item.min}</span>
                 </div>
-                <button className="w-full py-2.5 rounded-xl font-bold text-sm" style={{ backgroundColor: "var(--gold)", color: "white" }}>
+                <button type="button" onClick={() => navigate("cart")} className="w-full py-2.5 rounded-xl font-bold text-sm" style={{ backgroundColor: "var(--gold)", color: "white" }}>
                   사용하기
                 </button>
               </div>
@@ -250,9 +254,12 @@ export const ReferralScreen = () => {
   const [copied, setCopied] = useState(false);
   const referralCode = "HALAL-KIM7840";
 
-  const handleCopy = () => {
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(referralCode);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch { showNotice("Nusxalash", referralCode); }
   };
 
   return (
@@ -302,7 +309,7 @@ export const ReferralScreen = () => {
               { icon: "📷", label: "인스타", bg: "#E1306C", fg: "#fff" },
               { icon: "🔗", label: "링크", bg: "var(--green)", fg: "#fff" },
             ].map((s) => (
-              <button key={s.label} className="flex flex-col items-center gap-1.5">
+              <button type="button" onClick={() => shareLink().then(message => showNotice("Ulashish", message)).catch(() => showNotice("Ulashish", "Havolani nusxalash imkoni bo‘lmadi."))} key={s.label} className="flex flex-col items-center gap-1.5">
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl" style={{ backgroundColor: s.bg }}>
                   {s.icon}
                 </div>

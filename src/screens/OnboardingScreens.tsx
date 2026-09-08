@@ -1,3 +1,7 @@
+import { navigate, readRoute, goBack } from "../services/navigation";
+import { useLocalState, readLocal, writeLocal } from "../services/localState";
+import { explainUnavailable, showNotice } from "../components/ActionDialog";
+import { shareLink } from "../services/shareService";
 import React, { useState } from "react";
 import { type Lang, LanguageAccordion } from "../components/LanguageSwitcher";
 import { GeometricPattern, StatusBar } from "../components/Shared";
@@ -158,7 +162,7 @@ export const OnboardingScreen = () => {
       <StatusBar />
       {/* Skip button */}
       <div className="flex justify-end px-5 pt-2">
-        <button className="text-sm font-medium" style={{ color: "var(--muted)" }}>건너뛰기</button>
+        <button type="button" onClick={() => navigate("home")} className="text-sm font-medium" style={{ color: "var(--muted)" }}>건너뛰기</button>
       </div>
 
       {/* Illustration */}
@@ -204,13 +208,13 @@ export const OnboardingScreen = () => {
           </button>
         ) : (
           <>
-            <button
+            <button type="button" onClick={() => navigate("signup")}
               className="w-full py-4 rounded-2xl font-bold text-white text-base shadow-sm"
               style={{ backgroundColor: "var(--green)" }}
             >
               시작하기
             </button>
-            <button
+            <button type="button" onClick={() => navigate("home")}
               className="w-full py-3 rounded-2xl font-semibold text-base border"
               style={{ color: "var(--green)", borderColor: "var(--green)" }}
             >
@@ -286,14 +290,14 @@ export const SignUpScreen = () => {
 
         <div className="space-y-2.5">
           {/* KakaoTalk */}
-          <button className="w-full flex items-center gap-3 py-3.5 px-5 rounded-2xl font-bold text-sm" style={{ backgroundColor: "#FEE500", color: "#1A1A18" }}>
+          <button type="button" onClick={() => explainUnavailable("Kakao orqali ro‘yxatdan o‘tish")} className="w-full flex items-center gap-3 py-3.5 px-5 rounded-2xl font-bold text-sm" style={{ backgroundColor: "#FEE500", color: "#1A1A18" }}>
             <svg width="20" height="20" viewBox="0 0 20 20" fill="#1A1A18">
               <path d="M10 2C5.8 2 2.5 4.7 2.5 8C2.5 10 3.6 11.7 5.4 12.8L4.7 15.7L7.9 13.7C8.6 13.9 9.3 14 10 14C14.2 14 17.5 11.3 17.5 8C17.5 4.7 14.2 2 10 2Z"/>
             </svg>
             카카오로 시작하기
           </button>
           {/* Google */}
-          <button className="w-full flex items-center gap-3 py-3.5 px-5 rounded-2xl font-semibold text-sm bg-white border border-[var(--border)] text-[#1A1A18]">
+          <button type="button" onClick={() => explainUnavailable("Google orqali ro‘yxatdan o‘tish")} className="w-full flex items-center gap-3 py-3.5 px-5 rounded-2xl font-semibold text-sm bg-white border border-[var(--border)] text-[#1A1A18]">
             <svg width="18" height="18" viewBox="0 0 18 18">
               <path d="M17.64 9.2a10 10 0 00-.16-1.7H9v3.22h4.84a4.14 4.14 0 01-1.8 2.72v2.26h2.9A8.78 8.78 0 0017.64 9.2z" fill="#4285F4"/>
               <path d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26A5.43 5.43 0 019 14.4a5.4 5.4 0 01-5.07-3.73H.96v2.33A9 9 0 009 18z" fill="#34A853"/>
@@ -303,7 +307,7 @@ export const SignUpScreen = () => {
             Google로 시작하기
           </button>
           {/* Apple */}
-          <button className="w-full flex items-center gap-3 py-3.5 px-5 rounded-2xl font-semibold text-sm bg-[#1A1A18] text-white">
+          <button type="button" onClick={() => explainUnavailable("Apple orqali ro‘yxatdan o‘tish")} className="w-full flex items-center gap-3 py-3.5 px-5 rounded-2xl font-semibold text-sm bg-[#1A1A18] text-white">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="white">
               <path d="M12.5 0C10.5 0.1 8.1 1.4 7 3a4.9 4.9 0 00-1 2.9C8 6 10.4 4.8 11.5 3a4.7 4.7 0 001-3zm1.4 5.6c-1.7 0-3.2 1-4 1-1 0-2.4-1-3.9-1C3.5 5.6 1 7.7 1 11.2c0 3.4 3 7.8 5.2 7.8.9 0 1.6-.6 3.1-.6s2 .6 3.2.6C15 19 17 14.7 17 13.6a5.5 5.5 0 01-3.2-5.1c0-2 1.2-3 2.2-3.6a5.2 5.2 0 00-2.1-.3z"/>
             </svg>
@@ -331,8 +335,8 @@ export const SignUpScreen = () => {
         </button>
 
         {/* CTA */}
-        <button
-          className="w-full py-4 rounded-2xl font-bold text-white text-base shadow-sm"
+        <button type="button" onClick={() => explainUnavailable("Yangi mijoz akkaunti yaratish")}
+          disabled={!agreed || !name.trim() || !email.trim() || !pw} className="w-full py-4 rounded-2xl font-bold text-white text-base shadow-sm"
           style={{ backgroundColor: agreed ? "var(--green)" : "#9CA3AF" }}
         >
           회원가입
@@ -340,7 +344,7 @@ export const SignUpScreen = () => {
 
         <p className="text-center text-sm text-[var(--muted)]">
           이미 계정이 있으신가요?{" "}
-          <span className="font-semibold" style={{ color: "var(--green)" }}>로그인</span>
+          <button type="button" onClick={() => navigate("/customer/home")} className="font-semibold" style={{ color: "var(--green)" }}>로그인</button>
         </p>
       </div>
     </div>
@@ -410,7 +414,7 @@ export const LoginScreen = ({ onLogin, lang, onLanguageChange }: { onLogin?: (em
         </div>
 
         <div className="flex justify-end">
-          <button type="button" className="text-sm font-medium" style={{ color: "var(--green)" }}>{copy.forgot}</button>
+          <button type="button" onClick={() => explainUnavailable("Parolni tiklash")} className="text-sm font-medium" style={{ color: "var(--green)" }}>{copy.forgot}</button>
         </div>
 
         <button
@@ -446,18 +450,18 @@ export const LoginScreen = ({ onLogin, lang, onLanguageChange }: { onLogin?: (em
         </div>
 
         <div className="space-y-2.5">
-          <button className="w-full flex items-center gap-3 py-3.5 px-5 rounded-2xl font-bold text-sm" style={{ backgroundColor: "#FEE500", color: "#1A1A18" }}>
+          <button type="button" onClick={() => explainUnavailable("OAuth kirish")} className="w-full flex items-center gap-3 py-3.5 px-5 rounded-2xl font-bold text-sm" style={{ backgroundColor: "#FEE500", color: "#1A1A18" }}>
             <svg width="20" height="20" viewBox="0 0 20 20" fill="#1A1A18"><path d="M10 2C5.8 2 2.5 4.7 2.5 8C2.5 10 3.6 11.7 5.4 12.8L4.7 15.7L7.9 13.7C8.6 13.9 9.3 14 10 14C14.2 14 17.5 11.3 17.5 8C17.5 4.7 14.2 2 10 2Z"/></svg>
             {copy.kakao}
           </button>
-          <button className="w-full flex items-center gap-3 py-3.5 px-5 rounded-2xl font-semibold text-sm bg-white border border-[var(--border)] text-[#1A1A18]">
+          <button type="button" onClick={() => explainUnavailable("Google OAuth kirish")} className="w-full flex items-center gap-3 py-3.5 px-5 rounded-2xl font-semibold text-sm bg-white border border-[var(--border)] text-[#1A1A18]">
             <svg width="18" height="18" viewBox="0 0 18 18"><path d="M17.64 9.2a10 10 0 00-.16-1.7H9v3.22h4.84a4.14 4.14 0 01-1.8 2.72v2.26h2.9A8.78 8.78 0 0017.64 9.2z" fill="#4285F4"/><path d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26A5.43 5.43 0 019 14.4a5.4 5.4 0 01-5.07-3.73H.96v2.33A9 9 0 009 18z" fill="#34A853"/><path d="M3.93 10.67A5.41 5.41 0 013.65 9a5.41 5.41 0 01.28-1.67V5H.96A9 9 0 000 9a9 9 0 00.96 4l2.97-2.33z" fill="#FBBC05"/><path d="M9 3.58a4.86 4.86 0 013.44 1.35l2.58-2.58A8.64 8.64 0 009 0 9 9 0 00.96 5l2.97 2.33A5.4 5.4 0 019 3.58z" fill="#EA4335"/></svg>
             {copy.google}
           </button>
         </div>
 
         <p className="text-center text-sm text-[var(--muted)]">
-          <span className="font-semibold" style={{ color: "var(--green)" }}>{copy.signup}</span>
+          <button type="button" onClick={() => navigate("signup")} className="font-semibold" style={{ color: "var(--green)" }}>{copy.signup}</button>
         </p>
       </form>
     </div>
@@ -468,6 +472,7 @@ export const LoginScreen = ({ onLogin, lang, onLanguageChange }: { onLogin?: (em
 const languages = [
   { code: "ko", flag: "🇰🇷", name: "한국어", sub: "Korean" },
   { code: "en", flag: "🇺🇸", name: "English", sub: "English" },
+  { code: "ru", flag: "🇷🇺", name: "Русский", sub: "Russian" },
   { code: "uz", flag: "🇺🇿", name: "O'zbek", sub: "Uzbek" },
   { code: "ar", flag: "🇸🇦", name: "العربية", sub: "Arabic", rtl: true },
   { code: "id", flag: "🇮🇩", name: "Bahasa Indonesia", sub: "Indonesian" },
@@ -475,7 +480,7 @@ const languages = [
 ];
 
 export const LanguageScreen = () => {
-  const [selected, setSelected] = useState("ko");
+  const [selected, setSelected] = useState(localStorage.getItem("halalmap-language") ?? "uz");
 
   return (
     <div className="flex flex-col h-full bg-[var(--cream)]">
@@ -489,7 +494,7 @@ export const LanguageScreen = () => {
         {languages.map((lang) => (
           <button
             key={lang.code}
-            onClick={() => setSelected(lang.code)}
+            onClick={() => ["ko", "en", "uz", "ru"].includes(lang.code) ? setSelected(lang.code) : showNotice("Til", "Bu tilning tarjimasi hali tayyor emas.")}
             className="w-full flex items-center gap-4 p-4 rounded-2xl bg-white border transition-all text-left"
             style={{
               borderColor: selected === lang.code ? "var(--green)" : "var(--border)",
@@ -516,7 +521,7 @@ export const LanguageScreen = () => {
       </div>
 
       <div className="px-5 pb-10">
-        <button
+        <button type="button" onClick={() => { localStorage.setItem("halalmap-language", selected); window.dispatchEvent(new CustomEvent("halalmap:language", { detail: selected })); goBack(); }}
           className="w-full py-4 rounded-2xl font-bold text-white text-base shadow-sm"
           style={{ backgroundColor: "var(--green)" }}
         >

@@ -1,3 +1,10 @@
+import { useAddresses } from "../services/addressService";
+import FavoriteButton from "../components/FavoriteButton";
+import { catalogService } from "../services/catalogService";
+import { navigate, readRoute, goBack } from "../services/navigation";
+import { useLocalState, readLocal, writeLocal } from "../services/localState";
+import { explainUnavailable, showNotice, editFields } from "../components/ActionDialog";
+import { shareLink } from "../services/shareService";
 import React, { useState } from "react";
 import { GeometricPattern, StatusBar, BottomNav, BackButton, Toggle, HalalBadge, StarRating, TabId } from "../components/Shared";
 
@@ -33,7 +40,7 @@ export const ProfileScreen = ({ onTabChange, onLogout }: { onTabChange?: (t: Tab
               <span className="text-xs text-white/60">· 3,200 포인트</span>
             </div>
           </div>
-          <button className="w-8 h-8 bg-white/15 rounded-lg flex items-center justify-center">
+          <button type="button" onClick={() => navigate("settings")} className="w-8 h-8 bg-white/15 rounded-lg flex items-center justify-center">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="white" strokeWidth="1.8"><path d="M2 12L5 11L13 3a1.4 1.4 0 00-2-2L3 10L2 13z"/></svg>
           </button>
         </div>
@@ -54,7 +61,7 @@ export const ProfileScreen = ({ onTabChange, onLogout }: { onTabChange?: (t: Tab
       {/* Menu */}
       <div className="bg-white mt-2 divide-y divide-[var(--border)]">
         {profileMenu.map((item) => (
-          <button key={item.label} className="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[var(--cream)]">
+          <button type="button" onClick={() => navigate((["order-history", "address", "checkout", "saved-places", "notifications", "language", "loyalty", "tutorial", "settings"])[profileMenu.indexOf(item)])} key={item.label} className="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[var(--cream)]">
             <div className="w-10 h-10 rounded-xl bg-[var(--cream)] flex items-center justify-center text-lg flex-shrink-0">
               {item.icon}
             </div>
@@ -94,6 +101,12 @@ const savedMosques = [
 ];
 
 export const SavedPlacesScreen = () => {
+const [meal, setMeal] = useLocalState<{ name: string; restaurant: string; price: number } | null>("favorite-meal", null);
+const [restaurantNames] = useLocalState<string[]>("favorites:restaurant", []);
+const [mosqueNames] = useLocalState<string[]>("favorites:mosque", []);
+const savedRestaurants = restaurantNames.map(name => catalogService.restaurant(name) ?? { name, badge: "certified" as const, rating: 0, count: 0, imageId: "1498654896293-37c98e7f5fe4" });
+const savedMosques = mosqueNames.map(name => ({ name, nameEn: "", distance: "" }));
+
   const [tab, setTab] = useState<"restaurants" | "mosques">("restaurants");
 
   return (
@@ -122,6 +135,8 @@ export const SavedPlacesScreen = () => {
       </div>
 
       <div className="flex-1 phone-scroll px-4 py-4 space-y-3">
+        {meal && tab === "restaurants" && <div className="rounded-2xl bg-white p-4"><p className="text-xs text-[var(--muted)]">Saqlangan tavsiya</p><p className="font-bold">{meal.name}</p><p>{meal.restaurant} · ₩{meal.price.toLocaleString()}</p><button type="button" onClick={() => setMeal(null)} className="mt-2 text-sm text-[var(--danger)]">Olib tashlash</button></div>}
+        {(tab === "restaurants" ? restaurantNames : mosqueNames).length === 0 && <p className="py-8 text-center">Saqlangan joylar yo‘q. Joy sahifasidagi ♡ tugmasini bosing.</p>}
         {tab === "restaurants" ? (
           savedRestaurants.map((r) => (
             <div key={r.name} className="bg-white rounded-2xl overflow-hidden shadow-sm flex items-stretch">
@@ -135,10 +150,8 @@ export const SavedPlacesScreen = () => {
                   <StarRating rating={r.rating} count={r.count} />
                 </div>
                 <div className="flex gap-2 mt-2">
-                  <button className="flex-1 py-2 rounded-xl text-xs font-bold text-white" style={{ backgroundColor: "var(--green)" }}>주문하기</button>
-                  <button className="w-8 h-8 rounded-xl border border-[var(--border)] flex items-center justify-center">
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="var(--danger)"><path d="M7 12S1 8 1 4.5C1 2.5 2.7 1 4.5 1c.9 0 1.8.4 2.5 1C7.7 1.4 8.6 1 9.5 1 11.3 1 13 2.5 13 4.5 13 8 7 12 7 12Z"/></svg>
-                  </button>
+                  <button type="button" onClick={() => navigate("restaurant-detail", { place: r.name })} className="flex-1 py-2 rounded-xl text-xs font-bold text-white" style={{ backgroundColor: "var(--green)" }}>주문하기</button>
+                  <FavoriteButton name={r.name} />
                 </div>
               </div>
             </div>
@@ -150,12 +163,10 @@ export const SavedPlacesScreen = () => {
                 <span className="text-2xl">🕌</span>
               </div>
               <div className="flex-1">
-                <p className="font-bold text-base text-[#1A1A18]">{m.name}</p>
+                <button className="text-left font-bold" onClick={() => navigate("mosque-detail", { place: m.name })}>{m.name}</button>
                 <p className="text-xs text-[var(--muted)]">{m.nameEn} · {m.distance}</p>
               </div>
-              <button className="w-8 h-8 rounded-xl border border-[var(--border)] flex items-center justify-center">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="var(--gold)"><path d="M7 12S1 8 1 4.5C1 2.5 2.7 1 4.5 1c.9 0 1.8.4 2.5 1C7.7 1.4 8.6 1 9.5 1 11.3 1 13 2.5 13 4.5 13 8 7 12 7 12Z"/></svg>
-              </button>
+              <FavoriteButton name={m.name} kind="mosque" />
             </div>
           ))
         )}
@@ -171,7 +182,16 @@ const addresses = [
   { icon: "🕌", label: "모스크 근처", addr: "서울특별시 용산구 우사단로10길 39", default: false },
 ];
 
-export const AddressScreen = () => (
+export const AddressScreen = () => {
+const [addresses, setAddresses] = useAddresses();
+  const editAddress = async (index?: number) => {
+    const old = index === undefined ? undefined : addresses[index];
+    const values = await editFields(old ? "Manzilni tahrirlash" : "Yangi manzil", [{ name: "label", label: "Nomi", value: old?.label }, { name: "addr", label: "To‘liq manzil", value: old?.addr }]);
+    if (!values) return;
+    const address = { icon: old?.icon ?? "🏠", label: values.label.trim(), addr: values.addr.trim(), default: old?.default ?? addresses.length === 0 };
+    setAddresses(list => index === undefined ? [...list, address] : list.map((item,i) => i === index ? address : item));
+  };
+return (
   <div className="flex flex-col h-full bg-[var(--cream)]">
     <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
       <StatusBar />
@@ -182,8 +202,9 @@ export const AddressScreen = () => (
     </div>
 
     <div className="flex-1 phone-scroll px-4 py-4 space-y-3">
-      {addresses.map((addr) => (
-        <div key={addr.label} className="bg-white rounded-2xl p-4 shadow-sm">
+      {addresses.length === 0 && <p className="p-4 text-center">Hali manzil saqlanmagan.</p>}
+      {addresses.map((addr, index) => (
+        <div key={index} className="bg-white rounded-2xl p-4 shadow-sm">
           <div className="flex items-start gap-3">
             <div
               className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
@@ -201,18 +222,18 @@ export const AddressScreen = () => (
               <p className="text-sm text-[var(--muted)] leading-relaxed">{addr.addr}</p>
             </div>
             <div className="flex gap-1 flex-shrink-0">
-              <button className="w-8 h-8 rounded-lg bg-[var(--cream)] flex items-center justify-center">
+              <button aria-label="Manzilni tahrirlash" onClick={() => editAddress(index)} className="w-8 h-8 rounded-lg bg-[var(--cream)] flex items-center justify-center">
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--muted)" strokeWidth="1.5"><path d="M2 10L4.5 9.5L11 3a1 1 0 00-1.5-1.5L3 8L2 11z"/></svg>
               </button>
               {!addr.default && (
-                <button className="w-8 h-8 rounded-lg bg-[var(--cream)] flex items-center justify-center">
+                <button aria-label="Manzilni o‘chirish" onClick={() => setAddresses(list => list.filter((_,i) => i !== index))} className="w-8 h-8 rounded-lg bg-[var(--cream)] flex items-center justify-center">
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--danger)" strokeWidth="1.5"><path d="M2 3.5h10M5.5 3.5V2h3v1.5M6 6v4.5M8 6v4.5M3.5 3.5l.5 8h6l.5-8" strokeLinecap="round"/></svg>
                 </button>
               )}
             </div>
           </div>
           {!addr.default && (
-            <button className="mt-2 text-xs font-medium ml-13 pl-13" style={{ color: "var(--green)", paddingLeft: "52px" }}>
+            <button type="button" onClick={() => setAddresses(list => list.map((item,i) => ({ ...item, default: i === index })))} className="mt-2 text-xs font-medium ml-13 pl-13" style={{ color: "var(--green)", paddingLeft: "52px" }}>
               기본 주소로 설정
             </button>
           )}
@@ -220,7 +241,7 @@ export const AddressScreen = () => (
       ))}
 
       {/* Add new */}
-      <button className="w-full py-4 rounded-2xl border-2 border-dashed border-[var(--border)] flex items-center justify-center gap-2 font-semibold text-sm" style={{ color: "var(--muted)" }}>
+      <button type="button" onClick={() => editAddress()} className="w-full py-4 rounded-2xl border-2 border-dashed border-[var(--border)] flex items-center justify-center gap-2 font-semibold text-sm" style={{ color: "var(--muted)" }}>
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="8" y1="3" x2="8" y2="13"/><line x1="3" y1="8" x2="13" y2="8"/></svg>
         새 주소 추가
       </button>
@@ -239,12 +260,17 @@ export const AddressScreen = () => (
     </div>
   </div>
 );
+};
 
 // ── 31. Settings ───────────────────────────────────────────────────────────────
 export const SettingsScreen = () => {
-  const [notifOrder, setNotifOrder] = useState(true);
-  const [notifPrayer, setNotifPrayer] = useState(true);
-  const [notifPromo, setNotifPromo] = useState(false);
+  const [preferences, setPreferences] = useLocalState<Record<string, boolean>>("notification-preferences", {});
+  const notifOrder = preferences["주문 업데이트"] ?? true;
+  const notifPrayer = preferences["기도 시간 알림"] ?? true;
+  const notifPromo = preferences["프로모션"] ?? false;
+  const setNotifOrder = (value: boolean) => setPreferences(old => ({ ...old, "주문 업데이트": value }));
+  const setNotifPrayer = (value: boolean) => setPreferences(old => ({ ...old, "기도 시간 알림": value }));
+  const setNotifPromo = (value: boolean) => setPreferences(old => ({ ...old, "프로모션": value }));
   const [theme, setTheme] = useState<"light" | "dark" | "auto">("light");
 
   return (
@@ -284,7 +310,7 @@ export const SettingsScreen = () => {
           <div className="bg-white divide-y divide-[var(--border)]">
             <div className="flex items-center justify-between px-5 py-4">
               <div>
-                <p className="text-sm font-semibold text-[#1A1A18]">언어</p>
+                <button type="button" onClick={() => navigate("/customer/language")} className="text-sm font-semibold text-[#1A1A18]">언어</button>
                 <p className="text-xs text-[var(--muted)]">Language</p>
               </div>
               <div className="flex items-center gap-2">
@@ -300,7 +326,7 @@ export const SettingsScreen = () => {
                 {(["light", "dark", "auto"] as const).map((t) => (
                   <button
                     key={t}
-                    onClick={() => setTheme(t)}
+                    onClick={() => t === "light" ? setTheme(t) : showNotice("Mavzu", "Hozircha ushbu dizaynda faqat yorug‘ mavzu tayyor.")}
                     className="flex-1 py-2.5 rounded-xl text-sm font-semibold border transition-all"
                     style={{
                       backgroundColor: theme === t ? "var(--green)" : "white",
@@ -314,7 +340,7 @@ export const SettingsScreen = () => {
               </div>
             </div>
 
-            <button className="w-full flex items-center justify-between px-5 py-4">
+            <button type="button" onClick={() => showNotice("Halal sertifikatlari", "Bu katalogda KMF, JAKIM va IFANCA belgilari namuna sifatida ko‘rsatilgan. Amaldagi sertifikatni restoran bilan tekshiring.")} className="w-full flex items-center justify-between px-5 py-4">
               <div>
                 <p className="text-sm font-semibold text-[#1A1A18]">할랄 인증 기관</p>
                 <p className="text-xs text-[var(--muted)]">KMF, JAKIM, IFANCA</p>
@@ -329,12 +355,12 @@ export const SettingsScreen = () => {
           <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest px-5 mb-2 mt-2">계정</p>
           <div className="bg-white divide-y divide-[var(--border)]">
             {["개인정보 변경", "비밀번호 변경"].map((item) => (
-              <button key={item} className="w-full flex items-center justify-between px-5 py-4">
+              <button type="button" onClick={() => explainUnavailable(item)} key={item} className="w-full flex items-center justify-between px-5 py-4">
                 <p className="text-sm font-semibold text-[#1A1A18]">{item}</p>
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--muted)" strokeWidth="1.8"><path d="M6 4l4 4-4 4" strokeLinecap="round"/></svg>
               </button>
             ))}
-            <button className="w-full flex items-center justify-between px-5 py-4">
+            <button type="button" onClick={() => explainUnavailable("Hisob ma’lumotlarini o‘chirish so‘rovi")} className="w-full flex items-center justify-between px-5 py-4">
               <p className="text-sm font-semibold" style={{ color: "var(--danger)" }}>데이터 삭제 요청</p>
             </button>
           </div>
@@ -345,7 +371,7 @@ export const SettingsScreen = () => {
           <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest px-5 mb-2 mt-2">정보</p>
           <div className="bg-white divide-y divide-[var(--border)]">
             {["이용약관", "개인정보처리방침"].map((item) => (
-              <button key={item} className="w-full flex items-center justify-between px-5 py-4">
+              <button type="button" onClick={() => explainUnavailable(item)} key={item} className="w-full flex items-center justify-between px-5 py-4">
                 <p className="text-sm font-semibold text-[#1A1A18]">{item}</p>
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--muted)" strokeWidth="1.8"><path d="M6 4l4 4-4 4" strokeLinecap="round"/></svg>
               </button>

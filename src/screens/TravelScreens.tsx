@@ -1,3 +1,8 @@
+import { prayerService, type PrayerTimesResponse } from "../services/prayerService";
+import { navigate, readRoute, goBack } from "../services/navigation";
+import { useLocalState, readLocal, writeLocal } from "../services/localState";
+import { explainUnavailable, showNotice } from "../components/ActionDialog";
+import { shareLink } from "../services/shareService";
 import React, { useState } from "react";
 import { GeometricPattern, StatusBar, BackButton, Toggle } from "../components/Shared";
 
@@ -16,6 +21,8 @@ const nearbySpots = [
 ];
 
 export const TravelPlannerScreen = () => {
+const [savedTrips, setSavedTrips] = useLocalState<{ city: string; dates: string; spots: number; imageId: string }[]>("trips", []);
+
   const [city, setCity] = useState("부산");
   const [dates, setDates] = useState("12월 8일 – 10일");
 
@@ -55,11 +62,11 @@ export const TravelPlannerScreen = () => {
         <div>
           <div className="flex items-center justify-between mb-2">
             <p className="font-bold text-sm text-[#1A1A18]">저장된 여행</p>
-            <button className="text-xs font-medium" style={{ color: "var(--green)" }}>+ 새 여행</button>
+            <button type="button" onClick={() => { setCity(""); setDates(""); }} className="text-xs font-medium" style={{ color: "var(--green)" }}>+ 새 여행</button>
           </div>
           <div className="flex gap-3 overflow-x-auto scrollbar-hide">
             {savedTrips.map((trip, i) => (
-              <div key={i} className="relative w-36 h-24 rounded-2xl overflow-hidden flex-shrink-0 shadow-sm">
+              <button onClick={() => { setCity(trip.city); setDates(trip.dates); }} key={i} className="relative w-36 h-24 rounded-2xl overflow-hidden flex-shrink-0 shadow-sm">
                 <img src={`https://images.unsplash.com/photo-${trip.imageId}?w=180&h=120&fit=crop&auto=format&q=80`} alt={trip.city} className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                 <div className="absolute bottom-0 left-0 p-2.5">
@@ -67,7 +74,7 @@ export const TravelPlannerScreen = () => {
                   <p className="text-white/70 text-[10px]">{trip.dates}</p>
                   <p className="text-white/60 text-[10px]">{trip.spots}곳 저장</p>
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         </div>
@@ -128,7 +135,7 @@ export const TravelPlannerScreen = () => {
                       {spot.badge === "certified" ? "인증" : "프렌들리"}
                     </span>
                   )}
-                  <button className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: "var(--cream)" }}>
+                  <button type="button" onClick={() => showNotice(spot.name, spot.dist + " · Figma namuna joyi, jonli xarita ulanmagan.")} className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: "var(--cream)" }}>
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--muted)" strokeWidth="1.6">
                       <path d="M7 1.5C4.8 1.5 3 3.3 3 5.5C3 8.5 7 12.5 7 12.5C7 12.5 11 8.5 11 5.5C11 3.3 9.2 1.5 7 1.5ZM7 6.5C6.4 6.5 5.9 6 5.9 5.4C5.9 4.8 6.4 4.3 7 4.3C7.6 4.3 8.1 4.8 8.1 5.4C8.1 6 7.6 6.5 7 6.5Z"/>
                     </svg>
@@ -140,10 +147,10 @@ export const TravelPlannerScreen = () => {
         </div>
 
         <div className="flex gap-3">
-          <button className="flex-1 py-4 rounded-2xl font-bold text-white text-sm" style={{ backgroundColor: "var(--green)" }}>
+          <button type="button" onClick={() => { if (!city.trim() || !dates.trim()) { showNotice("Sayohat", "Shahar va sanalarni kiriting."); return; } setSavedTrips(old => [...old, { city: city.trim(), dates: dates.trim(), spots: 0, imageId: "1614854262318-831574f15f1f" }]); showNotice("Sayohat", "Reja shu qurilmada saqlandi."); }} className="flex-1 py-4 rounded-2xl font-bold text-white text-sm" style={{ backgroundColor: "var(--green)" }}>
             여행 저장
           </button>
-          <button className="flex-1 py-4 rounded-2xl font-semibold text-sm border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>
+          <button type="button" onClick={() => navigate("share")} className="flex-1 py-4 rounded-2xl font-semibold text-sm border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>
             공유하기
           </button>
         </div>
@@ -173,15 +180,27 @@ const offlinePrayers = [
 
 export const OfflinePrayerScreen = () => {
   const [downloading, setDownloading] = useState<string | null>(null);
-  const [downloaded, setDownloaded] = useState<string[]>(["서울 Seoul", "부산 Busan"]);
-
-  const handleDownload = (cityName: string) => {
-    setDownloading(cityName);
-    setTimeout(() => {
-      setDownloading(null);
-      setDownloaded(d => [...d, cityName]);
-    }, 2000);
+  const [cached, setCached] = useLocalState<Record<string, PrayerTimesResponse>>("offline-prayer-days", {});
+  const [selectedCity, setSelectedCity] = useState("서울 Seoul");
+  const selected = cached[selectedCity];
+  const downloaded = Object.keys(cached);
+  // City centers: https://www.geonames.org/advanced-search.html?country=KR
+  const coordinates: Record<string, [number, number]> = {
+    "서울 Seoul": [37.5665,126.978], "부산 Busan": [35.10168,129.03004],
+    "제주 Jeju": [33.509722,126.521944], "대구 Daegu": [35.870278,128.591111],
+    "인천 Incheon": [37.45646,126.70515], "광주 Gwangju": [35.154722,126.915556],
   };
+  const handleDownload = async (cityName: string) => {
+    if (downloading) return;
+    setDownloading(cityName);
+    try {
+      const data = await prayerService.getTimes(...coordinates[cityName]);
+      setCached(old => ({ ...old, [cityName]: data }));
+      setSelectedCity(cityName);
+    } catch (error) { showNotice("Saqlash amalga oshmadi", error instanceof Error ? error.message : "Internet ulanishini tekshiring."); }
+    finally { setDownloading(null); }
+  };
+  const rows = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"].map(name => ({ name, time: selected?.timings[name]?.slice(0,5) ?? "--:--" }));
 
   return (
     <div className="flex flex-col h-full bg-[var(--cream)]">
@@ -206,7 +225,7 @@ export const OfflinePrayerScreen = () => {
             </div>
             <div className="flex-1">
               <p className="text-white font-bold">오프라인 모드</p>
-              <p className="text-white/60 text-xs mt-0.5">인터넷 없이도 기도 시간 확인 가능</p>
+              <p className="text-white/60 text-xs mt-0.5">Saqlangan sana uchun vaqtlar. Har kuni yangilang.</p>
             </div>
             <div className="w-2 h-2 rounded-full" style={{ backgroundColor: "var(--green)" }} />
           </div>
@@ -215,11 +234,11 @@ export const OfflinePrayerScreen = () => {
         {/* Quick preview — current city */}
         <div className="bg-white rounded-2xl p-4 shadow-sm">
           <div className="flex items-center justify-between mb-3">
-            <p className="font-bold text-sm text-[#1A1A18]">서울 · 오늘 기도 시간</p>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ backgroundColor: "var(--green-light)", color: "var(--green)" }}>오프라인 저장됨</span>
+            <p className="font-bold text-sm text-[#1A1A18]">{selectedCity} · {selected?.date.readable ?? "Hali saqlanmagan"}</p>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ backgroundColor: "var(--green-light)", color: "var(--green)" }}>{selected ? "Saqlangan sana uchun" : "Ma’lumot yo‘q"}</span>
           </div>
           <div className="space-y-2">
-            {offlinePrayers.map((p, i) => (
+            {rows.map((p, i) => (
               <div key={p.name} className="flex items-center justify-between py-1.5" style={{ opacity: i < 3 ? 0.5 : 1 }}>
                 <p className="text-sm font-medium text-[#1A1A18]">{p.name}</p>
                 <p className={`font-bold tabular-nums ${i === 2 ? "text-[var(--green)]" : "text-[#1A1A18]"} text-sm`}>{p.time}</p>
@@ -242,9 +261,9 @@ export const OfflinePrayerScreen = () => {
                     {isDownloaded ? "✓" : "🏙️"}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-sm text-[#1A1A18]">{city.name}</p>
+                    <button type="button" onClick={() => setSelectedCity(city.name)} className="font-semibold text-sm text-[#1A1A18]">{city.name}</button>
                     <p className="text-xs text-[var(--muted)]">
-                      {isDownloaded ? `업데이트: ${city.updated} · ${city.size}` : `${city.size} · 2024년 기도 시간`}
+                      {cached[city.name]?.date.readable ?? "Bugungi vaqtlarni saqlash"}
                     </p>
                   </div>
                   {isDownloading ? (
@@ -254,7 +273,7 @@ export const OfflinePrayerScreen = () => {
                     </div>
                   ) : isDownloaded ? (
                     <div className="flex items-center gap-1.5">
-                      <button className="text-xs text-[var(--muted)]">삭제</button>
+                      <button type="button" onClick={() => setCached(old => Object.fromEntries(Object.entries(old).filter(([name]) => name !== city.name)))} className="text-xs text-[var(--muted)]">삭제</button><button type="button" onClick={() => handleDownload(city.name)} className="text-xs text-[var(--green)]">Yangilash</button>
                       <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ backgroundColor: "var(--green)" }}>
                         <svg width="10" height="8" viewBox="0 0 10 8" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round"><path d="M1 4l2.5 2.5L9 1"/></svg>
                       </div>
@@ -282,11 +301,11 @@ export const OfflinePrayerScreen = () => {
           <p className="font-bold text-sm text-[#1A1A18]">자동 업데이트</p>
           <div className="flex items-center justify-between">
             <p className="text-sm text-[var(--muted)]">Wi-Fi 연결 시 자동 업데이트</p>
-            <Toggle on={true} />
+            <Toggle on={false} onToggle={() => showNotice("Avtomatik yangilash", "Hozircha qo‘lda yangilash ishlaydi. Faqat ko‘rsatilgan kun ma’lumotlari saqlanadi.")} />
           </div>
           <div className="flex items-center justify-between">
             <p className="text-sm text-[var(--muted)]">앱 시작 시 동기화</p>
-            <Toggle on={true} />
+            <Toggle on={false} onToggle={() => showNotice("Avtomatik yangilash", "Hozircha qo‘lda yangilash ishlaydi. Faqat ko‘rsatilgan kun ma’lumotlari saqlanadi.")} />
           </div>
         </div>
         <div className="h-4" />

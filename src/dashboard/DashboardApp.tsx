@@ -1,3 +1,4 @@
+import { useRouteScreen } from "../services/navigation";
 import React, { useState } from "react";
 import { MainDashboard, OrderBoard } from "./OrderScreens";
 import { MenuEditor, MenuItemForm, MenuAvailability } from "./MenuScreens";
@@ -90,7 +91,7 @@ const SCREEN_TITLES: Record<DashScreen, string> = {
 
 // ── DashboardApp ───────────────────────────────────────────────────────────────
 export default function DashboardApp({ onSwitch }: { onSwitch: () => void }) {
-  const [screen, setScreen] = useState<DashScreen>("main-dashboard");
+  const [screen, setScreen] = useRouteScreen<DashScreen>("owner", "main-dashboard");
   const now = new Date();
   const dateStr = now.toLocaleDateString("ko-KR", { year: "numeric", month: "long", day: "numeric", weekday: "short" });
   const unreadNotifs = 5;
@@ -113,8 +114,11 @@ export default function DashboardApp({ onSwitch }: { onSwitch: () => void }) {
     }
   };
 
+  const [menuOpen, setMenuOpen] = useState(false);
+  React.useEffect(() => setMenuOpen(false), [screen]);
   return (
-    <div className="flex h-screen w-screen overflow-hidden" style={{ fontFamily: "'Noto Sans KR', 'Inter', sans-serif", backgroundColor: "#F0EDE8" }}>
+    <div className={`workspace-shell ${menuOpen ? "menu-open" : ""} owner-shell flex h-dvh w-full overflow-hidden`} style={{ fontFamily: "'Noto Sans KR', 'Inter', sans-serif", backgroundColor: "#F0EDE8" }}>
+      <button className="workspace-menu-toggle" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>☰ {menuOpen ? "Menyuni yopish" : "Ish paneli menyusi"}</button>
       {/* ── Sidebar ── */}
       <aside className="w-60 flex-shrink-0 flex flex-col overflow-hidden" style={{ backgroundColor: "#1A1A18" }}>
         {/* Brand */}
@@ -205,7 +209,7 @@ export default function DashboardApp({ onSwitch }: { onSwitch: () => void }) {
       </aside>
 
       {/* ── Main content ── */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="min-w-0 flex-1 flex flex-col overflow-hidden">
         {/* Top header */}
         <header className="h-14 flex-shrink-0 flex items-center gap-4 px-6 bg-white" style={{ borderBottom: "1px solid var(--border)", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
           <div className="flex-1">

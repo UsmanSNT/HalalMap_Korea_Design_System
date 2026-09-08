@@ -1,4 +1,11 @@
+import FavoriteButton from "../components/FavoriteButton";
+import { navigate, readRoute, goBack } from "../services/navigation";
+import { useLocalState, readLocal, writeLocal } from "../services/localState";
+import { explainUnavailable, showNotice } from "../components/ActionDialog";
+import { shareLink } from "../services/shareService";
 import React, { useEffect, useMemo, useState } from "react";
+import { locationService } from "../services/locationService";
+import { prayerService, type PrayerTimesResponse } from "../services/prayerService";
 import { GeometricPattern, StatusBar, BottomNav, BackButton, Toggle, TabId } from "../components/Shared";
 
 // ── 18. Mosque List ────────────────────────────────────────────────────────────
@@ -59,7 +66,7 @@ export const MosqueListScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t
                 </div>
               </div>
               <div className="p-4 lg:p-3.5">
-                <h3 className="font-bold text-base text-[#1A1A18] lg:text-sm">{m.name}</h3>
+                <h3><button onClick={() => navigate("mosque-detail", { place: m.name })} className="text-left font-bold text-base lg:text-sm">{m.name} →</button></h3>
                 <p className="text-xs text-[var(--muted)] mt-0.5">{m.nameEn}</p>
                 <p className="mt-1 truncate text-xs text-[var(--muted)]">📍 {m.address}</p>
                 <div className="mt-3 flex items-center justify-between gap-2 lg:mt-2.5">
@@ -94,7 +101,9 @@ const prayerTimes = [
   { name: "이샤 Isha", time: "19:21", passed: false },
 ];
 
-export const MosqueDetailScreen = () => (
+export const MosqueDetailScreen = () => {
+const selected = mosques.find(item => item.name === readRoute().params.get("place")) ?? mosques[0];
+return (
   <div className="flex flex-col h-full bg-[var(--cream)]">
     {/* Hero */}
     <div className="relative flex-shrink-0">
@@ -113,7 +122,7 @@ export const MosqueDetailScreen = () => (
         <BackButton dark />
       </div>
       <div className="absolute top-12 right-4">
-        <button className="w-9 h-9 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
+        <button type="button" onClick={() => navigate("share", { target: `/customer/mosque-detail?place=${encodeURIComponent(selected.name)}` })} className="w-9 h-9 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="white" strokeWidth="1.6">
             <circle cx="14" cy="4" r="2.5"/><circle cx="4" cy="9" r="2.5"/><circle cx="14" cy="14" r="2.5"/>
             <line x1="11.5" y1="5.5" x2="6.5" y2="7.5"/><line x1="11.5" y1="12.5" x2="6.5" y2="10.5"/>
@@ -127,12 +136,12 @@ export const MosqueDetailScreen = () => (
       <div className="bg-white px-5 pt-5 pb-4">
         <div className="flex items-start justify-between gap-2 mb-1">
           <div>
-            <h1 className="font-bold text-xl text-[#1A1A18]">서울중앙성원</h1>
-            <p className="text-sm text-[var(--muted)]">Seoul Central Mosque · 이슬람 서울 센터</p>
+            <h1 className="font-bold text-xl text-[#1A1A18]">{selected.name}</h1>
+            <p className="text-sm text-[var(--muted)]">{selected.nameEn}</p>
           </div>
-          <span className="text-2xl">🕌</span>
+          <FavoriteButton name={selected.name} kind="mosque" />
         </div>
-        <p className="text-sm text-[var(--muted)] mt-2">📍 서울특별시 용산구 우사단로10길 39</p>
+        <p className="text-sm text-[var(--muted)] mt-2">📍 {selected.address}</p>
         <p className="text-xs text-[var(--muted)] mt-0.5">☎ 02-793-6908 · www.islamkorea.com</p>
 
         {/* Juma */}
@@ -192,10 +201,10 @@ export const MosqueDetailScreen = () => (
       </div>
 
       <div className="px-4 py-4 flex gap-3">
-        <button className="flex-1 py-4 rounded-2xl font-bold text-white" style={{ backgroundColor: "var(--green)" }}>
+        <button type="button" onClick={() => showNotice("Manzil", selected.address + " · Xarita provayderi hali ulanmagan.")} className="flex-1 py-4 rounded-2xl font-bold text-white" style={{ backgroundColor: "var(--green)" }}>
           🗺️ 길 찾기
         </button>
-        <button className="flex-1 py-4 rounded-2xl font-semibold border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>
+        <button type="button" onClick={() => navigate("share", { target: `/customer/mosque-detail?place=${encodeURIComponent(selected.name)}` })} className="flex-1 py-4 rounded-2xl font-semibold border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>
           공유하기
         </button>
       </div>
@@ -203,33 +212,35 @@ export const MosqueDetailScreen = () => (
     </div>
   </div>
 );
+};
 
 // ── 20. Prayer Times ───────────────────────────────────────────────────────────
 const prayerDefinitions = [
   { id: "fajr", key: "Fajr", name: "파즈르", nameEn: "Fajr" }, { id: "sunrise", key: "Sunrise", name: "일출", nameEn: "Sunrise" }, { id: "dhuhr", key: "Dhuhr", name: "두흐르", nameEn: "Dhuhr" }, { id: "asr", key: "Asr", name: "아스르", nameEn: "Asr" }, { id: "maghrib", key: "Maghrib", name: "마그립", nameEn: "Maghrib" }, { id: "isha", key: "Isha", name: "이샤", nameEn: "Isha" },
 ] as const;
-type PrayerResponse = { source: string; calculationMethod: string; timings: Record<string, string>; date: { readable: string; gregorian: { date: string }; hijri: { day: string; month: { en: string }; year: string } } };
-
 const calDays = [25, 26, 27, 28, 29, 30, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24];
 
 export const PrayerTimesScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void }) => {
+const [monthOffset, setMonthOffset] = useState(0);
+
   const [notifState, setNotifState] = useState<Record<string, boolean>>({
     fajr: true, sunrise: false, dhuhr: false, asr: true, maghrib: true, isha: false,
   });
-  const [data, setData] = useState<PrayerResponse | null>(null);
+  const [data, setData] = useState<PrayerTimesResponse | null>(null);
   const [location, setLocation] = useState("Seoul, Korea");
   const [error, setError] = useState("");
   const [clock, setClock] = useState(() => new Date());
-  const loadTimes = async (latitude = 37.5665, longitude = 126.9780, label = "Seoul, Korea") => { try { setError(""); const response = await fetch(`/api/prayer-times?latitude=${latitude}&longitude=${longitude}`); const body = await response.json(); if (!response.ok) throw new Error(body.error); setData(body); setLocation(label); } catch (reason) { setError(reason instanceof Error ? reason.message : "Namoz vaqtlarini olib bo‘lmadi"); } };
+  const loadTimes = async (latitude = 37.5665, longitude = 126.9780, label = "Seoul, Korea") => { try { setError(""); setData(await prayerService.getTimes(latitude, longitude)); setLocation(label); } catch (reason) { setError(reason instanceof Error ? reason.message : "Namoz vaqtlarini olib bo‘lmadi"); } };
   useEffect(() => { void loadTimes(); const timer = window.setInterval(() => setClock(new Date()), 1000); return () => window.clearInterval(timer); }, []);
-  const useCurrentLocation = () => navigator.geolocation?.getCurrentPosition((position) => void loadTimes(position.coords.latitude, position.coords.longitude, "Current location, Korea"), () => setError("Joylashuv ruxsati berilmadi"));
+  const useCurrentLocation = async () => { try { const position = await locationService.getCurrentPosition(); await loadTimes(position.latitude, position.longitude, "Current location, Korea"); } catch (reason) { setError(reason instanceof Error ? reason.message : "Joylashuvni olib bo‘lmadi"); } };
   const nowMinutes = Number(new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Seoul", hour: "2-digit", minute: "2-digit", hour12: false }).format(clock).split(":")[0]) * 60 + Number(new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Seoul", hour: "2-digit", minute: "2-digit", hour12: false }).format(clock).split(":")[1]);
   const allPrayerTimes = useMemo(() => prayerDefinitions.map((p) => { const time = data?.timings[p.key]?.slice(0, 5) ?? "--:--"; const [hour, minute] = time.split(":").map(Number); return { ...p, time, minutes: hour * 60 + minute }; }).map((p, index, rows) => ({ ...p, passed: Number.isFinite(p.minutes) && p.minutes < nowMinutes, next: index === rows.findIndex(row => row.minutes >= nowMinutes) })), [data, nowMinutes]);
   const nextPrayer = allPrayerTimes.find((p) => p.next) ?? allPrayerTimes[0];
   const remainingSeconds = nextPrayer.time === "--:--" ? 0 : Math.max(0, ((nextPrayer.minutes < nowMinutes ? nextPrayer.minutes + 1440 : nextPrayer.minutes) * 60) - (nowMinutes * 60 + clock.getSeconds()));
   const remaining = `${String(Math.floor(remainingSeconds / 3600)).padStart(2,"0")}:${String(Math.floor((remainingSeconds % 3600) / 60)).padStart(2,"0")}:${String(remainingSeconds % 60).padStart(2,"0")}`;
   const koreaDate = new Date(clock.toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
-  const calendarYear = koreaDate.getFullYear(), calendarMonth = koreaDate.getMonth(), calendarToday = koreaDate.getDate();
+  const calendarDate = new Date(koreaDate.getFullYear(), koreaDate.getMonth() + monthOffset, 1);
+  const calendarYear = calendarDate.getFullYear(), calendarMonth = calendarDate.getMonth(), calendarToday = monthOffset === 0 ? koreaDate.getDate() : -1;
   const calendarOffset = new Date(calendarYear, calendarMonth, 1).getDay(), calendarDays = new Date(calendarYear, calendarMonth + 1, 0).getDate();
 
   return (
@@ -306,10 +317,10 @@ export const PrayerTimesScreen = ({ onTabChange }: { onTabChange?: (t: TabId) =>
           <div className="flex items-center justify-between mb-3">
             <p className="font-semibold text-sm text-[#1A1A18]">{calendarYear}.{String(calendarMonth + 1).padStart(2, "0")}</p>
             <div className="flex gap-1">
-              <button className="w-7 h-7 rounded-lg bg-[var(--cream)] flex items-center justify-center">
+              <button type="button" aria-label="Oldingi oy" onClick={() => setMonthOffset(value => value - 1)} className="w-7 h-7 rounded-lg bg-[var(--cream)] flex items-center justify-center">
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="var(--charcoal)" strokeWidth="1.8"><path d="M8 9L5 6l3-3" strokeLinecap="round"/></svg>
               </button>
-              <button className="w-7 h-7 rounded-lg bg-[var(--cream)] flex items-center justify-center">
+              <button type="button" aria-label="Keyingi oy" onClick={() => setMonthOffset(value => value + 1)} className="w-7 h-7 rounded-lg bg-[var(--cream)] flex items-center justify-center">
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="var(--charcoal)" strokeWidth="1.8"><path d="M4 9l3-3-3-3" strokeLinecap="round"/></svg>
               </button>
             </div>
@@ -321,7 +332,7 @@ export const PrayerTimesScreen = ({ onTabChange }: { onTabChange?: (t: TabId) =>
             {/* Offset */}
             {Array.from({ length: calendarOffset }, (_, i) => <div key={i} />)}
             {Array.from({ length: calendarDays }, (_, i) => i + 1).map((d) => (
-              <button
+              <button type="button" onClick={() => showNotice("Tanlangan sana", `${calendarYear}-${calendarMonth + 1}-${d}. Mavjud API faqat bugungi namoz vaqtlarini beradi.`)}
                 key={d}
                 className="aspect-square rounded-full text-xs font-medium flex items-center justify-center transition-all"
                 style={{

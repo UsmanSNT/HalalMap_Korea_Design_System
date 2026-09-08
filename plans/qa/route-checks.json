@@ -1,0 +1,6445 @@
+{
+  "errors": [],
+  "results": [
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "home",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "splash",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "onboarding",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "signup",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "language",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "restaurant-list",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "restaurant-detail",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "menu",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "item-detail",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "cart",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "checkout",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "order-confirmation",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "search",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "map-view",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "city-selector",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "restaurant-map-detail",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "mosque-list",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "mosque-detail",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "prayer-times",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "qibla",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "scanner",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "scan-result",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "scan-history",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "order-tracking",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "order-history",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "order-detail",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "profile",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "saved-places",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "address",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "settings",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "reviews",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "community",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "share",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "ai-meal",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "group-order",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "meal-plans",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "grocery",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "travel-planner",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "offline-prayer",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "notifications",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "ramadan",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "eid",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "loyalty",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "referral",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "tutorial",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "multilingual",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "submit-place",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "apply-courier",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "customer",
+      "screen": "apply-owner",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1144,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "owner",
+      "screen": "main-dashboard",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "owner",
+      "screen": "order-board",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "owner",
+      "screen": "menu-editor",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "owner",
+      "screen": "menu-item-form",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "owner",
+      "screen": "menu-availability",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "owner",
+      "screen": "restaurant-settings",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "owner",
+      "screen": "halal-certification",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "owner",
+      "screen": "sales-analytics",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "owner",
+      "screen": "reviews",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "owner",
+      "screen": "notifications",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "courier",
+      "screen": "registration",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "courier",
+      "screen": "login",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "courier",
+      "screen": "verification",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "courier",
+      "screen": "go-online",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "courier",
+      "screen": "order-feed",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "courier",
+      "screen": "order-accepted",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "courier",
+      "screen": "at-restaurant",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "courier",
+      "screen": "delivering",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "courier",
+      "screen": "delivery-complete",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "courier",
+      "screen": "delivery-issue",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "courier",
+      "screen": "earnings",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "courier",
+      "screen": "history",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "courier",
+      "screen": "payout",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "courier",
+      "screen": "courier-profile",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "courier",
+      "screen": "courier-settings",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "admin",
+      "screen": "home",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "admin",
+      "screen": "restaurants",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "admin",
+      "screen": "restaurant-approval",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "admin",
+      "screen": "restaurant-detail",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "admin",
+      "screen": "users",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "admin",
+      "screen": "user-detail",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "admin",
+      "screen": "couriers",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "admin",
+      "screen": "courier-approval",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "admin",
+      "screen": "courier-detail",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "admin",
+      "screen": "orders",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "admin",
+      "screen": "live-map",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "admin",
+      "screen": "halal-db",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "admin",
+      "screen": "mosques",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "admin",
+      "screen": "place-submissions",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "admin",
+      "screen": "promotions",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "admin",
+      "screen": "analytics",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "admin",
+      "screen": "settings",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1440,
+      "workspace": "admin",
+      "screen": "admin-users",
+      "overflow": false,
+      "bodyWidth": 1440,
+      "contentWidth": 1440,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "home",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "splash",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "onboarding",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "signup",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "language",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "restaurant-list",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "restaurant-detail",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "menu",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "item-detail",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "cart",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "checkout",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "order-confirmation",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "search",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "map-view",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "city-selector",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "restaurant-map-detail",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "mosque-list",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "mosque-detail",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "prayer-times",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "qibla",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "scanner",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "scan-result",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "scan-history",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "order-tracking",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "order-history",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "order-detail",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "profile",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "saved-places",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "address",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "settings",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "reviews",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "community",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "share",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "ai-meal",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "group-order",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "meal-plans",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "grocery",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "travel-planner",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "offline-prayer",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "notifications",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "ramadan",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "eid",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "loyalty",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "referral",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "tutorial",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "multilingual",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "submit-place",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "apply-courier",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "customer",
+      "screen": "apply-owner",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 984,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "owner",
+      "screen": "main-dashboard",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "owner",
+      "screen": "order-board",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "owner",
+      "screen": "menu-editor",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "owner",
+      "screen": "menu-item-form",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "owner",
+      "screen": "menu-availability",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "owner",
+      "screen": "restaurant-settings",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "owner",
+      "screen": "halal-certification",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "owner",
+      "screen": "sales-analytics",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "owner",
+      "screen": "reviews",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "owner",
+      "screen": "notifications",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "courier",
+      "screen": "registration",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "courier",
+      "screen": "login",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "courier",
+      "screen": "verification",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "courier",
+      "screen": "go-online",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "courier",
+      "screen": "order-feed",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "courier",
+      "screen": "order-accepted",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "courier",
+      "screen": "at-restaurant",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "courier",
+      "screen": "delivering",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "courier",
+      "screen": "delivery-complete",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "courier",
+      "screen": "delivery-issue",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "courier",
+      "screen": "earnings",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "courier",
+      "screen": "history",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "courier",
+      "screen": "payout",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "courier",
+      "screen": "courier-profile",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "courier",
+      "screen": "courier-settings",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "admin",
+      "screen": "home",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "admin",
+      "screen": "restaurants",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "admin",
+      "screen": "restaurant-approval",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "admin",
+      "screen": "restaurant-detail",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "admin",
+      "screen": "users",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "admin",
+      "screen": "user-detail",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "admin",
+      "screen": "couriers",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "admin",
+      "screen": "courier-approval",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "admin",
+      "screen": "courier-detail",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "admin",
+      "screen": "orders",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "admin",
+      "screen": "live-map",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "admin",
+      "screen": "halal-db",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "admin",
+      "screen": "mosques",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "admin",
+      "screen": "place-submissions",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "admin",
+      "screen": "promotions",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "admin",
+      "screen": "analytics",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "admin",
+      "screen": "settings",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1280,
+      "workspace": "admin",
+      "screen": "admin-users",
+      "overflow": false,
+      "bodyWidth": 1280,
+      "contentWidth": 1280,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "home",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "splash",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "onboarding",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "signup",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "language",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "restaurant-list",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "restaurant-detail",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "menu",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "item-detail",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "cart",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "checkout",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "order-confirmation",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "search",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "map-view",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "city-selector",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "restaurant-map-detail",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "mosque-list",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "mosque-detail",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "prayer-times",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "qibla",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "scanner",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "scan-result",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "scan-history",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "order-tracking",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "order-history",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "order-detail",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "profile",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "saved-places",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "address",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "settings",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "reviews",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "community",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "share",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "ai-meal",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "group-order",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "meal-plans",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "grocery",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "travel-planner",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "offline-prayer",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "notifications",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "ramadan",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "eid",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "loyalty",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "referral",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "tutorial",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "multilingual",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "submit-place",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "apply-courier",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "customer",
+      "screen": "apply-owner",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 728,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "owner",
+      "screen": "main-dashboard",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "owner",
+      "screen": "order-board",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "owner",
+      "screen": "menu-editor",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "owner",
+      "screen": "menu-item-form",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "owner",
+      "screen": "menu-availability",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "owner",
+      "screen": "restaurant-settings",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "owner",
+      "screen": "halal-certification",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "owner",
+      "screen": "sales-analytics",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "owner",
+      "screen": "reviews",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "owner",
+      "screen": "notifications",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "courier",
+      "screen": "registration",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "courier",
+      "screen": "login",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "courier",
+      "screen": "verification",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "courier",
+      "screen": "go-online",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "courier",
+      "screen": "order-feed",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "courier",
+      "screen": "order-accepted",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "courier",
+      "screen": "at-restaurant",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "courier",
+      "screen": "delivering",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "courier",
+      "screen": "delivery-complete",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "courier",
+      "screen": "delivery-issue",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "courier",
+      "screen": "earnings",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "courier",
+      "screen": "history",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "courier",
+      "screen": "payout",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "courier",
+      "screen": "courier-profile",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "courier",
+      "screen": "courier-settings",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "admin",
+      "screen": "home",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "admin",
+      "screen": "restaurants",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "admin",
+      "screen": "restaurant-approval",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "admin",
+      "screen": "restaurant-detail",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "admin",
+      "screen": "users",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "admin",
+      "screen": "user-detail",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "admin",
+      "screen": "couriers",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "admin",
+      "screen": "courier-approval",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "admin",
+      "screen": "courier-detail",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "admin",
+      "screen": "orders",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "admin",
+      "screen": "live-map",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "admin",
+      "screen": "halal-db",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "admin",
+      "screen": "mosques",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "admin",
+      "screen": "place-submissions",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "admin",
+      "screen": "promotions",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "admin",
+      "screen": "analytics",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "admin",
+      "screen": "settings",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 1024,
+      "workspace": "admin",
+      "screen": "admin-users",
+      "overflow": false,
+      "bodyWidth": 1024,
+      "contentWidth": 1024,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "home",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "splash",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "onboarding",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "signup",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "language",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "restaurant-list",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "restaurant-detail",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "menu",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "item-detail",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "cart",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "checkout",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "order-confirmation",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "search",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "map-view",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "city-selector",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "restaurant-map-detail",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "mosque-list",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "mosque-detail",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "prayer-times",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "qibla",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "scanner",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "scan-result",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "scan-history",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "order-tracking",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "order-history",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "order-detail",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "profile",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "saved-places",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "address",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "settings",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "reviews",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "community",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "share",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "ai-meal",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "group-order",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "meal-plans",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "grocery",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "travel-planner",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "offline-prayer",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "notifications",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "ramadan",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "eid",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "loyalty",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "referral",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "tutorial",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "multilingual",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "submit-place",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "apply-courier",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "customer",
+      "screen": "apply-owner",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "owner",
+      "screen": "main-dashboard",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "owner",
+      "screen": "order-board",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "owner",
+      "screen": "menu-editor",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "owner",
+      "screen": "menu-item-form",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "owner",
+      "screen": "menu-availability",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "owner",
+      "screen": "restaurant-settings",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "owner",
+      "screen": "halal-certification",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "owner",
+      "screen": "sales-analytics",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "owner",
+      "screen": "reviews",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "owner",
+      "screen": "notifications",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "courier",
+      "screen": "registration",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "courier",
+      "screen": "login",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "courier",
+      "screen": "verification",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "courier",
+      "screen": "go-online",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "courier",
+      "screen": "order-feed",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "courier",
+      "screen": "order-accepted",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "courier",
+      "screen": "at-restaurant",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "courier",
+      "screen": "delivering",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "courier",
+      "screen": "delivery-complete",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "courier",
+      "screen": "delivery-issue",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "courier",
+      "screen": "earnings",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "courier",
+      "screen": "history",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "courier",
+      "screen": "payout",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "courier",
+      "screen": "courier-profile",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "courier",
+      "screen": "courier-settings",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "admin",
+      "screen": "home",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "admin",
+      "screen": "restaurants",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "admin",
+      "screen": "restaurant-approval",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "admin",
+      "screen": "restaurant-detail",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "admin",
+      "screen": "users",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "admin",
+      "screen": "user-detail",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "admin",
+      "screen": "couriers",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "admin",
+      "screen": "courier-approval",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "admin",
+      "screen": "courier-detail",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "admin",
+      "screen": "orders",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "admin",
+      "screen": "live-map",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "admin",
+      "screen": "halal-db",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "admin",
+      "screen": "mosques",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "admin",
+      "screen": "place-submissions",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "admin",
+      "screen": "promotions",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "admin",
+      "screen": "analytics",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "admin",
+      "screen": "settings",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 768,
+      "workspace": "admin",
+      "screen": "admin-users",
+      "overflow": false,
+      "bodyWidth": 768,
+      "contentWidth": 768,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "home",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "splash",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "onboarding",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "signup",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "language",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "restaurant-list",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "restaurant-detail",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "menu",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "item-detail",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "cart",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "checkout",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "order-confirmation",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "search",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "map-view",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "city-selector",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "restaurant-map-detail",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "mosque-list",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "mosque-detail",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "prayer-times",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "qibla",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "scanner",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "scan-result",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "scan-history",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "order-tracking",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "order-history",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "order-detail",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "profile",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "saved-places",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "address",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "settings",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "reviews",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "community",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "share",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "ai-meal",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "group-order",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "meal-plans",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "grocery",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "travel-planner",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "offline-prayer",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "notifications",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "ramadan",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "eid",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "loyalty",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "referral",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "tutorial",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "multilingual",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "submit-place",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "apply-courier",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "customer",
+      "screen": "apply-owner",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "owner",
+      "screen": "main-dashboard",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "owner",
+      "screen": "order-board",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "owner",
+      "screen": "menu-editor",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "owner",
+      "screen": "menu-item-form",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "owner",
+      "screen": "menu-availability",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "owner",
+      "screen": "restaurant-settings",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "owner",
+      "screen": "halal-certification",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "owner",
+      "screen": "sales-analytics",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "owner",
+      "screen": "reviews",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "owner",
+      "screen": "notifications",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "courier",
+      "screen": "registration",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "courier",
+      "screen": "login",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "courier",
+      "screen": "verification",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "courier",
+      "screen": "go-online",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "courier",
+      "screen": "order-feed",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "courier",
+      "screen": "order-accepted",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "courier",
+      "screen": "at-restaurant",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "courier",
+      "screen": "delivering",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "courier",
+      "screen": "delivery-complete",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "courier",
+      "screen": "delivery-issue",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "courier",
+      "screen": "earnings",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "courier",
+      "screen": "history",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "courier",
+      "screen": "payout",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "courier",
+      "screen": "courier-profile",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "courier",
+      "screen": "courier-settings",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "admin",
+      "screen": "home",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "admin",
+      "screen": "restaurants",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "admin",
+      "screen": "restaurant-approval",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "admin",
+      "screen": "restaurant-detail",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "admin",
+      "screen": "users",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "admin",
+      "screen": "user-detail",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "admin",
+      "screen": "couriers",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "admin",
+      "screen": "courier-approval",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "admin",
+      "screen": "courier-detail",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "admin",
+      "screen": "orders",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "admin",
+      "screen": "live-map",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "admin",
+      "screen": "halal-db",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "admin",
+      "screen": "mosques",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "admin",
+      "screen": "place-submissions",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "admin",
+      "screen": "promotions",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "admin",
+      "screen": "analytics",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "admin",
+      "screen": "settings",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 430,
+      "workspace": "admin",
+      "screen": "admin-users",
+      "overflow": false,
+      "bodyWidth": 430,
+      "contentWidth": 430,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "home",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "splash",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "onboarding",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "signup",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "language",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "restaurant-list",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "restaurant-detail",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "menu",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "item-detail",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "cart",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "checkout",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "order-confirmation",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "search",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "map-view",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "city-selector",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "restaurant-map-detail",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "mosque-list",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "mosque-detail",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "prayer-times",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "qibla",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "scanner",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "scan-result",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "scan-history",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "order-tracking",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "order-history",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "order-detail",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "profile",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "saved-places",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "address",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "settings",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "reviews",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "community",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "share",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "ai-meal",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "group-order",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "meal-plans",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "grocery",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "travel-planner",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "offline-prayer",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "notifications",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "ramadan",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "eid",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "loyalty",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "referral",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "tutorial",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "multilingual",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "submit-place",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "apply-courier",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "customer",
+      "screen": "apply-owner",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "owner",
+      "screen": "main-dashboard",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "owner",
+      "screen": "order-board",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "owner",
+      "screen": "menu-editor",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "owner",
+      "screen": "menu-item-form",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "owner",
+      "screen": "menu-availability",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "owner",
+      "screen": "restaurant-settings",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "owner",
+      "screen": "halal-certification",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "owner",
+      "screen": "sales-analytics",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "owner",
+      "screen": "reviews",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "owner",
+      "screen": "notifications",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "courier",
+      "screen": "registration",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "courier",
+      "screen": "login",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "courier",
+      "screen": "verification",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "courier",
+      "screen": "go-online",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "courier",
+      "screen": "order-feed",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "courier",
+      "screen": "order-accepted",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "courier",
+      "screen": "at-restaurant",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "courier",
+      "screen": "delivering",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "courier",
+      "screen": "delivery-complete",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "courier",
+      "screen": "delivery-issue",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "courier",
+      "screen": "earnings",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "courier",
+      "screen": "history",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "courier",
+      "screen": "payout",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "courier",
+      "screen": "courier-profile",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "courier",
+      "screen": "courier-settings",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "admin",
+      "screen": "home",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "admin",
+      "screen": "restaurants",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "admin",
+      "screen": "restaurant-approval",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "admin",
+      "screen": "restaurant-detail",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "admin",
+      "screen": "users",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "admin",
+      "screen": "user-detail",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "admin",
+      "screen": "couriers",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "admin",
+      "screen": "courier-approval",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "admin",
+      "screen": "courier-detail",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "admin",
+      "screen": "orders",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "admin",
+      "screen": "live-map",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "admin",
+      "screen": "halal-db",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "admin",
+      "screen": "mosques",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "admin",
+      "screen": "place-submissions",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "admin",
+      "screen": "promotions",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "admin",
+      "screen": "analytics",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "admin",
+      "screen": "settings",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 390,
+      "workspace": "admin",
+      "screen": "admin-users",
+      "overflow": false,
+      "bodyWidth": 390,
+      "contentWidth": 390,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "home",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "splash",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "onboarding",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "signup",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "language",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "restaurant-list",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "restaurant-detail",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "menu",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "item-detail",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "cart",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "checkout",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "order-confirmation",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "search",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "map-view",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "city-selector",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "restaurant-map-detail",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "mosque-list",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "mosque-detail",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "prayer-times",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "qibla",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "scanner",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "scan-result",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "scan-history",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "order-tracking",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "order-history",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "order-detail",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "profile",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "saved-places",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "address",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "settings",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "reviews",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "community",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "share",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "ai-meal",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "group-order",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "meal-plans",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "grocery",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "travel-planner",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "offline-prayer",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "notifications",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "ramadan",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "eid",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "loyalty",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "referral",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "tutorial",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "multilingual",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "submit-place",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "apply-courier",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "customer",
+      "screen": "apply-owner",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "owner",
+      "screen": "main-dashboard",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "owner",
+      "screen": "order-board",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "owner",
+      "screen": "menu-editor",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "owner",
+      "screen": "menu-item-form",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "owner",
+      "screen": "menu-availability",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "owner",
+      "screen": "restaurant-settings",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "owner",
+      "screen": "halal-certification",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "owner",
+      "screen": "sales-analytics",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "owner",
+      "screen": "reviews",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "owner",
+      "screen": "notifications",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "courier",
+      "screen": "registration",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "courier",
+      "screen": "login",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "courier",
+      "screen": "verification",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "courier",
+      "screen": "go-online",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "courier",
+      "screen": "order-feed",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "courier",
+      "screen": "order-accepted",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "courier",
+      "screen": "at-restaurant",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "courier",
+      "screen": "delivering",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "courier",
+      "screen": "delivery-complete",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "courier",
+      "screen": "delivery-issue",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "courier",
+      "screen": "earnings",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "courier",
+      "screen": "history",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "courier",
+      "screen": "payout",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "courier",
+      "screen": "courier-profile",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "courier",
+      "screen": "courier-settings",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "admin",
+      "screen": "home",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "admin",
+      "screen": "restaurants",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "admin",
+      "screen": "restaurant-approval",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "admin",
+      "screen": "restaurant-detail",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "admin",
+      "screen": "users",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "admin",
+      "screen": "user-detail",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "admin",
+      "screen": "couriers",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "admin",
+      "screen": "courier-approval",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "admin",
+      "screen": "courier-detail",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "admin",
+      "screen": "orders",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "admin",
+      "screen": "live-map",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "admin",
+      "screen": "halal-db",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "admin",
+      "screen": "mosques",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "admin",
+      "screen": "place-submissions",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "admin",
+      "screen": "promotions",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "admin",
+      "screen": "analytics",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "admin",
+      "screen": "settings",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    },
+    {
+      "width": 360,
+      "workspace": "admin",
+      "screen": "admin-users",
+      "overflow": false,
+      "bodyWidth": 360,
+      "contentWidth": 360,
+      "blank": false,
+      "error": false
+    }
+  ]
+}

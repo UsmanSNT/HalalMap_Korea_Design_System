@@ -1,3 +1,5 @@
+import { exportCsv } from "../services/exportService";
+import { explainUnavailable } from "../components/ActionDialog";
 import React, { useState } from "react";
 import {
   A, AdminTable, Column, StatusChip, SearchBar, FilterChips, Card, PageHeader,
@@ -103,8 +105,8 @@ export const UserList = ({ onDetail }: { onDetail?: (id: string) => void }) => {
         subtitle={`총 ${USERS.length.toLocaleString()}명 가입`}
         actions={
           <div className="flex gap-2">
-            <Btn variant="secondary" size="md">CSV 내보내기</Btn>
-            <Btn variant="primary" size="md">+ 관리자 초대</Btn>
+            <Btn onClick={() => exportCsv("halalmap-UserScreens.csv", filtered)} variant="secondary" size="md">CSV 내보내기</Btn>
+            <Btn onClick={() => explainUnavailable("+ 관리자 초대")} variant="primary" size="md">+ 관리자 초대</Btn>
           </div>
         }
       />
@@ -146,7 +148,7 @@ export const UserDetail = ({ userId = "u3" }: { userId?: string }) => {
         subtitle={`${u.nationality} · 가입일 ${u.joinDate}`}
         actions={
           <div className="flex gap-2">
-            <Btn variant="secondary" size="md">비밀번호 초기화</Btn>
+            <Btn onClick={() => explainUnavailable("비밀번호 초기화")} variant="secondary" size="md">비밀번호 초기화</Btn>
             <Btn variant="warning" size="md" onClick={() => setSuspendOpen(true)}>
               {u.status === "active" ? "계정 정지" : "계정 활성화"}
             </Btn>

@@ -1,3 +1,4 @@
+import { useRouteScreen, navigate as navigateRoute, readRoute } from "../services/navigation";
 import React, { useState, useEffect } from "react";
 import { A, CommandPalette, Toast } from "./AdminShared";
 import { AdminHome } from "./OverviewScreens";
@@ -104,14 +105,14 @@ const NAV_GROUPS: NavGroup[] = [
 function renderAdminScreen(id: AdminScreenId, navigate: (id: AdminScreenId) => void): React.ReactNode {
   switch (id) {
     case "home":                return <AdminHome />;
-    case "restaurants":         return <RestaurantList onDetail={() => navigate("restaurant-detail")} />;
+    case "restaurants":         return <RestaurantList onDetail={id => navigateRoute("/admin/restaurant-detail", { id })} />;
     case "restaurant-approval": return <RestaurantApproval />;
-    case "restaurant-detail":   return <RestaurantDetail />;
-    case "users":               return <UserList onDetail={() => navigate("user-detail")} />;
-    case "user-detail":         return <UserDetail />;
-    case "couriers":            return <CourierList onDetail={() => navigate("courier-detail")} />;
+    case "restaurant-detail":   return <RestaurantDetail key={readRoute().params.get("id")} restaurantId={readRoute().params.get("id") ?? undefined} />;
+    case "users":               return <UserList onDetail={id => navigateRoute("/admin/user-detail", { id })} />;
+    case "user-detail":         return <UserDetail key={readRoute().params.get("id")} userId={readRoute().params.get("id") ?? undefined} />;
+    case "couriers":            return <CourierList onDetail={id => navigateRoute("/admin/courier-detail", { id })} />;
     case "courier-approval":    return <CourierApproval />;
-    case "courier-detail":      return <CourierDetail />;
+    case "courier-detail":      return <CourierDetail key={readRoute().params.get("id")} courierId={readRoute().params.get("id") ?? undefined} />;
     case "orders":              return <AllOrders />;
     case "live-map":            return <LiveOperationsMap />;
     case "halal-db":            return <HalalDatabase />;
@@ -127,7 +128,7 @@ function renderAdminScreen(id: AdminScreenId, navigate: (id: AdminScreenId) => v
 
 // ── App ────────────────────────────────────────────────────────────────────────
 export default function AdminApp({ onSwitch }: { onSwitch: () => void }) {
-  const [current, setCurrent] = useState<AdminScreenId>("home");
+  const [current, setCurrent] = useRouteScreen<AdminScreenId>("admin", "home");
   const [collapsed, setCollapsed] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [notifCount] = useState(7);
@@ -145,8 +146,11 @@ export default function AdminApp({ onSwitch }: { onSwitch: () => void }) {
 
   const sidebarW = collapsed ? A.sidebarWCollapsed : A.sidebarW;
 
+  const [menuOpen, setMenuOpen] = useState(false);
+  React.useEffect(() => setMenuOpen(false), [current]);
   return (
-    <div className="flex h-screen w-screen overflow-hidden" style={{ backgroundColor: A.bg, fontFamily: "'Inter','Noto Sans KR',sans-serif" }}>
+    <div className={`workspace-shell ${menuOpen ? "menu-open" : ""} admin-shell flex h-dvh w-full overflow-hidden`} style={{ backgroundColor: A.bg, fontFamily: "'Inter','Noto Sans KR',sans-serif" }}>
+      <button className="workspace-menu-toggle" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>☰ {menuOpen ? "Menyuni yopish" : "Ish paneli menyusi"}</button>
       {/* Sidebar */}
       <aside className="flex flex-col flex-shrink-0 h-full overflow-hidden transition-all duration-200"
         style={{ width: sidebarW, backgroundColor: A.sidebar, borderRight: `1px solid ${A.border}` }}>
@@ -254,7 +258,7 @@ export default function AdminApp({ onSwitch }: { onSwitch: () => void }) {
       </aside>
 
       {/* Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="min-w-0 flex-1 flex flex-col overflow-hidden">
         {/* Top header */}
         <header className="flex items-center flex-shrink-0 px-6 gap-4"
           style={{ height: A.headerH, backgroundColor: A.surface, borderBottom: `1px solid ${A.border}` }}>
@@ -280,7 +284,7 @@ export default function AdminApp({ onSwitch }: { onSwitch: () => void }) {
           </div>
 
           {/* Notifications */}
-          <button className="relative w-9 h-9 rounded-xl flex items-center justify-center transition-colors"
+          <button type="button" aria-label="Faoliyat bildirishnomalari" onClick={() => setCurrent("home")} className="relative w-9 h-9 rounded-xl flex items-center justify-center transition-colors"
             style={{ color: A.muted }}
             onMouseEnter={e => (e.currentTarget.style.backgroundColor = A.bg)}
             onMouseLeave={e => (e.currentTarget.style.backgroundColor = "transparent")}>
@@ -308,13 +312,13 @@ export default function AdminApp({ onSwitch }: { onSwitch: () => void }) {
 
         {/* Main content */}
         <main className="flex-1 overflow-y-auto" style={{ backgroundColor: A.bg }}>
-          <div className="px-8 py-6">
+          <div className="px-4 py-4 lg:px-8 lg:py-6">
             {renderAdminScreen(current, setCurrent)}
           </div>
         </main>
       </div>
 
-      <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} onNavigate={() => {}} />
+      <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} onNavigate={id => setCurrent(id as AdminScreenId)} />
       {toast && <Toast message={toast.msg} type={toast.type} onClose={() => setToast(null)} />}
     </div>
   );

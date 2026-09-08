@@ -1,3 +1,4 @@
+import { navigate, goBack } from "../services/navigation";
 import React from "react";
 
 // ── Geometric Pattern ────────────────────────────────────────────────────────
@@ -116,7 +117,7 @@ export const BottomNav = ({
     {tabs.map((t) => (
       <button
         key={t.id}
-        onClick={() => onTabChange?.(t.id)}
+        onClick={() => onTabChange ? onTabChange(t.id) : navigate(`/customer/${({ home: "home", search: "search", orders: "order-history", prayer: "prayer-times", profile: "profile" })[t.id]}`)}
         className="flex flex-col items-center gap-0.5 flex-1 py-0.5 transition-opacity active:opacity-70"
       >
         {t.icon(active === t.id)}
@@ -190,7 +191,7 @@ export const RestaurantCardV = ({
   fee: string;
   onClick?: () => void;
 }) => (
-  <button onClick={onClick} className="bg-white rounded-2xl overflow-hidden shadow-sm flex-shrink-0 w-52 text-left">
+  <button onClick={onClick ?? (() => navigate("/customer/restaurant-detail", { place: name }))} className="bg-white rounded-2xl overflow-hidden shadow-sm flex-shrink-0 w-52 text-left">
     <div className="relative h-32 bg-[#E8E6E1]">
       <img
         src={`https://images.unsplash.com/photo-${imageId}?w=300&h=200&fit=crop&auto=format&q=80`}
@@ -237,7 +238,7 @@ export const RestaurantCardH = ({
   cuisine?: string;
   onClick?: () => void;
 }) => (
-  <button onClick={onClick} className="bg-white rounded-2xl overflow-hidden shadow-sm flex items-stretch w-full text-left">
+  <button onClick={onClick ?? (() => navigate("/customer/restaurant-detail", { place: name }))} className="bg-white rounded-2xl overflow-hidden shadow-sm flex items-stretch w-full text-left">
     <div className="w-24 h-24 flex-shrink-0 bg-[#E8E6E1]">
       <img
         src={`https://images.unsplash.com/photo-${imageId}?w=200&h=200&fit=crop&auto=format&q=80`}
@@ -279,7 +280,7 @@ export const MosqueCard = ({
   walkTime: string;
   onClick?: () => void;
 }) => (
-  <button onClick={onClick} className="bg-white rounded-2xl p-4 shadow-sm flex items-center gap-3 w-full text-left">
+  <button onClick={onClick ?? (() => navigate("/customer/mosque-detail", { place: name }))} className="bg-white rounded-2xl p-4 shadow-sm flex items-center gap-3 w-full text-left">
     <div
       className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
       style={{ backgroundColor: "var(--gold-light)" }}
@@ -369,8 +370,8 @@ export const Toggle = ({ on, onToggle }: { on: boolean; onToggle?: () => void })
 // ── Back Button ────────────────────────────────────────────────────────────────
 export const BackButton = ({ onBack, dark = false }: { onBack?: () => void; dark?: boolean }) => (
   <button
-    onClick={onBack ?? (() => window.dispatchEvent(new CustomEvent("halalmap:back")))}
-    className="w-9 h-9 rounded-full flex items-center justify-center"
+    aria-label="Orqaga" onClick={onBack ?? (() => goBack())}
+    className="w-11 h-11 rounded-full flex items-center justify-center"
     style={{ backgroundColor: dark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.06)" }}
   >
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke={dark ? "white" : "#1A1A18"} strokeWidth="1.8" strokeLinecap="round">

@@ -1,3 +1,7 @@
+import { navigate, readRoute, goBack } from "../services/navigation";
+import { useLocalState, readLocal, writeLocal } from "../services/localState";
+import { explainUnavailable, showNotice } from "../components/ActionDialog";
+import { shareLink } from "../services/shareService";
 import React, { useState } from "react";
 import { StatusBar, BackButton } from "../components/Shared";
 
@@ -120,7 +124,7 @@ export const TutorialScreen = () => {
 
       {/* Spotlight mask: dark overlay with hole cut out via SVG clip */}
       <div className="absolute inset-0 z-10 pointer-events-none">
-        <svg width="390" height="844" viewBox="0 0 390 844">
+        <svg width="100%" height="100%" viewBox="0 0 390 844" preserveAspectRatio="none">
           <defs>
             <mask id="spot-mask">
               <rect width="390" height="844" fill="white" />
@@ -144,7 +148,7 @@ export const TutorialScreen = () => {
       </div>
 
       {/* Callout tooltip */}
-      <div className="absolute z-20 left-4 right-4 pointer-events-none" style={{ top: current.callout.top }}>
+      <div className="absolute z-20 left-4 right-4 pointer-events-none" style={{ top: `${Math.min(current.callout.top / 844 * 100, 55)}%` }}>
         {/* Arrow */}
         {current.arrowDir === "up" && (
           <div className="flex justify-center mb-1.5">
@@ -181,7 +185,7 @@ export const TutorialScreen = () => {
               이전
             </button>
           )}
-          <button onClick={() => !isLast && setStep(s => s + 1)}
+          <button onClick={() => isLast ? navigate("home") : setStep(s => s + 1)}
             className="flex-1 py-3 rounded-2xl font-bold text-sm text-white"
             style={{ backgroundColor: isLast ? "var(--gold)" : "var(--green)" }}>
             {isLast ? "시작하기 🎉" : "다음"}
@@ -189,7 +193,7 @@ export const TutorialScreen = () => {
         </div>
 
         {!isLast && (
-          <button className="w-full py-2 text-white/50 text-xs font-medium">건너뛰기</button>
+          <button type="button" onClick={() => navigate("home")} className="w-full py-2 text-white/50 text-xs font-medium">건너뛰기</button>
         )}
       </div>
     </div>
@@ -324,7 +328,7 @@ export const MultilingualScreen = () => {
                   <p className={`text-xs text-[var(--muted)] mt-0.5 leading-relaxed ${lang.code === "ar" ? "font-arabic" : ""}`}>{content.desc}</p>
                   <div className="flex items-center justify-between mt-2">
                     <p className="font-bold text-sm text-[#1A1A18]">{content.price}</p>
-                    <button className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-lg" style={{ backgroundColor: "var(--green)" }}>+</button>
+                    <button type="button" onClick={() => navigate("menu")} className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-lg" style={{ backgroundColor: "var(--green)" }}>+</button>
                   </div>
                 </div>
               </div>

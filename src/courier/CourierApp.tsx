@@ -1,3 +1,4 @@
+import { useRouteScreen } from "../services/navigation";
 import React, { useState } from "react";
 import { C } from "./CourierShared";
 import { CourierRegistrationScreen, CourierLoginScreen, VerificationPendingScreen } from "./OnboardingScreens";
@@ -78,10 +79,13 @@ const SIDEBAR_ACTIVE = "#0F2030";
 
 // ── App shell ──────────────────────────────────────────────────────────────────
 export default function CourierApp({ onSwitch }: { onSwitch: () => void }) {
-  const [active, setActive] = useState<CourierScreenId>("go-online");
+  const [active, setActive] = useRouteScreen<CourierScreenId>("courier", "go-online");
 
+  const [menuOpen, setMenuOpen] = useState(false);
+  React.useEffect(() => setMenuOpen(false), [active]);
   return (
-    <div className="flex h-screen w-screen overflow-hidden" style={{ backgroundColor: "#04090F" }}>
+    <div className={`workspace-shell ${menuOpen ? "menu-open" : ""} courier-shell flex h-dvh w-full overflow-hidden`} style={{ backgroundColor: "#04090F" }}>
+      <button className="workspace-menu-toggle" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>☰ {menuOpen ? "Menyuni yopish" : "Ish paneli menyusi"}</button>
       {/* Sidebar */}
       <div className="flex flex-col w-64 h-full flex-shrink-0 overflow-y-auto"
         style={{ backgroundColor: SIDEBAR_BG, borderRight: "1px solid rgba(255,255,255,0.05)" }}>
@@ -141,43 +145,7 @@ export default function CourierApp({ onSwitch }: { onSwitch: () => void }) {
         </div>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 flex items-center justify-center" style={{ backgroundColor: "#040810" }}>
-        {/* Dot grid background */}
-        <svg className="absolute inset-0 w-full h-full opacity-[0.04]" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="courier-dots" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
-              <circle cx="1" cy="1" r="1" fill={C.text} />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#courier-dots)" />
-        </svg>
-
-        {/* Phone frame */}
-        <div className="relative" style={{ width: "390px", height: "844px", flexShrink: 0 }}>
-          {/* Shadow glow */}
-          <div className="absolute inset-0 rounded-[50px] opacity-30"
-            style={{ boxShadow: `0 0 80px ${C.green}40`, pointerEvents: "none" }} />
-
-          {/* Outer frame */}
-          <div className="absolute inset-0 rounded-[50px]"
-            style={{ backgroundColor: "#0A0F18", border: "2px solid rgba(255,255,255,0.12)" }} />
-
-          {/* Dynamic island */}
-          <div className="absolute top-[12px] left-1/2 -translate-x-1/2 w-[120px] h-[34px] rounded-full z-10"
-            style={{ backgroundColor: "#000000" }} />
-
-          {/* Screen content */}
-          <div className="absolute inset-[3px] rounded-[48px] overflow-hidden"
-            style={{ backgroundColor: C.bg }}>
-            {renderCourierScreen(active, setActive)}
-          </div>
-
-          {/* Home indicator */}
-          <div className="absolute bottom-[8px] left-1/2 -translate-x-1/2 w-[120px] h-[5px] rounded-full"
-            style={{ backgroundColor: "rgba(255,255,255,0.15)" }} />
-        </div>
-      </div>
+      <main className="min-w-0 min-h-0 flex-1" style={{ backgroundColor: C.bg }}>{renderCourierScreen(active, setActive)}</main>
     </div>
   );
 }

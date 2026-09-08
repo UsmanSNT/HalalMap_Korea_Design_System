@@ -1,3 +1,4 @@
+import { explainUnavailable } from "../components/ActionDialog";
 import React, { useState, useEffect } from "react";
 import { C, CStatusBar, CBottomNav, SwipeConfirm, DarkRouteMap, EarningsChip } from "./CourierShared";
 
@@ -280,7 +281,7 @@ export const OrderAcceptedScreen = ({ onArrive }: { onArrive?: () => void }) => 
               <span className="text-xs" style={{ color: C.muted }}>· 0.8km</span>
             </div>
           </div>
-          <button className="w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: C.green }}>
+          <button type="button" onClick={() => explainUnavailable("Restoranga qo‘ng‘iroq qilish")} className="w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: C.green }}>
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0E1620" strokeWidth="2.2" strokeLinecap="round">
               <path d="M10 2C6 2 3 5 3 9C3 14 10 20 10 20S17 14 17 9C17 5 14 2 10 2Z"/>
               <circle cx="10" cy="9" r="2.5" fill="#0E1620" stroke="none"/>
@@ -352,7 +353,7 @@ export const AtRestaurantScreen = ({ onPickedUp }: { onPickedUp?: () => void }) 
           <p className="font-bold text-base" style={{ color: C.text }}>신당 할랄 키친</p>
           <p className="text-xs" style={{ color: C.muted }}>서울 용산구 이태원로 23-4</p>
         </div>
-        <button className="ml-auto w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: C.greenGlow }}>
+        <button type="button" onClick={() => explainUnavailable("Restoranga qo‘ng‘iroq qilish")} className="ml-auto w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: C.greenGlow }}>
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke={C.green} strokeWidth="2" strokeLinecap="round">
             <path d="M2 18L4 2h10l2 16M6 6l-.5 8M12 6l.5 8M7.5 10h3"/>
           </svg>
@@ -468,14 +469,14 @@ export const DeliveringScreen = ({ onComplete }: { onComplete?: () => void }) =>
 
         {/* Customer actions */}
         <div className="grid grid-cols-2 gap-3">
-          <button className="py-4 rounded-2xl font-bold text-base flex items-center justify-center gap-2"
+          <button type="button" onClick={() => explainUnavailable("Mijozga qo‘ng‘iroq qilish")} className="py-4 rounded-2xl font-bold text-base flex items-center justify-center gap-2"
             style={{ backgroundColor: C.card, color: C.text, border: `1.5px solid ${C.borderBright}` }}>
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke={C.green} strokeWidth="2" strokeLinecap="round">
               <path d="M3 5.5h3l1.5 3.5-2 1.5A12 12 0 0010.5 14l1.5-2 3.5 1.5V17a1 1 0 01-1 1A15 15 0 012 4a1 1 0 011-1h.5z"/>
             </svg>
             전화
           </button>
-          <button className="py-4 rounded-2xl font-bold text-base flex items-center justify-center gap-2"
+          <button type="button" onClick={() => explainUnavailable("Mijoz bilan chat")} className="py-4 rounded-2xl font-bold text-base flex items-center justify-center gap-2"
             style={{ backgroundColor: C.card, color: C.text, border: `1.5px solid ${C.borderBright}` }}>
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke={C.blue} strokeWidth="2" strokeLinecap="round">
               <path d="M2 2h16v12H2zM2 14l4-2h8l4 2"/>
@@ -652,12 +653,12 @@ export const DeliveryIssueScreen = () => {
         )}
 
         {selected && (
-          <button className="w-full py-4 rounded-2xl font-bold text-base" style={{ backgroundColor: C.danger, color: "white" }}>
+          <button type="button" onClick={() => explainUnavailable("Yetkazish muammosini yuborish")} className="w-full py-4 rounded-2xl font-bold text-base" style={{ backgroundColor: C.danger, color: "white" }}>
             신고 제출
           </button>
         )}
 
-        <button className="w-full py-4 rounded-2xl font-bold text-base" style={{ backgroundColor: C.card, color: C.text, border: `1.5px solid ${C.borderBright}` }}>
+        <button type="button" onClick={() => explainUnavailable("Yordam markazi bilan bog‘lanish")} className="w-full py-4 rounded-2xl font-bold text-base" style={{ backgroundColor: C.card, color: C.text, border: `1.5px solid ${C.borderBright}` }}>
           고객센터 연결
         </button>
         <div className="h-2" />

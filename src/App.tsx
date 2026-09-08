@@ -1,10 +1,14 @@
-import React, { useEffect, useRef, useState } from "react";
-import { type AuthUser, login, logout } from "./api/auth";
+import RouteError from "./components/RouteError";
+import { setUserStorageScope } from "./services/localState";
+import { navigate as navigateRoute, useRoute } from "./services/navigation";
+import FeatureNavigation from "./components/FeatureNavigation";
+import React, { useEffect, useState } from "react";
+import { type AuthUser, login, logout, getCurrentUser } from "./api/auth";
 import { type TabId } from "./components/Shared";
 import { type Lang, LanguageAccordion } from "./components/LanguageSwitcher";
-import DashboardApp from "./dashboard/DashboardApp";
-import CourierApp from "./courier/CourierApp";
-import AdminApp from "./admin/AdminApp";
+const DashboardApp = React.lazy(() => import("./dashboard/DashboardApp"));
+const CourierApp = React.lazy(() => import("./courier/CourierApp"));
+const AdminApp = React.lazy(() => import("./admin/AdminApp"));
 import { SplashScreen, OnboardingScreen, SignUpScreen, LoginScreen, LanguageScreen } from "./screens/OnboardingScreens";
 import { HomeScreen, RestaurantListScreen, RestaurantDetailScreen, MenuScreen, ItemDetailScreen, CartScreen, CheckoutScreen, OrderConfirmationScreen } from "./screens/HomeScreens";
 import HomeDesktop from "./screens/HomeDesktop";
@@ -133,15 +137,12 @@ function DesktopCustomerShell({ current, onNavigate, onLogout, lang, onLanguageC
         <button onClick={onLogout} className="mt-4 rounded-xl border border-[#E5E2DC] px-4 py-2.5 text-sm font-semibold text-[#B42318]">{copy.logout}</button>
       </aside>
       <section className="min-w-0 flex-1 overflow-hidden lg:p-5">
-        <div className="mx-auto h-full w-full max-w-[390px] overflow-hidden bg-[var(--cream)] lg:max-w-[1180px] lg:rounded-2xl lg:border lg:border-[#E5E2DC] lg:shadow-sm">
-          {children}
+        <div className="customer-content mx-auto flex h-full min-h-0 w-full flex-col overflow-hidden bg-[var(--cream)] lg:max-w-[1180px] lg:rounded-2xl lg:border lg:border-[#E5E2DC] lg:shadow-sm">
+          <FeatureNavigation /><main className="min-h-0 flex-1">{children}</main>
         </div>
       </section>
       {partnerRole && <button onClick={() => onWorkspace(partnerRole)} className="fixed bottom-24 right-4 z-50 rounded-full bg-[#1A1A18] px-4 py-3 text-xs font-bold text-white shadow-lg lg:hidden">{partnerRole === "courier" ? "Kuryer paneli" : "Oshxona paneli"}</button>}
-      {!partnerRole && <div className="fixed bottom-24 right-4 z-50 flex flex-col gap-2 lg:hidden">
-        <button onClick={() => onWorkspace("courier")} className="rounded-full bg-[#0F2030] px-4 py-3 text-xs font-bold text-[#4ADE80] shadow-lg">TEST Kuryer</button>
-        <button onClick={() => onWorkspace("owner")} className="rounded-full bg-[#1A1A18] px-4 py-3 text-xs font-bold text-white shadow-lg">TEST Oshxona</button>
-      </div>}
+
     </div>
   );
 }
@@ -152,10 +153,7 @@ function CustomerScreen({ id, onTabChange, onNavigate, onLogout, lang, onLanguag
     case "onboarding": return <OnboardingScreen />;
     case "signup": return <SignUpScreen />;
     case "language": return <LanguageScreen />;
-    case "home": return <>
-      <div className="h-full lg:hidden"><HomeScreen onTabChange={onTabChange} onNavigate={onNavigate} /></div>
-      <div className="hidden h-full lg:block"><HomeDesktop onNavigate={onNavigate} onLogout={onLogout} lang={lang} onLanguageChange={onLanguageChange} /></div>
-    </>;
+    case "home": return <ResponsiveHome onTabChange={onTabChange} onNavigate={onNavigate} onLogout={onLogout} lang={lang} onLanguageChange={onLanguageChange} />;
     case "restaurant-list": return <RestaurantListScreen onNavigate={onNavigate} />;
     case "restaurant-detail": return <RestaurantDetailScreen onNavigate={onNavigate} />;
     case "menu": return <MenuScreen onNavigate={onNavigate} />;
@@ -172,7 +170,7 @@ function CustomerScreen({ id, onTabChange, onNavigate, onLogout, lang, onLanguag
     case "prayer-times": return <PrayerTimesScreen onTabChange={onTabChange} />;
     case "qibla": return <QiblaScreen onTabChange={onTabChange} />;
     case "scanner": return <ScannerScreen />;
-    case "scan-result": return <ScanResultScreen verdict="halal" />;
+    case "scan-result": return <ScanResultScreen verdict={(["halal", "haram", "mashbooh"].includes(new URLSearchParams(window.location.hash.split("?")[1]).get("verdict") ?? "") ? new URLSearchParams(window.location.hash.split("?")[1]).get("verdict") : "halal") as "halal" | "haram" | "mashbooh"} />;
     case "scan-history": return <ScanHistoryScreen />;
     case "order-tracking": return <OrderTrackingScreen onTabChange={onTabChange} />;
     case "order-history": return <OrderHistoryScreen onTabChange={onTabChange} />;
@@ -200,33 +198,40 @@ function CustomerScreen({ id, onTabChange, onNavigate, onLogout, lang, onLanguag
     case "submit-place": return <PlaceSubmissionScreen lang={lang} />;
     case "apply-courier": return <RoleApplicationScreen role="courier" onAuthenticated={onWorkspace} />;
     case "apply-owner": return <RoleApplicationScreen role="owner" onAuthenticated={onWorkspace} />;
+    default: return <div className="p-8"><h1 className="text-xl font-bold">Sahifa topilmadi</h1><button className="mt-4 text-[var(--green)]" onClick={() => onNavigate("home")}>Bosh sahifaga qaytish</button></div>;
   }
+}
+
+function ResponsiveHome(props: React.ComponentProps<typeof HomeDesktop> & { onTabChange: (tab: TabId) => void }) {
+  const [desktop, setDesktop] = useState(() => window.matchMedia("(min-width: 1024px)").matches);
+  useEffect(() => { const media = window.matchMedia("(min-width: 1024px)"); const update = () => setDesktop(media.matches); media.addEventListener("change", update); return () => media.removeEventListener("change", update); }, []);
+  return desktop ? <HomeDesktop {...props} /> : <HomeScreen onTabChange={props.onTabChange} onNavigate={props.onNavigate} />;
 }
 
 export default function App() {
   const [user, setUser] = useState<AuthUser | null>(null);
-  const [workspace, setWorkspace] = useState<"customer" | "courier" | "owner" | "admin">("customer");
+  const route = useRoute();
+  const workspace = route.workspace;
+  const setWorkspace = (mode: "customer" | "courier" | "owner" | "admin") => navigateRoute(`/${mode}/${mode === "owner" ? "main-dashboard" : mode === "courier" ? "go-online" : "home"}`);
   const [partnerRole, setPartnerRole] = useState<"courier" | "owner" | null>(null);
-  const [lang, setLang] = useState<Lang>(() => (localStorage.getItem("halalmap-language") as Lang) || "uz");
-  const [current, setCurrent] = useState<ScreenId>("home");
-  const screenHistory = useRef<ScreenId[]>([]);
-
-  const navigate = (screen: ScreenId) => {
-    if (screen === current) return;
-    screenHistory.current.push(current);
-    setCurrent(screen);
-  };
-
-  const goBack = () => {
-    const previous = screenHistory.current.pop();
-    setCurrent(previous ?? "home");
-  };
-
+  const [lang, setLang] = useState<Lang>(() => (["ko", "en", "uz", "ru"].includes(localStorage.getItem("halalmap-language") ?? "") ? localStorage.getItem("halalmap-language") as Lang : "uz"));
+  useEffect(() => { const update = (event: Event) => { const value = (event as CustomEvent).detail; if (["ko", "en", "uz", "ru"].includes(value)) setLang(value); }; window.addEventListener("halalmap:language", update); return () => window.removeEventListener("halalmap:language", update); }, []);
+  const current = route.screen as ScreenId;
+  const navigate = (screen: ScreenId) => navigateRoute(`/customer/${screen}`);
+  const [restoring, setRestoring] = useState(true);
   useEffect(() => {
-    const handleBack = () => goBack();
-    window.addEventListener("halalmap:back", handleBack);
-    return () => window.removeEventListener("halalmap:back", handleBack);
-  });
+    let live = true;
+    getCurrentUser().then(value => {
+      if (!live) return;
+      setUserStorageScope(String(value?.id ?? "guest"));
+      setUser(value);
+      try {
+        const saved = JSON.parse(localStorage.getItem("halalmap_partner_access") ?? "null");
+        if (value && saved?.userId === String(value.id) && (saved.role === "courier" || saved.role === "owner")) setPartnerRole(saved.role);
+      } catch { /* An invalid local preference does not invalidate the API session. */ }
+    }).finally(() => { if (live) setRestoring(false); });
+    return () => { live = false; };
+  }, []);
 
   useEffect(() => {
     localStorage.setItem("halalmap-language", lang);
@@ -236,6 +241,7 @@ export default function App() {
   const handleLogin = async (email: string, password: string) => {
     try {
       const loggedInUser = await login(email, password);
+      setUserStorageScope(String(loggedInUser.id));
       setUser(loggedInUser);
       setPartnerRole(null);
       try {
@@ -254,17 +260,19 @@ export default function App() {
   };
 
   const handleLogout = async () => {
-    await logout();
+    try { await logout(); } catch { /* Local session is cleared even when the API is offline. */ }
+    setUserStorageScope("guest");
     setUser(null);
-    setWorkspace("customer");
     setPartnerRole(null);
     localStorage.removeItem("halalmap_partner_access");
     localStorage.removeItem("halalmap_partner_role");
-    setCurrent("home");
-    screenHistory.current = [];
+    navigateRoute("/customer/home", undefined, true);
   };
 
-  if (!user) return <main className="mx-auto h-dvh w-full max-w-[390px] overflow-hidden bg-[var(--cream)]"><LoginScreen onLogin={handleLogin} lang={lang} onLanguageChange={setLang} /></main>;
+  if (restoring) return <div role="status" className="p-8">Yuklanmoqda…</div>;
+  if (!route.valid) return <section className="p-8"><h1 className="text-xl font-bold">Sahifa topilmadi</h1><button className="mt-4" onClick={() => navigateRoute("/customer/home", undefined, true)}>Bosh sahifa</button></section>;
+  if (!user) return <main className="auth-shell h-dvh w-full bg-[var(--cream)]">{current === "signup" ? <SignUpScreen /> : current === "onboarding" ? <OnboardingScreen /> : <LoginScreen onLogin={handleLogin} lang={lang} onLanguageChange={setLang} />}</main>;
+  if (workspace === "admin" && user.role !== "admin") return <section className="p-8"><h1>Admin huquqi talab qilinadi</h1><button onClick={() => navigateRoute("/customer/home")}>Bosh sahifa</button></section>;
   if (workspace === "owner") return <DashboardApp onSwitch={() => setWorkspace("customer")} />;
   if (workspace === "courier") return <CourierApp onSwitch={() => setWorkspace("customer")} />;
   if (workspace === "admin" && user.role === "admin") return <AdminApp onSwitch={() => setWorkspace("customer")} />;
@@ -275,10 +283,10 @@ export default function App() {
     setPartnerRole(role);
     setWorkspace(role);
   };
-  const customerScreen = <CustomerScreen id={current} onTabChange={handleTabChange} onNavigate={(screen) => navigate(screen as ScreenId)} onLogout={handleLogout} lang={lang} onLanguageChange={setLang} onWorkspace={activatePartner} />;
+  const customerScreen = <CustomerScreen key={current + route.params.toString()} id={current} onTabChange={handleTabChange} onNavigate={(screen) => navigate(screen as ScreenId)} onLogout={handleLogout} lang={lang} onLanguageChange={setLang} onWorkspace={activatePartner} />;
   return (
     <div className="relative min-h-dvh bg-[#EDEAE5]">
-      <DesktopCustomerShell current={current} onNavigate={navigate} onLogout={handleLogout} lang={lang} onLanguageChange={setLang} user={user} partnerRole={partnerRole} onWorkspace={setWorkspace}>{customerScreen}</DesktopCustomerShell>
+      <DesktopCustomerShell current={current} onNavigate={navigate} onLogout={handleLogout} lang={lang} onLanguageChange={setLang} user={user} partnerRole={partnerRole} onWorkspace={setWorkspace}><RouteError key={current + route.params.toString()}>{customerScreen}</RouteError></DesktopCustomerShell>
     </div>
   );
 }

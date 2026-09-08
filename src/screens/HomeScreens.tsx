@@ -1,3 +1,11 @@
+import { useAddresses } from "../services/addressService";
+import { catalogService } from "../services/catalogService";
+import { useCart, addToCart, cartTotals, changeMenuQuantity, useOrderPreview } from "../services/commerce";
+import FavoriteButton from "../components/FavoriteButton";
+import { navigate, readRoute, goBack } from "../services/navigation";
+import { useLocalState, readLocal, writeLocal } from "../services/localState";
+import { explainUnavailable, showNotice } from "../components/ActionDialog";
+import { shareLink } from "../services/shareService";
 import React, { useState } from "react";
 import {
   GeometricPattern, StatusBar, BottomNav, HalalBadge, StarRating,
@@ -88,7 +96,7 @@ export const HomeScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabI
       <div className="pt-4 pb-2">
         <div className="flex gap-2 px-4 overflow-x-auto scrollbar-hide pb-1">
           {categories.map((c, i) => (
-            <button
+            <button type="button" onClick={() => navigate(c.label.includes("스캐너") ? "scanner" : "restaurant-list")}
               key={i}
               className="flex-shrink-0 flex flex-col items-center gap-1.5 px-4 py-3 rounded-2xl bg-white border border-[var(--border)] min-w-fit"
             >
@@ -144,16 +152,14 @@ export const HomeScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabI
 // ── 7. Restaurant List ─────────────────────────────────────────────────────────
 const filters = ["거리순", "⭐ 평점", "배달비", "인증유형", "음식종류"];
 
-const restaurants = [
-  { name: "신당 할랄 키친", imageId: "1498654896293-37c98e7f5fe4", badge: "certified" as const, rating: 4.8, count: 3241, distance: "2.3km", eta: "25-35분", fee: "₩2,000", cuisine: "한식" },
-  { name: "우즈베키스탄 플로프 하우스", imageId: "1565557623262-b51ff2a27b73", badge: "owned" as const, rating: 4.7, count: 892, distance: "3.1km", eta: "30-40분", fee: "₩1,500", cuisine: "우즈베크" },
-  { name: "이스탄불 케밥 & 피데", imageId: "1529042410759-befb1204b468", badge: "certified" as const, rating: 4.5, count: 2110, distance: "0.8km", eta: "20-30분", fee: "무료", cuisine: "터키" },
-  { name: "델리 스파이스 하우스", imageId: "1617196034183-421b4040d6fd", badge: "friendly" as const, rating: 4.3, count: 654, distance: "4.2km", eta: "40-50분", fee: "₩2,500", cuisine: "인도" },
-  { name: "자카르타 나시고렝", imageId: "1414235077428-338989a2e8c0", badge: "certified" as const, rating: 4.6, count: 1345, distance: "2.8km", eta: "35-45분", fee: "₩2,000", cuisine: "인도네시아" },
-];
+const restaurants = catalogService.restaurants();
 
 export const RestaurantListScreen = ({ onNavigate }: { onNavigate?: (screen: string) => void }) => {
+const query = readRoute().params.get("q") ?? "";
+
+
   const [activeFilter, setActiveFilter] = useState("거리순");
+const visible = catalogService.search(query).slice().sort((a,b) => activeFilter === "⭐ 평점" ? b.rating-a.rating : activeFilter === "배달비" ? (parseInt(a.fee.replace(/\D/g,"")) || 0) - (parseInt(b.fee.replace(/\D/g,"")) || 0) : parseFloat(a.distance)-parseFloat(b.distance));
 
   return (
     <div className="flex flex-col h-full bg-[var(--cream)]">
@@ -161,13 +167,13 @@ export const RestaurantListScreen = ({ onNavigate }: { onNavigate?: (screen: str
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
-          <BackButton onBack={() => onNavigate?.("home")} />
+          <BackButton onBack={() => goBack("/customer/home")} />
           <h1 className="font-bold text-lg flex-1">할랄 레스토랑</h1>
           <button onClick={() => onNavigate?.("submit-place")} title="Joy qo‘shish" className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--green-light)] text-xl font-bold text-[var(--green)]">+</button>
         </div>
         {/* Sort + filters */}
         <div className="flex items-center gap-2 px-4 pb-3 overflow-x-auto scrollbar-hide">
-          <button
+          <button type="button" onClick={() => setActiveFilter("거리순")}
             className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border border-[var(--green)] text-[var(--green)] bg-[var(--green-light)]"
           >
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -195,10 +201,11 @@ export const RestaurantListScreen = ({ onNavigate }: { onNavigate?: (screen: str
       </div>
 
       {/* List */}
-      <div className="flex-1 phone-scroll px-4 py-4 space-y-3">
-        <p className="text-xs text-[var(--muted)] font-medium mb-1">근처 할랄 레스토랑 {restaurants.length}개</p>
-        {restaurants.map((r, i) => (
-          <RestaurantCardH key={i} {...r} onClick={() => onNavigate?.("restaurant-detail")} />
+      <div className="flex-1 phone-scroll responsive-grid px-4 py-4">
+        <p className="text-xs text-[var(--muted)] font-medium mb-1">근처 할랄 레스토랑 {visible.length}개</p>
+        {visible.length === 0 && <p>Natija topilmadi. Boshqa nom bilan qidiring.</p>}
+        {visible.map((r, i) => (
+          <RestaurantCardH key={i} {...r} onClick={() => navigate("restaurant-detail", { place: r.name })} />
         ))}
       </div>
 
@@ -211,6 +218,8 @@ export const RestaurantListScreen = ({ onNavigate }: { onNavigate?: (screen: str
 const menuTabs = ["전체메뉴", "인기메뉴", "한식", "음료", "사이드"];
 
 export const RestaurantDetailScreen = ({ onNavigate }: { onNavigate?: (screen: string) => void }) => {
+const selected = catalogService.restaurant(readRoute().params.get("place") ?? "") ?? restaurants[0];
+
   const [activeTab, setActiveTab] = useState("인기메뉴");
 
   return (
@@ -230,15 +239,11 @@ export const RestaurantDetailScreen = ({ onNavigate }: { onNavigate?: (screen: s
           <StatusBar dark />
         </div>
         <div className="absolute top-12 left-4">
-          <BackButton dark onBack={() => onNavigate?.("restaurant-list")} />
+          <BackButton dark onBack={() => goBack("/customer/restaurant-list")} />
         </div>
         <div className="absolute top-12 right-4 flex gap-2">
-          <button className="w-9 h-9 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="white" strokeWidth="1.6">
-              <path d="M9 1.5L11.5 6.5H16.5L12.5 9.5L14 14.5L9 11.5L4 14.5L5.5 9.5L1.5 6.5H6.5L9 1.5Z"/>
-            </svg>
-          </button>
-          <button className="w-9 h-9 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
+          <FavoriteButton name={selected.name} />
+          <button onClick={() => navigate("share", { target: `/customer/restaurant-detail?place=${encodeURIComponent(selected.name)}` })} aria-label="Ulashish" className="w-9 h-9 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="white" strokeWidth="1.6">
               <circle cx="14" cy="4" r="2.5"/>
               <circle cx="4" cy="9" r="2.5"/>
@@ -254,17 +259,17 @@ export const RestaurantDetailScreen = ({ onNavigate }: { onNavigate?: (screen: s
         {/* Info card */}
         <div className="bg-white px-5 pt-4 pb-4">
           <div className="flex items-start justify-between gap-2 mb-2">
-            <h1 className="font-bold text-xl text-[#1A1A18] leading-tight">신당 할랄 키친</h1>
-            <HalalBadge variant="certified" />
+            <h1 className="font-bold text-xl text-[#1A1A18] leading-tight">{selected.name}</h1>
+            <HalalBadge variant={selected.badge} />
           </div>
-          <p className="text-sm text-[var(--muted)] mb-3">이슬람 식품청 인증 할랄 한식 전문점. 돼지고기 및 알코올 완전 배제.</p>
+          <p className="text-sm text-[var(--muted)] mb-3">{selected.cuisine} · Figma namuna ma’lumoti</p>
 
           <div className="flex items-center gap-4 mb-4">
-            <StarRating rating={4.8} count={3241} />
+            <StarRating rating={selected.rating} count={selected.count} />
             <span className="text-xs text-[var(--muted)]">·</span>
-            <span className="text-xs text-[var(--muted)]">📍 2.3km</span>
+            <span className="text-xs text-[var(--muted)]">📍 {selected.distance}</span>
             <span className="text-xs text-[var(--muted)]">·</span>
-            <span className="text-xs text-[var(--muted)]">⏱ 25-35분</span>
+            <span className="text-xs text-[var(--muted)]">⏱ {selected.eta}</span>
           </div>
 
           {/* Info row */}
@@ -318,7 +323,7 @@ export const RestaurantDetailScreen = ({ onNavigate }: { onNavigate?: (screen: s
                 <p className="text-xs text-[var(--muted)] mt-0.5 leading-relaxed">{item.desc}</p>
                 <div className="flex items-center justify-between mt-2">
                   <PriceTag amount={item.price} className="text-sm" />
-                  <button
+                  <button type="button" onClick={() => navigate("item-detail", { item: item.name, place: selected.name })}
                     className="w-7 h-7 rounded-full flex items-center justify-center text-white text-lg font-light shadow-sm"
                     style={{ backgroundColor: "var(--green)" }}
                   >
@@ -333,7 +338,7 @@ export const RestaurantDetailScreen = ({ onNavigate }: { onNavigate?: (screen: s
 
       {/* Bottom CTA */}
       <div className="px-4 pb-8 pt-3 bg-white border-t border-[var(--border)] flex-shrink-0">
-        <button onClick={() => onNavigate?.("menu")} className="w-full py-4 rounded-2xl font-bold text-white text-base" style={{ backgroundColor: "var(--green)" }}>
+        <button onClick={() => navigate("menu", { place: selected.name })} className="w-full py-4 rounded-2xl font-bold text-white text-base" style={{ backgroundColor: "var(--green)" }}>
           메뉴 전체 보기
         </button>
       </div>
@@ -343,18 +348,17 @@ export const RestaurantDetailScreen = ({ onNavigate }: { onNavigate?: (screen: s
 
 // ── 9. Menu Screen ─────────────────────────────────────────────────────────────
 const menuCategories = ["인기메뉴", "한식", "세트메뉴", "음료", "사이드"];
-const menuItems = [
-  { name: "할랄 갈비탕", desc: "사골 육수 12시간 우린 국물", price: 13500, imageId: "1569050467447-ce54b3bbc37d", tags: ["No Pork", "No Alcohol"], popular: true },
-  { name: "비빔밥 (할랄)", desc: "신선 야채 + 할랄 소고기", price: 11000, imageId: "1583394293214-b483ffd7e3f7", tags: ["Halal Beef"], popular: true },
-  { name: "된장찌개 세트", desc: "전통 된장, 두부, 야채, 밥 포함", price: 12000, imageId: "1617196034183-421b4040d6fd", tags: ["Vegetable"], popular: false },
-  { name: "할랄 삼계탕", desc: "국산 닭, 인삼, 찹쌀 들어간 보양식", price: 16500, imageId: "1498654896293-37c98e7f5fe4", tags: ["Halal Chicken"], popular: true },
-];
+const menuItems = catalogService.menu();
 
 export const MenuScreen = ({ onNavigate }: { onNavigate?: (screen: string) => void }) => {
   const [activeTab, setActiveTab] = useState("인기메뉴");
-  const [cart, setCart] = useState<Record<string, number>>({});
-  const cartCount = Object.values(cart).reduce((a, b) => a + b, 0);
-  const cartTotal = menuItems.reduce((acc, item) => acc + (cart[item.name] || 0) * item.price, 0);
+  const [items] = useCart();
+  const restaurant = readRoute().params.get("place") ?? restaurants[0].name;
+  const cart = Object.fromEntries(menuItems.map(item => [item.name, items.filter(row => row.name === item.name && row.option === "보통" && row.restaurant === restaurant).reduce((sum,row) => sum+row.qty,0)]));
+  const cartCount = items.reduce((sum, item) => sum + item.qty, 0);
+  const cartTotal = items.reduce((sum, item) => sum + item.qty * item.price, 0);
+  const update = (item: typeof menuItems[number], delta: number) => changeMenuQuantity({ name: item.name, price: item.price, option: "보통", restaurant }, delta);
+  const visibleItems = activeTab === "인기메뉴" ? menuItems.filter(item => item.popular) : activeTab === "음료" || activeTab === "사이드" ? [] : activeTab === "세트메뉴" ? menuItems.filter(item => item.name.includes("세트")) : menuItems;
 
   return (
     <div className="flex flex-col h-full bg-[var(--cream)]">
@@ -362,12 +366,12 @@ export const MenuScreen = ({ onNavigate }: { onNavigate?: (screen: string) => vo
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
-          <BackButton onBack={() => onNavigate?.("restaurant-detail")} />
+          <BackButton onBack={() => goBack("/customer/restaurant-detail")} />
           <div className="flex-1">
-            <h1 className="font-bold text-base">신당 할랄 키친</h1>
+            <h1 className="font-bold text-base">{restaurant}</h1>
             <p className="text-xs text-[var(--muted)]">메뉴 선택</p>
           </div>
-          <button className="relative">
+          <button type="button" onClick={() => navigate("cart")} className="relative">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--charcoal)" strokeWidth="1.8">
               <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
               <line x1="3" y1="6" x2="21" y2="6"/>
@@ -400,9 +404,10 @@ export const MenuScreen = ({ onNavigate }: { onNavigate?: (screen: string) => vo
       </div>
 
       {/* Menu items */}
-      <div className="flex-1 phone-scroll px-4 pt-4 space-y-3">
+      <div className="flex-1 phone-scroll responsive-grid px-4 pt-4">
         <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide px-1">🔥 {activeTab}</p>
-        {menuItems.map((item) => (
+        {visibleItems.length === 0 && <p>Bu bo‘limda hozircha taomlar yo‘q.</p>}
+        {visibleItems.map((item) => (
           <div key={item.name} className="bg-white rounded-2xl p-3 flex gap-3 shadow-sm">
             <div className="relative w-20 h-20 rounded-xl bg-[#E8E6E1] flex-shrink-0 overflow-hidden">
               <img src={`https://images.unsplash.com/photo-${item.imageId}?w=120&h=120&fit=crop&auto=format&q=80`} alt={item.name} className="w-full h-full object-cover" />
@@ -411,7 +416,7 @@ export const MenuScreen = ({ onNavigate }: { onNavigate?: (screen: string) => vo
               )}
             </div>
             <div className="flex-1 py-0.5">
-              <p className="font-semibold text-sm text-[#1A1A18]">{item.name}</p>
+              <button onClick={() => navigate("item-detail", { item: item.name, place: readRoute().params.get("place") ?? restaurants[0].name })} className="font-semibold text-sm text-left text-[#1A1A18]">{item.name}</button>
               <p className="text-xs text-[var(--muted)] mt-0.5">{item.desc}</p>
               <div className="flex flex-wrap gap-1 mt-1.5">
                 {item.tags.map((tag) => (
@@ -422,14 +427,14 @@ export const MenuScreen = ({ onNavigate }: { onNavigate?: (screen: string) => vo
                 <PriceTag amount={item.price} className="text-sm" />
                 {cart[item.name] ? (
                   <div className="flex items-center gap-2">
-                    <button onClick={() => setCart(c => ({ ...c, [item.name]: Math.max(0, (c[item.name] || 0) - 1) }))}
+                    <button onClick={() => update(item, -1)}
                       className="w-7 h-7 rounded-full border border-[var(--border)] flex items-center justify-center text-sm font-bold text-[var(--green)]">−</button>
                     <span className="text-sm font-bold w-4 text-center">{cart[item.name]}</span>
-                    <button onClick={() => setCart(c => ({ ...c, [item.name]: (c[item.name] || 0) + 1 }))}
+                    <button onClick={() => update(item, 1)}
                       className="w-7 h-7 rounded-full flex items-center justify-center text-white text-sm font-bold" style={{ backgroundColor: "var(--green)" }}>+</button>
                   </div>
                 ) : (
-                  <button onClick={() => setCart(c => ({ ...c, [item.name]: 1 }))}
+                  <button onClick={() => update(item, 1)}
                     className="w-7 h-7 rounded-full flex items-center justify-center text-white text-lg font-light" style={{ backgroundColor: "var(--green)" }}>+</button>
                 )}
               </div>
@@ -455,11 +460,14 @@ export const MenuScreen = ({ onNavigate }: { onNavigate?: (screen: string) => vo
 
 // ── 10. Item Detail ────────────────────────────────────────────────────────────
 export const ItemDetailScreen = ({ onNavigate }: { onNavigate?: (screen: string) => void }) => {
+const item = catalogService.menuItem(readRoute().params.get("item") ?? "") ?? menuItems[0];
+const [note, setNote] = useState("");
+
   const [size, setSize] = useState("보통");
   const [spice, setSpice] = useState("보통");
   const [extras, setExtras] = useState<string[]>([]);
   const [qty, setQty] = useState(1);
-  const basePrice = 13500;
+  const basePrice = item.price;
   const sizeExtra = size === "대" ? 2000 : 0;
   const total = (basePrice + sizeExtra) * qty;
 
@@ -471,12 +479,12 @@ export const ItemDetailScreen = ({ onNavigate }: { onNavigate?: (screen: string)
       {/* Hero */}
       <div className="relative flex-shrink-0">
         <div className="h-60 bg-[#D8D4CD] relative overflow-hidden">
-          <img src="https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=390&h=260&fit=crop&auto=format&q=80" alt="할랄 갈비탕" className="w-full h-full object-cover" />
+          <img src={`https://images.unsplash.com/photo-${item.imageId}?w=780&h=400&fit=crop&auto=format&q=80`} alt={item.name} className="w-full h-full object-cover" />
         </div>
         <div className="absolute top-0 left-0 right-0">
           <StatusBar dark />
         </div>
-        <div className="absolute top-12 left-4"><BackButton dark onBack={() => onNavigate?.("menu")} /></div>
+        <div className="absolute top-12 left-4"><BackButton dark onBack={() => goBack("/customer/menu")} /></div>
       </div>
 
       <div className="flex-1 phone-scroll px-5 pt-5 pb-4 space-y-5">
@@ -484,8 +492,8 @@ export const ItemDetailScreen = ({ onNavigate }: { onNavigate?: (screen: string)
         <div className="flex items-start justify-between gap-2">
           <div>
             <div className="flex items-center gap-2 mb-1"><HalalBadge variant="certified" /></div>
-            <h1 className="font-bold text-xl text-[#1A1A18]">할랄 갈비탕</h1>
-            <p className="text-sm text-[var(--muted)] mt-1 leading-relaxed">사골 육수를 12시간 우린 진한 국물에 소갈비를 듬뿍 넣은 한국 전통 보양식. 돼지고기·알코올 완전 배제.</p>
+            <h1 className="font-bold text-xl text-[#1A1A18]">{item.name}</h1>
+            <p className="text-sm text-[var(--muted)] mt-1 leading-relaxed">{item.desc}</p>
           </div>
           <PriceTag amount={basePrice} className="text-lg flex-shrink-0" />
         </div>
@@ -549,7 +557,7 @@ export const ItemDetailScreen = ({ onNavigate }: { onNavigate?: (screen: string)
             className="w-full border border-[var(--border)] rounded-xl px-4 py-3 text-sm text-[#1A1A18] bg-white outline-none resize-none focus:border-[var(--green)]"
             rows={3}
             placeholder="가게에 요청할 사항을 적어주세요..."
-            defaultValue=""
+            value={note} onChange={event => setNote(event.target.value)}
           />
         </div>
       </div>
@@ -562,7 +570,7 @@ export const ItemDetailScreen = ({ onNavigate }: { onNavigate?: (screen: string)
             <span className="text-sm font-bold w-5 text-center">{qty}</span>
             <button onClick={() => setQty(qty + 1)} className="w-7 h-7 rounded-full flex items-center justify-center text-white font-bold text-sm" style={{ backgroundColor: "var(--green)" }}>+</button>
           </div>
-          <button onClick={() => onNavigate?.("cart")} className="flex-1 py-4 rounded-2xl font-bold text-white flex items-center justify-between px-5" style={{ backgroundColor: "var(--green)" }}>
+          <button onClick={() => { addToCart({ name: item.name, price: basePrice + sizeExtra, option: [size, spice, ...extras, note].filter(Boolean).join(" · "), restaurant: readRoute().params.get("place") ?? restaurants[0].name }, qty); navigate("cart"); }} className="flex-1 py-4 rounded-2xl font-bold text-white flex items-center justify-between px-5" style={{ backgroundColor: "var(--green)" }}>
             <span>장바구니 담기</span>
             <PriceTag amount={total} className="text-white" />
           </button>
@@ -574,20 +582,17 @@ export const ItemDetailScreen = ({ onNavigate }: { onNavigate?: (screen: string)
 
 // ── 11. Cart ───────────────────────────────────────────────────────────────────
 export const CartScreen = ({ onNavigate }: { onNavigate?: (screen: string) => void }) => {
-  const [items, setItems] = useState([
-    { name: "할랄 갈비탕", option: "보통", price: 13500, qty: 1 },
-    { name: "비빔밥 (할랄)", option: "기본", price: 11000, qty: 2 },
-    { name: "오이무침", option: "사이드", price: 3000, qty: 1 },
-  ]);
+  const [items, setItems] = useCart();
+const [appliedCoupon, setAppliedCoupon] = useLocalState("coupon", "");
   const [coupon, setCoupon] = useState("");
-  const [note, setNote] = useState("");
+  const [note, setNote] = useLocalState("order-note", "");
   const subtotal = items.reduce((acc, i) => acc + i.price * i.qty, 0);
-  const deliveryFee = 2000;
-  const discount = coupon ? 3000 : 0;
+  const deliveryFee = items.length ? 2000 : 0;
+  const discount = appliedCoupon === "HALAL3000" ? Math.min(subtotal, 3000) : 0;
   const total = subtotal + deliveryFee - discount;
 
   const updateQty = (idx: number, delta: number) => {
-    setItems((prev) => prev.map((item, i) => i === idx ? { ...item, qty: Math.max(1, item.qty + delta) } : item));
+    setItems((prev) => prev.map((item, i) => i === idx ? { ...item, qty: Math.max(0, item.qty + delta) } : item).filter(item => item.qty > 0));
   };
 
   return (
@@ -595,7 +600,7 @@ export const CartScreen = ({ onNavigate }: { onNavigate?: (screen: string) => vo
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
-          <BackButton onBack={() => onNavigate?.("menu")} />
+          <BackButton onBack={() => goBack("/customer/menu")} />
           <h1 className="font-bold text-lg flex-1">장바구니</h1>
           <span className="text-sm font-semibold" style={{ color: "var(--green)" }}>{items.length}개</span>
         </div>
@@ -615,6 +620,7 @@ export const CartScreen = ({ onNavigate }: { onNavigate?: (screen: string) => vo
 
         {/* Items */}
         <div className="bg-white mt-2 px-5 divide-y divide-[var(--border)]">
+          {!items.length && <p className="py-6 text-center">Savat bo‘sh. Menyudan taom qo‘shing.</p>}
           {items.map((item, i) => (
             <div key={i} className="py-4 flex items-center gap-3">
               <div className="flex-1">
@@ -629,7 +635,7 @@ export const CartScreen = ({ onNavigate }: { onNavigate?: (screen: string) => vo
               </div>
             </div>
           ))}
-          <button className="w-full py-4 text-sm font-semibold text-center" style={{ color: "var(--green)" }}>
+          <button type="button" onClick={() => navigate("menu")} className="w-full py-4 text-sm font-semibold text-center" style={{ color: "var(--green)" }}>
             + 다른 메뉴 추가
           </button>
         </div>
@@ -644,7 +650,7 @@ export const CartScreen = ({ onNavigate }: { onNavigate?: (screen: string) => vo
               placeholder="쿠폰 코드 입력 (예: HALAL3000)"
               className="flex-1 border border-[var(--border)] rounded-xl px-4 py-3 text-sm outline-none focus:border-[var(--green)] bg-[var(--cream)]"
             />
-            <button className="px-4 py-3 rounded-xl text-sm font-bold text-white" style={{ backgroundColor: "var(--green)" }}>적용</button>
+            <button type="button" onClick={() => { const valid = coupon.trim().toUpperCase() === "HALAL3000"; setAppliedCoupon(valid ? "HALAL3000" : ""); showNotice("Kupon", valid ? "Sinov chegirmasi qo‘llandi." : "Kupon kodi topilmadi."); }} className="px-4 py-3 rounded-xl text-sm font-bold text-white" style={{ backgroundColor: "var(--green)" }}>적용</button>
           </div>
           <textarea
             value={note}
@@ -679,7 +685,7 @@ export const CartScreen = ({ onNavigate }: { onNavigate?: (screen: string) => vo
 
       {/* CTA */}
       <div className="px-4 pb-8 pt-3 bg-white border-t border-[var(--border)] flex-shrink-0">
-        <button onClick={() => onNavigate?.("checkout")} className="w-full py-4 rounded-2xl font-bold text-white text-base flex items-center justify-between px-6" style={{ backgroundColor: "var(--green)" }}>
+        <button disabled={!items.length} onClick={() => onNavigate?.("checkout")} className="w-full py-4 rounded-2xl font-bold text-white text-base flex items-center justify-between px-6" style={{ backgroundColor: "var(--green)" }}>
           <span>주문하기</span>
           <span>₩{total.toLocaleString()}</span>
         </button>
@@ -697,16 +703,23 @@ const paymentMethods = [
 const tips = [0, 500, 1000, 2000];
 
 export const CheckoutScreen = ({ onNavigate }: { onNavigate?: (screen: string) => void }) => {
+const [addresses] = useAddresses();
+const selectedAddress = addresses.find(item => item.default);
+
+const [items] = useCart();
+const [coupon] = useLocalState("coupon", "");
+const [delivery, setDelivery] = useState("최대한 빨리 (30-40분)");
+
   const [payment, setPayment] = useState("shinhan");
   const [tip, setTip] = useState(0);
-  const total = 34500 + tip;
+  const total = cartTotals(items, coupon, tip).total;
 
   return (
-    <div className="flex flex-col h-full bg-[var(--cream)]">
+    <div className="flex flex-col h-full bg-[var(--cream)]"><p className="shrink-0 bg-[var(--gold-light)] px-4 py-2 text-xs">Sinov ko‘rinishi: to‘lov olinmaydi va buyurtma yuborilmaydi.</p>
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
-          <BackButton onBack={() => onNavigate?.("cart")} />
+          <BackButton onBack={() => goBack("/customer/cart")} />
           <h1 className="font-bold text-lg">결제</h1>
         </div>
       </div>
@@ -720,10 +733,10 @@ export const CheckoutScreen = ({ onNavigate }: { onNavigate?: (screen: string) =
               <svg width="16" height="16" viewBox="0 0 16 16" fill="white"><path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6C3.5 9.5 8 14.5 8 14.5C8 14.5 12.5 9.5 12.5 6C12.5 3.5 10.5 1.5 8 1.5ZM8 7.5C7.2 7.5 6.5 6.8 6.5 6C6.5 5.2 7.2 4.5 8 4.5C8.8 4.5 9.5 5.2 9.5 6C9.5 6.8 8.8 7.5 8 7.5Z"/></svg>
             </div>
             <div className="flex-1">
-              <p className="font-semibold text-sm text-[var(--green)]">집</p>
-              <p className="text-sm text-[#1A1A18] leading-relaxed">서울특별시 용산구 이태원로 123, 501호</p>
+              <p className="font-semibold text-sm text-[var(--green)]">{selectedAddress?.label ?? "Manzil tanlang"}</p>
+              <p className="text-sm text-[#1A1A18] leading-relaxed">{selectedAddress?.addr ?? "Profil → Manzillar orqali qo‘shing"}</p>
             </div>
-            <button className="text-[var(--green)]">
+            <button type="button" onClick={() => navigate("address")} className="text-[var(--green)]">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M2 13L5 12L13 4a1.4 1.4 0 00-2-2L3 11L2 14z"/></svg>
             </button>
           </div>
@@ -734,8 +747,8 @@ export const CheckoutScreen = ({ onNavigate }: { onNavigate?: (screen: string) =
           <p className="font-semibold text-sm text-[#1A1A18]">배달 시간</p>
           <div className="grid grid-cols-2 gap-2">
             {["최대한 빨리 (30-40분)", "시간 지정"].map((opt, i) => (
-              <button key={opt} className="py-3 px-4 rounded-xl text-sm font-semibold border transition-all"
-                style={{ borderColor: i === 0 ? "var(--green)" : "var(--border)", backgroundColor: i === 0 ? "var(--green-light)" : "white", color: i === 0 ? "var(--green)" : "var(--muted)" }}>
+              <button type="button" onClick={() => setDelivery(opt)} key={opt} className="py-3 px-4 rounded-xl text-sm font-semibold border transition-all"
+                style={{ borderColor: delivery === opt ? "var(--green)" : "var(--border)", backgroundColor: delivery === opt ? "var(--green-light)" : "white", color: delivery === opt ? "var(--green)" : "var(--muted)" }}>
                 {opt}
               </button>
             ))}
@@ -759,7 +772,7 @@ export const CheckoutScreen = ({ onNavigate }: { onNavigate?: (screen: string) =
               </div>
             </button>
           ))}
-          <button className="w-full py-3 rounded-xl border border-dashed border-[var(--border)] text-sm font-medium" style={{ color: "var(--muted)" }}>
+          <button type="button" onClick={() => explainUnavailable("To‘lov usulini ulash")} className="w-full py-3 rounded-xl border border-dashed border-[var(--border)] text-sm font-medium" style={{ color: "var(--muted)" }}>
             + 결제수단 추가
           </button>
         </div>
@@ -791,8 +804,8 @@ export const CheckoutScreen = ({ onNavigate }: { onNavigate?: (screen: string) =
       </div>
 
       <div className="px-4 pb-8 pt-3 bg-white border-t border-[var(--border)] flex-shrink-0">
-        <button onClick={() => onNavigate?.("order-confirmation")} className="w-full py-4 rounded-2xl font-bold text-white text-base flex items-center justify-between px-6" style={{ backgroundColor: "var(--green)" }}>
-          <span>₩{total.toLocaleString()} 결제하기</span>
+        <button disabled={!items.length} onClick={() => { writeLocal("last-order-preview", { items, total, payment, tip, coupon, date: new Date().toISOString() }); navigate("order-confirmation"); }} className="w-full py-4 rounded-2xl font-bold text-white text-base flex items-center justify-between px-6" style={{ backgroundColor: "var(--green)" }}>
+          <span>₩{total.toLocaleString()} · Sinov ko‘rinishini ochish</span>
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round"><path d="M5 10h10M12 7l3 3-3 3"/></svg>
         </button>
       </div>
@@ -803,12 +816,14 @@ export const CheckoutScreen = ({ onNavigate }: { onNavigate?: (screen: string) =
 // ── 13. Order Confirmation ─────────────────────────────────────────────────────
 const steps = ["주문접수", "조리중", "픽업완료", "배달완료"];
 
-export const OrderConfirmationScreen = ({ onNavigate }: { onNavigate?: (screen: string) => void }) => (
+export const OrderConfirmationScreen = ({ onNavigate }: { onNavigate?: (screen: string) => void }) => {
+const [preview] = useOrderPreview();
+return (
   <div className="flex flex-col h-full relative overflow-hidden" style={{ backgroundColor: "var(--green)" }}>
     <GeometricPattern color="white" opacity={0.05} />
-    <StatusBar dark />
+    <p className="shrink-0 bg-[var(--gold-light)] p-3 text-center text-xs">Sinov buyurtmasi. To‘lov olinmadi; buyurtma restoranga yuborilmadi.</p><StatusBar dark />
 
-    <div className="flex-1 flex flex-col items-center justify-center gap-6 relative z-10 px-6">
+    <div className="flex-1 min-h-0 overflow-y-auto flex flex-col items-center gap-6 relative z-10 px-6 py-5">
       {/* Check animation */}
       <div className="w-24 h-24 rounded-full bg-white/20 flex items-center justify-center">
         <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
@@ -819,21 +834,21 @@ export const OrderConfirmationScreen = ({ onNavigate }: { onNavigate?: (screen: 
       </div>
 
       <div className="text-center space-y-1">
-        <h1 className="font-bold text-2xl text-white">주문이 접수되었습니다! 🎉</h1>
-        <p className="text-white/70 text-sm">신당 할랄 키친에서 조리를 시작합니다</p>
+        <h1 className="font-bold text-2xl text-white">Sinov buyurtmasi ko‘rinishi</h1>
+        <p className="text-white/70 text-sm">{preview?.items.map(item => item.restaurant).filter((name, index, all) => name && all.indexOf(name) === index).join(", ") ?? "Savatdan sinov buyurtmasini yarating"}</p>
       </div>
 
       {/* Order number */}
       <div className="bg-white/15 backdrop-blur rounded-2xl px-6 py-4 text-center">
-        <p className="text-white/60 text-xs font-medium mb-0.5">주문번호</p>
-        <p className="text-white font-bold text-lg tracking-widest">#HMK-20241124-8847</p>
+        <p className="text-white/60 text-xs font-medium mb-0.5">Sinov summasi</p>
+        <p className="text-white font-bold text-lg tracking-widest">₩{(preview?.total ?? 0).toLocaleString()}</p>
       </div>
 
       {/* ETA */}
       <div className="bg-white rounded-2xl px-6 py-4 text-center w-full">
         <p className="text-xs font-medium mb-0.5" style={{ color: "var(--muted)" }}>예상 배달 시간</p>
         <p className="font-bold text-3xl" style={{ color: "var(--green)" }}>35–45분</p>
-        <p className="text-xs mt-1" style={{ color: "var(--muted)" }}>오후 3:15 ~ 3:25 도착 예정</p>
+        <p className="text-xs mt-1" style={{ color: "var(--muted)" }}>Namuna. Haqiqiy yetkazish vaqti hisoblanmagan.</p>
       </div>
 
       {/* Status steps */}
@@ -862,7 +877,7 @@ export const OrderConfirmationScreen = ({ onNavigate }: { onNavigate?: (screen: 
 
     {/* Buttons */}
     <div className="relative z-10 px-5 pb-10 space-y-3">
-      <button onClick={() => onNavigate?.("order-tracking")} className="w-full py-4 rounded-2xl font-bold text-white text-base border-2 border-white/40">
+      <button onClick={() => navigate("order-tracking", { order: "preview" })} className="w-full py-4 rounded-2xl font-bold text-white text-base border-2 border-white/40">
         주문 추적하기
       </button>
       <button onClick={() => onNavigate?.("home")} className="w-full py-3 rounded-2xl font-semibold text-sm bg-white" style={{ color: "var(--green)" }}>
@@ -871,3 +886,4 @@ export const OrderConfirmationScreen = ({ onNavigate }: { onNavigate?: (screen: 
     </div>
   </div>
 );
+};

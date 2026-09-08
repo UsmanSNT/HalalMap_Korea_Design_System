@@ -1,3 +1,7 @@
+import { navigate, readRoute, goBack } from "../services/navigation";
+import { useLocalState, readLocal, writeLocal } from "../services/localState";
+import { explainUnavailable, showNotice } from "../components/ActionDialog";
+import { shareLink } from "../services/shareService";
 import React, { useState } from "react";
 import { StatusBar, BackButton } from "../components/Shared";
 
@@ -76,6 +80,7 @@ export const ScannerScreen = () => {
 
       {/* Bottom controls */}
       <div className="px-6 pb-10 space-y-4 relative z-10">
+        <div className="flex flex-wrap gap-3 text-sm text-white"><button onClick={() => navigate("scan-history")}>Skan tarixi</button><button onClick={() => navigate("scan-result")}>Namuna natijasi</button></div>
         {/* Recent scan */}
         <div className="flex items-center gap-3 bg-white/10 backdrop-blur rounded-xl px-4 py-3">
           <div className="w-10 h-10 rounded-lg overflow-hidden bg-white/10 flex-shrink-0">
@@ -90,7 +95,7 @@ export const ScannerScreen = () => {
 
         {/* Gallery button */}
         <div className="flex gap-3">
-          <button className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl border border-white/20 text-white font-semibold text-sm">
+          <button type="button" onClick={() => explainUnavailable("Mahsulotni tanish xizmati")} className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl border border-white/20 text-white font-semibold text-sm">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="white" strokeWidth="1.6">
               <rect x="2" y="2" width="14" height="14" rx="2.5"/>
               <circle cx="6.5" cy="6.5" r="1.5"/>
@@ -150,12 +155,13 @@ export const ScanResultScreen = ({ verdict = "halal" }: { verdict?: Verdict }) =
 
   return (
     <div className="flex flex-col h-full bg-[var(--cream)]">
+      <p className="shrink-0 bg-[var(--gold-light)] p-3 text-xs">Figma namuna natijasi — haqiqiy mahsulot tekshiruvi emas.</p>
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
           <BackButton />
           <h1 className="font-bold text-lg flex-1">스캔 결과</h1>
-          <button className="text-sm font-medium" style={{ color: "var(--muted)" }}>공유</button>
+          <button type="button" onClick={() => navigate("share")} className="text-sm font-medium" style={{ color: "var(--muted)" }}>공유</button>
         </div>
       </div>
 
@@ -257,12 +263,12 @@ export const ScanResultScreen = ({ verdict = "halal" }: { verdict?: Verdict }) =
             <p className="text-sm font-semibold text-[#1A1A18]">KMF 할랄 데이터베이스</p>
             <p className="text-xs text-[var(--muted)]">2024년 10월 업데이트</p>
           </div>
-          <button className="text-xs font-medium px-3 py-2 rounded-xl border border-[var(--border)]" style={{ color: "var(--muted)" }}>
+          <button type="button" onClick={() => explainUnavailable("Skan xatosini yuborish")} className="text-xs font-medium px-3 py-2 rounded-xl border border-[var(--border)]" style={{ color: "var(--muted)" }}>
             오류 신고
           </button>
         </div>
 
-        <button
+        <button type="button" onClick={() => navigate("scanner")}
           className="w-full py-4 rounded-2xl font-bold text-white text-base"
           style={{ backgroundColor: "var(--green)" }}
         >
@@ -283,19 +289,22 @@ const scanHistory = [
   { name: "해태 허니버터칩", brand: "해태제과", date: "11월 17일", verdict: "halal" as Verdict },
 ];
 
-export const ScanHistoryScreen = () => (
+export const ScanHistoryScreen = () => {
+const [cleared, setCleared] = useLocalState("scan-history-cleared", false);
+return (
   <div className="flex flex-col h-full bg-[var(--cream)]">
     <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
       <StatusBar />
       <div className="flex items-center gap-3 px-4 pb-3">
         <BackButton />
         <h1 className="font-bold text-lg flex-1">스캔 기록</h1>
-        <button className="text-sm font-medium" style={{ color: "var(--danger)" }}>전체 삭제</button>
+        <button type="button" onClick={() => setCleared(true)} className="text-sm font-medium" style={{ color: "var(--danger)" }}>전체 삭제</button>
       </div>
     </div>
 
     <div className="flex-1 phone-scroll px-4 py-4 space-y-2.5">
-      {scanHistory.map((item) => {
+      {cleared && <p className="p-4">Skan tarixi bo‘sh.</p>}
+      {(cleared ? [] : scanHistory).map((item) => {
         const cfg = verdictConfig[item.verdict];
         return (
           <div key={item.name} className="bg-white rounded-2xl p-4 flex items-center gap-3 shadow-sm">
@@ -306,7 +315,7 @@ export const ScanHistoryScreen = () => (
               {item.verdict === "halal" ? "✅" : item.verdict === "haram" ? "❌" : "⚠️"}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-semibold text-sm text-[#1A1A18] truncate">{item.name}</p>
+              <button onClick={() => navigate("scan-result", { verdict: item.verdict })} className="text-left font-semibold text-sm">{item.name}</button>
               <p className="text-xs text-[var(--muted)]">{item.brand} · {item.date}</p>
             </div>
             <span
@@ -323,3 +332,4 @@ export const ScanHistoryScreen = () => (
     </div>
   </div>
 );
+};

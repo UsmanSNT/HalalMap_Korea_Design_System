@@ -1,3 +1,5 @@
+import { navigate } from "../services/navigation";
+import { showNotice } from "../components/ActionDialog";
 import React, { useState } from "react";
 import { A, KPICard, Card, LineChart, StatusChip, PageHeader } from "./AdminShared";
 
@@ -97,7 +99,7 @@ export const AdminHome = () => {
         <Card>
           <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: `1px solid ${A.border}` }}>
             <p className="font-semibold text-sm" style={{ color: A.text }}>최근 활동</p>
-            <button className="text-xs font-medium" style={{ color: A.green }}>모두 보기</button>
+            <button type="button" onClick={() => showNotice("So‘nggi faoliyat", RECENT_ACTIVITIES.map(item => item.msg).join("\n"))} className="text-xs font-medium" style={{ color: A.green }}>모두 보기</button>
           </div>
           <div className="divide-y" style={{ borderColor: A.borderLight }}>
             {RECENT_ACTIVITIES.map(act => (
@@ -111,7 +113,7 @@ export const AdminHome = () => {
                   <div className="flex items-center justify-between mt-1">
                     <span className="text-[11px]" style={{ color: A.dim }}>{act.time}</span>
                     {act.action && (
-                      <button className="text-[11px] font-semibold" style={{ color: A.green }}>{act.action}</button>
+                      <button type="button" onClick={() => navigate(({ restaurant: "/admin/restaurant-approval", order: "/admin/orders", user: "/admin/users", courier: "/admin/courier-approval", scan: "/admin/halal-db", cert: "/admin/restaurants" } as Record<string, string>)[act.type])} className="text-[11px] font-semibold" style={{ color: A.green }}>{act.action}</button>
                     )}
                   </div>
                 </div>

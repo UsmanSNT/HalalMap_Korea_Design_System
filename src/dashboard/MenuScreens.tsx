@@ -1,3 +1,6 @@
+import { useLocalState } from "../services/localState";
+import { navigate, readRoute } from "../services/navigation";
+import { showNotice, explainUnavailable } from "../components/ActionDialog";
 import React, { useState } from "react";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
@@ -13,6 +16,7 @@ interface MenuItem {
   image: string;
   prepTime: number;
   dietaryTags: string[];
+  soldOutReason?: string;
 }
 
 const CATEGORIES = ["인기메뉴", "한식 메인", "세트", "사이드", "음료", "디저트"];
@@ -32,7 +36,7 @@ const MENU_ITEMS: MenuItem[] = [
 // ── 4. Menu Editor ─────────────────────────────────────────────────────────────
 export const MenuEditor = ({ onAddItem }: { onAddItem: () => void }) => {
   const [activeCategory, setActiveCategory] = useState("전체");
-  const [items, setItems] = useState<MenuItem[]>(MENU_ITEMS);
+  const [items, setItems] = useLocalState<MenuItem[]>("owner-menu-draft", MENU_ITEMS);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [filter, setFilter] = useState<"all" | "available" | "unavailable">("all");
   const [search, setSearch] = useState("");
@@ -50,7 +54,7 @@ export const MenuEditor = ({ onAddItem }: { onAddItem: () => void }) => {
   });
 
   return (
-    <div className="flex h-full overflow-hidden">
+    <div className="owner-menu-editor flex h-full overflow-hidden">
       {/* Category sidebar */}
       <div className="w-48 flex-shrink-0 bg-white border-r border-[var(--border)] flex flex-col">
         <div className="px-4 py-4 border-b border-[var(--border)]">
@@ -145,7 +149,7 @@ export const MenuEditor = ({ onAddItem }: { onAddItem: () => void }) => {
                       )}
                     </div>
                     <div className="absolute top-2.5 right-2.5 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button className="w-7 h-7 rounded-full bg-white shadow flex items-center justify-center">
+                      <button type="button" onClick={() => navigate("/owner/menu-item-form", { id: item.id })} className="w-7 h-7 rounded-full bg-white shadow flex items-center justify-center">
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="var(--charcoal)" strokeWidth="1.8" strokeLinecap="round">
                           <path d="M1.5 9.5L4 7 8.5 2.5a1 1 0 011.4 1.4L5.5 8.5 2 10.5z"/>
                         </svg>
@@ -226,7 +230,7 @@ export const MenuEditor = ({ onAddItem }: { onAddItem: () => void }) => {
                         </div>
                       </td>
                       <td className="px-4 py-3">
-                        <button className="text-xs font-semibold px-2.5 py-1 rounded-lg border border-[var(--border)] hover:bg-[var(--cream)] transition-colors text-[#1A1A18]">편집</button>
+                        <button type="button" onClick={() => navigate("/owner/menu-item-form", { id: item.id })} className="text-xs font-semibold px-2.5 py-1 rounded-lg border border-[var(--border)] hover:bg-[var(--cream)] transition-colors text-[#1A1A18]">편집</button>
                       </td>
                     </tr>
                   ))}
@@ -242,12 +246,15 @@ export const MenuEditor = ({ onAddItem }: { onAddItem: () => void }) => {
 
 // ── 5. Add / Edit Menu Item ────────────────────────────────────────────────────
 export const MenuItemForm = ({ onBack }: { onBack: () => void }) => {
+const [items, setItems] = useLocalState<MenuItem[]>("owner-menu-draft", MENU_ITEMS);
+const editing = items.find(item => item.id === readRoute().params.get("id"));
+
   const [form, setForm] = useState({
-    nameKo: "", nameEn: "", nameUz: "",
-    description: "", category: "한식 메인",
-    price: "", prepTime: "15",
+    nameKo: editing?.nameKo ?? "", nameEn: editing?.nameEn ?? "", nameUz: "",
+    description: editing?.description ?? "", category: editing?.category ?? "한식 메인",
+    price: editing ? String(editing.price) : "", prepTime: String(editing?.prepTime ?? 15),
     halalNotes: "",
-    dietaryTags: [] as string[],
+    dietaryTags: editing?.dietaryTags ?? [] as string[],
     availableDays: [true, true, true, true, true, true, true],
     availableFrom: "09:00", availableTo: "22:00",
     photo: null as File | null,
@@ -298,7 +305,7 @@ export const MenuItemForm = ({ onBack }: { onBack: () => void }) => {
                 <p className="font-semibold text-sm text-[#1A1A18]">사진을 드래그하거나 클릭하여 업로드</p>
                 <p className="text-xs text-[var(--muted)] mt-0.5">JPG, PNG · 최대 5MB · 권장 크기 800×600px</p>
               </div>
-              <button className="px-4 py-2 rounded-xl text-xs font-bold border border-[var(--border)] bg-white hover:bg-[var(--cream)]">
+              <button type="button" onClick={() => explainUnavailable("Menyu rasmini serverga yuklash")} className="px-4 py-2 rounded-xl text-xs font-bold border border-[var(--border)] bg-white hover:bg-[var(--cream)]">
                 파일 선택
               </button>
             </div>
@@ -434,7 +441,7 @@ export const MenuItemForm = ({ onBack }: { onBack: () => void }) => {
             <button onClick={onBack} className="px-5 py-3 rounded-xl text-sm font-semibold border border-[var(--border)] bg-white hover:bg-[var(--cream)] transition-colors">
               취소
             </button>
-            <button className="flex-1 py-3 rounded-xl text-sm font-bold text-white transition-opacity hover:opacity-90"
+            <button type="button" onClick={() => { if (!form.nameKo.trim() || !Number.isFinite(Number(form.price)) || Number(form.price) <= 0) { showNotice("Menyu", "Nom va noldan katta narx kiriting."); return; } const item: MenuItem = { id: editing?.id ?? crypto.randomUUID(), nameKo: form.nameKo.trim(), nameEn: form.nameEn, description: form.description, category: form.category, price: Number(form.price), prepTime: Number(form.prepTime) || 15, available: editing?.available ?? true, halal: form.dietaryTags.includes("할랄 인증"), dietaryTags: form.dietaryTags, image: editing?.image ?? MENU_ITEMS[0].image }; setItems(old => editing ? old.map(value => value.id === item.id ? item : value) : [...old, item]); onBack(); showNotice("Mahalliy qoralama saqlandi", "Bu o‘zgarish faqat shu qurilmada saqlanadi. Restoran serveriga yuborilmadi."); }} className="flex-1 py-3 rounded-xl text-sm font-bold text-white transition-opacity hover:opacity-90"
               style={{ backgroundColor: "var(--green)" }}>
               메뉴 저장
             </button>
@@ -447,7 +454,7 @@ export const MenuItemForm = ({ onBack }: { onBack: () => void }) => {
 
 // ── 6. Menu Availability (Quick Toggle) ───────────────────────────────────────
 export const MenuAvailability = () => {
-  const [items, setItems] = useState(MENU_ITEMS.map(i => ({ ...i, soldOutReason: "" })));
+  const [items, setItems] = useLocalState<MenuItem[]>("owner-menu-draft", MENU_ITEMS);
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<string[]>([]);
 
@@ -499,7 +506,7 @@ export const MenuAvailability = () => {
         )}
 
         <div className="ml-auto">
-          <button className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[var(--border)] text-sm font-semibold hover:bg-[var(--cream)] transition-colors text-[#1A1A18]">
+          <button type="button" onClick={() => navigate("/owner/restaurant-settings")} className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[var(--border)] text-sm font-semibold hover:bg-[var(--cream)] transition-colors text-[#1A1A18]">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
               <circle cx="7" cy="7" r="5"/><path d="M7 4v3l2 2"/>
             </svg>

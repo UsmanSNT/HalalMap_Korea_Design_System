@@ -1,3 +1,4 @@
+import { explainUnavailable } from "../components/ActionDialog";
 import React, { useState } from "react";
 import {
   A, AdminTable, Column, StatusChip, SearchBar, FilterChips, Card, PageHeader,
@@ -103,7 +104,7 @@ export const CourierList = ({ onDetail }: { onDetail?: (id: string) => void }) =
         breadcrumb={["HalalMap Admin", "배달파트너 관리", "파트너 목록"]}
         title="배달 파트너 목록"
         subtitle={`총 ${COURIERS.length}명 등록`}
-        actions={<Btn variant="primary" size="md">+ 파트너 초대</Btn>}
+        actions={<Btn onClick={() => explainUnavailable("+ 파트너 초대")} variant="primary" size="md">+ 파트너 초대</Btn>}
       />
       <Card>
         <div className="flex items-center justify-between px-5 py-3.5" style={{ borderBottom: `1px solid ${A.border}` }}>
@@ -187,7 +188,7 @@ export const CourierApproval = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <StatusChip status={doc.status} label={doc.status === "verified" ? "확인됨" : "검토 필요"} />
-                    <Btn variant="ghost">열기</Btn>
+                    <Btn onClick={() => explainUnavailable("열기")} variant="ghost">열기</Btn>
                   </div>
                 </div>
               ))}
@@ -204,7 +205,7 @@ export const CourierApproval = () => {
                 <Btn variant="danger" size="md" onClick={() => setRejectOpen(true)}>
                   ✕ 거절
                 </Btn>
-                <Btn variant="warning" size="md">추가 서류 요청</Btn>
+                <Btn onClick={() => explainUnavailable("추가 서류 요청")} variant="warning" size="md">추가 서류 요청</Btn>
               </div>
               <p className="text-xs" style={{ color: A.muted }}>제출일: {app.submitted}</p>
             </div>
@@ -250,8 +251,8 @@ export const CourierDetail = ({ courierId = "c1" }: { courierId?: string }) => {
         subtitle={`${c.vehicle} · ${c.zone} 구역`}
         actions={
           <div className="flex gap-2">
-            <Btn variant="secondary" size="md">메시지 보내기</Btn>
-            <Btn variant="danger" size="md">파트너 정지</Btn>
+            <Btn onClick={() => explainUnavailable("메시지 보내기")} variant="secondary" size="md">메시지 보내기</Btn>
+            <Btn onClick={() => explainUnavailable("파트너 정지")} variant="danger" size="md">파트너 정지</Btn>
           </div>
         }
       />

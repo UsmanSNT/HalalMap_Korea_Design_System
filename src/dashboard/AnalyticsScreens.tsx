@@ -1,3 +1,4 @@
+import { explainUnavailable } from "../components/ActionDialog";
 import React, { useState } from "react";
 
 // ── Revenue chart data ─────────────────────────────────────────────────────────
@@ -326,7 +327,7 @@ export const ReviewsManagement = () => {
                     {!review.reply && (
                       <span className="text-[11px] font-bold px-2 py-0.5 rounded-full" style={{ backgroundColor: "#FEF2F2", color: "var(--danger)" }}>미답변</span>
                     )}
-                    <button className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-[var(--cream)] transition-colors">
+                    <button type="button" onClick={() => explainUnavailable("Sharh menyusi")} className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-[var(--cream)] transition-colors">
                       <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--muted)" strokeWidth="1.8" strokeLinecap="round">
                         <circle cx="7" cy="7" r="1"/><circle cx="11" cy="7" r="1"/><circle cx="3" cy="7" r="1"/>
                       </svg>
@@ -372,7 +373,7 @@ export const ReviewsManagement = () => {
                         <div className="flex gap-2">
                           <button onClick={() => { setReplyOpen(null); setReplyText(""); }}
                             className="px-3 py-2 rounded-lg text-xs font-semibold border border-[var(--border)] hover:bg-[var(--cream)] transition-colors">취소</button>
-                          <button className="px-3 py-2 rounded-lg text-xs font-bold text-white" style={{ backgroundColor: "var(--green)" }}>답변 등록</button>
+                          <button type="button" onClick={() => explainUnavailable("Sharhga javob yuborish")} className="px-3 py-2 rounded-lg text-xs font-bold text-white" style={{ backgroundColor: "var(--green)" }}>답변 등록</button>
                         </div>
                       </div>
                     ) : (
@@ -384,7 +385,7 @@ export const ReviewsManagement = () => {
                           </svg>
                           답변하기
                         </button>
-                        <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-[#FECACA] hover:bg-[#FEF2F2] transition-colors" style={{ color: "var(--danger)" }}>
+                        <button type="button" onClick={() => explainUnavailable("Sharh haqida shikoyat yuborish")} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-[#FECACA] hover:bg-[#FEF2F2] transition-colors" style={{ color: "var(--danger)" }}>
                           신고하기
                         </button>
                       </div>

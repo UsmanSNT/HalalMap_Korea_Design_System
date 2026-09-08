@@ -194,6 +194,17 @@ export function AdminTable<T extends { id: string }>({
     if (sortCol === key) setSortDir(d => d === "asc" ? "desc" : "asc");
     else { setSortCol(key); setSortDir("asc"); }
   };
+  const sortedData = sortCol ? [...data].sort((a, b) => {
+    const left = (a as Record<string, unknown>)[sortCol];
+    const right = (b as Record<string, unknown>)[sortCol];
+    const order = typeof left === "number" && typeof right === "number" ? left - right : String(left ?? "").localeCompare(String(right ?? ""), undefined, { numeric: true });
+    return sortDir === "asc" ? order : -order;
+  }) : data;
+  const exportSelected = () => {
+    const url = URL.createObjectURL(new Blob([JSON.stringify(data.filter(row => selected.has(row.id)), null, 2)], { type: "application/json" }));
+    const link = document.createElement("a"); link.href = url; link.download = "halalmap-selected.json"; link.click();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
 
   return (
     <div className="overflow-x-auto">
@@ -201,8 +212,8 @@ export function AdminTable<T extends { id: string }>({
         <div className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium"
           style={{ backgroundColor: A.greenLight, color: A.greenText, borderBottom: `1px solid ${A.greenBorder}` }}>
           <span>{selected.size}개 선택됨</span>
-          <button className="px-3 py-1 rounded-lg text-xs font-semibold" style={{ backgroundColor: A.green, color: "#fff" }}>내보내기</button>
-          <button className="px-3 py-1 rounded-lg text-xs font-semibold" style={{ backgroundColor: A.dangerLight, color: A.dangerText }}>삭제</button>
+          <button type="button" onClick={exportSelected} className="px-3 py-1 rounded-lg text-xs font-semibold" style={{ backgroundColor: A.green, color: "#fff" }}>내보내기</button>
+          <button type="button" onClick={() => window.dispatchEvent(new CustomEvent("halalmap:notice", { detail: { title: "O‘chirish mavjud emas", message: "Bu jadval uchun backend o‘chirish API ulanmagan." } }))} className="px-3 py-1 rounded-lg text-xs font-semibold" style={{ backgroundColor: A.dangerLight, color: A.dangerText }}>삭제</button>
           <button className="ml-auto text-xs" style={{ color: A.greenText }} onClick={() => setSelected(new Set())}>선택 해제</button>
         </div>
       )}
@@ -233,7 +244,7 @@ export function AdminTable<T extends { id: string }>({
           </tr>
         </thead>
         <tbody>
-          {data.map((row, i) => (
+          {sortedData.map((row, i) => (
             <tr key={row.id}
               onClick={() => onRowClick?.(row)}
               className="transition-colors"
@@ -245,7 +256,7 @@ export function AdminTable<T extends { id: string }>({
               onMouseEnter={e => { if (!selected.has(row.id)) (e.currentTarget as HTMLElement).style.backgroundColor = A.surfaceHover; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.backgroundColor = selected.has(row.id) ? A.greenLight : "transparent"; }}>
               {selectable && (
-                <td className="px-4 py-3" onClick={e => { e.stopPropagation(); toggleRow(row.id); }}>
+                <td className="px-4 py-3" onClick={e => e.stopPropagation()}>
                   <input type="checkbox" checked={selected.has(row.id)} onChange={() => toggleRow(row.id)}
                     className="w-4 h-4 rounded cursor-pointer accent-green-700" />
                 </td>
@@ -366,16 +377,16 @@ export const Toast = ({ message, type = "success", onClose }: {
 
 // ── Command palette ────────────────────────────────────────────────────────────
 const PALETTE_ITEMS = [
-  { icon: "📊", label: "대시보드 홈", section: "페이지" },
-  { icon: "🍽️", label: "레스토랑 목록", section: "페이지" },
-  { icon: "👥", label: "사용자 목록", section: "페이지" },
-  { icon: "🏍️", label: "배달 파트너 목록", section: "페이지" },
-  { icon: "📦", label: "전체 주문", section: "페이지" },
-  { icon: "📈", label: "플랫폼 분석", section: "페이지" },
-  { icon: "⚙️", label: "플랫폼 설정", section: "페이지" },
-  { icon: "✅", label: "레스토랑 승인 대기", section: "빠른 작업" },
-  { icon: "🆕", label: "프로모션 만들기", section: "빠른 작업" },
-  { icon: "📤", label: "사용자 데이터 내보내기", section: "빠른 작업" },
+  { route: "home", icon: "📊", label: "대시보드 홈", section: "페이지" },
+  { route: "restaurants", icon: "🍽️", label: "레스토랑 목록", section: "페이지" },
+  { route: "users", icon: "👥", label: "사용자 목록", section: "페이지" },
+  { route: "couriers", icon: "🏍️", label: "배달 파트너 목록", section: "페이지" },
+  { route: "orders", icon: "📦", label: "전체 주문", section: "페이지" },
+  { route: "analytics", icon: "📈", label: "플랫폼 분석", section: "페이지" },
+  { route: "settings", icon: "⚙️", label: "플랫폼 설정", section: "페이지" },
+  { route: "restaurant-approval", icon: "✅", label: "레스토랑 승인 대기", section: "빠른 작업" },
+  { route: "promotions", icon: "🆕", label: "프로모션 만들기", section: "빠른 작업" },
+  { route: "users", icon: "📤", label: "사용자 데이터 내보내기", section: "빠른 작업" },
 ];
 
 export const CommandPalette = ({ open, onClose, onNavigate }: {
@@ -398,7 +409,7 @@ export const CommandPalette = ({ open, onClose, onNavigate }: {
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-24"
       style={{ backgroundColor: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)" }}
       onClick={e => e.target === e.currentTarget && onClose()}>
-      <div className="w-[560px] rounded-2xl overflow-hidden"
+      <div className="w-[560px] max-w-[calc(100vw-32px)] rounded-2xl overflow-hidden"
         style={{ backgroundColor: A.surface, boxShadow: "0 24px 80px rgba(0,0,0,0.2)" }}>
         {/* Input */}
         <div className="flex items-center gap-3 px-4 py-3.5" style={{ borderBottom: `1px solid ${A.border}` }}>
@@ -416,7 +427,7 @@ export const CommandPalette = ({ open, onClose, onNavigate }: {
             <div key={section}>
               <p className="px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest" style={{ color: A.dim }}>{section}</p>
               {items.map(item => (
-                <button key={item.label} onClick={() => { onNavigate(item.label); onClose(); }}
+                <button key={item.label} onClick={() => { onNavigate(item.route); onClose(); }}
                   className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-left transition-colors"
                   style={{ color: A.textMid }}
                   onMouseEnter={e => (e.currentTarget.style.backgroundColor = A.bg)}
@@ -506,7 +517,7 @@ export const LineChart = ({
   const yTicks = [0, 0.25, 0.5, 0.75, 1].map(t => ({ v: Math.round(min + t * (max - min)), y: pad.t + (1 - t) * h }));
 
   return (
-    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} style={{ display: "block" }}>
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} style={{ display: "block", maxWidth: "100%", height: "auto" }}>
       <defs>
         <linearGradient id={`lg-${color.replace("#","")}`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor={color} stopOpacity="0.15"/>
@@ -548,7 +559,7 @@ export const BarChart = ({
   const gap = (w / data.length) * 0.35;
 
   return (
-    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} style={{ display: "block" }}>
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} style={{ display: "block", maxWidth: "100%", height: "auto" }}>
       {[0, 0.5, 1].map(t => {
         const y = pad.t + (1 - t) * h;
         return (

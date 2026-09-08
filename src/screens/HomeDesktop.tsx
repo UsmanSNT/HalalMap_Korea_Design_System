@@ -1,3 +1,6 @@
+import { catalogService } from "../services/catalogService";
+import { navigate } from "../services/navigation";
+import FavoriteButton from "../components/FavoriteButton";
 import React, { useState } from "react";
 import { type Lang } from "../components/LanguageSwitcher";
 
@@ -37,14 +40,7 @@ const CATEGORIES = [
   { emoji: "🔍", label: "할랄 스캐너" },
 ];
 
-const RESTAURANTS = [
-  { name: "신당 할랄 키친", nameIntl: "Sindang Halal Kitchen", badge: "HALAL CERTIFIED", rating: 4.8, reviews: 3241, dist: "2.3km", time: "25–35분", fee: "₩2,000", priceRange: "₩₩", img: "1498654896293-37c98e7f5fe4", category: "한식" },
-  { name: "이태원 케밥 하우스", nameIntl: "Itaewon Kebab House", badge: "HALAL CERTIFIED", rating: 4.6, reviews: 1820, dist: "0.8km", time: "15–25분", fee: "무료", priceRange: "₩₩", img: "1529042410759-befb1204b468", category: "터키" },
-  { name: "마스지드 서울 카페", nameIntl: "Masjid Seoul Cafe", badge: "MUSLIM-OWNED", rating: 4.9, reviews: 947, dist: "1.1km", time: "20–30분", fee: "무료", priceRange: "₩", img: "1414235077428-338989a2e8c0", category: "카페" },
-  { name: "우즈베키스탄 플로프", nameIntl: "Uzbekistan Plov", badge: "HALAL CERTIFIED", rating: 4.7, reviews: 612, dist: "3.1km", time: "30–40분", fee: "₩1,500", priceRange: "₩₩", img: "1565557623262-b51ff2a27b73", category: "우즈베크" },
-  { name: "델리 스파이스 코리아", nameIntl: "Delhi Spice Korea", badge: "HALAL FRIENDLY", rating: 4.3, reviews: 389, dist: "4.2km", time: "35–45분", fee: "₩2,500", priceRange: "₩₩₩", img: "1414235077428-338989a2e8c0", category: "인도" },
-  { name: "자카르타 나시고렝", nameIntl: "Jakarta Nasi Goreng", badge: "HALAL CERTIFIED", rating: 4.5, reviews: 284, dist: "2.8km", time: "30–40분", fee: "₩2,000", priceRange: "₩₩", img: "1498654896293-37c98e7f5fe4", category: "인도네시아" },
-];
+const RESTAURANTS = catalogService.restaurants().map(r => ({ name: r.name, nameIntl: r.name, badge: r.badge === "certified" ? "HALAL CERTIFIED" : r.badge === "owned" ? "MUSLIM-OWNED" : "HALAL FRIENDLY", rating: r.rating, reviews: r.count, dist: r.distance, time: r.eta, fee: r.fee, img: r.imageId, category: r.cuisine, priceRange: "₩₩" }));
 
 const PRAYER_TIMES = [
   { name: "파즈르", time: "04:47", passed: true },
@@ -157,7 +153,7 @@ function TopNav({ lang, setLang, onNavigate, onLogout }: { lang: Lang; setLang: 
       </div>
 
       {/* Avatar */}
-      <button onClick={() => onNavigate("profile")} onContextMenu={(event) => { event.preventDefault(); void onLogout(); }} title="Profil (chiqish uchun o‘ng tugma)" style={{ width: 34, height: 34, borderRadius: 17, backgroundColor: G.green, border: "none", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, cursor: "pointer" }}>
+      <button onClick={() => onNavigate("profile")} title="Profil" style={{ width: 34, height: 34, borderRadius: 17, backgroundColor: G.green, border: "none", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, cursor: "pointer" }}>
         <span style={{ fontSize: 13, fontWeight: 700, color: "white" }}>김</span>
       </button>
     </div>
@@ -174,7 +170,7 @@ function RestaurantCard({ r, onOpen, lang }: { r: typeof RESTAURANTS[0]; onOpen:
   const displayFee = r.fee === "무료" ? (lang === "en" ? "Free" : lang === "uz" ? "Bepul" : lang === "ru" ? "Бесплатно" : r.fee) : r.fee;
   return (
     <div
-      onClick={onOpen}
+      role="link" tabIndex={0} onKeyDown={event => { if (event.target === event.currentTarget && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); onOpen(); } }} onClick={onOpen}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{ backgroundColor: G.surface, borderRadius: 14, overflow: "hidden", border: `1px solid ${G.borderLight}`, cursor: "pointer", transition: "transform 0.18s, box-shadow 0.18s", transform: hovered ? "translateY(-3px)" : "none", boxShadow: hovered ? "0 8px 28px rgba(0,0,0,0.12)" : "0 2px 8px rgba(0,0,0,0.06)" }}>
@@ -187,9 +183,7 @@ function RestaurantCard({ r, onOpen, lang }: { r: typeof RESTAURANTS[0]; onOpen:
           <span style={{ fontSize: 10, color: "white", fontWeight: 600 }}>⏱ {displayTime}</span>
         </div>
         {/* Fav button */}
-        <div style={{ position: "absolute", top: 8, right: 8, width: 28, height: 28, borderRadius: 14, backgroundColor: "rgba(255,255,255,0.9)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" strokeWidth="1.8" strokeLinecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-        </div>
+        <div style={{ position: "absolute", top: 8, right: 8 }}><FavoriteButton name={r.name} /></div>
       </div>
       {/* Info */}
       <div style={{ padding: "10px 12px 12px" }}>
@@ -337,10 +331,12 @@ function QiblaMini({ lang }: { lang: Lang }) {
 
 // ── Main Component ────────────────────────────────────────────────────────────
 export default function HomeDesktop({ onNavigate, onLogout, lang, onLanguageChange }: { onNavigate: (screen: string) => void; onLogout: () => void; lang: Lang; onLanguageChange: (lang: Lang) => void }) {
-  const [activeCategory, setActiveCategory] = useState(0);
+  const [activeCategory, setActiveCategory] = useState(-1);
+  const [sort, setSort] = useState(0);
+  const visible = RESTAURANTS.filter(r => activeCategory < 0 || r.category === CATEGORIES[activeCategory]?.label.replace(" 할랄", "")).slice().sort((a,b) => sort === 1 ? b.rating-a.rating : sort === 2 ? (parseInt(a.fee.replace(/\D/g,"")) || 0)-(parseInt(b.fee.replace(/\D/g,"")) || 0) : parseFloat(a.dist)-parseFloat(b.dist));
 
   return (
-    <div style={{ width: "100%", height: "100dvh", backgroundColor: G.bg, display: "flex", flexDirection: "column", overflow: "hidden", fontFamily: "'Noto Sans KR', 'Inter', sans-serif" }}>
+    <div style={{ width: "100%", height: "100%", backgroundColor: G.bg, display: "flex", flexDirection: "column", overflow: "hidden", fontFamily: "'Noto Sans KR', 'Inter', sans-serif" }}>
       <TopNav lang={lang} setLang={(value) => onLanguageChange(value as Lang)} onNavigate={onNavigate} onLogout={onLogout} />
 
       {/* Hero banner */}
@@ -365,7 +361,7 @@ export default function HomeDesktop({ onNavigate, onLogout, lang, onLanguageChan
 
       {/* Main content */}
       <div style={{ flex: 1, overflow: "hidden" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "20px 24px", height: "100%", display: "grid", gridTemplateColumns: "1fr 300px", gap: 24 }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "20px 24px", height: "100%", display: "grid", gridTemplateColumns: "minmax(0, 1fr) minmax(220px, 28%)", gap: 24 }}>
 
           {/* Left column */}
           <div style={{ overflow: "auto", display: "flex", flexDirection: "column", gap: 16 }} className="scrollbar-hide">
@@ -381,7 +377,7 @@ export default function HomeDesktop({ onNavigate, onLogout, lang, onLanguageChan
               {CATEGORIES.map((cat, i) => {
                 const isActive = i === activeCategory;
                 return (
-                  <button key={i} onClick={() => setActiveCategory(i)}
+                  <button key={i} onClick={() => i === CATEGORIES.length - 1 ? navigate("/customer/scanner") : setActiveCategory(i === activeCategory ? -1 : i)}
                     style={{ height: 34, padding: "0 14px", borderRadius: 99, border: `1.5px solid ${isActive ? G.green : G.border}`, backgroundColor: isActive ? G.greenLight : G.surface, color: isActive ? G.green : G.textMid, fontSize: 12, fontWeight: isActive ? 700 : 500, cursor: "pointer", transition: "all 0.15s", display: "flex", alignItems: "center", gap: 5 }}>
                     {cat.emoji} {h(lang, cat.label)}
                   </button>
@@ -394,14 +390,14 @@ export default function HomeDesktop({ onNavigate, onLogout, lang, onLanguageChan
               <p style={{ fontSize: 13, color: G.textMid }}><span style={{ fontWeight: 700, color: G.text }}>{RESTAURANTS.length}</span> {h(lang, "restaurantCount")}</p>
               <div style={{ display: "flex", gap: 8 }}>
                 {[h(lang, "distanceSort"), h(lang, "ratingSort"), h(lang, "feeSort")].map((s, i) => (
-                  <button key={s} style={{ height: 30, padding: "0 12px", borderRadius: 8, border: `1px solid ${i === 0 ? G.green : G.border}`, backgroundColor: i === 0 ? G.greenLight : G.surface, color: i === 0 ? G.green : G.muted, fontSize: 11, fontWeight: i === 0 ? 700 : 500, cursor: "pointer" }}>{s}</button>
+                  <button key={s} onClick={() => setSort(i)} style={{ height: 30, padding: "0 12px", borderRadius: 8, border: `1px solid ${i === sort ? G.green : G.border}`, backgroundColor: i === sort ? G.greenLight : G.surface, color: i === sort ? G.green : G.muted, fontSize: 11, fontWeight: i === sort ? 700 : 500, cursor: "pointer" }}>{s}</button>
                 ))}
               </div>
             </div>
 
             {/* 3-column grid */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14 }}>
-              {RESTAURANTS.map((r, i) => <RestaurantCard key={i} r={r} lang={lang} onOpen={() => onNavigate("restaurant-detail")} />)}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(180px, 100%), 1fr))", gap: 14 }}>
+              {visible.length === 0 && <p>Bu kategoriyada hozircha joylar yo‘q.</p>}{visible.map((r, i) => <RestaurantCard key={i} r={r} lang={lang} onOpen={() => navigate("/customer/restaurant-detail", { place: r.name })} />)}
             </div>
           </div>
 

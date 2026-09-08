@@ -1,3 +1,8 @@
+import { addToCart } from "../services/commerce";
+import { navigate, readRoute, goBack } from "../services/navigation";
+import { useLocalState, readLocal, writeLocal } from "../services/localState";
+import { explainUnavailable, showNotice, editFields } from "../components/ActionDialog";
+import { shareLink } from "../services/shareService";
 import React, { useState } from "react";
 import { GeometricPattern, StatusBar, BackButton, HalalBadge, PriceTag, Toggle } from "../components/Shared";
 
@@ -119,7 +124,7 @@ export const AIMealScreen = () => {
                   <PriceTag amount={card.price} className="text-lg" />
                   <p className="text-xs text-[var(--muted)]">배달 {card.eta} · 배달비 ₩2,000</p>
                 </div>
-                <button className="px-5 py-3 rounded-xl font-bold text-white text-sm" style={{ backgroundColor: "var(--green)" }}>
+                <button type="button" onClick={() => navigate("menu")} className="px-5 py-3 rounded-xl font-bold text-white text-sm" style={{ backgroundColor: "var(--green)" }}>
                   바로 주문
                 </button>
               </div>
@@ -139,7 +144,7 @@ export const AIMealScreen = () => {
             </svg>
           </button>
 
-          <button className="w-10 h-10 rounded-full border border-[var(--gold)] flex items-center justify-center" style={{ backgroundColor: "var(--gold-light)" }}>
+          <button type="button" onClick={() => { writeLocal("favorite-meal", card); showNotice("Saqlangan taom", `${card.name} shu qurilmada saqlandi.`); }} className="w-10 h-10 rounded-full border border-[var(--gold)] flex items-center justify-center" style={{ backgroundColor: "var(--gold-light)" }}>
             <svg width="18" height="18" viewBox="0 0 18 18" fill="var(--gold)">
               <path d="M9 1.5L11 6H15.5L12 8.5L13.5 13L9 10.5L4.5 13L6 8.5L2.5 6H7L9 1.5Z"/>
             </svg>
@@ -186,7 +191,7 @@ export const GroupOrderScreen = () => {
             <h1 className="font-bold text-lg">그룹 주문</h1>
             <p className="text-xs text-[var(--muted)]">신당 할랄 키친</p>
           </div>
-          <button className="text-sm font-bold px-3 py-1.5 rounded-xl" style={{ backgroundColor: "var(--green-light)", color: "var(--green)" }}>
+          <button type="button" onClick={() => navigate("share")} className="text-sm font-bold px-3 py-1.5 rounded-xl" style={{ backgroundColor: "var(--green-light)", color: "var(--green)" }}>
             초대 링크
           </button>
         </div>
@@ -289,8 +294,8 @@ export const GroupOrderScreen = () => {
             </div>
 
             <div className="bg-white rounded-2xl p-4 flex gap-3">
-              <button className="flex-1 py-3 rounded-xl text-sm font-bold text-white" style={{ backgroundColor: "var(--green)" }}>카카오페이 요청</button>
-              <button className="flex-1 py-3 rounded-xl text-sm font-semibold border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>토스 정산</button>
+              <button type="button" onClick={() => explainUnavailable("KakaoPay")} className="flex-1 py-3 rounded-xl text-sm font-bold text-white" style={{ backgroundColor: "var(--green)" }}>카카오페이 요청</button>
+              <button type="button" onClick={() => explainUnavailable("Toss")} className="flex-1 py-3 rounded-xl text-sm font-semibold border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>토스 정산</button>
             </div>
           </>
         )}
@@ -298,7 +303,7 @@ export const GroupOrderScreen = () => {
 
       {/* Bottom CTA */}
       <div className="px-4 pb-8 pt-3 bg-white border-t border-[var(--border)] flex-shrink-0">
-        <button className="w-full py-4 rounded-2xl font-bold text-white text-base" style={{ backgroundColor: readyCount === groupMembers.length ? "var(--green)" : "#9CA3AF" }}>
+        <button type="button" onClick={() => explainUnavailable("Guruh buyurtmasini yuborish")} className="w-full py-4 rounded-2xl font-bold text-white text-base" style={{ backgroundColor: readyCount === groupMembers.length ? "var(--green)" : "#9CA3AF" }}>
           {readyCount === groupMembers.length ? `₩${(grandTotal + deliveryFee).toLocaleString()} 그룹 주문 완료` : `${groupMembers.length - readyCount}명 대기중...`}
         </button>
       </div>
@@ -316,6 +321,9 @@ const mealPlan = [
 ];
 
 export const MealPlansScreen = () => {
+const [preferences, setPreferences] = useLocalState<Record<string, boolean>>("meal-preferences", {});
+const [changes, setChanges] = useLocalState<Record<string, string>>("meal-plan-drafts", {});
+
   const [activeWeek, setActiveWeek] = useState(0);
 
   return (
@@ -372,14 +380,14 @@ export const MealPlansScreen = () => {
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <p className={`font-semibold text-sm ${day.today ? "text-[var(--green)]" : "text-[#1A1A18]"}`}>{day.meal}</p>
+                <p className={`font-semibold text-sm ${day.today ? "text-[var(--green)]" : "text-[#1A1A18]"}`}>{changes[`${activeWeek}:${i}`] ?? day.meal}</p>
                 <p className="text-xs text-[var(--muted)] truncate">{day.rest}</p>
               </div>
               <div className="flex items-center gap-2">
                 {day.today && <span className="text-[10px] font-bold px-2 py-1 rounded-full text-white" style={{ backgroundColor: "var(--green)" }}>오늘</span>}
                 {day.delivered && <span className="text-[10px] font-bold px-2 py-1 rounded-full" style={{ backgroundColor: "var(--green-light)", color: "var(--green)" }}>배달완료</span>}
                 {!day.delivered && !day.today && (
-                  <button className="text-xs text-[var(--muted)] underline">변경</button>
+                  <button type="button" onClick={async () => { const values = await editFields("Taom rejasini tahrirlash", [{ name: "meal", label: "Taom", value: changes[`${activeWeek}:${i}`] ?? day.meal }]); if (values) setChanges(old => ({ ...old, [`${activeWeek}:${i}`]: values.meal })); }} className="text-xs text-[var(--muted)] underline">변경</button>
                 )}
               </div>
             </div>
@@ -397,7 +405,7 @@ export const MealPlansScreen = () => {
           ].map((pref) => (
             <div key={pref.label} className="flex items-center justify-between">
               <p className="text-sm text-[#1A1A18]">{pref.label}</p>
-              <Toggle on={pref.on} />
+              <Toggle on={preferences[pref.label] ?? pref.on} onToggle={() => setPreferences(old => ({ ...old, [pref.label]: !(old[pref.label] ?? pref.on) }))} />
             </div>
           ))}
         </div>
@@ -423,7 +431,7 @@ export const MealPlansScreen = () => {
               {plan.current ? (
                 <span className="text-[10px] font-bold px-2 py-1 rounded-full text-white" style={{ backgroundColor: "var(--green)" }}>현재</span>
               ) : (
-                <button className="text-xs font-bold" style={{ color: "var(--green)" }}>선택</button>
+                <button type="button" onClick={() => explainUnavailable("Obuna rejasini almashtirish")} className="text-xs font-bold" style={{ color: "var(--green)" }}>선택</button>
               )}
             </div>
           ))}
@@ -479,7 +487,7 @@ export const GroceryScreen = () => {
       <div className="flex-1 phone-scroll px-4 py-4 space-y-3">
         {activeTab === "stores" ? (
           <>
-            {groceryStores.map((store, i) => (
+            {groceryStores.filter(store => `${store.name} ${store.nameEn}`.toLowerCase().includes(searchQuery.toLowerCase())).map((store, i) => (
               <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-sm">
                 <div className="h-28 bg-[#E8E6E1] relative">
                   <img src={`https://images.unsplash.com/photo-${store.imageId}?w=390&h=130&fit=crop&auto=format&q=80`} alt={store.name} className="w-full h-full object-cover opacity-80" />
@@ -504,7 +512,7 @@ export const GroceryScreen = () => {
                     <p className="text-sm font-medium" style={{ color: "var(--green)" }}>
                       할랄 제품 {store.products}종
                     </p>
-                    <button className="text-xs font-bold px-3 py-1.5 rounded-xl" style={{ backgroundColor: "var(--green-light)", color: "var(--green)" }}>
+                    <button type="button" onClick={() => { setSearchQuery(""); setActiveTab("products"); }} className="text-xs font-bold px-3 py-1.5 rounded-xl" style={{ backgroundColor: "var(--green-light)", color: "var(--green)" }}>
                       제품 보기
                     </button>
                   </div>
@@ -515,7 +523,7 @@ export const GroceryScreen = () => {
         ) : (
           <>
             <p className="text-xs text-[var(--muted)]">주변 할랄 제품 {products.length}가지</p>
-            {products.map((prod, i) => (
+            {products.filter(prod => `${prod.name} ${prod.brand}`.toLowerCase().includes(searchQuery.toLowerCase())).map((prod, i) => (
               <div key={i} className="bg-white rounded-2xl p-4 shadow-sm flex gap-3">
                 <div className="w-16 h-16 rounded-xl bg-[#E8E6E1] flex-shrink-0 overflow-hidden">
                   <img src={`https://images.unsplash.com/photo-${prod.image}?w=100&h=100&fit=crop&auto=format&q=80`} alt={prod.name} className="w-full h-full object-cover" />
@@ -537,7 +545,7 @@ export const GroceryScreen = () => {
                     {prod.available ? "재고 있음" : "재고 없음"}
                   </span>
                 </div>
-                <button className="w-8 h-8 rounded-xl flex items-center justify-center self-end flex-shrink-0" style={{ backgroundColor: prod.available ? "var(--green)" : "#E5E7EB" }}>
+                <button type="button" disabled={!prod.available} aria-label={`${prod.name}: savatga qo‘shish`} onClick={() => { addToCart({ name: prod.name, price: prod.price, option: "Grocery", restaurant: "Grocery" }); showNotice("Savat", "Mahsulot savatga qo‘shildi."); }} className="w-8 h-8 rounded-xl flex items-center justify-center self-end flex-shrink-0" style={{ backgroundColor: prod.available ? "var(--green)" : "#E5E7EB" }}>
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round"><line x1="7" y1="3" x2="7" y2="11"/><line x1="3" y1="7" x2="11" y2="7"/></svg>
                 </button>
               </div>

@@ -1,3 +1,10 @@
+import { locationService } from "../services/locationService";
+import { catalogService } from "../services/catalogService";
+import { RestaurantCardH } from "../components/Shared";
+import { navigate, readRoute, goBack } from "../services/navigation";
+import { useLocalState, readLocal, writeLocal } from "../services/localState";
+import { explainUnavailable, showNotice } from "../components/ActionDialog";
+import { shareLink } from "../services/shareService";
 import React, { useState } from "react";
 import { StatusBar, BottomNav, MapPin, RestaurantCardV, HalalBadge, BackButton, TabId } from "../components/Shared";
 import { type Lang } from "../components/LanguageSwitcher";
@@ -12,6 +19,9 @@ const SEARCH_COPY: Record<Lang, { title: string; placeholder: string; voice: str
 const categoryIcons = ["🍖", "🥙", "🍛", "🍜", "🕌", "🔍"];
 
 export const SearchScreen = ({ onTabChange, lang }: { onTabChange?: (t: TabId) => void; lang: Lang }) => {
+const [recent, setRecent] = useLocalState<string[]>("recent-searches", []);
+const searchFor = (value: string) => { setRecent(old => [value, ...old.filter(item => item !== value)].slice(0,8)); navigate("restaurant-list", { q: value }); };
+
   const [query, setQuery] = useState("");
   const copy = SEARCH_COPY[lang];
 
@@ -28,7 +38,7 @@ export const SearchScreen = ({ onTabChange, lang }: { onTabChange?: (t: TabId) =
               <path d="M13.5 13.5L17 17" strokeLinecap="round"/>
             </svg>
             <input
-              value={query}
+              aria-label={copy.title} onKeyDown={event => { if (event.key === "Enter") searchFor(query); }} value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={copy.placeholder}
               className="flex-1 bg-transparent text-sm text-[#1A1A18] outline-none placeholder:text-[var(--muted)]"
@@ -43,9 +53,10 @@ export const SearchScreen = ({ onTabChange, lang }: { onTabChange?: (t: TabId) =
       </div>
 
       <div className="flex-1 phone-scroll px-4 pt-4 space-y-5">
+        {query.trim() && <div className="responsive-grid">{catalogService.search(query).map(item => <RestaurantCardH key={item.name} {...item} onClick={() => navigate("restaurant-detail", { place: item.name })} />)}{!catalogService.search(query).length && <p>Natija topilmadi.</p>}</div>}
         {/* Voice search */}
         <div className="flex items-center justify-center">
-          <button className="flex flex-col items-center gap-2">
+          <button type="button" onClick={() => explainUnavailable("Ovozli qidiruv")} className="flex flex-col items-center gap-2">
             <div className="w-14 h-14 rounded-full flex items-center justify-center shadow-md" style={{ backgroundColor: "var(--green)" }}>
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8">
                 <rect x="9" y="2" width="6" height="10" rx="3"/>
@@ -62,10 +73,10 @@ export const SearchScreen = ({ onTabChange, lang }: { onTabChange?: (t: TabId) =
         <div>
           <div className="flex items-center justify-between mb-2">
             <h3 className="font-bold text-sm text-[#1A1A18]">{copy.recent}</h3>
-            <button className="text-xs font-medium" style={{ color: "var(--muted)" }}>{copy.clear}</button>
+            <button type="button" onClick={() => setRecent([])} className="text-xs font-medium" style={{ color: "var(--muted)" }}>{copy.clear}</button>
           </div>
           <div className="space-y-1">
-            {copy.recentItems.map((s) => (
+            {recent.map((s) => (
               <div key={s} className="flex items-center gap-3 py-2.5">
                 <div className="w-8 h-8 rounded-lg bg-[var(--cream)] flex items-center justify-center flex-shrink-0">
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--muted)" strokeWidth="1.5">
@@ -73,8 +84,8 @@ export const SearchScreen = ({ onTabChange, lang }: { onTabChange?: (t: TabId) =
                     <path d="M8 4.5v4L10.5 11" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </div>
-                <span className="flex-1 text-sm text-[#1A1A18]">{s}</span>
-                <button className="text-[var(--muted)]">
+                <button onClick={() => searchFor(s)} className="flex-1 text-left text-sm">{s}</button>
+                <button type="button" onClick={() => setRecent(old => old.filter(item => item !== s))} className="text-[var(--muted)]">
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M10 4L4 10M4 4l6 6" strokeLinecap="round"/></svg>
                 </button>
               </div>
@@ -89,7 +100,7 @@ export const SearchScreen = ({ onTabChange, lang }: { onTabChange?: (t: TabId) =
             {copy.trendingItems.map((t, i) => (
               <div key={t} className="flex items-center gap-3 py-1.5">
                 <span className="text-sm font-bold w-5 text-center" style={{ color: i < 3 ? "var(--danger)" : "var(--muted)" }}>{i + 1}</span>
-                <span className="flex-1 text-sm text-[#1A1A18]">{t}</span>
+                <button onClick={() => searchFor(t)} className="flex-1 text-left text-sm">{t}</button>
                 {i < 3 && (
                   <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ backgroundColor: "var(--danger)", color: "white" }}>{copy.badge}</span>
                 )}
@@ -103,7 +114,7 @@ export const SearchScreen = ({ onTabChange, lang }: { onTabChange?: (t: TabId) =
           <h3 className="font-bold text-sm text-[#1A1A18] mb-2">{copy.categories}</h3>
           <div className="grid grid-cols-3 gap-2">
             {copy.categoryItems.map((label, index) => (
-              <button key={label} className="flex flex-col items-center gap-2 py-4 bg-white rounded-2xl border border-[var(--border)]">
+              <button type="button" onClick={() => navigate(index === 4 ? "mosque-list" : index === 5 ? "scanner" : "restaurant-list")} key={label} className="flex flex-col items-center gap-2 py-4 bg-white rounded-2xl border border-[var(--border)]">
                 <span className="text-2xl">{categoryIcons[index]}</span>
                 <span className="text-xs font-semibold text-[#1A1A18]">{label}</span>
               </button>
@@ -163,10 +174,10 @@ export const MapViewScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => voi
       <div className="absolute inset-0">
         <FakeMapBg />
         {/* Render pins */}
-        {mapPins.map((pin, i) => (
-          <div key={i} className="absolute" style={{ left: pin.x - 16, top: pin.y - 16 }}>
+        {mapPins.filter(pin => pin.type === "user" || pin.type === (activeFilter === "레스토랑" ? "restaurant" : "mosque")).map((pin, i) => (
+          <button key={i} aria-label={pin.label} onClick={() => pin.type !== "user" && navigate(pin.type === "mosque" ? "mosque-detail" : "restaurant-map-detail", { place: pin.label })} className="absolute" style={{ left: `${pin.x / 390 * 100}%`, top: `${pin.y / 500 * 65}%` }}>
             <MapPin type={pin.type} />
-          </div>
+          </button>
         ))}
       </div>
 
@@ -185,7 +196,7 @@ export const MapViewScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => voi
             </svg>
             <span className="text-sm text-[var(--muted)]">이 지역 검색</span>
           </div>
-          <button className="w-10 h-10 bg-white/95 backdrop-blur rounded-xl flex items-center justify-center shadow-sm">
+          <button type="button" aria-label="Qidiruv va filtrlar" onClick={() => navigate("search")} className="w-10 h-10 bg-white/95 backdrop-blur rounded-xl flex items-center justify-center shadow-sm">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--charcoal)" strokeWidth="1.8">
               <line x1="2" y1="5" x2="16" y2="5" strokeLinecap="round"/>
               <line x1="5" y1="9" x2="13" y2="9" strokeLinecap="round"/>
@@ -217,7 +228,7 @@ export const MapViewScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => voi
 
       {/* Current location button */}
       <div className="relative z-10 flex justify-end px-4 pb-3">
-        <button className="w-10 h-10 bg-white rounded-xl shadow-md flex items-center justify-center">
+        <button type="button" aria-label="Joriy joylashuv" onClick={async () => { try { const position = await locationService.getCurrentPosition(); showNotice("Joylashuv", `${position.latitude.toFixed(5)}, ${position.longitude.toFixed(5)}. Ko‘rsatilgan xarita namuna; jonli xarita xizmati ulanmagan.`); } catch (error) { showNotice("Joylashuv", error instanceof Error ? error.message : "Ruxsat berilmadi"); } }} className="w-10 h-10 bg-white rounded-xl shadow-md flex items-center justify-center">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--info)" strokeWidth="1.8">
             <circle cx="9" cy="9" r="3"/>
             <path d="M9 1v3M9 14v3M1 9h3M14 9h3" strokeLinecap="round"/>
@@ -307,7 +318,7 @@ export const CitySelectorScreen = () => {
           <div>
             <p className="font-bold text-sm" style={{ color: "#7A5220" }}>다음 주 부산 방문 예정이신가요?</p>
             <p className="text-xs mt-0.5" style={{ color: "#9A6830" }}>부산역 근처 할랄 식당을 미리 확인해 보세요</p>
-            <button className="mt-2 text-xs font-bold px-3 py-1.5 rounded-lg" style={{ backgroundColor: "var(--gold)", color: "white" }}>
+            <button type="button" onClick={() => { writeLocal("city", "Busan"); navigate("restaurant-list"); }} className="mt-2 text-xs font-bold px-3 py-1.5 rounded-lg" style={{ backgroundColor: "var(--gold)", color: "white" }}>
               부산 할랄 보기 →
             </button>
           </div>
@@ -317,8 +328,8 @@ export const CitySelectorScreen = () => {
         <div>
           <h3 className="font-bold text-sm text-[#1A1A18] mb-2">인기 도시</h3>
           <div className="grid grid-cols-2 gap-2.5">
-            {cities.map((city) => (
-              <button key={city.name} className="relative h-24 rounded-2xl overflow-hidden text-left">
+            {cities.filter(city => `${city.name} ${city.nameEn}`.toLowerCase().includes(search.toLowerCase())).map((city) => (
+              <button type="button" onClick={() => { writeLocal("city", city.nameEn); navigate("restaurant-list"); }} key={city.name} className="relative h-24 rounded-2xl overflow-hidden text-left">
                 <div className="absolute inset-0 bg-[#D8D4CC]">
                   <img
                     src={`https://images.unsplash.com/photo-${city.img}?w=200&h=130&fit=crop&auto=format&q=80`}
@@ -398,8 +409,8 @@ export const RestaurantMapDetailScreen = () => (
             <span>⏱ 25-35분</span>
           </div>
           <div className="flex gap-2 pt-1">
-            <button className="flex-1 py-2.5 rounded-xl font-bold text-white text-sm" style={{ backgroundColor: "var(--green)" }}>메뉴 보기</button>
-            <button className="flex-1 py-2.5 rounded-xl font-semibold text-sm border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>길 찾기</button>
+            <button type="button" onClick={() => navigate("menu", { place: readRoute().params.get("place") ?? "신당 할랄 키친" })} className="flex-1 py-2.5 rounded-xl font-bold text-white text-sm" style={{ backgroundColor: "var(--green)" }}>메뉴 보기</button>
+            <button type="button" onClick={() => explainUnavailable("Yo‘l ko‘rsatish: xarita provayderi")} className="flex-1 py-2.5 rounded-xl font-semibold text-sm border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>길 찾기</button>
           </div>
         </div>
       </div>

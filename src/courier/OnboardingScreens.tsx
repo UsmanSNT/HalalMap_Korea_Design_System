@@ -1,3 +1,4 @@
+import { explainUnavailable } from "../components/ActionDialog";
 import React, { useState } from "react";
 import { C, CStatusBar, SwipeConfirm } from "./CourierShared";
 
@@ -107,7 +108,7 @@ export const CourierRegistrationScreen = () => {
                 </div>
                 <p className="font-semibold text-sm" style={{ color: C.text }}>사진 업로드</p>
                 <p className="text-xs text-center" style={{ color: C.muted }}>JPG, PNG · 최대 10MB</p>
-                <button className="px-5 py-2.5 rounded-xl font-bold text-sm"
+                <button type="button" onClick={() => explainUnavailable("Hujjat yuklash")} className="px-5 py-2.5 rounded-xl font-bold text-sm"
                   style={{ backgroundColor: C.cardAlt, color: C.text, border: `1px solid ${C.borderBright}` }}>
                   파일 선택
                 </button>
@@ -168,7 +169,7 @@ export const CourierRegistrationScreen = () => {
               ))}
             </div>
 
-            <button className="w-full py-4 rounded-2xl font-bold text-base" style={{ backgroundColor: C.green, color: "#0E1620" }}>
+            <button type="button" onClick={() => explainUnavailable("Kuryer arizasini yuborish")} className="w-full py-4 rounded-2xl font-bold text-base" style={{ backgroundColor: C.green, color: "#0E1620" }}>
               등록 신청 제출
             </button>
             <div className="h-4" />
@@ -218,7 +219,7 @@ export const CourierLoginScreen = () => {
               </div>
             </div>
 
-            <button onClick={() => setStep("otp")}
+            <button onClick={() => { setStep("otp"); explainUnavailable("SMS yuborish — bu ekran sinov ko‘rinishi"); }}
               className="w-full py-5 rounded-2xl font-bold text-lg" style={{ backgroundColor: C.green, color: "#0E1620" }}>
               인증번호 발송
             </button>
@@ -229,14 +230,14 @@ export const CourierLoginScreen = () => {
               <div className="flex-1 h-px" style={{ backgroundColor: C.border }} />
             </div>
 
-            <button className="w-full py-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2"
+            <button type="button" onClick={() => explainUnavailable("Kakao orqali kirish")} className="w-full py-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2"
               style={{ backgroundColor: "#FEE500", color: "#1A1A18" }}>
               <span className="text-lg">💬</span> 카카오로 로그인
             </button>
 
             <p className="text-center text-sm" style={{ color: C.muted }}>
               아직 파트너가 아니신가요?{" "}
-              <span className="font-bold" style={{ color: C.green }}>등록하기</span>
+              <button type="button" onClick={() => window.location.hash = "/customer/apply-courier"} className="font-bold" style={{ color: C.green }}>등록하기</button>
             </p>
           </>
         ) : (
@@ -252,7 +253,7 @@ export const CourierLoginScreen = () => {
                       border: `2px solid ${i === otp.filter(d => d !== "").length ? C.green : C.borderBright}`,
                       color: C.text,
                     }}>
-                    {["3", "8", "5", "", "", ""][i] || ""}
+                    {digit}
                   </div>
                 ))}
               </div>
@@ -261,7 +262,7 @@ export const CourierLoginScreen = () => {
             {/* Numpad */}
             <div className="grid grid-cols-3 gap-3">
               {["1","2","3","4","5","6","7","8","9","","0","⌫"].map(k => (
-                <button key={k}
+                <button type="button" onClick={() => setOtp(old => { const digits = old.join(""); const next = k === "⌫" ? digits.slice(0,-1) : /^\d$/.test(k) ? (digits + k).slice(0,6) : digits; return Array.from({ length: 6 }, (_, index) => next[index] ?? ""); })} key={k}
                   className="py-4 rounded-2xl font-bold text-xl transition-opacity active:opacity-60"
                   style={{ backgroundColor: k === "" ? "transparent" : C.card, color: C.text }}>
                   {k}
@@ -269,7 +270,7 @@ export const CourierLoginScreen = () => {
               ))}
             </div>
 
-            <button className="w-full py-5 rounded-2xl font-bold text-lg" style={{ backgroundColor: C.green, color: "#0E1620" }}>
+            <button type="button" onClick={() => explainUnavailable("SMS orqali kirish")} className="w-full py-5 rounded-2xl font-bold text-lg" style={{ backgroundColor: C.green, color: "#0E1620" }}>
               로그인
             </button>
 
@@ -371,7 +372,7 @@ export const VerificationPendingScreen = () => {
       </div>
 
       <div className="px-5 mt-4 space-y-3">
-        <button className="w-full py-4 rounded-2xl font-bold text-base" style={{ backgroundColor: C.card, color: C.text, border: `1.5px solid ${C.borderBright}` }}>
+        <button type="button" onClick={() => explainUnavailable("Kakao bildirishnomasi")} className="w-full py-4 rounded-2xl font-bold text-base" style={{ backgroundColor: C.card, color: C.text, border: `1.5px solid ${C.borderBright}` }}>
           카카오톡으로 알림 받기
         </button>
         <p className="text-center text-xs" style={{ color: C.dim }}>승인되면 즉시 문자로 알려드립니다</p>

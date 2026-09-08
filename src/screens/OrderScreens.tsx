@@ -1,4 +1,9 @@
-import React from "react";
+import { useOrderPreview } from "../services/commerce";
+import { navigate, readRoute, goBack } from "../services/navigation";
+import { useLocalState, readLocal, writeLocal } from "../services/localState";
+import { explainUnavailable, showNotice } from "../components/ActionDialog";
+import { shareLink } from "../services/shareService";
+import React, { useState } from "react";
 import { StatusBar, BottomNav, BackButton, OrderStatusChip, TabId } from "../components/Shared";
 
 // ── 25. Active Order Tracking ──────────────────────────────────────────────────
@@ -125,12 +130,12 @@ export const OrderTrackingScreen = ({ onTabChange }: { onTabChange?: (t: TabId) 
               </div>
             </div>
             <div className="flex gap-2">
-              <button className="w-10 h-10 rounded-xl border border-[var(--border)] flex items-center justify-center">
+              <button type="button" onClick={() => explainUnavailable("Kuryer bilan bog‘lanish")} className="w-10 h-10 rounded-xl border border-[var(--border)] flex items-center justify-center">
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--green)" strokeWidth="1.6">
                   <path d="M5 3a2 2 0 012-2h.5l1 3-1.5 1.5A11 11 0 0013 11l1.5-1.5 3 1V11a2 2 0 01-2 2A13 13 0 013 5z"/>
                 </svg>
               </button>
-              <button className="w-10 h-10 rounded-xl border border-[var(--border)] flex items-center justify-center">
+              <button type="button" onClick={() => explainUnavailable("Kuryer bilan bog‘lanish")} className="w-10 h-10 rounded-xl border border-[var(--border)] flex items-center justify-center">
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--green)" strokeWidth="1.6">
                   <path d="M3 3h4l2 4-2.5 1.5A11 11 0 0011.5 12l1.5-2.5 4 2v3a1 1 0 01-1 1A16 16 0 012 4a1 1 0 011-1z" strokeWidth="0"/>
                   <rect x="2" y="12" width="14" height="3" rx="1" fill="none" stroke="var(--green)"/>
@@ -184,7 +189,10 @@ const orderHistory = [
   },
 ];
 
-export const OrderHistoryScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void }) => (
+export const OrderHistoryScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void }) => {
+const [tabIndex, setTabIndex] = useState(1);
+const [preview] = useOrderPreview();
+return (
   <div className="flex flex-col h-full bg-[var(--cream)]">
     <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
       <StatusBar />
@@ -192,12 +200,12 @@ export const OrderHistoryScreen = ({ onTabChange }: { onTabChange?: (t: TabId) =
         <h1 className="font-bold text-xl text-[#1A1A18]">주문 내역</h1>
         {/* Tabs */}
         <div className="flex gap-4 mt-3">
-          {["진행중 (1)", "완료 (12)"].map((tab, i) => (
-            <button
+          {["Sinov / Kuzatuv", "Namuna tarixi"].map((tab, i) => (
+            <button onClick={() => setTabIndex(i)}
               key={tab}
               className="pb-2 text-sm font-semibold border-b-2 transition-all"
               style={{
-                borderColor: i === 1 ? "var(--green)" : "transparent",
+                borderColor: i === tabIndex ? "var(--green)" : "transparent",
                 color: i === 1 ? "var(--green)" : "var(--muted)",
               }}
             >
@@ -209,12 +217,13 @@ export const OrderHistoryScreen = ({ onTabChange }: { onTabChange?: (t: TabId) =
     </div>
 
     <div className="flex-1 phone-scroll px-4 py-4 space-y-3">
-      {orderHistory.map((order, i) => (
+      {tabIndex === 0 && <div className="rounded-2xl bg-white p-5"><p>Jonli buyurtmalar API xizmati ulanmagan.</p><button className="py-3 text-[var(--green)]" onClick={() => navigate("order-tracking", { order: "preview" })}>Kuzatuv namunasini ochish</button>{preview && <button className="block py-3 text-[var(--green)]" onClick={() => navigate("order-detail", { order: "preview" })}>Saqlangan sinov buyurtmasi · ₩{preview.total.toLocaleString()}</button>}</div>}
+      {(tabIndex === 1 ? orderHistory : []).map((order, i) => (
         <div key={i} className="bg-white rounded-2xl shadow-sm overflow-hidden">
           <div className="p-4">
             <div className="flex items-start justify-between gap-2 mb-2">
               <div>
-                <p className="font-bold text-base text-[#1A1A18]">{order.restaurant}</p>
+                <button onClick={() => navigate("order-detail", { order: String(i) })} className="text-left font-bold text-base">{order.restaurant}</button>
                 <p className="text-xs text-[var(--muted)] mt-0.5">{order.date} · {order.items}</p>
               </div>
               <OrderStatusChip status={order.status} />
@@ -239,10 +248,10 @@ export const OrderHistoryScreen = ({ onTabChange }: { onTabChange?: (t: TabId) =
           {/* Buttons */}
           {order.status !== "cancelled" && (
             <div className="flex border-t border-[var(--border)] divide-x divide-[var(--border)]">
-              <button className="flex-1 py-3 text-sm font-semibold" style={{ color: "var(--green)" }}>
+              <button type="button" onClick={() => navigate("menu", { place: order.restaurant })} className="flex-1 py-3 text-sm font-semibold" style={{ color: "var(--green)" }}>
                 재주문
               </button>
-              <button className="flex-1 py-3 text-sm font-medium text-[var(--muted)]">
+              <button type="button" onClick={() => navigate("order-detail", { order: String(i) })} className="flex-1 py-3 text-sm font-medium text-[var(--muted)]">
                 영수증
               </button>
             </div>
@@ -255,16 +264,21 @@ export const OrderHistoryScreen = ({ onTabChange }: { onTabChange?: (t: TabId) =
     <BottomNav active="orders" onTabChange={onTabChange} />
   </div>
 );
+};
 
 // ── 27. Order Detail ───────────────────────────────────────────────────────────
-export const OrderDetailScreen = () => (
+export const OrderDetailScreen = () => {
+const [preview] = useOrderPreview();
+const orderId = readRoute().params.get("order") ?? "0";
+const selected = orderId === "preview" && preview ? { restaurant: preview.items[0]?.restaurant ?? "Namuna", date: preview.date ?? "", total: preview.total, items: preview.items.map(item => item.name).join(", ") } : orderHistory[Number(orderId)] ?? orderHistory[0];
+return (
   <div className="flex flex-col h-full bg-[var(--cream)]">
     <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
       <StatusBar />
       <div className="flex items-center gap-3 px-4 pb-3">
         <BackButton />
         <h1 className="font-bold text-lg flex-1">주문 상세</h1>
-        <button className="text-sm font-medium" style={{ color: "var(--green)" }}>영수증</button>
+        <button type="button" onClick={() => window.print()} className="text-sm font-medium" style={{ color: "var(--green)" }}>영수증</button>
       </div>
     </div>
 
@@ -279,7 +293,7 @@ export const OrderDetailScreen = () => (
           <OrderStatusChip status="delivered" />
         </div>
         <div className="text-xs text-[var(--muted)] space-y-0.5">
-          <p>주문일시: 2024년 11월 20일 오후 2:15</p>
+          <p>{selected.date} · Figma/sinov ma’lumoti</p>
           <p>배달완료: 2024년 11월 20일 오후 3:02</p>
         </div>
       </div>
@@ -288,7 +302,7 @@ export const OrderDetailScreen = () => (
       <div className="bg-white rounded-2xl p-4 shadow-sm flex items-center gap-3">
         <div className="w-12 h-12 rounded-xl bg-[var(--green-light)] flex items-center justify-center text-xl">🍖</div>
         <div>
-          <p className="font-bold text-base text-[#1A1A18]">신당 할랄 키친</p>
+          <p className="font-bold text-base text-[#1A1A18]">{selected.restaurant}</p>
           <p className="text-xs text-[var(--muted)]">이슬람 식품청 인증 · 한식 할랄</p>
         </div>
       </div>
@@ -299,11 +313,7 @@ export const OrderDetailScreen = () => (
           <p className="font-semibold text-sm text-[#1A1A18]">주문 항목</p>
         </div>
         <div className="divide-y divide-[var(--border)]">
-          {[
-            { name: "할랄 갈비탕", option: "보통", price: 13500, qty: 1 },
-            { name: "비빔밥 (할랄)", option: "기본", price: 11000, qty: 2 },
-            { name: "오이무침", option: "사이드", price: 3000, qty: 1 },
-          ].map((item) => (
+          {(orderId === "preview" && preview ? preview.items : [{ name: selected.items, option: "Namuna", price: selected.total, qty: 1 }]).map((item) => (
             <div key={item.name} className="flex items-center justify-between px-4 py-3">
               <div>
                 <p className="text-sm font-medium text-[#1A1A18]">{item.name}</p>
@@ -331,7 +341,7 @@ export const OrderDetailScreen = () => (
         ))}
         <div className="flex justify-between font-bold text-base pt-2 border-t border-[var(--border)]">
           <span>합계</span>
-          <span>₩34,500</span>
+          <span>₩{selected.total.toLocaleString()}</span>
         </div>
         <p className="text-xs text-[var(--muted)]">결제 수단: 신한카드 ····4521</p>
       </div>
@@ -344,10 +354,10 @@ export const OrderDetailScreen = () => (
       </div>
 
       <div className="flex gap-3">
-        <button className="flex-1 py-4 rounded-2xl font-bold text-white text-base" style={{ backgroundColor: "var(--green)" }}>
+        <button type="button" onClick={() => navigate("menu", { place: selected.restaurant })} className="flex-1 py-4 rounded-2xl font-bold text-white text-base" style={{ backgroundColor: "var(--green)" }}>
           재주문
         </button>
-        <button className="flex-1 py-4 rounded-2xl font-semibold text-sm border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>
+        <button type="button" onClick={() => navigate("reviews")} className="flex-1 py-4 rounded-2xl font-semibold text-sm border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>
           리뷰 쓰기
         </button>
       </div>
@@ -355,3 +365,4 @@ export const OrderDetailScreen = () => (
     </div>
   </div>
 );
+};

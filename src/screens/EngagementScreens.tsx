@@ -1,3 +1,7 @@
+import { navigate, readRoute, goBack } from "../services/navigation";
+import { useLocalState, readLocal, writeLocal } from "../services/localState";
+import { explainUnavailable, showNotice } from "../components/ActionDialog";
+import { shareLink } from "../services/shareService";
 import React, { useState } from "react";
 import { GeometricPattern, StatusBar, BackButton, Toggle } from "../components/Shared";
 
@@ -61,7 +65,9 @@ const notifications = [
 ];
 
 export const NotificationsScreen = () => {
-  const [dismissed, setDismissed] = useState<number[]>([]);
+const [preferences, setPreferences] = useLocalState<Record<string, boolean>>("notification-preferences", {});
+
+  const [dismissed, setDismissed] = useLocalState<number[]>("read-notifications", []);
 
   return (
     <div className="flex flex-col h-full bg-[var(--cream)]">
@@ -70,7 +76,7 @@ export const NotificationsScreen = () => {
         <div className="flex items-center gap-3 px-4 pb-3">
           <BackButton />
           <h1 className="font-bold text-lg flex-1">알림</h1>
-          <button className="text-sm font-medium" style={{ color: "var(--green)" }}>모두 읽음</button>
+          <button type="button" onClick={() => setDismissed(notifications.map((_,i) => i))} className="text-sm font-medium" style={{ color: "var(--green)" }}>모두 읽음</button>
         </div>
       </div>
 
@@ -78,11 +84,11 @@ export const NotificationsScreen = () => {
         {/* Unread section */}
         <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide">읽지 않음</p>
         {notifications.filter(n => n.unread && !dismissed.includes(notifications.indexOf(n))).map((n, i) => (
-          <NotifCard key={i} notif={n} onDismiss={() => setDismissed(d => [...d, i])} />
+          <NotifCard key={i} notif={n} onDismiss={() => setDismissed(d => [...d, notifications.indexOf(n)])} />
         ))}
 
         <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide pt-1">이전 알림</p>
-        {notifications.filter(n => !n.unread).map((n, i) => (
+        {notifications.filter(n => !n.unread || dismissed.includes(notifications.indexOf(n))).map((n, i) => (
           <NotifCard key={i + 100} notif={n} dim />
         ))}
 
@@ -98,7 +104,7 @@ export const NotificationsScreen = () => {
           ].map((s) => (
             <div key={s.label} className="flex items-center justify-between">
               <p className="text-sm text-[#1A1A18]">{s.label}</p>
-              <Toggle on={s.on} />
+              <Toggle on={preferences[s.label] ?? s.on} onToggle={() => setPreferences(old => ({ ...old, [s.label]: !(old[s.label] ?? s.on) }))} />
             </div>
           ))}
         </div>
@@ -124,7 +130,7 @@ const NotifCard = ({ notif, dim, onDismiss }: { notif: typeof notifications[0]; 
       </div>
       <p className="text-xs text-[var(--muted)] mt-0.5 leading-relaxed">{notif.body}</p>
       <div className="flex items-center gap-2 mt-2">
-        <button className="text-xs font-bold px-3 py-1.5 rounded-lg text-white" style={{ backgroundColor: notif.ctaColor }}>
+        <button onClick={() => navigate(({ order: "order-tracking", prayer: "qibla", restaurant: "restaurant-list", promo: "loyalty", ramadan: "ramadan" } as Record<string,string>)[notif.type])} className="text-xs font-bold px-3 py-1.5 rounded-lg text-white" style={{ backgroundColor: notif.ctaColor }}>
           {notif.cta}
         </button>
         {onDismiss && (
@@ -219,7 +225,7 @@ export const RamadanScreen = () => {
                   <p className="font-bold text-sm text-[#1A1A18]">{item.name}</p>
                   <p className="text-xs text-[var(--muted)]">{item.rest}</p>
                   <p className="font-bold text-sm text-[#1A1A18]">₩{item.price.toLocaleString()}</p>
-                  <button className="w-full py-2 rounded-xl text-xs font-bold text-white mt-1" style={{ backgroundColor: "var(--green)" }}>주문하기</button>
+                  <button type="button" onClick={() => navigate("menu")} className="w-full py-2 rounded-xl text-xs font-bold text-white mt-1" style={{ backgroundColor: "var(--green)" }}>주문하기</button>
                 </div>
               </div>
             ))}
@@ -255,7 +261,7 @@ export const RamadanScreen = () => {
           <p className="text-sm" style={{ color: ramadanMode ? "rgba(255,255,255,0.6)" : "var(--muted)" }}>
             오늘 서울 무슬림 커뮤니티에서 이프타르 모임이 있습니다. 장소: 서울중앙성원 · 18:50
           </p>
-          <button className="mt-3 px-4 py-2 rounded-xl text-xs font-bold" style={{ backgroundColor: "var(--gold)", color: "white" }}>
+          <button type="button" onClick={() => explainUnavailable("Iftor tadbiriga yozilish")} className="mt-3 px-4 py-2 rounded-xl text-xs font-bold" style={{ backgroundColor: "var(--gold)", color: "white" }}>
             참여 신청
           </button>
         </div>
@@ -353,10 +359,10 @@ export const EidScreen = () => {
           </div>
         </div>
 
-        <button className="w-full py-4 rounded-2xl font-bold text-black text-base" style={{ backgroundColor: "var(--gold)" }}>
+        <button type="button" onClick={() => navigate("menu")} className="w-full py-4 rounded-2xl font-bold text-black text-base" style={{ backgroundColor: "var(--gold)" }}>
           이드 특별 메뉴 보기
         </button>
-        <button className="w-full py-3 rounded-2xl font-semibold text-sm border border-white/20 text-white">
+        <button type="button" onClick={() => navigate("share")} className="w-full py-3 rounded-2xl font-semibold text-sm border border-white/20 text-white">
           이드 인사 공유하기
         </button>
       </div>

@@ -1,0 +1,7 @@
+{
+  "passed": [
+    "Owner menu edits persist across editor, availability and reload",
+    "Admin detail preserves selected record ID",
+    "Offline day cache renders API response, survives reload and deletes (mock API)"
+  ]
+}

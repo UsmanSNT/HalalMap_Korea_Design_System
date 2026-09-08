@@ -1,3 +1,4 @@
+import { editFields } from "../components/ActionDialog";
 import React, { useState } from "react";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
@@ -247,6 +248,8 @@ export const MainDashboard = ({ onNav }: { onNav: (s: string) => void }) => {
 
 // ── 2. Order Board (Kanban) ────────────────────────────────────────────────────
 export const OrderBoard = () => {
+const [query, setQuery] = useState("");
+
   const [orders, setOrders] = useState<DashOrder[]>(INITIAL_ORDERS);
   const [selectedOrder, setSelectedOrder] = useState<DashOrder | null>(null);
 
@@ -270,7 +273,7 @@ export const OrderBoard = () => {
             <div className="w-2 h-2 rounded-full bg-[#22C55E] animate-pulse" />
             <span className="text-xs font-medium text-[var(--muted)]">실시간 업데이트</span>
           </div>
-          <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-[var(--border)] hover:bg-[var(--green-light)] transition-colors" style={{ color: "var(--green)" }}>
+          <button type="button" onClick={async () => { const value = await editFields("Buyurtma filtri", [{ name: "query", label: "Qidiruv matni", value: query, required: false }], "Bo‘sh qiymat barcha buyurtmalarni ko‘rsatadi."); if (value) setQuery(value.query); }} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-[var(--border)] hover:bg-[var(--green-light)] transition-colors" style={{ color: "var(--green)" }}>
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
               <path d="M1 1h4v4H1zM9 1h4v4H9zM1 9h4v4H1zM9 9h4v4H9z"/>
             </svg>
@@ -284,7 +287,7 @@ export const OrderBoard = () => {
         <div className="flex gap-4 p-5 h-full min-w-max">
           {columns.map(status => {
             const cfg = STATUS_CONFIG[status];
-            const col = orders.filter(o => o.status === status);
+            const col = orders.filter(o => o.status === status && JSON.stringify(o).toLowerCase().includes(query.toLowerCase()));
             return (
               <div key={status} className="w-72 flex flex-col rounded-2xl overflow-hidden" style={{ backgroundColor: cfg.bg, border: `1px solid ${cfg.border}` }}>
                 {/* Column header */}

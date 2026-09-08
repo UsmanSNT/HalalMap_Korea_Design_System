@@ -1,3 +1,5 @@
+import { exportCsv } from "../services/exportService";
+import { explainUnavailable, editFields } from "../components/ActionDialog";
 import React, { useState } from "react";
 import {
   A, AdminTable, Column, StatusChip, SearchBar, FilterChips, Card, PageHeader,
@@ -28,6 +30,8 @@ const STATUS_LABEL: Record<Order["status"], string> = {
 
 // ── Screen 10: All Orders ──────────────────────────────────────────────────────
 export const AllOrders = () => {
+const [dateRange, setDateRange] = useState({ from: "", to: "" });
+
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("전체");
   const [page, setPage] = useState(1);
@@ -39,7 +43,7 @@ export const AllOrders = () => {
     const q = search.toLowerCase();
     const matchQ = !q || o.id.toLowerCase().includes(q) || o.customer.toLowerCase().includes(q) || o.restaurant.toLowerCase().includes(q);
     const matchF = filter === "전체" || (filter === "신규" && o.status === "new") || (filter === "배달중" && o.status === "delivering") || (filter === "완료" && o.status === "delivered") || (filter === "취소/환불" && ["cancelled","refunded"].includes(o.status));
-    return matchQ && matchF;
+    const date = o.date.slice(0,10).split(".").join("-"); return matchQ && matchF && (!dateRange.from || date >= dateRange.from) && (!dateRange.to || date <= dateRange.to);
   });
 
   const columns: Column<Order>[] = [
@@ -100,8 +104,8 @@ export const AllOrders = () => {
         subtitle={`오늘 ${ORDERS.filter(o => o.date.startsWith("2024.11.24")).length}건 · 총 ${ORDERS.length}건 표시`}
         actions={
           <div className="flex gap-2">
-            <Btn variant="secondary" size="md">날짜 범위 선택</Btn>
-            <Btn variant="secondary" size="md">CSV 내보내기</Btn>
+            <Btn onClick={async () => { const result = await editFields("Sana oralig‘i", [{ name: "from", label: "Boshlanish", type: "date", value: dateRange.from, required: false }, { name: "to", label: "Tugash", type: "date", value: dateRange.to, required: false }], "Bo‘sh qiymat sana chegarasini olib tashlaydi."); if (result) setDateRange({ from: result.from, to: result.to }); }} variant="secondary" size="md">날짜 범위 선택</Btn>
+            <Btn onClick={() => exportCsv("halalmap-OrdersScreens.csv", filtered)} variant="secondary" size="md">CSV 내보내기</Btn>
           </div>
         }
       />
@@ -177,7 +181,7 @@ export const AllOrders = () => {
               {["delivered","delivering"].includes(detailOrder.status) && (
                 <Btn variant="danger" size="md" onClick={() => setRefundOpen(true)}>환불 처리</Btn>
               )}
-              <Btn variant="secondary" size="md">배달파트너 재배정</Btn>
+              <Btn onClick={() => explainUnavailable("배달파트너 재배정")} variant="secondary" size="md">배달파트너 재배정</Btn>
               <Btn variant="ghost" onClick={() => setDetailOrder(null)}>닫기</Btn>
             </div>
           </div>

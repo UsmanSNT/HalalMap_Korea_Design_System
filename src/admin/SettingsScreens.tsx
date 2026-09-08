@@ -1,3 +1,4 @@
+import { explainUnavailable } from "../components/ActionDialog";
 import React, { useState } from "react";
 import { A, Card, PageHeader, Btn, Modal, Toast, StatusChip } from "./AdminShared";
 
@@ -149,7 +150,7 @@ export const PlatformSettings = () => {
         <Card>
           <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: `1px solid ${A.border}` }}>
             <p className="font-semibold text-sm" style={{ color: A.text }}>서비스 지역</p>
-            <Btn variant="primary">+ 지역 추가</Btn>
+            <Btn onClick={() => explainUnavailable("+ 지역 추가")} variant="primary">+ 지역 추가</Btn>
           </div>
           <table className="w-full text-sm">
             <thead>
@@ -166,7 +167,7 @@ export const PlatformSettings = () => {
                   <td className="px-4 py-3 font-mono text-sm">{c.restaurants}</td>
                   <td className="px-4 py-3 text-sm" style={{ color: A.muted }}>{c.coverage}</td>
                   <td className="px-4 py-3"><StatusChip status={c.status as any} label={c.status === "active" ? "운영중" : "준비중"} /></td>
-                  <td className="px-4 py-3"><div className="flex gap-1"><Btn variant="ghost">수정</Btn><Btn variant="danger">비활성화</Btn></div></td>
+                  <td className="px-4 py-3"><div className="flex gap-1"><Btn onClick={() => explainUnavailable("수정")} variant="ghost">수정</Btn><Btn onClick={() => explainUnavailable("비활성화")} variant="danger">비활성화</Btn></div></td>
                 </tr>
               ))}
             </tbody>
@@ -236,7 +237,7 @@ export const PlatformSettings = () => {
               <textarea rows={4} defaultValue="배달이 완료되었습니다! 🎉\n주문 #{orderId}이 {area}에 배달되었습니다. 음식을 즐겨보세요!"
                 className="w-full mt-3 px-3 py-2.5 text-sm rounded-lg outline-none resize-none"
                 style={{ backgroundColor: A.bg, border: `1px solid ${A.border}`, color: A.text }}/>
-              <div className="mt-2"><Btn variant="secondary" size="md">템플릿 저장</Btn></div>
+              <div className="mt-2"><Btn onClick={() => explainUnavailable("템플릿 저장")} variant="secondary" size="md">템플릿 저장</Btn></div>
             </div>
           </Card>
         </div>
@@ -277,8 +278,8 @@ export const PlatformSettings = () => {
                 </div>
                 <div className="flex items-center gap-3">
                   <StatusChip status={k.status} label={k.status === "active" ? "활성" : "갱신 필요"} />
-                  <Btn variant="ghost">재발급</Btn>
-                  <Btn variant="ghost">복사</Btn>
+                  <Btn onClick={() => explainUnavailable("재발급")} variant="ghost">재발급</Btn>
+                  <Btn onClick={() => explainUnavailable("복사")} variant="ghost">복사</Btn>
                 </div>
               </div>
             ))}
@@ -408,8 +409,8 @@ export const AdminUsers = () => {
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex gap-1">
-                      {u.role !== "super_admin" && <Btn variant="ghost">수정</Btn>}
-                      {u.role !== "super_admin" && <Btn variant="danger">비활성화</Btn>}
+                      {u.role !== "super_admin" && <Btn onClick={() => explainUnavailable("수정")} variant="ghost">수정</Btn>}
+                      {u.role !== "super_admin" && <Btn onClick={() => explainUnavailable("비활성화")} variant="danger">비활성화</Btn>}
                     </div>
                   </td>
                 </tr>

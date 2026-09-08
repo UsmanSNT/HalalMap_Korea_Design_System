@@ -1,3 +1,4 @@
+import { explainUnavailable } from "../components/ActionDialog";
 import React, { useState } from "react";
 import { C, CStatusBar, CBottomNav } from "./CourierShared";
 
@@ -271,7 +272,7 @@ export const PayoutScreen = () => {
               <p className="font-mono text-base font-bold tabular-nums" style={{ color: C.text }}>3333-**** - ****-4521</p>
             </div>
           </div>
-          <button className="px-4 py-2 rounded-xl text-xs font-bold" style={{ backgroundColor: C.borderBright, color: C.muted }}>
+          <button type="button" onClick={() => explainUnavailable("To‘lov hisobini o‘zgartirish")} className="px-4 py-2 rounded-xl text-xs font-bold" style={{ backgroundColor: C.borderBright, color: C.muted }}>
             계좌 변경
           </button>
         </div>

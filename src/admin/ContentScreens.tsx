@@ -1,3 +1,4 @@
+import { explainUnavailable } from "../components/ActionDialog";
 import React, { useState } from "react";
 import {
   A, AdminTable, Column, StatusChip, SearchBar, FilterChips, Card, PageHeader,
@@ -68,8 +69,8 @@ export const HalalDatabase = () => {
       key: "actions", header: "",
       render: p => (
         <div className="flex gap-1">
-          <Btn variant="ghost">수정</Btn>
-          <Btn variant="danger">삭제</Btn>
+          <Btn onClick={() => explainUnavailable("수정")} variant="ghost">수정</Btn>
+          <Btn onClick={() => explainUnavailable("삭제")} variant="danger">삭제</Btn>
         </div>
       ),
     },
@@ -83,7 +84,7 @@ export const HalalDatabase = () => {
         subtitle={`${PRODUCTS.length.toLocaleString()}개 등록됨`}
         actions={
           <div className="flex gap-2">
-            <Btn variant="secondary" size="md">CSV 일괄 가져오기</Btn>
+            <Btn onClick={() => explainUnavailable("CSV 일괄 가져오기")} variant="secondary" size="md">CSV 일괄 가져오기</Btn>
             <Btn variant="primary" size="md" onClick={() => setAddOpen(true)}>+ 제품 추가</Btn>
           </div>
         }
@@ -122,8 +123,8 @@ export const HalalDatabase = () => {
                   <p className="text-xs mt-0.5" style={{ color: A.warning }}>⚠ {r.issue}</p>
                 </div>
                 <div className="flex gap-2">
-                  <Btn variant="warning">검토 후 수정</Btn>
-                  <Btn variant="ghost">신고 기각</Btn>
+                  <Btn onClick={() => explainUnavailable("검토 후 수정")} variant="warning">검토 후 수정</Btn>
+                  <Btn onClick={() => explainUnavailable("신고 기각")} variant="ghost">신고 기각</Btn>
                 </div>
               </div>
             ))}
@@ -223,9 +224,9 @@ export const MosqueManagement = () => {
                 <td className="px-4 py-3"><StatusChip status={m.status as any} label={m.status === "verified" ? "활성" : "대기중"} /></td>
                 <td className="px-4 py-3">
                   <div className="flex gap-1">
-                    <Btn variant="ghost">수정</Btn>
-                    {m.pending && <Btn variant="primary">승인</Btn>}
-                    <Btn variant="danger">삭제</Btn>
+                    <Btn onClick={() => explainUnavailable("수정")} variant="ghost">수정</Btn>
+                    {m.pending && <Btn onClick={() => explainUnavailable("승인")} variant="primary">승인</Btn>}
+                    <Btn onClick={() => explainUnavailable("삭제")} variant="danger">삭제</Btn>
                   </div>
                 </td>
               </tr>
@@ -316,8 +317,8 @@ export const PromotionsManagement = () => {
                 <td className="px-4 py-3"><StatusChip status={p.status as any} label={p.status === "active" ? "활성" : "대기중"} /></td>
                 <td className="px-4 py-3">
                   <div className="flex gap-1">
-                    <Btn variant="ghost">수정</Btn>
-                    <Btn variant="danger">종료</Btn>
+                    <Btn onClick={() => explainUnavailable("수정")} variant="ghost">수정</Btn>
+                    <Btn onClick={() => explainUnavailable("종료")} variant="danger">종료</Btn>
                   </div>
                 </td>
               </tr>
