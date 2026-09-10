@@ -1,3 +1,7 @@
+import { tx } from "../i18n/content";
+import { showUnavailable, showFeedback } from "../components/CustomerFeedback";
+import { goBack, openEntity, routeParam, navigateTo } from "../services/navigation";
+import { useLocal, writeLocal, directions } from "../services/customerState";
 import React, { useState } from "react";
 import { GeometricPattern, StatusBar, BackButton, Toggle } from "../components/Shared";
 import type { ScreenId } from "../App";
@@ -68,39 +72,41 @@ const notifSettingOn = [true, true, false, false, true];
 export const NotificationsScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const { t } = useLanguage();
   const [dismissed, setDismissed] = useState<number[]>([]);
+  const [read, setRead] = useState(false);
+  const [preferences, setPreferences] = useLocal("notifications", notifSettingOn);
 
   return (
     <div className="flex flex-col h-full bg-[var(--cream)]">
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
-        <StatusBar />
+        <StatusBar /><p className="px-4 py-1 text-xs text-[var(--muted)]">{t("flow.demo_notice")}</p>
         <div className="flex items-center gap-3 px-4 pb-3">
-          <BackButton onBack={() => onNavigate?.("home")} />
+          <BackButton onBack={() => goBack("home")} />
           <h1 className="font-bold text-lg flex-1">{t("engagement.notifications_title")}</h1>
-          <button className="text-sm font-medium" style={{ color: "var(--green)" }}>{t("engagement.mark_all_read")}</button>
+          <button type="button" onClick={() => setRead(true)} className="text-sm font-medium" style={{ color: "var(--green)" }}>{t("engagement.mark_all_read")}</button>
         </div>
       </div>
 
       <div className="flex-1 phone-scroll px-4 py-3 space-y-2">
         {/* Unread section */}
         <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide">{t("engagement.unread_section")}</p>
-        {notifications.filter(n => n.unread && !dismissed.includes(notifications.indexOf(n))).map((n, i) => (
-          <NotifCard key={i} notif={n} onDismiss={() => setDismissed(d => [...d, i])} />
-        ))}
+        {tx(notifications.filter(n => n.unread && !read && !dismissed.includes(notifications.indexOf(n))).map((n, i) => (
+          <NotifCard key={i} notif={n} onDismiss={() => setDismissed(d => [...d, notifications.indexOf(n)])} />
+        )))}
 
         <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide pt-1">{t("engagement.previous_section")}</p>
-        {notifications.filter(n => !n.unread).map((n, i) => (
+        {tx(notifications.filter(n => !n.unread || read).map((n, i) => (
           <NotifCard key={i + 100} notif={n} dim />
-        ))}
+        )))}
 
         {/* Notification Settings */}
         <div className="bg-white rounded-2xl p-4 shadow-sm mt-4 space-y-3">
           <p className="font-bold text-sm text-[#1A1A18]">{t("engagement.notification_settings")}</p>
-          {notifSettingKeys.map((k, i) => (
+          {tx(notifSettingKeys.map((k, i) => (
             <div key={k} className="flex items-center justify-between">
-              <p className="text-sm text-[#1A1A18]">{t(`engagement.${k}`)}</p>
-              <Toggle on={notifSettingOn[i]} />
+              <p className="text-sm text-[#1A1A18]">{tx(t(`engagement.${k}`))}</p>
+              <Toggle on={preferences[i]} onToggle={() => setPreferences(p => p.map((v, index) => index === i ? !v : v))} />
             </div>
-          ))}
+          )))}
         </div>
         <div className="h-4" />
       </div>
@@ -112,26 +118,26 @@ const NotifCard = ({ notif, dim, onDismiss }: { notif: typeof notifications[0]; 
   const { t } = useLanguage();
   return (
     <div className="bg-white rounded-2xl p-4 shadow-sm flex gap-3 relative overflow-hidden" style={{ opacity: dim ? 0.65 : 1 }}>
-      {notif.unread && !dim && (
+      {tx(notif.unread && !dim && (
         <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl" style={{ backgroundColor: notif.ctaColor }} />
-      )}
+      ))}
       <div className="w-11 h-11 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
         style={{ backgroundColor: notif.iconBg }}>
-        {notif.icon}
+        {tx(notif.icon)}
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between gap-2">
-          <p className="font-bold text-sm text-[#1A1A18] leading-tight">{notif.title}</p>
-          <p className="text-[10px] text-[var(--muted)] flex-shrink-0">{notif.time}</p>
+          <p className="font-bold text-sm text-[#1A1A18] leading-tight">{tx(notif.title)}</p>
+          <p className="text-[10px] text-[var(--muted)] flex-shrink-0">{tx(notif.time)}</p>
         </div>
-        <p className="text-xs text-[var(--muted)] mt-0.5 leading-relaxed">{notif.body}</p>
+        <p className="text-xs text-[var(--muted)] mt-0.5 leading-relaxed">{tx(notif.body)}</p>
         <div className="flex items-center gap-2 mt-2">
-          <button className="text-xs font-bold px-3 py-1.5 rounded-lg text-white" style={{ backgroundColor: notif.ctaColor }}>
-            {t(`engagement.${notif.ctaKey}`)}
+          <button type="button" onClick={() => navigateTo(({order:"order-tracking",prayer:"qibla",restaurant:"restaurant-list",promo:"cart",ramadan:"ramadan"})[notif.type as "order"])} className="text-xs font-bold px-3 py-1.5 rounded-lg text-white" style={{ backgroundColor: notif.ctaColor }}>
+            {tx(t(`engagement.${notif.ctaKey}`))}
           </button>
-          {onDismiss && (
+          {tx(onDismiss && (
             <button onClick={onDismiss} className="text-xs text-[var(--muted)]">{t("engagement.close")}</button>
-          )}
+          ))}
         </div>
       </div>
     </div>
@@ -154,7 +160,7 @@ export const RamadanScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
 
         {/* Star pattern overlay */}
         <div className="absolute inset-0 overflow-hidden">
-          {[...Array(12)].map((_, i) => (
+          {tx([...Array(12)].map((_, i) => (
             <div key={i} className="absolute w-1 h-1 rounded-full bg-white"
               style={{
                 left: `${8 + i * 7.5}%`,
@@ -163,13 +169,13 @@ export const RamadanScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
                 transform: `scale(${0.5 + (i % 4) * 0.3})`,
               }}
             />
-          ))}
+          )))}
         </div>
 
         <StatusBar dark />
         <div className="relative z-10 px-5 pb-6">
           <div className="flex items-center justify-between mb-4">
-            <BackButton dark onBack={() => onNavigate?.("home")} />
+            <BackButton dark onBack={() => goBack("home")} />
             <div className="flex items-center gap-2">
               <span className="text-white/70 text-xs">{t("engagement.ramadan_mode_label")}</span>
               <Toggle on={ramadanMode} onToggle={() => setRamadanMode(!ramadanMode)} />
@@ -187,15 +193,15 @@ export const RamadanScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
           {/* Iftar countdown */}
           <div className="mt-4 bg-white/10 backdrop-blur rounded-2xl p-4 space-y-3">
             <div className="flex justify-between items-center">
-              {[
+              {tx([
                 { label: "수후르 Suhoor", time: suhoorTime, icon: "🌄" },
                 { label: "이프타르 Iftar", time: iftarTime, icon: "🌅" },
               ].map((entry) => (
                 <div key={entry.label} className="flex-1 text-center">
-                  <p className="text-white/60 text-xs">{entry.icon} {entry.label}</p>
-                  <p className="text-white font-bold text-xl tabular-nums">{entry.time}</p>
+                  <p className="text-white/60 text-xs">{tx(entry.icon)} {tx(entry.label)}</p>
+                  <p className="text-white font-bold text-xl tabular-nums">{tx(entry.time)}</p>
                 </div>
-              ))}
+              )))}
             </div>
             <div className="text-center pt-2 border-t border-white/10">
               <p className="text-white/60 text-xs mb-0.5">{t("engagement.until_iftar")}</p>
@@ -210,23 +216,23 @@ export const RamadanScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
         <div>
           <p className="font-bold text-sm mb-2" style={{ color: ramadanMode ? "white" : "#1A1A18" }}>{t("engagement.iftar_special_menu")}</p>
           <div className="flex gap-3 overflow-x-auto scrollbar-hide">
-            {[
+            {tx([
               { name: "이프타르 한식 세트", rest: "신당 할랄 키친", price: 35000, imageId: "1498654896293-37c98e7f5fe4", saves: "₩8,000 할인" },
               { name: "라마단 케밥 플래터", rest: "이스탄불 케밥", price: 42000, imageId: "1529042410759-befb1204b468", saves: "₩10,000 할인" },
             ].map((item, i) => (
               <div key={i} className="w-52 flex-shrink-0 bg-white rounded-2xl overflow-hidden shadow-sm">
                 <div className="relative h-28 bg-[#D8D4CC]">
-                  <img src={`https://images.unsplash.com/photo-${item.imageId}?w=240&h=130&fit=crop&auto=format&q=80`} alt={item.name} className="w-full h-full object-cover" />
-                  <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-[10px] font-bold text-white" style={{ backgroundColor: "var(--gold)" }}>{item.saves}</div>
+                  <img src={`https://images.unsplash.com/photo-${item.imageId}?w=240&h=130&fit=crop&auto=format&q=80`} alt={tx(item.name)} className="w-full h-full object-cover" />
+                  <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-[10px] font-bold text-white" style={{ backgroundColor: "var(--gold)" }}>{tx(item.saves)}</div>
                 </div>
                 <div className="p-3 space-y-1">
-                  <p className="font-bold text-sm text-[#1A1A18]">{item.name}</p>
-                  <p className="text-xs text-[var(--muted)]">{item.rest}</p>
-                  <p className="font-bold text-sm text-[#1A1A18]">₩{item.price.toLocaleString()}</p>
-                  <button className="w-full py-2 rounded-xl text-xs font-bold text-white mt-1" style={{ backgroundColor: "var(--green)" }}>{t("engagement.order_button")}</button>
+                  <p className="font-bold text-sm text-[#1A1A18]">{tx(item.name)}</p>
+                  <p className="text-xs text-[var(--muted)]">{tx(item.rest)}</p>
+                  <p className="font-bold text-sm text-[#1A1A18]">₩{tx(item.price.toLocaleString())}</p>
+                  <button type="button" onClick={() => openEntity("menu", "restaurant", i === 0 ? "sindang-halal" : "itaewon-kebab")} className="w-full py-2 rounded-xl text-xs font-bold text-white mt-1" style={{ backgroundColor: "var(--green)" }}>{t("engagement.order_button")}</button>
                 </div>
               </div>
-            ))}
+            )))}
           </div>
         </div>
 
@@ -234,7 +240,7 @@ export const RamadanScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
         <div className="rounded-2xl p-4 shadow-sm" style={{ backgroundColor: ramadanMode ? "rgba(255,255,255,0.06)" : "white", border: ramadanMode ? "1px solid rgba(255,255,255,0.08)" : "none" }}>
           <p className="font-bold text-sm mb-3" style={{ color: ramadanMode ? "white" : "#1A1A18" }}>{t("engagement.today_prayer_schedule")}</p>
           <div className="space-y-2">
-            {[
+            {tx([
               { name: "수후르 (파즈르)", time: "04:41", passed: true },
               { name: "두흐르 Dhuhr", time: "12:16", passed: true },
               { name: "아스르 Asr", time: "14:33", passed: false, next: true },
@@ -243,23 +249,21 @@ export const RamadanScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
             ].map((p) => (
               <div key={p.name} className="flex items-center justify-between py-1.5"
                 style={{ opacity: p.passed ? 0.4 : 1 }}>
-                <p className="text-sm font-medium" style={{ color: p.next ? "var(--gold)" : ramadanMode ? "rgba(255,255,255,0.8)" : "#1A1A18" }}>{p.name}</p>
+                <p className="text-sm font-medium" style={{ color: p.next ? "var(--gold)" : ramadanMode ? "rgba(255,255,255,0.8)" : "#1A1A18" }}>{tx(p.name)}</p>
                 <div className="flex items-center gap-2">
-                  <p className="font-bold text-sm tabular-nums" style={{ color: p.next ? "var(--gold)" : ramadanMode ? "white" : "#1A1A18" }}>{p.time}</p>
-                  {p.next && <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: "var(--gold)" }} />}
+                  <p className="font-bold text-sm tabular-nums" style={{ color: p.next ? "var(--gold)" : ramadanMode ? "white" : "#1A1A18" }}>{tx(p.time)}</p>
+                  {tx(p.next && <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: "var(--gold)" }} />)}
                 </div>
               </div>
-            ))}
+            )))}
           </div>
         </div>
 
         {/* Community */}
         <div className="rounded-2xl p-4 shadow-sm" style={{ backgroundColor: ramadanMode ? "rgba(255,255,255,0.06)" : "white", border: ramadanMode ? "1px solid rgba(255,255,255,0.08)" : "none" }}>
           <p className="font-bold text-sm mb-2" style={{ color: ramadanMode ? "white" : "#1A1A18" }}>{t("engagement.community_iftar")}</p>
-          <p className="text-sm" style={{ color: ramadanMode ? "rgba(255,255,255,0.6)" : "var(--muted)" }}>
-            오늘 서울 무슬림 커뮤니티에서 이프타르 모임이 있습니다. 장소: 서울중앙성원 · 18:50
-          </p>
-          <button className="mt-3 px-4 py-2 rounded-xl text-xs font-bold" style={{ backgroundColor: "var(--gold)", color: "white" }}>
+          <p className="text-sm" style={{ color: ramadanMode ? "rgba(255,255,255,0.6)" : "var(--muted)" }}>{tx("오늘 서울 무슬림 커뮤니티에서 이프타르 모임이 있습니다. 장소: 서울중앙성원 · 18:50")}</p>
+          <button type="button" onClick={() => onNavigate?.("community")} className="mt-3 px-4 py-2 rounded-xl text-xs font-bold" style={{ backgroundColor: "var(--gold)", color: "white" }}>
             {t("engagement.join_now")}
           </button>
         </div>
@@ -285,7 +289,7 @@ export const EidScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }
     <div className="flex flex-col h-full relative overflow-hidden" style={{ background: "linear-gradient(160deg, #0D1F35 0%, #1B3A5B 40%, #0D2A1A 100%)" }}>
       {/* Star/geometric overlay */}
       <GeometricPattern color="white" opacity={0.04} />
-      {[...Array(20)].map((_, i) => (
+      {tx([...Array(20)].map((_, i) => (
         <div key={i} className="absolute rounded-full bg-white"
           style={{
             width: i % 3 === 0 ? "2px" : "1px",
@@ -295,22 +299,23 @@ export const EidScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }
             opacity: 0.2 + (i % 4) * 0.15,
           }}
         />
-      ))}
+      )))}
 
       <StatusBar dark />
 
+      <div className="relative z-10 px-5"><BackButton dark onBack={() => goBack("profile")} /></div>
       {/* Toggle */}
       <div className="relative z-10 flex gap-2 px-5 pt-1">
-        {(["fitr", "adha"] as const).map((e) => (
+        {tx((["fitr", "adha"] as const).map((e) => (
           <button key={e} onClick={() => setGreeting(e)}
             className="px-4 py-1.5 rounded-full text-xs font-bold transition-all"
             style={{
               backgroundColor: greeting === e ? "var(--gold)" : "rgba(255,255,255,0.1)",
               color: greeting === e ? "black" : "rgba(255,255,255,0.6)",
             }}>
-            {e === "fitr" ? t("engagement.eid_fitr") : t("engagement.eid_adha")}
+            {tx(e === "fitr" ? t("engagement.eid_fitr") : t("engagement.eid_adha"))}
           </button>
-        ))}
+        )))}
       </div>
 
       {/* Main greeting */}
@@ -335,13 +340,13 @@ export const EidScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }
         </div>
 
         <div className="text-center space-y-1">
-          <p className="text-white font-bold text-2xl">{greeting === "fitr" ? t("engagement.eid_fitr_mubarak") : t("engagement.eid_adha_mubarak")}</p>
-          <p className="text-white/60 text-sm">{greeting === "fitr" ? t("engagement.eid_fitr_desc") : t("engagement.eid_adha_desc")}</p>
+          <p className="text-white font-bold text-2xl">{tx(greeting === "fitr" ? t("engagement.eid_fitr_mubarak") : t("engagement.eid_adha_mubarak"))}</p>
+          <p className="text-white/60 text-sm">{tx(greeting === "fitr" ? t("engagement.eid_fitr_desc") : t("engagement.eid_adha_desc"))}</p>
         </div>
 
         {/* Emoji decoration */}
         <div className="text-4xl space-x-2">
-          {greeting === "fitr" ? "🌙✨🎉" : "🐑🤲🕌"}
+          {tx(greeting === "fitr" ? "🌙✨🎉" : "🐑🤲🕌")}
         </div>
       </div>
 
@@ -350,20 +355,20 @@ export const EidScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }
         <div className="rounded-2xl p-4 space-y-3" style={{ backgroundColor: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.1)" }}>
           <p className="font-bold text-white text-sm">{t("engagement.eid_deals_title")}</p>
           <div className="grid grid-cols-2 gap-2">
-            {eidDealKeys.map((item) => (
+            {tx(eidDealKeys.map((item) => (
               <div key={item.labelKey} className="rounded-xl p-3" style={{ backgroundColor: "rgba(255,255,255,0.06)" }}>
-                <p className="text-[10px] text-white/50">{t(`engagement.${item.labelKey}`)}</p>
-                <p className="font-bold text-white text-base">{"value" in item ? item.value : t(`engagement.${item.valueKey}`)}</p>
-                <p className="text-[10px] text-white/50 mt-0.5">{t(`engagement.${item.descKey}`)}</p>
+                <p className="text-[10px] text-white/50">{tx(t(`engagement.${item.labelKey}`))}</p>
+                <p className="font-bold text-white text-base">{tx("value" in item ? item.value : t(`engagement.${item.valueKey}`))}</p>
+                <p className="text-[10px] text-white/50 mt-0.5">{tx(t(`engagement.${item.descKey}`))}</p>
               </div>
-            ))}
+            )))}
           </div>
         </div>
 
-        <button className="w-full py-4 rounded-2xl font-bold text-black text-base" style={{ backgroundColor: "var(--gold)" }}>
+        <button type="button" onClick={() => onNavigate?.("restaurant-list")} className="w-full py-4 rounded-2xl font-bold text-black text-base" style={{ backgroundColor: "var(--gold)" }}>
           {t("engagement.view_special_menu")}
         </button>
-        <button className="w-full py-3 rounded-2xl font-semibold text-sm border border-white/20 text-white">
+        <button type="button" onClick={() => onNavigate?.("share")} className="w-full py-3 rounded-2xl font-semibold text-sm border border-white/20 text-white">
           {t("engagement.share_eid_greeting")}
         </button>
       </div>

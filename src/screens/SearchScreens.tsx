@@ -1,3 +1,7 @@
+import { tx } from "../i18n/content";
+import { showUnavailable, showFeedback } from "../components/CustomerFeedback";
+import { goBack, openEntity, routeParam, navigateTo } from "../services/navigation";
+import { useLocal, writeLocal, directions } from "../services/customerState";
 import React, { useState, useEffect } from "react";
 import { StatusBar, BottomNav, MapPin, RestaurantCardV, RestaurantCardH, HalalBadge, BackButton, TabId } from "../components/Shared";
 import { getRestaurants, getRestaurant, type Restaurant } from "@/api/restaurants";
@@ -28,8 +32,9 @@ const quickCategoryKeys = [
 
 export const SearchScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabId) => void; onNavigate?: (s: ScreenId) => void }) => {
   const { t } = useLanguage();
-  const quickCategories = quickCategoryKeys.map((c) => ({ icon: c.icon, label: t(`search.${c.key}`) }));
-  const [query, setQuery] = useState("");
+  const quickCategories = quickCategoryKeys.map((c) => ({ icon: c.icon, key: c.key, label: t(`search.${c.key}`) }));
+  const [query, setQuery] = useLocal("search", "");
+  const [recent, setRecent] = useLocal("recent-searches", recentSearches);
   const [results, setResults] = useState<Restaurant[]>([]);
   const [searching, setSearching] = useState(false);
 
@@ -52,7 +57,7 @@ export const SearchScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: Ta
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="px-4 pb-4">
-          <h1 className="font-bold text-xl text-[#1A1A18] mb-3">{t("search.title")}</h1>
+          <div className="flex justify-between mb-3"><h1 className="font-bold text-xl">{t("search.title")}</h1><button onClick={() => onNavigate?.("map-view")}>{t("home.view_map")}</button></div>
           <div className="flex items-center gap-2 bg-[var(--cream)] border border-[var(--border)] rounded-xl px-4 py-3">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--muted)" strokeWidth="1.8">
               <circle cx="8" cy="8" r="5.5"/>
@@ -64,32 +69,32 @@ export const SearchScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: Ta
               placeholder={t("search.search_placeholder")}
               className="flex-1 bg-transparent text-sm text-[#1A1A18] outline-none placeholder:text-[var(--muted)]"
             />
-            {query && (
+            {tx(query && (
               <button onClick={() => setQuery("")} className="text-[var(--muted)]">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M12 4L4 12M4 4l8 8" strokeLinecap="round"/></svg>
               </button>
-            )}
+            ))}
           </div>
         </div>
       </div>
 
       <div className="flex-1 phone-scroll px-4 pt-4 space-y-5">
-        {showResults ? (
+        {tx(showResults ? (
           <div>
-            {searching ? (
+            {tx(searching ? (
               <p className="text-sm text-[var(--muted)]">{t("search.searching")}</p>
             ) : results.length === 0 ? (
               <div className="text-center py-8">
                 <p className="text-3xl mb-2">🔍</p>
-                <p className="font-semibold text-sm text-[#1A1A18]">{t("search.no_results_title").replace("{query}", query)}</p>
+                <p className="font-semibold text-sm text-[#1A1A18]">{tx(t("search.no_results_title").replace("{query}", query))}</p>
                 <p className="text-xs text-[var(--muted)] mt-1">{t("search.no_results_desc")}</p>
               </div>
             ) : (
               <>
-                <p className="text-xs text-[var(--muted)] font-medium">{t("search.results_count").replace("{count}", String(results.length))}</p>
+                <p className="text-xs text-[var(--muted)] font-medium">{tx(t("search.results_count").replace("{count}", String(results.length)))}</p>
                 <div className="space-y-3">
-                  {results.map((r) => (
-                    <div key={r.id} onClick={() => onNavigate?.("restaurant-detail")} className="cursor-pointer">
+                  {tx(results.map((r) => (
+                    <div key={r.id} onClick={() => openEntity("restaurant-detail", "restaurant", r.id)} className="cursor-pointer">
                       <RestaurantCardH
                         name={r.nameKo}
                         imageId={extractImageId(r.photo)}
@@ -102,16 +107,16 @@ export const SearchScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: Ta
                         cuisine={r.category}
                       />
                     </div>
-                  ))}
+                  )))}
                 </div>
               </>
-            )}
+            ))}
           </div>
         ) : (
           <>
             {/* Voice search */}
             <div className="flex items-center justify-center">
-              <button className="flex flex-col items-center gap-2">
+              <button type="button" onClick={showUnavailable} className="flex flex-col items-center gap-2">
                 <div className="w-14 h-14 rounded-full flex items-center justify-center shadow-md" style={{ backgroundColor: "var(--green)" }}>
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8">
                     <rect x="9" y="2" width="6" height="10" rx="3"/>
@@ -128,10 +133,10 @@ export const SearchScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: Ta
             <div>
               <div className="flex items-center justify-between mb-2">
                 <h3 className="font-bold text-sm text-[#1A1A18]">{t("search.recent_searches")}</h3>
-                <button className="text-xs font-medium" style={{ color: "var(--muted)" }}>{t("search.clear_all")}</button>
+                <button type="button" onClick={() => setRecent([])} className="text-xs font-medium" style={{ color: "var(--muted)" }}>{t("search.clear_all")}</button>
               </div>
               <div className="space-y-1">
-                {recentSearches.map((s) => (
+                {tx(recent.map((s) => (
                   <button key={s} onClick={() => setQuery(s)} className="flex items-center gap-3 py-2.5 w-full text-left">
                     <div className="w-8 h-8 rounded-lg bg-[var(--cream)] flex items-center justify-center flex-shrink-0">
                       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--muted)" strokeWidth="1.5">
@@ -139,9 +144,9 @@ export const SearchScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: Ta
                         <path d="M8 4.5v4L10.5 11" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
                     </div>
-                    <span className="flex-1 text-sm text-[#1A1A18]">{s}</span>
+                    <span className="flex-1 text-sm text-[#1A1A18]">{tx(s)}</span>
                   </button>
-                ))}
+                )))}
               </div>
             </div>
 
@@ -149,15 +154,15 @@ export const SearchScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: Ta
             <div>
               <h3 className="font-bold text-sm text-[#1A1A18] mb-2">{t("search.trending_searches")}</h3>
               <div className="space-y-2">
-                {trending.map((term, i) => (
-                  <button key={term} onClick={() => { setQuery(term); onNavigate?.("restaurant-list"); }} className="flex items-center gap-3 py-1.5 w-full text-left">
-                    <span className="text-sm font-bold w-5 text-center" style={{ color: i < 3 ? "var(--danger)" : "var(--muted)" }}>{i + 1}</span>
-                    <span className="flex-1 text-sm text-[#1A1A18]">{term}</span>
-                    {i < 3 && (
+                {tx(trending.map((term, i) => (
+                  <button key={term} onClick={() => { setQuery(term); }} className="flex items-center gap-3 py-1.5 w-full text-left">
+                    <span className="text-sm font-bold w-5 text-center" style={{ color: i < 3 ? "var(--danger)" : "var(--muted)" }}>{tx(i + 1)}</span>
+                    <span className="flex-1 text-sm text-[#1A1A18]">{tx(term)}</span>
+                    {tx(i < 3 && (
                       <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ backgroundColor: "var(--danger)", color: "white" }}>{t("search.trending_badge")}</span>
-                    )}
+                    ))}
                   </button>
-                ))}
+                )))}
               </div>
             </div>
 
@@ -165,17 +170,17 @@ export const SearchScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: Ta
             <div>
               <h3 className="font-bold text-sm text-[#1A1A18] mb-2">{t("search.categories")}</h3>
               <div className="grid grid-cols-3 gap-2">
-                {quickCategories.map((c) => (
-                  <button key={c.label} onClick={() => onNavigate?.("restaurant-list")} className="flex flex-col items-center gap-2 py-4 bg-white rounded-2xl border border-[var(--border)] active:scale-95 transition-transform">
-                    <span className="text-2xl">{c.icon}</span>
-                    <span className="text-xs font-semibold text-[#1A1A18]">{c.label}</span>
+                {tx(quickCategories.map((c) => (
+                  <button key={c.label} onClick={() => c.key === "cat_mosque" ? onNavigate?.("mosque-list") : c.key === "cat_scanner" ? onNavigate?.("scanner") : openEntity("restaurant-list", "category", c.key.replace("cat_", ""))} className="flex flex-col items-center gap-2 py-4 bg-white rounded-2xl border border-[var(--border)] active:scale-95 transition-transform">
+                    <span className="text-2xl">{tx(c.icon)}</span>
+                    <span className="text-xs font-semibold text-[#1A1A18]">{tx(c.label)}</span>
                   </button>
-                ))}
+                )))}
               </div>
             </div>
             <div className="h-4" />
           </>
-        )}
+        ))}
       </div>
 
       <BottomNav active="search" onTabChange={onTabChange} />
@@ -200,12 +205,12 @@ const FakeMapBg = () => (
     <rect x="300" y="0" width="14" height="500" fill="#F5F2EC"/>
     <rect x="60" y="0" width="10" height="500" fill="#F5F2EC"/>
     {/* Blocks / buildings */}
-    {[[10,30,45,100],[10,170,45,80],[10,270,45,80],[180,30,110,100],[180,160,110,90],[180,270,110,80],[320,30,60,100],[320,160,60,90],[320,280,60,110]].map(([x,y,w,h],i) => (
+    {tx([[10,30,45,100],[10,170,45,80],[10,270,45,80],[180,30,110,100],[180,160,110,90],[180,270,110,80],[320,30,60,100],[320,160,60,90],[320,280,60,110]].map(([x,y,w,h],i) => (
       <rect key={i} x={x} y={y} width={w} height={h} fill="#D8D4CC" rx="3" opacity="0.7"/>
-    ))}
+    )))}
     {/* Itaewon label */}
-    <text x="195" y="158" textAnchor="middle" fontSize="11" fill="#8B8580" fontFamily="sans-serif" fontWeight="500">이태원로</text>
-    <text x="155" y="200" textAnchor="middle" fontSize="10" fill="#8B8580" fontFamily="sans-serif">이태원동</text>
+    <text x="195" y="158" textAnchor="middle" fontSize="11" fill="#8B8580" fontFamily="sans-serif" fontWeight="500">{tx("이태원로")}</text>
+    <text x="155" y="200" textAnchor="middle" fontSize="10" fill="#8B8580" fontFamily="sans-serif">{tx("이태원동")}</text>
   </svg>
 );
 
@@ -224,7 +229,7 @@ const mapFilterKeys = ["filter_restaurant", "filter_mosque", "filter_prayer_room
 export const MapViewScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabId) => void; onNavigate?: (s: ScreenId) => void }) => {
   const { t } = useLanguage();
   const mapFilters = mapFilterKeys.map((k) => t(`search.${k}`));
-  const [activeFilter, setActiveFilter] = useState(mapFilters[0]);
+  const [activeFilter, setActiveFilter] = useState(0);
   const [nearby, setNearby] = useState<Restaurant[]>([]);
 
   useEffect(() => {
@@ -235,11 +240,12 @@ export const MapViewScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: T
     <div className="flex flex-col h-full bg-[var(--cream)] relative overflow-hidden">
       <div className="absolute inset-0">
         <FakeMapBg />
-        {mapPins.map((pin, i) => (
-          <div key={i} className="absolute" style={{ left: pin.x - 16, top: pin.y - 16 }}>
+        {activeFilter === 2 && <button className="absolute top-48 left-8 rounded-xl bg-white p-4 shadow" onClick={() => openEntity("mosque-detail", "mosque", "coex-prayer")}>{tx("코엑스 기도실")}</button>}
+        {tx(mapPins.filter(pin => pin.type === "user" || (activeFilter === 0 ? pin.type === "restaurant" : activeFilter === 1 ? pin.type === "mosque" : false)).map((pin, i) => (
+          <div role="button" tabIndex={0} aria-label={tx(pin.label)} onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => pin.type !== "user" && openEntity(pin.type === "restaurant" ? "restaurant-map-detail" : "mosque-detail", pin.type, pin.type === "restaurant" ? ["sindang-halal", "itaewon-kebab", "delhi-spice", "uzbekistan-plov"][Math.max(0,mapPins.indexOf(pin)-1)] : mapPins.indexOf(pin) === 5 ? "seoul-central" : "itaewon-masjid")} key={i} className="absolute" style={{ left: `${(pin.x-16)/390*100}%`, top: pin.y - 16 }}>
             <MapPin type={pin.type} />
           </div>
-        ))}
+        )))}
       </div>
 
       <div className="relative z-10 flex-shrink-0">
@@ -253,9 +259,9 @@ export const MapViewScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: T
               <circle cx="7" cy="7" r="5"/>
               <path d="M12 12L15 15" strokeLinecap="round"/>
             </svg>
-            <span className="text-sm text-[var(--muted)]">{t("search.search_this_area")}</span>
+            <button onClick={() => onNavigate?.("search")} className="text-sm text-[var(--muted)]">{t("search.search_this_area")}</button>
           </div>
-          <button className="w-10 h-10 bg-white/95 backdrop-blur rounded-xl flex items-center justify-center shadow-sm">
+          <button type="button" onClick={() => onNavigate?.("restaurant-list")} className="w-10 h-10 bg-white/95 backdrop-blur rounded-xl flex items-center justify-center shadow-sm">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--charcoal)" strokeWidth="1.8">
               <line x1="2" y1="5" x2="16" y2="5" strokeLinecap="round"/>
               <line x1="5" y1="9" x2="13" y2="9" strokeLinecap="round"/>
@@ -265,26 +271,26 @@ export const MapViewScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: T
         </div>
 
         <div className="flex gap-2 mt-2 overflow-x-auto scrollbar-hide">
-          {mapFilters.map((f) => (
+          {tx(mapFilters.map((f, index) => (
             <button
               key={f}
-              onClick={() => setActiveFilter(f)}
+              onClick={() => setActiveFilter(index)}
               className="flex-shrink-0 px-4 py-2 rounded-xl text-xs font-semibold shadow-sm transition-all"
               style={{
-                backgroundColor: activeFilter === f ? "var(--green)" : "white",
-                color: activeFilter === f ? "white" : "var(--charcoal)",
+                backgroundColor: activeFilter === index ? "var(--green)" : "white",
+                color: activeFilter === index ? "white" : "var(--charcoal)",
               }}
             >
-              {f}
+              {tx(f)}
             </button>
-          ))}
+          )))}
         </div>
       </div>
 
       <div className="flex-1" />
 
       <div className="relative z-10 flex justify-end px-4 pb-3">
-        <button className="w-10 h-10 bg-white rounded-xl shadow-md flex items-center justify-center">
+        <button type="button" onClick={() => onNavigate?.("city-selector")} className="w-10 h-10 bg-white rounded-xl shadow-md flex items-center justify-center">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--info)" strokeWidth="1.8">
             <circle cx="9" cy="9" r="3"/>
             <path d="M9 1v3M9 14v3M1 9h3M14 9h3" strokeLinecap="round"/>
@@ -297,9 +303,10 @@ export const MapViewScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: T
           <div className="w-10 h-1 bg-[var(--border)] rounded-full" />
         </div>
         <div className="px-4 pb-4">
-          <p className="font-bold text-sm text-[#1A1A18] mb-3">{t("search.nearby_results").replace("{count}", String(nearby.length))}</p>
+          <p className="font-bold text-sm text-[#1A1A18] mb-3">{tx(t("search.nearby_results").replace("{count}", String(nearby.length)))}</p>
           <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-1">
-            {nearby.slice(0, 3).map((r) => (
+            {tx(activeFilter !== 0 && <button onClick={() => onNavigate?.("mosque-list")}>{t("mosque.title")}</button>)}
+            {tx((activeFilter === 0 ? nearby.slice(0, 3) : []).map((r) => (
               <RestaurantCardV
                 key={r.id}
                 name={r.nameKo}
@@ -310,9 +317,9 @@ export const MapViewScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: T
                 distance={r.distance}
                 eta={r.deliveryTime}
                 fee={formatFee(r.deliveryFee, t("common.free"))}
-                onClick={() => onNavigate?.("restaurant-detail")}
+                onClick={() => openEntity("restaurant-detail", "restaurant", r.id)}
               />
-            ))}
+            )))}
           </div>
         </div>
       </div>
@@ -345,7 +352,7 @@ export const CitySelectorScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
-          <BackButton onBack={() => onNavigate?.("home")} />
+          <BackButton onBack={() => goBack("home")} />
           <h1 className="font-bold text-lg flex-1">{t("search.select_city_title")}</h1>
         </div>
         <div className="px-4 pb-4">
@@ -369,17 +376,17 @@ export const CitySelectorScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
         <div>
           <h3 className="font-bold text-sm text-[#1A1A18] mb-2">{t("search.saved_cities")}</h3>
           <div className="space-y-2">
-            {savedCities.map((s) => (
-              <div key={s.name} className="flex items-center gap-3 bg-white p-3.5 rounded-xl border border-[var(--border)]">
+            {tx(savedCities.map((s) => (
+              <div onClick={() => { writeLocal("city", s.name); goBack("home"); }} key={s.name} className="flex items-center gap-3 bg-white p-3.5 rounded-xl border border-[var(--border)]">
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: "var(--green-light)" }}>
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--green)">
                     <path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6C3.5 9.5 8 14.5 8 14.5C8 14.5 12.5 9.5 12.5 6C12.5 3.5 10.5 1.5 8 1.5ZM8 7.5C7.2 7.5 6.5 6.8 6.5 6C6.5 5.2 7.2 4.5 8 4.5C8.8 4.5 9.5 5.2 9.5 6C9.5 6.8 8.8 7.5 8 7.5Z"/>
                   </svg>
                 </div>
-                <span className="flex-1 text-sm font-semibold text-[#1A1A18]">{s.name}</span>
-                <span className="text-xs text-[var(--muted)]">{s.tag}</span>
+                <span className="flex-1 text-sm font-semibold text-[#1A1A18]">{tx(s.name)}</span>
+                <span className="text-xs text-[var(--muted)]">{tx(s.tag)}</span>
               </div>
-            ))}
+            )))}
           </div>
         </div>
 
@@ -389,7 +396,7 @@ export const CitySelectorScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
           <div>
             <p className="font-bold text-sm" style={{ color: "#7A5220" }}>{t("search.travel_suggestion_title")}</p>
             <p className="text-xs mt-0.5" style={{ color: "#9A6830" }}>{t("search.travel_suggestion_desc")}</p>
-            <button className="mt-2 text-xs font-bold px-3 py-1.5 rounded-lg" style={{ backgroundColor: "var(--gold)", color: "white" }}>
+            <button type="button" onClick={() => onNavigate?.("travel-planner")} className="mt-2 text-xs font-bold px-3 py-1.5 rounded-lg" style={{ backgroundColor: "var(--gold)", color: "white" }}>
               {t("search.travel_suggestion_cta")}
             </button>
           </div>
@@ -399,22 +406,22 @@ export const CitySelectorScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
         <div>
           <h3 className="font-bold text-sm text-[#1A1A18] mb-2">{t("search.popular_cities")}</h3>
           <div className="grid grid-cols-2 gap-2.5">
-            {cities.map((city) => (
-              <button key={city.name} className="relative h-24 rounded-2xl overflow-hidden text-left">
+            {tx(cities.filter(city => `${city.name} ${city.nameEn}`.toLowerCase().includes(search.toLowerCase())).map((city) => (
+              <button type="button" onClick={() => { writeLocal("city", city.nameEn); goBack("home"); }} key={city.name} className="relative h-24 rounded-2xl overflow-hidden text-left">
                 <div className="absolute inset-0 bg-[#D8D4CC]">
                   <img
                     src={`https://images.unsplash.com/photo-${city.img}?w=200&h=130&fit=crop&auto=format&q=80`}
-                    alt={city.name}
+                    alt={tx(city.name)}
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                 </div>
                 <div className="absolute bottom-0 left-0 p-3">
-                  <p className="text-white font-bold text-sm">{city.name}</p>
-                  <p className="text-white/70 text-xs">{t("search.city_halal_count").replace("{count}", city.count)}</p>
+                  <p className="text-white font-bold text-sm">{tx(city.name)}</p>
+                  <p className="text-white/70 text-xs">{tx(t("search.city_halal_count").replace("{count}", city.count))}</p>
                 </div>
               </button>
-            ))}
+            )))}
           </div>
         </div>
         <div className="h-4" />
@@ -429,7 +436,7 @@ export const RestaurantMapDetailScreen = ({ onNavigate }: { onNavigate?: (s: Scr
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
 
   useEffect(() => {
-    getRestaurant("sindang-halal").then(setRestaurant).catch(() => {});
+    getRestaurant(routeParam("restaurant", "sindang-halal")).then(setRestaurant).catch(() => {});
   }, []);
 
   return (
@@ -439,7 +446,7 @@ export const RestaurantMapDetailScreen = ({ onNavigate }: { onNavigate?: (s: Scr
         <div className="absolute" style={{ left: 100, top: 160 }}>
           <div className="flex flex-col items-center">
             <div className="bg-white rounded-xl px-3 py-1.5 shadow-lg mb-1 border-2" style={{ borderColor: "var(--green)" }}>
-              <p className="text-xs font-bold text-[#1A1A18]">{restaurant?.nameKo ?? t("common.loading")}</p>
+              <p className="text-xs font-bold text-[#1A1A18]">{tx(restaurant?.nameKo ?? t("common.loading"))}</p>
             </div>
             <div className="w-12 h-12 rounded-full border-3 border-white shadow-lg flex items-center justify-center" style={{ backgroundColor: "var(--green)" }}>
               <svg width="20" height="20" viewBox="0 0 20 20" fill="white">
@@ -458,7 +465,7 @@ export const RestaurantMapDetailScreen = ({ onNavigate }: { onNavigate?: (s: Scr
       <div className="relative z-10 flex-shrink-0">
         <StatusBar />
         <div className="px-4 pt-1">
-          <BackButton onBack={() => onNavigate?.("home")} />
+          <BackButton onBack={() => goBack("map-view")} />
         </div>
       </div>
 
@@ -470,25 +477,25 @@ export const RestaurantMapDetailScreen = ({ onNavigate }: { onNavigate?: (s: Scr
         </div>
         <div className="px-4 pb-8 flex gap-4">
           <div className="w-20 h-20 rounded-2xl overflow-hidden bg-[#E8E6E1] flex-shrink-0">
-            {restaurant?.photo && (
-              <img src={`${restaurant.photo}&w=120&h=120&fit=crop&auto=format&q=80`} alt={restaurant.nameKo} className="w-full h-full object-cover" />
-            )}
+            {tx(restaurant?.photo && (
+              <img src={`${restaurant.photo}&w=120&h=120&fit=crop&auto=format&q=80`} alt={tx(restaurant.nameKo)} className="w-full h-full object-cover" />
+            ))}
           </div>
           <div className="flex-1 space-y-1.5">
-            {restaurant && <HalalBadge variant={halalBadgeMap(restaurant.halalStatus)} />}
-            <h2 className="font-bold text-lg text-[#1A1A18] leading-tight">{restaurant?.nameKo ?? t("common.loading")}</h2>
-            {restaurant && (
+            {tx(restaurant && <HalalBadge variant={halalBadgeMap(restaurant.halalStatus)} />)}
+            <h2 className="font-bold text-lg text-[#1A1A18] leading-tight">{tx(restaurant?.nameKo ?? t("common.loading"))}</h2>
+            {tx(restaurant && (
               <div className="flex items-center gap-2 text-xs text-[var(--muted)]">
-                <span>⭐ {restaurant.rating}</span>
+                <span>⭐ {tx(restaurant.rating)}</span>
                 <span>·</span>
-                <span>📍 {restaurant.distance}</span>
+                <span>📍 {tx(restaurant.distance)}</span>
                 <span>·</span>
-                <span>⏱ {restaurant.deliveryTime}</span>
+                <span>⏱ {tx(restaurant.deliveryTime)}</span>
               </div>
-            )}
+            ))}
             <div className="flex gap-2 pt-1">
-              <button className="flex-1 py-2.5 rounded-xl font-bold text-white text-sm" style={{ backgroundColor: "var(--green)" }}>{t("search.view_menu")}</button>
-              <button className="flex-1 py-2.5 rounded-xl font-semibold text-sm border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>{t("search.get_directions")}</button>
+              <button type="button" onClick={() => onNavigate?.("menu")} className="flex-1 py-2.5 rounded-xl font-bold text-white text-sm" style={{ backgroundColor: "var(--green)" }}>{t("search.view_menu")}</button>
+              <button type="button" onClick={() => restaurant && directions(restaurant.address)} className="flex-1 py-2.5 rounded-xl font-semibold text-sm border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>{t("search.get_directions")}</button>
             </div>
           </div>
         </div>

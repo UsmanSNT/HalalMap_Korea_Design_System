@@ -1,3 +1,6 @@
+import { tx } from "../i18n/content";
+import { showUnavailable, showFeedback } from "../components/CustomerFeedback";
+import { goBack, openEntity, routeParam, navigateTo } from "../services/navigation";
 import React, { useState } from "react";
 import { GeometricPattern, StatusBar, BackButton } from "../components/Shared";
 import type { ScreenId } from "../App";
@@ -128,7 +131,7 @@ export const LoyaltyScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
         <StatusBar dark />
         <div className="relative z-10 px-5 pb-6">
           <div className="flex items-center gap-3 mb-4">
-            <BackButton dark onBack={() => onNavigate?.("home")} />
+            <BackButton dark onBack={() => goBack("home")} />
             <h1 className="font-bold text-lg text-white flex-1">{t("rewards.loyalty_title")}</h1>
           </div>
 
@@ -137,27 +140,27 @@ export const LoyaltyScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-white/60 text-xs">{t("rewards.current_points")}</p>
-                <p className="text-white font-bold text-4xl tabular-nums">{currentPoints.toLocaleString()}</p>
-                <p className="text-white/60 text-xs">{t("rewards.cash_value").replace("{value}", currentPoints.toLocaleString())}</p>
+                <p className="text-white font-bold text-4xl tabular-nums">{tx(currentPoints.toLocaleString())}</p>
+                <p className="text-white/60 text-xs">{tx(t("rewards.cash_value").replace("{value}", currentPoints.toLocaleString()))}</p>
               </div>
               <div className="flex flex-col items-center gap-1">
-                {currentTier.badge}
-                <p className="text-white/80 text-xs font-bold">{t(`rewards.tier_${currentTier.id}`)}</p>
+                {tx(currentTier.badge)}
+                <p className="text-white/80 text-xs font-bold">{tx(t(`rewards.tier_${currentTier.id}`))}</p>
               </div>
             </div>
 
             {/* Progress to next tier */}
             <div>
               <div className="flex justify-between text-xs text-white/60 mb-1.5">
-                <span>{t("rewards.progress_to_gold").replace("{remaining}", (nextTier.min - currentPoints).toLocaleString())}</span>
-                <span>{Math.round(progress)}%</span>
+                <span>{tx(t("rewards.progress_to_gold").replace("{remaining}", (nextTier.min - currentPoints).toLocaleString()))}</span>
+                <span>{tx(Math.round(progress))}%</span>
               </div>
               <div className="h-2 bg-white/20 rounded-full overflow-hidden">
                 <div className="h-full rounded-full transition-all" style={{ width: `${progress}%`, backgroundColor: "var(--gold)" }} />
               </div>
               <div className="flex justify-between text-[10px] text-white/40 mt-1">
-                <span>{currentTier.min.toLocaleString()}P</span>
-                <span>{nextTier.min.toLocaleString()}P</span>
+                <span>{tx(currentTier.min.toLocaleString())}P</span>
+                <span>{tx(nextTier.min.toLocaleString())}P</span>
               </div>
             </div>
           </div>
@@ -166,79 +169,79 @@ export const LoyaltyScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
 
       {/* Tabs */}
       <div className="flex border-b border-[var(--border)] bg-white flex-shrink-0">
-        {(["earn", "redeem", "tiers"] as const).map((tabId) => (
+        {tx((["earn", "redeem", "tiers"] as const).map((tabId) => (
           <button key={tabId} onClick={() => setTab(tabId)}
             className="flex-1 py-3 text-xs font-bold transition-colors border-b-2"
             style={{ borderColor: tab === tabId ? "var(--green)" : "transparent", color: tab === tabId ? "var(--green)" : "var(--muted)" }}>
-            {tabId === "earn" ? t("rewards.tab_earn") : tabId === "redeem" ? t("rewards.tab_redeem") : t("rewards.tab_tiers")}
+            {tx(tabId === "earn" ? t("rewards.tab_earn") : tabId === "redeem" ? t("rewards.tab_redeem") : t("rewards.tab_tiers"))}
           </button>
-        ))}
+        )))}
       </div>
 
       <div className="flex-1 phone-scroll px-4 py-4 space-y-3">
-        {tab === "earn" && (
+        {tx(tab === "earn" && (
           <>
             <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide">{t("rewards.earn_section_title")}</p>
-            {earnItemKeys.map((item) => (
+            {tx(earnItemKeys.map((item) => (
               <div key={item.labelKey} className="bg-white rounded-2xl p-4 flex items-center gap-3 shadow-sm">
                 <div className="w-11 h-11 rounded-xl flex items-center justify-center text-2xl" style={{ backgroundColor: "var(--green-light)" }}>
-                  {item.icon}
+                  {tx(item.icon)}
                 </div>
                 <div className="flex-1">
-                  <p className="font-bold text-sm text-[#1A1A18]">{t(`rewards.${item.labelKey}`)}</p>
-                  <p className="text-xs text-[var(--muted)]">{t(`rewards.${item.descKey}`)}</p>
+                  <p className="font-bold text-sm text-[#1A1A18]">{tx(t(`rewards.${item.labelKey}`))}</p>
+                  <p className="text-xs text-[var(--muted)]">{tx(t(`rewards.${item.descKey}`))}</p>
                 </div>
                 <div className="text-right">
-                  <p className="font-bold text-sm" style={{ color: "var(--green)" }}>{t(`rewards.${item.ptsKey}`)}</p>
+                  <p className="font-bold text-sm" style={{ color: "var(--green)" }}>{tx(t(`rewards.${item.ptsKey}`))}</p>
                 </div>
               </div>
-            ))}
+            )))}
           </>
-        )}
+        ))}
 
-        {tab === "redeem" && (
+        {tx(tab === "redeem" && (
           <>
             <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide">{t("rewards.redeem_section_title")}</p>
-            {redeemItemKeys.map((item) => (
+            {tx(redeemItemKeys.map((item) => (
               <div key={item.labelKey} className="bg-white rounded-2xl p-4 shadow-sm space-y-3">
                 <div className="flex items-center gap-3">
                   <div className="w-11 h-11 rounded-xl flex items-center justify-center text-2xl" style={{ backgroundColor: "var(--gold-light)" }}>
-                    {item.icon}
+                    {tx(item.icon)}
                   </div>
                   <div className="flex-1">
-                    <p className="font-bold text-sm text-[#1A1A18]">{t(`rewards.${item.labelKey}`)}</p>
-                    <p className="text-xs text-[var(--muted)]">{t(`rewards.${item.descKey}`)}</p>
+                    <p className="font-bold text-sm text-[#1A1A18]">{tx(t(`rewards.${item.labelKey}`))}</p>
+                    <p className="text-xs text-[var(--muted)]">{tx(t(`rewards.${item.descKey}`))}</p>
                   </div>
-                  <span className="text-[10px] font-bold px-2 py-1 rounded-full" style={{ backgroundColor: "var(--gold-light)", color: "var(--gold)" }}>{t(`rewards.${item.minKey}`)}</span>
+                  <span className="text-[10px] font-bold px-2 py-1 rounded-full" style={{ backgroundColor: "var(--gold-light)", color: "var(--gold)" }}>{tx(t(`rewards.${item.minKey}`))}</span>
                 </div>
-                <button className="w-full py-2.5 rounded-xl font-bold text-sm" style={{ backgroundColor: "var(--gold)", color: "white" }}>
+                <button type="button" onClick={showUnavailable} className="w-full py-2.5 rounded-xl font-bold text-sm" style={{ backgroundColor: "var(--gold)", color: "white" }}>
                   {t("rewards.use_button")}
                 </button>
               </div>
-            ))}
+            )))}
           </>
-        )}
+        ))}
 
-        {tab === "tiers" && (
+        {tx(tab === "tiers" && (
           <div className="space-y-3">
-            {tiers.map((tier) => (
+            {tx(tiers.map((tier) => (
               <div key={tier.id} className="bg-white rounded-2xl p-4 shadow-sm flex gap-3 items-center"
                 style={{ border: tier.id === currentTier.id ? `2px solid ${tier.color}` : "2px solid transparent" }}>
-                <div className="flex-shrink-0">{tier.badge}</div>
+                <div className="flex-shrink-0">{tx(tier.badge)}</div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <p className="font-bold text-sm text-[#1A1A18]">{t(`rewards.tier_${tier.id}`)}</p>
-                    {tier.id === currentTier.id && (
+                    <p className="font-bold text-sm text-[#1A1A18]">{tx(t(`rewards.tier_${tier.id}`))}</p>
+                    {tx(tier.id === currentTier.id && (
                       <span className="text-[10px] font-bold px-2 py-0.5 rounded-full text-white" style={{ backgroundColor: tier.color }}>{t("rewards.current")}</span>
-                    )}
+                    ))}
                   </div>
-                  <p className="text-xs text-[var(--muted)] mt-0.5">{tier.min.toLocaleString()}P{tier.max < Infinity ? ` – ${tier.max.toLocaleString()}P` : ` ${t("rewards.and_above")}`}</p>
-                  <p className="text-xs mt-1" style={{ color: tier.color }}>{t(`rewards.perk_${tier.id}`)}</p>
+                  <p className="text-xs text-[var(--muted)] mt-0.5">{tx(tier.min.toLocaleString())}P{tx(tier.max < Infinity ? ` – ${tier.max.toLocaleString()}P` : ` ${t("rewards.and_above")}`)}</p>
+                  <p className="text-xs mt-1" style={{ color: tier.color }}>{tx(t(`rewards.perk_${tier.id}`))}</p>
                 </div>
               </div>
-            ))}
+            )))}
           </div>
-        )}
+        ))}
 
         <div className="h-4" />
       </div>
@@ -267,9 +270,9 @@ export const ReferralScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
   const [copied, setCopied] = useState(false);
   const referralCode = "HALAL-KIM7840";
 
-  const handleCopy = () => {
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const handleCopy = async () => {
+    try { await navigator.clipboard.writeText(referralCode); setCopied(true); }
+    catch { showFeedback("flow.copy_failed"); }
   };
 
   return (
@@ -280,7 +283,7 @@ export const ReferralScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
         <StatusBar dark />
         <div className="relative z-10 px-5 pb-6">
           <div className="flex items-center gap-3 mb-4">
-            <BackButton dark onBack={() => onNavigate?.("home")} />
+            <BackButton dark onBack={() => goBack("profile")} />
             <h1 className="font-bold text-lg text-white flex-1">{t("rewards.referral_title")}</h1>
           </div>
 
@@ -296,12 +299,12 @@ export const ReferralScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
             <p className="text-white/60 text-xs text-center">{t("rewards.my_referral_code")}</p>
             <div className="flex items-center gap-2">
               <div className="flex-1 bg-white/10 rounded-xl px-4 py-3 text-center">
-                <p className="font-bold text-xl tracking-widest text-white">{referralCode}</p>
+                <p className="font-bold text-xl tracking-widest text-white">{tx(referralCode)}</p>
               </div>
               <button onClick={handleCopy}
                 className="px-4 py-3 rounded-xl font-bold text-sm transition-all"
                 style={{ backgroundColor: copied ? "var(--green)" : "var(--gold)", color: "white" }}>
-                {copied ? t("rewards.copied") : t("rewards.copy")}
+                {tx(copied ? t("rewards.copied") : t("rewards.copy"))}
               </button>
             </div>
           </div>
@@ -313,14 +316,14 @@ export const ReferralScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
         <div className="bg-white rounded-2xl p-4 shadow-sm space-y-3">
           <p className="font-bold text-sm text-[#1A1A18]">{t("rewards.share_title")}</p>
           <div className="grid grid-cols-4 gap-2">
-            {shareOptionKeys.map((s) => (
-              <button key={s.labelKey} className="flex flex-col items-center gap-1.5">
+            {tx(shareOptionKeys.map((s) => (
+              <button type="button" onClick={s.labelKey === "share_link" ? handleCopy : showUnavailable} key={s.labelKey} className="flex flex-col items-center gap-1.5">
                 <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl" style={{ backgroundColor: s.bg }}>
-                  {s.icon}
+                  {tx(s.icon)}
                 </div>
-                <span className="text-[10px] text-[var(--muted)]">{t(`rewards.${s.labelKey}`)}</span>
+                <span className="text-[10px] text-[var(--muted)]">{tx(t(`rewards.${s.labelKey}`))}</span>
               </button>
-            ))}
+            )))}
           </div>
         </div>
 
@@ -328,29 +331,29 @@ export const ReferralScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
         <div className="bg-white rounded-2xl p-4 shadow-sm space-y-3">
           <p className="font-bold text-sm text-[#1A1A18]">{t("rewards.how_it_works")}</p>
           <div className="space-y-2.5">
-            {howItWorksKeys.map((k, i) => (
+            {tx(howItWorksKeys.map((k, i) => (
               <div key={k} className="flex items-start gap-3">
                 <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0 mt-0.5" style={{ backgroundColor: "var(--green)" }}>
-                  {i + 1}
+                  {tx(i + 1)}
                 </div>
-                <p className="text-sm text-[#1A1A18] leading-relaxed">{t(`rewards.${k}`)}</p>
+                <p className="text-sm text-[#1A1A18] leading-relaxed">{tx(t(`rewards.${k}`))}</p>
               </div>
-            ))}
+            )))}
           </div>
         </div>
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-2">
-          {[
+          {tx([
             { labelKey: "stat_total_invited", value: "3명" },
             { labelKey: "stat_completed", value: "2명" },
             { labelKey: "stat_points_earned", value: "1,000P" },
           ].map((s) => (
             <div key={s.labelKey} className="bg-white rounded-xl p-3 text-center shadow-sm">
-              <p className="font-bold text-base text-[#1A1A18]">{s.value}</p>
-              <p className="text-[10px] text-[var(--muted)]">{t(`rewards.${s.labelKey}`)}</p>
+              <p className="font-bold text-base text-[#1A1A18]">{tx(s.value)}</p>
+              <p className="text-[10px] text-[var(--muted)]">{tx(t(`rewards.${s.labelKey}`))}</p>
             </div>
-          ))}
+          )))}
         </div>
 
         {/* Referral list */}
@@ -358,15 +361,15 @@ export const ReferralScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
           <div className="px-4 py-3 border-b border-[var(--border)]">
             <p className="font-bold text-sm text-[#1A1A18]">{t("rewards.referral_status_title")}</p>
           </div>
-          {referrals.map((r, i) => (
+          {tx(referrals.map((r, i) => (
             <div key={i} className="flex items-center gap-3 px-4 py-3 border-b border-[var(--border)] last:border-none">
               <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold text-white"
                 style={{ backgroundColor: "var(--green)" }}>
-                {r.avatar}
+                {tx(r.avatar)}
               </div>
               <div className="flex-1">
-                <p className="font-semibold text-sm text-[#1A1A18]">{r.name}</p>
-                <p className="text-xs text-[var(--muted)]">{r.joined}</p>
+                <p className="font-semibold text-sm text-[#1A1A18]">{tx(r.name)}</p>
+                <p className="text-xs text-[var(--muted)]">{tx(r.joined)}</p>
               </div>
               <div className="text-right">
                 <span className="text-xs font-bold px-2 py-0.5 rounded-full"
@@ -374,12 +377,12 @@ export const ReferralScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
                     backgroundColor: r.statusKey === "completed" ? "var(--green-light)" : "var(--gold-light)",
                     color: r.statusKey === "completed" ? "var(--green)" : "var(--gold)",
                   }}>
-                  {r.statusKey === "completed" ? t("rewards.status_completed") : t("rewards.status_pending")}
+                  {tx(r.statusKey === "completed" ? t("rewards.status_completed") : t("rewards.status_pending"))}
                 </span>
-                {r.earned > 0 && <p className="text-[10px] text-[var(--muted)] mt-0.5">+{r.earned}P</p>}
+                {tx(r.earned > 0 && <p className="text-[10px] text-[var(--muted)] mt-0.5">+{tx(r.earned)}P</p>)}
               </div>
             </div>
-          ))}
+          )))}
         </div>
         <div className="h-4" />
       </div>

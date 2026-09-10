@@ -1,5 +1,12 @@
+import { AddressBook, ProfileEditor } from "../components/CustomerForms";
+import { tx } from "../i18n/content";
+import { showUnavailable, showFeedback } from "../components/CustomerFeedback";
+import { goBack, openEntity, routeParam, navigateTo } from "../services/navigation";
+import { useLocal, writeLocal, directions } from "../services/customerState";
 import React, { useState, useEffect } from "react";
 import { GeometricPattern, StatusBar, BottomNav, BackButton, Toggle, HalalBadge, StarRating, TabId } from "../components/Shared";
+import { getRestaurants } from "../api/restaurants";
+import { getMosques } from "../api/mosques";
 import { getProfile, type Profile } from "../api/profile";
 import { getSavedPlaces, type SavedPlaces } from "../api/savedPlaces";
 import { useLanguage } from "../i18n/LanguageContext";
@@ -10,6 +17,7 @@ import type { ScreenId } from "../App";
 export const ProfileScreen = ({ onTabChange, onLogout, onNavigate }: { onTabChange?: (t: TabId) => void; onLogout?: () => void; onNavigate?: (s: ScreenId) => void }) => {
   const { t, lang } = useLanguage();
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [localName] = useLocal("profile-name", "Test User");
 
   useEffect(() => {
     getProfile().then(setProfile).catch(() => {});
@@ -27,6 +35,11 @@ export const ProfileScreen = ({ onTabChange, onLogout, onNavigate }: { onTabChan
     { icon: "🎟", label: t("profile.menu_loyalty"), sub: t("profile.menu_loyalty_sub").replace("{points}", "3,200"), target: "loyalty" },
     { icon: "❓", label: t("profile.menu_support"), sub: "", target: "community" },
     { icon: "📖", label: t("profile.menu_tutorial"), sub: t("profile.menu_tutorial_sub"), target: "tutorial" },
+    { icon: "📷", label: t("scanner.history_title"), sub: "", target: "scan-history" },
+    { icon: "🍽️", label: t("smart.meal_plan_title"), sub: "", target: "meal-plans" },
+    { icon: "👥", label: t("rewards.referral_title"), sub: "", target: "referral" },
+    { icon: "🎉", label: t("engagement.eid_deals_title"), sub: "", target: "eid" },
+    { icon: "🌐", label: t("accessibility.multilingual_title"), sub: "", target: "multilingual" },
     { icon: "⚙️", label: t("profile.menu_settings"), sub: "", target: "settings" },
   ];
 
@@ -50,17 +63,17 @@ export const ProfileScreen = ({ onTabChange, onLogout, onNavigate }: { onTabChan
       <div className="relative z-10 px-5 pb-6">
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 rounded-full bg-white/20 border-2 border-white/40 flex items-center justify-center text-2xl font-bold text-white">
-            {profile?.initials ?? "..."}
+            {tx(profile?.initials ?? "...")}
           </div>
           <div className="flex-1">
-            <p className="font-bold text-lg text-white">{profile?.name ?? t("common.loading")}</p>
-            <p className="text-white/70 text-sm">{profile?.email ?? ""}</p>
+            <p className="font-bold text-lg text-white">{tx(localName)}</p>
+            <p className="text-white/70 text-sm">{tx(profile?.email ?? "")}</p>
             <div className="flex items-center gap-1.5 mt-1.5">
-              <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-white/20 text-white">{profile?.membership ?? ""}</span>
-              {profile && <span className="text-xs text-white/60">· {profile.points.toLocaleString()} {t("profile.points_unit")}</span>}
+              <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-white/20 text-white">{tx(profile?.membership ?? "")}</span>
+              {tx(profile && <span className="text-xs text-white/60">· {tx(profile.points.toLocaleString())} {t("profile.points_unit")}</span>)}
             </div>
           </div>
-          <button className="w-8 h-8 bg-white/15 rounded-lg flex items-center justify-center">
+          <button type="button" onClick={() => onNavigate?.("settings")} className="w-8 h-8 bg-white/15 rounded-lg flex items-center justify-center">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="white" strokeWidth="1.8"><path d="M2 12L5 11L13 3a1.4 1.4 0 00-2-2L3 10L2 13z"/></svg>
           </button>
         </div>
@@ -69,30 +82,30 @@ export const ProfileScreen = ({ onTabChange, onLogout, onNavigate }: { onTabChan
 
     <div className="flex-1 phone-scroll">
       <div className="bg-white px-4 py-4 flex divide-x divide-[var(--border)]">
-        {statsRow.map((s) => (
+        {tx(statsRow.map((s) => (
           <div key={s.label} className="flex-1 text-center">
-            <p className="font-bold text-xl text-[#1A1A18]">{s.val}</p>
-            <p className="text-xs text-[var(--muted)] mt-0.5">{s.label}</p>
+            <p className="font-bold text-xl text-[#1A1A18]">{tx(s.val)}</p>
+            <p className="text-xs text-[var(--muted)] mt-0.5">{tx(s.label)}</p>
           </div>
-        ))}
+        )))}
       </div>
 
       {/* Menu */}
       <div className="bg-white mt-2 divide-y divide-[var(--border)]">
-        {profileMenu.map((item) => (
-          <button key={item.label} onClick={() => onNavigate?.(item.target)} className="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[var(--cream)]">
+        {tx(profileMenu.map((item) => (
+          <button key={item.label} onClick={() => [t("profile.menu_payment"), t("profile.menu_support")].includes(item.label) ? showUnavailable() : onNavigate?.(item.target)} className="w-full flex items-center gap-3 px-5 py-4 text-left active:bg-[var(--cream)]">
             <div className="w-10 h-10 rounded-xl bg-[var(--cream)] flex items-center justify-center text-lg flex-shrink-0">
-              {item.icon}
+              {tx(item.icon)}
             </div>
             <div className="flex-1">
-              <p className="text-sm font-semibold text-[#1A1A18]">{item.label}</p>
-              {item.sub && <p className="text-xs text-[var(--muted)] mt-0.5">{item.sub}</p>}
+              <p className="text-sm font-semibold text-[#1A1A18]">{tx(item.label)}</p>
+              {tx(item.sub && <p className="text-xs text-[var(--muted)] mt-0.5">{tx(item.sub)}</p>)}
             </div>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--muted)" strokeWidth="1.8">
               <path d="M6 4l4 4-4 4" strokeLinecap="round"/>
             </svg>
           </button>
-        ))}
+        )))}
       </div>
 
       <div className="px-5 py-4 space-y-3">
@@ -116,9 +129,14 @@ export const SavedPlacesScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =
   const { t } = useLanguage();
   const [tab, setTab] = useState<"restaurants" | "mosques">("restaurants");
   const [places, setPlaces] = useState<SavedPlaces | null>(null);
+  const [favorites, setFavorites] = useLocal<string[]>("favorite-restaurants", ["sindang-halal", "itaewon-kebab", "masjid-seoul-cafe"]);
+  const [mosqueFavorites, setMosqueFavorites] = useLocal<string[]>("favorite-mosques", ["seoul-central", "itaewon-masjid"]);
 
   useEffect(() => {
-    getSavedPlaces().then(setPlaces).catch(() => {});
+    Promise.all([getRestaurants(),getMosques()]).then(([restaurants,mosques]) => setPlaces({
+      restaurants: restaurants.map(r => ({id:r.id,name:r.nameKo,halalStatus:r.halalStatus,rating:r.rating,reviewCount:r.reviewCount,imageId:r.photo.match(/photo-([^?]+)/)?.[1] ?? ""})),
+      mosques: mosques.map(m => ({id:m.id,name:m.nameKo,nameEn:m.name,distance:m.distance})),
+    })).catch(() => {});
   }, []);
 
   return (
@@ -126,11 +144,11 @@ export const SavedPlacesScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
-          <BackButton onBack={() => onNavigate?.("home")} />
+          <BackButton onBack={() => goBack("profile")} />
           <h1 className="font-bold text-lg flex-1">{t("profile.saved_places_title")}</h1>
         </div>
         <div className="flex bg-[var(--cream)] mx-4 mb-4 rounded-xl p-1">
-          {(["restaurants", "mosques"] as const).map((tabId) => (
+          {tx((["restaurants", "mosques"] as const).map((tabId) => (
             <button
               key={tabId}
               onClick={() => setTab(tabId)}
@@ -140,30 +158,30 @@ export const SavedPlacesScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =
                 color: tab === tabId ? "white" : "var(--muted)",
               }}
             >
-              {tabId === "restaurants" ? t("profile.tab_restaurants") : t("profile.tab_mosques")}
+              {tx(tabId === "restaurants" ? t("profile.tab_restaurants") : t("profile.tab_mosques"))}
             </button>
-          ))}
+          )))}
         </div>
       </div>
 
       <div className="flex-1 phone-scroll px-4 py-4 space-y-3">
-        {!places ? (
+        {tx(!places ? (
           <p className="text-center text-sm text-[var(--muted)] py-8">{t("common.loading")}</p>
         ) : tab === "restaurants" ? (
-          places.restaurants.map((r) => (
+          places.restaurants.filter(r => favorites.includes(r.id)).map((r) => (
             <div key={r.id} className="bg-white rounded-2xl overflow-hidden shadow-sm flex items-stretch">
               <div className="w-24 h-24 flex-shrink-0 bg-[#E8E6E1]">
-                <img src={`https://images.unsplash.com/photo-${r.imageId}?w=180&h=180&fit=crop&auto=format&q=80`} alt={r.name} className="w-full h-full object-cover" />
+                <img src={`https://images.unsplash.com/photo-${r.imageId}?w=180&h=180&fit=crop&auto=format&q=80`} alt={tx(r.name)} className="w-full h-full object-cover" />
               </div>
               <div className="p-3 flex-1 flex flex-col justify-between">
                 <div>
                   <HalalBadge variant={halalBadgeMap(r.halalStatus)} />
-                  <p className="font-bold text-sm text-[#1A1A18] mt-1">{r.name}</p>
+                  <p className="font-bold text-sm text-[#1A1A18] mt-1">{tx(r.name)}</p>
                   <StarRating rating={r.rating} count={r.reviewCount} />
                 </div>
                 <div className="flex gap-2 mt-2">
-                  <button className="flex-1 py-2 rounded-xl text-xs font-bold text-white" style={{ backgroundColor: "var(--green)" }}>{t("profile.order_now")}</button>
-                  <button className="w-8 h-8 rounded-xl border border-[var(--border)] flex items-center justify-center">
+                  <button type="button" onClick={() => openEntity("restaurant-detail","restaurant",r.id)} className="flex-1 py-2 rounded-xl text-xs font-bold text-white" style={{ backgroundColor: "var(--green)" }}>{t("profile.order_now")}</button>
+                  <button type="button" onClick={() => setFavorites(ids => ids.filter(id => id !== r.id))} className="w-8 h-8 rounded-xl border border-[var(--border)] flex items-center justify-center">
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="var(--danger)"><path d="M7 12S1 8 1 4.5C1 2.5 2.7 1 4.5 1c.9 0 1.8.4 2.5 1C7.7 1.4 8.6 1 9.5 1 11.3 1 13 2.5 13 4.5 13 8 7 12 7 12Z"/></svg>
                   </button>
                 </div>
@@ -171,21 +189,21 @@ export const SavedPlacesScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =
             </div>
           ))
         ) : (
-          places.mosques.map((m) => (
+          places.mosques.filter(m => mosqueFavorites.includes(m.id)).map((m) => (
             <div key={m.id} className="bg-white rounded-2xl p-4 shadow-sm flex items-center gap-4">
               <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "var(--gold-light)" }}>
                 <span className="text-2xl">🕌</span>
               </div>
               <div className="flex-1">
-                <p className="font-bold text-base text-[#1A1A18]">{m.name}</p>
-                <p className="text-xs text-[var(--muted)]">{m.nameEn} · {m.distance}</p>
+                <button onClick={() => openEntity("mosque-detail","mosque",m.id)} className="font-bold text-base text-[#1A1A18]">{tx(m.name)}</button>
+                <p className="text-xs text-[var(--muted)]">{tx(m.nameEn)} · {tx(m.distance)}</p>
               </div>
-              <button className="w-8 h-8 rounded-xl border border-[var(--border)] flex items-center justify-center">
+              <button type="button" onClick={() => setMosqueFavorites(ids => ids.filter(id => id !== m.id))} className="w-8 h-8 rounded-xl border border-[var(--border)] flex items-center justify-center">
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="var(--gold)"><path d="M7 12S1 8 1 4.5C1 2.5 2.7 1 4.5 1c.9 0 1.8.4 2.5 1C7.7 1.4 8.6 1 9.5 1 11.3 1 13 2.5 13 4.5 13 8 7 12 7 12Z"/></svg>
               </button>
             </div>
           ))
-        )}
+        ))}
       </div>
     </div>
   );
@@ -200,84 +218,17 @@ const addressData = [
 
 export const AddressScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const { t } = useLanguage();
-  const addressLabels: Record<string, string> = { home: t("home.address_home"), work: "회사", mosque: "모스크 근처" };
-  return (
-  <div className="flex flex-col h-full bg-[var(--cream)]">
-    <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
-      <StatusBar />
-      <div className="flex items-center gap-3 px-4 pb-3">
-        <BackButton onBack={() => onNavigate?.("home")} />
-        <h1 className="font-bold text-lg flex-1">{t("profile.address_title")}</h1>
-      </div>
-    </div>
-
-    <div className="flex-1 phone-scroll px-4 py-4 space-y-3">
-      {addressData.map((addr) => (
-        <div key={addr.key} className="bg-white rounded-2xl p-4 shadow-sm">
-          <div className="flex items-start gap-3">
-            <div
-              className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
-              style={{ backgroundColor: addr.default ? "var(--green-light)" : "var(--cream)" }}
-            >
-              {addr.icon}
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-0.5">
-                <p className="font-bold text-sm text-[#1A1A18]">{addressLabels[addr.key]}</p>
-                {addr.default && (
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ backgroundColor: "var(--green)", color: "white" }}>{t("profile.default_badge")}</span>
-                )}
-              </div>
-              <p className="text-sm text-[var(--muted)] leading-relaxed">{addr.addr}</p>
-            </div>
-            <div className="flex gap-1 flex-shrink-0">
-              <button className="w-8 h-8 rounded-lg bg-[var(--cream)] flex items-center justify-center">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--muted)" strokeWidth="1.5"><path d="M2 10L4.5 9.5L11 3a1 1 0 00-1.5-1.5L3 8L2 11z"/></svg>
-              </button>
-              {!addr.default && (
-                <button className="w-8 h-8 rounded-lg bg-[var(--cream)] flex items-center justify-center">
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--danger)" strokeWidth="1.5"><path d="M2 3.5h10M5.5 3.5V2h3v1.5M6 6v4.5M8 6v4.5M3.5 3.5l.5 8h6l.5-8" strokeLinecap="round"/></svg>
-                </button>
-              )}
-            </div>
-          </div>
-          {!addr.default && (
-            <button className="mt-2 text-xs font-medium ml-13 pl-13" style={{ color: "var(--green)", paddingLeft: "52px" }}>
-              {t("profile.set_as_default")}
-            </button>
-          )}
-        </div>
-      ))}
-
-      {/* Add new */}
-      <button className="w-full py-4 rounded-2xl border-2 border-dashed border-[var(--border)] flex items-center justify-center gap-2 font-semibold text-sm" style={{ color: "var(--muted)" }}>
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="8" y1="3" x2="8" y2="13"/><line x1="3" y1="8" x2="13" y2="8"/></svg>
-        {t("profile.add_address")}
-      </button>
-
-      {/* Map hint */}
-      <div className="h-28 rounded-2xl overflow-hidden bg-[#E8E4DC] relative">
-        <img src="https://images.unsplash.com/photo-1534430480872-3498386e7856?w=390&h=130&fit=crop&auto=format&q=80" alt="map" className="w-full h-full object-cover opacity-60" />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="bg-white rounded-xl px-4 py-2.5 shadow-md flex items-center gap-2">
-            <span>📍</span>
-            <p className="text-sm font-semibold text-[#1A1A18]">{t("profile.select_on_map")}</p>
-          </div>
-        </div>
-      </div>
-      <div className="h-4" />
-    </div>
-  </div>
-  );
+  return <div className="flex flex-col h-full bg-[var(--cream)]"><StatusBar /><header className="flex gap-3 items-center p-4"><BackButton onBack={() => goBack("profile")} /><h1 className="font-bold text-lg">{t("profile.address_title")}</h1></header><div className="flex-1 phone-scroll p-4"><AddressBook /></div></div>;
 };
 
 // ── 31. Settings ───────────────────────────────────────────────────────────────
 export const SettingsScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const { t, lang } = useLanguage();
-  const [notifOrder, setNotifOrder] = useState(true);
-  const [notifPrayer, setNotifPrayer] = useState(true);
-  const [notifPromo, setNotifPromo] = useState(false);
-  const [theme, setTheme] = useState<"light" | "dark" | "auto">("light");
+  const [notifOrder, setNotifOrder] = useLocal("notify-order", true);
+  const [notifPrayer, setNotifPrayer] = useLocal("notify-prayer", true);
+  const [notifPromo, setNotifPromo] = useLocal("notify-promo", false);
+  const [theme, setTheme] = useLocal<"light" | "dark" | "auto">("theme", "light");
+  const [editingProfile, setEditingProfile] = useState(false);
   const currentLangName = LANGUAGES.find((l) => l.code === lang)?.name ?? "한국어";
   const themeLabels: Record<typeof theme, string> = { light: t("profile.theme_light"), dark: t("profile.theme_dark"), auto: t("profile.theme_auto") };
 
@@ -286,7 +237,7 @@ export const SettingsScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
-          <BackButton onBack={() => onNavigate?.("home")} />
+          <BackButton onBack={() => goBack("profile")} />
           <h1 className="font-bold text-lg">{t("profile.settings_title")}</h1>
         </div>
       </div>
@@ -296,19 +247,19 @@ export const SettingsScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
         <div>
           <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest px-5 mb-2">{t("profile.section_notifications")}</p>
           <div className="bg-white divide-y divide-[var(--border)]">
-            {[
+            {tx([
               { label: t("profile.notif_order"), sub: t("profile.notif_order_sub"), state: notifOrder, set: setNotifOrder },
               { label: t("profile.notif_prayer"), sub: t("profile.notif_prayer_sub"), state: notifPrayer, set: setNotifPrayer },
               { label: t("profile.notif_promo"), sub: t("profile.notif_promo_sub"), state: notifPromo, set: setNotifPromo },
             ].map((n) => (
               <div key={n.label} className="flex items-center justify-between px-5 py-4">
                 <div>
-                  <p className="text-sm font-semibold text-[#1A1A18]">{n.label}</p>
-                  <p className="text-xs text-[var(--muted)] mt-0.5">{n.sub}</p>
+                  <p className="text-sm font-semibold text-[#1A1A18]">{tx(n.label)}</p>
+                  <p className="text-xs text-[var(--muted)] mt-0.5">{tx(n.sub)}</p>
                 </div>
                 <Toggle on={n.state} onToggle={() => n.set(!n.state)} />
               </div>
-            ))}
+            )))}
           </div>
         </div>
 
@@ -319,10 +270,10 @@ export const SettingsScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
             <button onClick={() => onNavigate?.("language")} className="w-full flex items-center justify-between px-5 py-4">
               <div className="text-left">
                 <p className="text-sm font-semibold text-[#1A1A18]">{t("profile.language_row")}</p>
-                <p className="text-xs text-[var(--muted)]">Language</p>
+                <p className="text-xs text-[var(--muted)]">{t("profile.language_row")}</p>
               </div>
               <div className="flex items-center gap-2">
-                <p className="text-sm font-medium text-[var(--muted)]">{currentLangName}</p>
+                <p className="text-sm font-medium text-[var(--muted)]">{tx(currentLangName)}</p>
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--muted)" strokeWidth="1.8"><path d="M6 4l4 4-4 4" strokeLinecap="round"/></svg>
               </div>
             </button>
@@ -331,10 +282,10 @@ export const SettingsScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
             <div className="px-5 py-4">
               <p className="text-sm font-semibold text-[#1A1A18] mb-3">{t("profile.theme_row")}</p>
               <div className="flex gap-2">
-                {(["light", "dark", "auto"] as const).map((themeId) => (
+                {tx((["light", "dark", "auto"] as const).map((themeId) => (
                   <button
                     key={themeId}
-                    onClick={() => setTheme(themeId)}
+                    onClick={() => themeId === "light" ? setTheme(themeId) : showUnavailable()}
                     className="flex-1 py-2.5 rounded-xl text-sm font-semibold border transition-all"
                     style={{
                       backgroundColor: theme === themeId ? "var(--green)" : "white",
@@ -342,13 +293,13 @@ export const SettingsScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
                       borderColor: theme === themeId ? "var(--green)" : "var(--border)",
                     }}
                   >
-                    {themeLabels[themeId]}
+                    {tx(themeLabels[themeId])}
                   </button>
-                ))}
+                )))}
               </div>
             </div>
 
-            <button className="w-full flex items-center justify-between px-5 py-4">
+            <button type="button" onClick={showUnavailable} className="w-full flex items-center justify-between px-5 py-4">
               <div className="text-left">
                 <p className="text-sm font-semibold text-[#1A1A18]">{t("profile.halal_authority")}</p>
                 <p className="text-xs text-[var(--muted)]">KMF, JAKIM, IFANCA</p>
@@ -358,17 +309,18 @@ export const SettingsScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
           </div>
         </div>
 
+        {editingProfile && <ProfileEditor />}
         {/* Account */}
         <div>
           <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest px-5 mb-2 mt-2">{t("profile.section_account")}</p>
           <div className="bg-white divide-y divide-[var(--border)]">
-            {[t("profile.edit_profile"), t("profile.change_password")].map((item) => (
-              <button key={item} className="w-full flex items-center justify-between px-5 py-4">
-                <p className="text-sm font-semibold text-[#1A1A18]">{item}</p>
+            {tx([t("profile.edit_profile"), t("profile.change_password")].map((item) => (
+              <button type="button" onClick={() => item === t("profile.edit_profile") ? setEditingProfile(v => !v) : showUnavailable()} key={item} className="w-full flex items-center justify-between px-5 py-4">
+                <p className="text-sm font-semibold text-[#1A1A18]">{tx(item)}</p>
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--muted)" strokeWidth="1.8"><path d="M6 4l4 4-4 4" strokeLinecap="round"/></svg>
               </button>
-            ))}
-            <button className="w-full flex items-center justify-between px-5 py-4">
+            )))}
+            <button type="button" onClick={showUnavailable} className="w-full flex items-center justify-between px-5 py-4">
               <p className="text-sm font-semibold" style={{ color: "var(--danger)" }}>{t("profile.delete_data")}</p>
             </button>
           </div>
@@ -378,12 +330,12 @@ export const SettingsScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => v
         <div>
           <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-widest px-5 mb-2 mt-2">{t("profile.section_info")}</p>
           <div className="bg-white divide-y divide-[var(--border)]">
-            {[t("profile.terms"), t("profile.privacy")].map((item) => (
-              <button key={item} className="w-full flex items-center justify-between px-5 py-4">
-                <p className="text-sm font-semibold text-[#1A1A18]">{item}</p>
+            {tx([t("profile.terms"), t("profile.privacy")].map((item) => (
+              <button type="button" onClick={() => item === t("profile.edit_profile") ? setEditingProfile(v => !v) : showUnavailable()} key={item} className="w-full flex items-center justify-between px-5 py-4">
+                <p className="text-sm font-semibold text-[#1A1A18]">{tx(item)}</p>
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--muted)" strokeWidth="1.8"><path d="M6 4l4 4-4 4" strokeLinecap="round"/></svg>
               </button>
-            ))}
+            )))}
             <div className="flex items-center justify-between px-5 py-4">
               <p className="text-sm font-semibold text-[#1A1A18]">{t("profile.app_version")}</p>
               <p className="text-sm text-[var(--muted)]">1.0.0</p>

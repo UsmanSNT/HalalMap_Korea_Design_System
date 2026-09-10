@@ -1,3 +1,7 @@
+import { tx } from "../i18n/content";
+import { showUnavailable, showFeedback } from "../components/CustomerFeedback";
+import { goBack, openEntity, routeParam, navigateTo } from "../services/navigation";
+import { useLocal, writeLocal, directions } from "../services/customerState";
 import React, { useState } from "react";
 import { GeometricPattern, StatusBar, BackButton, HalalBadge, PriceTag, Toggle } from "../components/Shared";
 import type { ScreenId } from "../App";
@@ -42,6 +46,7 @@ const contextChipKeys = ["chip_rainy", "chip_dinner", "chip_within_2km", "chip_u
 export const AIMealScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const { t } = useLanguage();
   const [cardIdx, setCardIdx] = useState(0);
+  const [favorites, setFavorites] = useLocal<string[]>("favorite-restaurants", ["sindang-halal", "itaewon-kebab", "masjid-seoul-cafe"]);
   const [swipeDir, setSwipeDir] = useState<null | "left" | "right">(null);
   const card = mealCards[cardIdx % mealCards.length];
   const next = mealCards[(cardIdx + 1) % mealCards.length];
@@ -57,12 +62,12 @@ export const AIMealScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => voi
   return (
     <div className="flex flex-col h-full bg-[var(--cream)]">
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
-        <StatusBar />
+        <StatusBar /><p className="px-4 py-1 text-xs text-[var(--muted)]">{t("flow.demo_notice")}</p>
         <div className="flex items-center gap-3 px-4 pb-3">
-          <BackButton onBack={() => onNavigate?.("home")} />
+          <BackButton onBack={() => goBack("home")} />
           <div className="flex-1">
             <h1 className="font-bold text-lg">{t("smart.ai_meal_title")}</h1>
-            <p className="text-xs text-[var(--muted)]">오늘 오후 5:47 · 이태원 · 🌧️ 12°C</p>
+            <p className="text-xs text-[var(--muted)]">{tx("오늘 오후 5:47 · 이태원 · 🌧️ 12°C")}</p>
           </div>
           <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ backgroundColor: "var(--green-light)" }}>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--green)">
@@ -72,16 +77,16 @@ export const AIMealScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => voi
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col px-6 py-4 gap-4">
+      <div className="flex-1 phone-scroll flex flex-col px-6 py-4 gap-4">
         {/* Context chips */}
         <div className="flex flex-wrap gap-2">
-          {contextChipKeys.map((k) => (
-            <span key={k} className="text-xs font-medium px-3 py-1.5 rounded-full bg-white border border-[var(--border)] text-[#1A1A18]">{t(`smart.${k}`)}</span>
-          ))}
+          {tx(contextChipKeys.map((k) => (
+            <span key={k} className="text-xs font-medium px-3 py-1.5 rounded-full bg-white border border-[var(--border)] text-[#1A1A18]">{tx(t(`smart.${k}`))}</span>
+          )))}
         </div>
 
         {/* Tinder-style card stack */}
-        <div className="flex-1 relative flex items-center justify-center">
+        <div className="relative flex-shrink-0 h-[450px] flex items-center justify-center">
           {/* Back card (next) */}
           <div className="absolute inset-x-4 top-4 bottom-0 bg-white rounded-3xl shadow-sm" style={{ transform: "scale(0.94)", opacity: 0.6 }} />
 
@@ -95,19 +100,19 @@ export const AIMealScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => voi
           >
             {/* Photo */}
             <div className="relative h-56 bg-[#D8D4CC]">
-              <img src={`https://images.unsplash.com/photo-${card.imageId}?w=390&h=240&fit=crop&auto=format&q=80`} alt={card.name} className="w-full h-full object-cover" />
+              <img src={`https://images.unsplash.com/photo-${card.imageId}?w=390&h=240&fit=crop&auto=format&q=80`} alt={tx(card.name)} className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
 
               {/* Match score */}
               <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-white/95 backdrop-blur px-3 py-1.5 rounded-full">
                 <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: "var(--green)" }} />
-                <span className="text-xs font-bold text-[#1A1A18]">{t("smart.ai_match_label").replace("{match}", String(card.match))}</span>
+                <span className="text-xs font-bold text-[#1A1A18]">{tx(t("smart.ai_match_label").replace("{match}", String(card.match)))}</span>
               </div>
 
               <div className="absolute bottom-3 left-3 right-3">
                 <HalalBadge variant={card.badge} />
-                <h2 className="text-white font-bold text-xl mt-1 leading-tight">{card.name}</h2>
-                <p className="text-white/80 text-sm">{card.restaurant}</p>
+                <h2 className="text-white font-bold text-xl mt-1 leading-tight">{tx(card.name)}</h2>
+                <p className="text-white/80 text-sm">{tx(card.restaurant)}</p>
               </div>
             </div>
 
@@ -116,15 +121,15 @@ export const AIMealScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => voi
               {/* AI reason */}
               <div className="flex gap-2.5 p-3 rounded-xl" style={{ backgroundColor: "var(--green-light)" }}>
                 <span className="text-lg flex-shrink-0">🤖</span>
-                <p className="text-sm font-medium leading-relaxed" style={{ color: "var(--green)" }}>{card.reason}</p>
+                <p className="text-sm font-medium leading-relaxed" style={{ color: "var(--green)" }}>{tx(card.reason)}</p>
               </div>
 
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <PriceTag amount={card.price} className="text-lg" />
-                  <p className="text-xs text-[var(--muted)]">{t("smart.delivery_info").replace("{eta}", card.eta)}</p>
+                  <p className="text-xs text-[var(--muted)]">{tx(t("smart.delivery_info").replace("{eta}", card.eta))}</p>
                 </div>
-                <button className="px-5 py-3 rounded-xl font-bold text-white text-sm" style={{ backgroundColor: "var(--green)" }}>
+                <button type="button" onClick={() => openEntity("menu","restaurant",["sindang-halal","delhi-spice","itaewon-kebab"][cardIdx % 3])} className="px-5 py-3 rounded-xl font-bold text-white text-sm" style={{ backgroundColor: "var(--green)" }}>
                   {t("smart.order_now")}
                 </button>
               </div>
@@ -144,7 +149,7 @@ export const AIMealScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => voi
             </svg>
           </button>
 
-          <button className="w-10 h-10 rounded-full border border-[var(--gold)] flex items-center justify-center" style={{ backgroundColor: "var(--gold-light)" }}>
+          <button type="button" onClick={() => { setFavorites(f => f.includes(["sindang-halal","delhi-spice","itaewon-kebab"][cardIdx % 3]) ? f.filter(id => id !== ["sindang-halal","delhi-spice","itaewon-kebab"][cardIdx % 3]) : [...f,["sindang-halal","delhi-spice","itaewon-kebab"][cardIdx % 3]]); }} className="w-10 h-10 rounded-full border border-[var(--gold)] flex items-center justify-center" style={{ backgroundColor: "var(--gold-light)" }}>
             <svg width="18" height="18" viewBox="0 0 18 18" fill="var(--gold)">
               <path d="M9 1.5L11 6H15.5L12 8.5L13.5 13L9 10.5L4.5 13L6 8.5L2.5 6H7L9 1.5Z"/>
             </svg>
@@ -185,100 +190,100 @@ export const GroupOrderScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =>
   return (
     <div className="flex flex-col h-full bg-[var(--cream)]">
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
-        <StatusBar />
+        <StatusBar /><p className="px-4 py-1 text-xs text-[var(--muted)]">{t("flow.demo_notice")}</p>
         <div className="flex items-center gap-3 px-4 pb-3">
-          <BackButton onBack={() => onNavigate?.("home")} />
+          <BackButton onBack={() => goBack("home")} />
           <div className="flex-1">
             <h1 className="font-bold text-lg">{t("smart.group_order_title")}</h1>
-            <p className="text-xs text-[var(--muted)]">신당 할랄 키친</p>
+            <p className="text-xs text-[var(--muted)]">{tx("신당 할랄 키친")}</p>
           </div>
-          <button className="text-sm font-bold px-3 py-1.5 rounded-xl" style={{ backgroundColor: "var(--green-light)", color: "var(--green)" }}>
+          <button type="button" onClick={showUnavailable} className="text-sm font-bold px-3 py-1.5 rounded-xl" style={{ backgroundColor: "var(--green-light)", color: "var(--green)" }}>
             {t("smart.invite_link")}
           </button>
         </div>
 
         {/* Tabs */}
         <div className="flex bg-[var(--cream)] mx-4 mb-3 rounded-xl p-1">
-          {(["order", "split"] as const).map((tabId) => (
+          {tx((["order", "split"] as const).map((tabId) => (
             <button key={tabId} onClick={() => setTab(tabId)}
               className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all"
               style={{ backgroundColor: tab === tabId ? "var(--green)" : "transparent", color: tab === tabId ? "white" : "var(--muted)" }}>
-              {tabId === "order" ? t("smart.tab_order_status") : t("smart.tab_split_bill")}
+              {tx(tabId === "order" ? t("smart.tab_order_status") : t("smart.tab_split_bill"))}
             </button>
-          ))}
+          )))}
         </div>
       </div>
 
       <div className="flex-1 phone-scroll px-4 py-3 space-y-3">
-        {tab === "order" ? (
+        {tx(tab === "order" ? (
           <>
             {/* Progress */}
             <div className="bg-white rounded-2xl p-4 shadow-sm">
               <div className="flex items-center justify-between mb-2">
                 <p className="font-semibold text-sm text-[#1A1A18]">{t("smart.participation_status")}</p>
-                <p className="text-sm font-bold" style={{ color: "var(--green)" }}>{t("smart.members_done").replace("{ready}", String(readyCount)).replace("{total}", String(groupMembers.length))}</p>
+                <p className="text-sm font-bold" style={{ color: "var(--green)" }}>{tx(t("smart.members_done").replace("{ready}", String(readyCount)).replace("{total}", String(groupMembers.length)))}</p>
               </div>
               <div className="h-2 bg-[var(--cream)] rounded-full overflow-hidden">
                 <div className="h-full rounded-full transition-all" style={{ width: `${(readyCount / groupMembers.length) * 100}%`, backgroundColor: "var(--green)" }} />
               </div>
               <div className="flex gap-2 mt-3">
-                {groupMembers.map((m, i) => (
+                {tx(groupMembers.map((m, i) => (
                   <div key={i} className="flex flex-col items-center gap-1">
                     <div className="relative">
-                      <div className="w-10 h-10 rounded-full bg-[var(--cream)] flex items-center justify-center text-lg">{m.avatar}</div>
-                      {m.ready && (
+                      <div className="w-10 h-10 rounded-full bg-[var(--cream)] flex items-center justify-center text-lg">{tx(m.avatar)}</div>
+                      {tx(m.ready && (
                         <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full flex items-center justify-center" style={{ backgroundColor: "var(--green)" }}>
                           <svg width="8" height="6" viewBox="0 0 8 6" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round"><path d="M1 3l2 2 4-4"/></svg>
                         </div>
-                      )}
+                      ))}
                     </div>
-                    <p className="text-[9px] text-[var(--muted)] truncate w-10 text-center">{m.name.split(" ")[0]}</p>
+                    <p className="text-[9px] text-[var(--muted)] truncate w-10 text-center">{tx(tx(m.name).split(" ")[0])}</p>
                   </div>
-                ))}
+                )))}
               </div>
             </div>
 
             {/* Member orders */}
-            {groupMembers.map((m, i) => (
+            {tx(groupMembers.map((m, i) => (
               <div key={i} className="bg-white rounded-2xl p-4 shadow-sm">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-9 h-9 rounded-full bg-[var(--cream)] flex items-center justify-center text-lg flex-shrink-0">{m.avatar}</div>
+                  <div className="w-9 h-9 rounded-full bg-[var(--cream)] flex items-center justify-center text-lg flex-shrink-0">{tx(m.avatar)}</div>
                   <div className="flex-1">
-                    <p className="font-bold text-sm text-[#1A1A18]">{m.name}</p>
-                    {m.ready ? (
+                    <p className="font-bold text-sm text-[#1A1A18]">{tx(m.name)}</p>
+                    {tx(m.ready ? (
                       <span className="text-[10px] font-bold" style={{ color: "var(--green)" }}>{t("smart.order_done")}</span>
                     ) : m.items.length === 0 ? (
                       <span className="text-[10px] text-[var(--muted)]">{t("smart.still_choosing")}</span>
                     ) : (
                       <span className="text-[10px] text-[var(--gold)]">{t("smart.editing")}</span>
-                    )}
-                  </div>
-                  {m.total > 0 && <PriceTag amount={m.total} className="text-sm font-bold" />}
-                </div>
-                {m.items.length > 0 && (
-                  <div className="space-y-1 ml-12">
-                    {m.items.map((item) => (
-                      <p key={item} className="text-xs text-[var(--muted)]">· {item}</p>
                     ))}
                   </div>
-                )}
-                {m.items.length === 0 && !m.ready && (
+                  {tx(m.total > 0 && <PriceTag amount={m.total} className="text-sm font-bold" />)}
+                </div>
+                {tx(m.items.length > 0 && (
+                  <div className="space-y-1 ml-12">
+                    {tx(m.items.map((item) => (
+                      <p key={item} className="text-xs text-[var(--muted)]">· {tx(item)}</p>
+                    )))}
+                  </div>
+                ))}
+                {tx(m.items.length === 0 && !m.ready && (
                   <div className="ml-12 h-8 rounded-lg skeleton" />
-                )}
+                ))}
               </div>
-            ))}
+            )))}
           </>
         ) : (
           <>
             {/* Split bill */}
             <div className="bg-white rounded-2xl p-5 shadow-sm space-y-3">
               <p className="font-bold text-base text-[#1A1A18]">{t("smart.tab_split_bill")}</p>
-              {groupMembers.filter(m => m.total > 0).map((m, i) => (
+              {tx(groupMembers.filter(m => m.total > 0).map((m, i) => (
                 <div key={i} className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-[var(--cream)] flex items-center justify-center text-base flex-shrink-0">{m.avatar}</div>
+                  <div className="w-8 h-8 rounded-full bg-[var(--cream)] flex items-center justify-center text-base flex-shrink-0">{tx(m.avatar)}</div>
                   <div className="flex-1">
                     <div className="flex justify-between mb-1">
-                      <p className="text-sm font-semibold text-[#1A1A18]">{m.name.split(" ")[0]}</p>
+                      <p className="text-sm font-semibold text-[#1A1A18]">{tx(tx(m.name).split(" ")[0])}</p>
                       <PriceTag amount={m.total + Math.round((deliveryFee / groupMembers.filter(x => x.total > 0).length))} className="text-sm font-bold" />
                     </div>
                     <div className="h-1.5 bg-[var(--cream)] rounded-full overflow-hidden">
@@ -286,28 +291,28 @@ export const GroupOrderScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =>
                     </div>
                   </div>
                 </div>
-              ))}
+              )))}
               <div className="pt-3 border-t border-[var(--border)] space-y-1.5 text-sm">
-                <div className="flex justify-between text-[var(--muted)]"><span>{t("smart.subtotal")}</span><span>₩{grandTotal.toLocaleString()}</span></div>
-                <div className="flex justify-between text-[var(--muted)]"><span>{t("smart.delivery_fee_split")}</span><span>₩{deliveryFee.toLocaleString()}</span></div>
-                <div className="flex justify-between font-bold text-base text-[#1A1A18]"><span>{t("smart.grand_total")}</span><span>₩{(grandTotal + deliveryFee).toLocaleString()}</span></div>
+                <div className="flex justify-between text-[var(--muted)]"><span>{t("smart.subtotal")}</span><span>₩{tx(grandTotal.toLocaleString())}</span></div>
+                <div className="flex justify-between text-[var(--muted)]"><span>{t("smart.delivery_fee_split")}</span><span>₩{tx(deliveryFee.toLocaleString())}</span></div>
+                <div className="flex justify-between font-bold text-base text-[#1A1A18]"><span>{t("smart.grand_total")}</span><span>₩{tx((grandTotal + deliveryFee).toLocaleString())}</span></div>
               </div>
             </div>
 
             <div className="bg-white rounded-2xl p-4 flex gap-3">
-              <button className="flex-1 py-3 rounded-xl text-sm font-bold text-white" style={{ backgroundColor: "var(--green)" }}>{t("smart.kakaopay_request")}</button>
-              <button className="flex-1 py-3 rounded-xl text-sm font-semibold border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>{t("smart.toss_settle")}</button>
+              <button type="button" onClick={showUnavailable} className="flex-1 py-3 rounded-xl text-sm font-bold text-white" style={{ backgroundColor: "var(--green)" }}>{t("smart.kakaopay_request")}</button>
+              <button type="button" onClick={showUnavailable} className="flex-1 py-3 rounded-xl text-sm font-semibold border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>{t("smart.toss_settle")}</button>
             </div>
           </>
-        )}
+        ))}
       </div>
 
       {/* Bottom CTA */}
       <div className="px-4 pb-8 pt-3 bg-white border-t border-[var(--border)] flex-shrink-0">
-        <button className="w-full py-4 rounded-2xl font-bold text-white text-base" style={{ backgroundColor: readyCount === groupMembers.length ? "var(--green)" : "#9CA3AF" }}>
-          {readyCount === groupMembers.length
+        <button type="button" onClick={showUnavailable} className="w-full py-4 rounded-2xl font-bold text-white text-base" style={{ backgroundColor: readyCount === groupMembers.length ? "var(--green)" : "#9CA3AF" }}>
+          {tx(readyCount === groupMembers.length
             ? t("smart.group_order_complete").replace("{amount}", `₩${(grandTotal + deliveryFee).toLocaleString()}`)
-            : t("smart.waiting_members").replace("{count}", String(groupMembers.length - readyCount))}
+            : t("smart.waiting_members").replace("{count}", String(groupMembers.length - readyCount)))}
         </button>
       </div>
     </div>
@@ -335,6 +340,7 @@ const mealSubPlans = [
 export const MealPlansScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const { t } = useLanguage();
   const [activeWeek, setActiveWeek] = useState(0);
+  const [preferences, setPreferences] = useLocal("diet", dietPrefOn);
 
   return (
     <div className="flex flex-col h-full bg-[var(--cream)]">
@@ -343,14 +349,14 @@ export const MealPlansScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => 
         <StatusBar dark />
         <div className="relative z-10 px-5 pb-5">
           <div className="flex items-center gap-3 mb-3">
-            <BackButton dark onBack={() => onNavigate?.("home")} />
+            <BackButton dark onBack={() => goBack("profile")} />
             <h1 className="font-bold text-lg text-white">{t("smart.meal_plan_title")}</h1>
           </div>
           <div className="bg-white/15 rounded-2xl p-4 flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center text-2xl">🍽️</div>
             <div className="flex-1">
-              <p className="text-white font-bold">할랄 주간 구독 — 골드</p>
-              <p className="text-white/70 text-xs mt-0.5">주 5회 배달 · ₩69,000/주</p>
+              <p className="text-white font-bold">{tx("할랄 주간 구독 — 골드")}</p>
+              <p className="text-white/70 text-xs mt-0.5">{tx("주 5회 배달 · ₩69,000/주")}</p>
             </div>
             <span className="text-xs font-bold px-2 py-1 rounded-full" style={{ backgroundColor: "var(--gold)", color: "white" }}>{t("smart.subscribed")}</span>
           </div>
@@ -360,7 +366,7 @@ export const MealPlansScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => 
       <div className="flex-1 phone-scroll px-4 py-4 space-y-4">
         {/* Week selector */}
         <div className="flex gap-2">
-          {weekKeys.map((wk, i) => (
+          {tx(weekKeys.map((wk, i) => (
             <button key={wk} onClick={() => setActiveWeek(i)}
               className="flex-1 py-2.5 rounded-xl text-sm font-semibold border transition-all"
               style={{
@@ -368,14 +374,14 @@ export const MealPlansScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => 
                 color: activeWeek === i ? "white" : "var(--muted)",
                 borderColor: activeWeek === i ? "var(--green)" : "var(--border)",
               }}>
-              {t(`smart.${wk}`)}
+              {tx(t(`smart.${wk}`))}
             </button>
-          ))}
+          )))}
         </div>
 
         {/* Week calendar */}
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-          {mealPlan.map((day, i) => (
+          {tx(mealPlan.map((day, i) => (
             <div
               key={i}
               className={`flex items-center gap-3 px-4 py-3.5 ${i < mealPlan.length - 1 ? "border-b border-[var(--border)]" : ""}`}
@@ -383,62 +389,62 @@ export const MealPlansScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => 
             >
               <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
                 style={{ backgroundColor: day.delivered ? "var(--green)" : day.today ? "var(--green)" : "var(--cream)" }}>
-                {day.delivered ? (
+                {tx(day.delivered ? (
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round"><path d="M2 8l4 4 8-8"/></svg>
                 ) : (
-                  <p className="text-sm font-bold" style={{ color: day.today ? "white" : "var(--muted)" }}>{day.day}</p>
-                )}
+                  <p className="text-sm font-bold" style={{ color: day.today ? "white" : "var(--muted)" }}>{tx(day.day)}</p>
+                ))}
               </div>
               <div className="flex-1 min-w-0">
-                <p className={`font-semibold text-sm ${day.today ? "text-[var(--green)]" : "text-[#1A1A18]"}`}>{day.meal}</p>
-                <p className="text-xs text-[var(--muted)] truncate">{day.rest}</p>
+                <p className={`font-semibold text-sm ${day.today ? "text-[var(--green)]" : "text-[#1A1A18]"}`}>{tx(day.meal)}</p>
+                <p className="text-xs text-[var(--muted)] truncate">{tx(day.rest)}</p>
               </div>
               <div className="flex items-center gap-2">
-                {day.today && <span className="text-[10px] font-bold px-2 py-1 rounded-full text-white" style={{ backgroundColor: "var(--green)" }}>{t("smart.today")}</span>}
-                {day.delivered && <span className="text-[10px] font-bold px-2 py-1 rounded-full" style={{ backgroundColor: "var(--green-light)", color: "var(--green)" }}>{t("smart.delivered")}</span>}
-                {!day.delivered && !day.today && (
-                  <button className="text-xs text-[var(--muted)] underline">{t("smart.change")}</button>
-                )}
+                {tx(day.today && <span className="text-[10px] font-bold px-2 py-1 rounded-full text-white" style={{ backgroundColor: "var(--green)" }}>{t("smart.today")}</span>)}
+                {tx(day.delivered && <span className="text-[10px] font-bold px-2 py-1 rounded-full" style={{ backgroundColor: "var(--green-light)", color: "var(--green)" }}>{t("smart.delivered")}</span>)}
+                {tx(!day.delivered && !day.today && (
+                  <button type="button" onClick={() => onNavigate?.("menu")} className="text-xs text-[var(--muted)] underline">{t("smart.change")}</button>
+                ))}
               </div>
             </div>
-          ))}
+          )))}
         </div>
 
         {/* Dietary preferences */}
         <div className="bg-white rounded-2xl p-4 shadow-sm space-y-3">
           <p className="font-bold text-sm text-[#1A1A18]">{t("smart.diet_settings")}</p>
-          {dietPrefKeys.map((k, i) => (
+          {tx(dietPrefKeys.map((k, i) => (
             <div key={k} className="flex items-center justify-between">
-              <p className="text-sm text-[#1A1A18]">{t(`smart.${k}`)}</p>
-              <Toggle on={dietPrefOn[i]} />
+              <p className="text-sm text-[#1A1A18]">{tx(t(`smart.${k}`))}</p>
+              <Toggle on={preferences[i]} onToggle={() => setPreferences(p => p.map((v,index) => index === i ? !v : v))} />
             </div>
-          ))}
+          )))}
         </div>
 
         {/* Plan options */}
         <div className="space-y-2.5">
           <p className="font-bold text-sm text-[#1A1A18]">{t("smart.change_plan")}</p>
-          {mealSubPlans.map((plan) => {
+          {tx(mealSubPlans.map((plan) => {
             const isCurrent = plan.id === "gold";
             return (
               <div key={plan.id} className="flex items-center gap-3 p-3.5 rounded-2xl border transition-all"
                 style={{ borderColor: isCurrent ? "var(--green)" : "var(--border)", backgroundColor: isCurrent ? "var(--green-light)" : "white" }}>
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center text-sm flex-shrink-0"
                   style={{ backgroundColor: plan.id === "silver" ? "#C0C0C0" : plan.id === "gold" ? "var(--gold)" : "#E8E0F0" }}>
-                  {plan.id === "silver" ? "🥈" : plan.id === "gold" ? "🥇" : "💎"}
+                  {tx(plan.id === "silver" ? "🥈" : plan.id === "gold" ? "🥇" : "💎")}
                 </div>
                 <div className="flex-1">
-                  <p className="font-bold text-sm text-[#1A1A18]">{t(`smart.tier_${plan.id}`)}</p>
-                  <p className="text-xs text-[var(--muted)]">{plan.meals} · ₩{plan.price.toLocaleString()}/주</p>
+                  <p className="font-bold text-sm text-[#1A1A18]">{tx(t(`smart.tier_${plan.id}`))}</p>
+                  <p className="text-xs text-[var(--muted)]">{tx(plan.meals)} · ₩{tx(plan.price.toLocaleString())}{tx("/주")}</p>
                 </div>
-                {isCurrent ? (
+                {tx(isCurrent ? (
                   <span className="text-[10px] font-bold px-2 py-1 rounded-full text-white" style={{ backgroundColor: "var(--green)" }}>{t("smart.current")}</span>
                 ) : (
-                  <button className="text-xs font-bold" style={{ color: "var(--green)" }}>{t("smart.select")}</button>
-                )}
+                  <button type="button" onClick={showUnavailable} className="text-xs font-bold" style={{ color: "var(--green)" }}>{t("smart.select")}</button>
+                ))}
               </div>
             );
-          })}
+          }))}
         </div>
         <div className="h-4" />
       </div>
@@ -467,10 +473,10 @@ export const GroceryScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
   return (
     <div className="flex flex-col h-full bg-[var(--cream)]">
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
-        <StatusBar />
+        <StatusBar /><p className="px-4 py-1 text-xs text-[var(--muted)]">{t("flow.demo_notice")}</p>
         <div className="px-4 pb-3">
           <div className="flex items-center gap-3 mb-3">
-            <BackButton onBack={() => onNavigate?.("home")} />
+            <BackButton onBack={() => goBack("home")} />
             <h1 className="font-bold text-lg flex-1">{t("smart.grocery_title")}</h1>
           </div>
           <div className="flex items-center gap-2 bg-[var(--cream)] border border-[var(--border)] rounded-xl px-4 py-3 mb-3">
@@ -478,24 +484,24 @@ export const GroceryScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
             <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder={t("smart.search_placeholder")} className="flex-1 bg-transparent text-sm outline-none" />
           </div>
           <div className="flex bg-[var(--cream)] rounded-xl p-1">
-            {(["stores", "products"] as const).map((tabId) => (
+            {tx((["stores", "products"] as const).map((tabId) => (
               <button key={tabId} onClick={() => setActiveTab(tabId)}
                 className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all"
                 style={{ backgroundColor: activeTab === tabId ? "var(--green)" : "transparent", color: activeTab === tabId ? "white" : "var(--muted)" }}>
-                {tabId === "stores" ? t("smart.tab_stores") : t("smart.tab_products")}
+                {tx(tabId === "stores" ? t("smart.tab_stores") : t("smart.tab_products"))}
               </button>
-            ))}
+            )))}
           </div>
         </div>
       </div>
 
       <div className="flex-1 phone-scroll px-4 py-4 space-y-3">
-        {activeTab === "stores" ? (
+        {tx(activeTab === "stores" ? (
           <>
-            {groceryStores.map((store, i) => (
+            {tx(groceryStores.filter(s => `${s.name} ${s.nameEn}`.toLowerCase().includes(searchQuery.toLowerCase())).map((store, i) => (
               <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-sm">
                 <div className="h-28 bg-[#E8E6E1] relative">
-                  <img src={`https://images.unsplash.com/photo-${store.imageId}?w=390&h=130&fit=crop&auto=format&q=80`} alt={store.name} className="w-full h-full object-cover opacity-80" />
+                  <img src={`https://images.unsplash.com/photo-${store.imageId}?w=390&h=130&fit=crop&auto=format&q=80`} alt={tx(store.name)} className="w-full h-full object-cover opacity-80" />
                   <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent" />
                   <div className="absolute top-3 left-3">
                     <span className="text-[10px] font-bold px-2 py-1 rounded-full text-white" style={{ backgroundColor: "var(--green)" }}>
@@ -506,39 +512,39 @@ export const GroceryScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
                 <div className="p-4">
                   <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="font-bold text-base text-[#1A1A18]">{store.name}</h3>
-                      <p className="text-xs text-[var(--muted)]">{store.nameEn}</p>
+                      <h3 className="font-bold text-base text-[#1A1A18]">{tx(store.name)}</h3>
+                      <p className="text-xs text-[var(--muted)]">{tx(store.nameEn)}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-xs text-[var(--muted)]">{store.distance}</p>
+                      <p className="text-xs text-[var(--muted)]">{tx(store.distance)}</p>
                     </div>
                   </div>
                   <div className="flex items-center justify-between mt-3">
                     <p className="text-sm font-medium" style={{ color: "var(--green)" }}>
-                      {t("smart.halal_products_count").replace("{count}", String(store.products))}
+                      {tx(t("smart.halal_products_count").replace("{count}", String(store.products)))}
                     </p>
-                    <button className="text-xs font-bold px-3 py-1.5 rounded-xl" style={{ backgroundColor: "var(--green-light)", color: "var(--green)" }}>
+                    <button type="button" onClick={() => setActiveTab("products")} className="text-xs font-bold px-3 py-1.5 rounded-xl" style={{ backgroundColor: "var(--green-light)", color: "var(--green)" }}>
                       {t("smart.view_products")}
                     </button>
                   </div>
                 </div>
               </div>
-            ))}
+            )))}
           </>
         ) : (
           <>
-            <p className="text-xs text-[var(--muted)]">{t("smart.nearby_products_count").replace("{count}", String(products.length))}</p>
-            {products.map((prod, i) => (
+            <p className="text-xs text-[var(--muted)]">{tx(t("smart.nearby_products_count").replace("{count}", String(products.length)))}</p>
+            {tx(products.filter(p => `${p.name} ${p.brand}`.toLowerCase().includes(searchQuery.toLowerCase())).map((prod, i) => (
               <div key={i} className="bg-white rounded-2xl p-4 shadow-sm flex gap-3">
                 <div className="w-16 h-16 rounded-xl bg-[#E8E6E1] flex-shrink-0 overflow-hidden">
-                  <img src={`https://images.unsplash.com/photo-${prod.image}?w=100&h=100&fit=crop&auto=format&q=80`} alt={prod.name} className="w-full h-full object-cover" />
+                  <img src={`https://images.unsplash.com/photo-${prod.image}?w=100&h=100&fit=crop&auto=format&q=80`} alt={tx(prod.name)} className="w-full h-full object-cover" />
                 </div>
                 <div className="flex-1 space-y-1">
-                  <p className="font-bold text-sm text-[#1A1A18]">{prod.name}</p>
-                  <p className="text-xs text-[var(--muted)]">{prod.brand}</p>
+                  <p className="font-bold text-sm text-[#1A1A18]">{tx(prod.name)}</p>
+                  <p className="text-xs text-[var(--muted)]">{tx(prod.brand)}</p>
                   <div className="flex items-center gap-2">
                     <PriceTag amount={prod.price} className="text-sm" />
-                    <span className="text-[10px] text-[var(--muted)]">· {t("smart.stores_count").replace("{count}", String(prod.stores))}</span>
+                    <span className="text-[10px] text-[var(--muted)]">· {tx(t("smart.stores_count").replace("{count}", String(prod.stores)))}</span>
                   </div>
                   <span
                     className="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full"
@@ -547,16 +553,16 @@ export const GroceryScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
                       color: prod.available ? "var(--green)" : "var(--danger)",
                     }}
                   >
-                    {prod.available ? t("smart.in_stock") : t("smart.out_of_stock")}
+                    {tx(prod.available ? t("smart.in_stock") : t("smart.out_of_stock"))}
                   </span>
                 </div>
-                <button className="w-8 h-8 rounded-xl flex items-center justify-center self-end flex-shrink-0" style={{ backgroundColor: prod.available ? "var(--green)" : "#E5E7EB" }}>
+                <button type="button" onClick={showUnavailable} className="w-8 h-8 rounded-xl flex items-center justify-center self-end flex-shrink-0" style={{ backgroundColor: prod.available ? "var(--green)" : "#E5E7EB" }}>
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round"><line x1="7" y1="3" x2="7" y2="11"/><line x1="3" y1="7" x2="11" y2="7"/></svg>
                 </button>
               </div>
-            ))}
+            )))}
           </>
-        )}
+        ))}
         <div className="h-4" />
       </div>
     </div>

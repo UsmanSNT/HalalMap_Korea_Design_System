@@ -1,3 +1,5 @@
+import { translate } from "./i18n";
+import CustomerFeedback from "./components/CustomerFeedback";
 import React, { useEffect, useState } from "react";
 import { type AuthUser, getCurrentUser, login, logout } from "./api/auth";
 import { type TabId } from "./components/Shared";
@@ -17,13 +19,12 @@ import { TravelPlannerScreen, OfflinePrayerScreen } from "./screens/TravelScreen
 import { NotificationsScreen, RamadanScreen, EidScreen } from "./screens/EngagementScreens";
 import { LoyaltyScreen, ReferralScreen } from "./screens/RewardsScreens";
 import { TutorialScreen, MultilingualScreen } from "./screens/AccessibilityScreens";
-import HomeDesktop from "./screens/HomeDesktop";
 import { LanguageProvider, useLanguage } from "./i18n/LanguageContext";
 import { useIsDesktop } from "./hooks/useIsDesktop";
 import { navigateTo, useRouteScreen } from "./services/navigation";
 
 export type ScreenId =
-  | "splash" | "onboarding" | "signup" | "language"
+  | "login" | "splash" | "onboarding" | "signup" | "language"
   | "home" | "restaurant-list" | "restaurant-detail" | "menu" | "item-detail" | "cart" | "checkout" | "order-confirmation"
   | "search" | "map-view" | "city-selector" | "restaurant-map-detail"
   | "mosque-list" | "mosque-detail" | "prayer-times" | "qibla"
@@ -57,9 +58,9 @@ const TAB_SCREENS: Record<TabId, ScreenId> = {
   home: "home", search: "search", orders: "order-history", prayer: "prayer-times", profile: "profile",
 };
 
-const ALL_SCREEN_IDS: ScreenId[] = SCREEN_GROUPS.flatMap((group) => group.screens.map((screen) => screen.id));
+const ALL_SCREEN_IDS: ScreenId[] = ["login", ...SCREEN_GROUPS.flatMap((group) => group.screens.map((screen) => screen.id))];
 
-const DEMO_USER: AuthUser = { id: 1, email: "demo@halalmap.test", name: "Demo User", role: "user" };
+
 
 const ROLE_DASHBOARD_LABELS: Partial<Record<AuthUser["role"], string>> = {
   owner: "🍽️ Oshxona paneliga qaytish",
@@ -72,8 +73,8 @@ type ViewMode = "customer" | "role";
 type NavFn = (screen: ScreenId) => void;
 
 function CustomerScreen({ id, onTabChange, onLogout, onNavigate }: { id: ScreenId; onTabChange: (tab: TabId) => void; onLogout: () => void; onNavigate: NavFn }) {
-  const goBack = () => onNavigate("home");
   switch (id) {
+    case "login": return <HomeScreen onTabChange={onTabChange} onNavigate={onNavigate} />;
     case "splash": return <SplashScreen onNavigate={onNavigate} />;
     case "onboarding": return <OnboardingScreen onNavigate={onNavigate} />;
     case "signup": return <SignUpScreen onNavigate={onNavigate} />;
@@ -127,33 +128,28 @@ export default function App() {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [restoringSession, setRestoringSession] = useState(true);
   const [viewMode, setViewMode] = useState<ViewMode>("role");
-  const current = useRouteScreen(ALL_SCREEN_IDS, "splash");
+  const current = useRouteScreen(ALL_SCREEN_IDS, "home");
 
   useEffect(() => {
     getCurrentUser()
-      .then((u) => setUser(u ?? DEMO_USER))
-      .catch(() => setUser(DEMO_USER))
+      .then(setUser)
+      .catch(() => setUser(null))
       .finally(() => setRestoringSession(false));
   }, []);
 
   const handleLogin = async (email: string, password: string) => {
     try {
       setUser(await login(email, password));
-      navigateTo("home", true);
+      navigateTo(["login", "signup", "splash", "onboarding", "language"].includes(current) ? "home" : window.location.hash.replace(/^#\/?/, "") || "home", true);
       setViewMode("role");
       return true;
-    } catch {
-      setUser(DEMO_USER);
-      navigateTo("home", true);
-      setViewMode("role");
-      return true;
-    }
+    } catch { return false; }
   };
 
   const handleLogout = async () => {
     try { await logout(); } catch {}
-    setUser(DEMO_USER);
-    navigateTo("splash", true);
+    setUser(null);
+    navigateTo("login", true);
     setViewMode("role");
   };
 
@@ -162,13 +158,16 @@ export default function App() {
   const switchToCustomer = () => setViewMode("customer");
   const switchToRole = () => setViewMode("role");
 
-  if (restoringSession) return <main className="grid min-h-dvh place-items-center bg-[var(--cream)] text-sm font-semibold text-[var(--green)]">Session tekshirilmoqda…</main>;
+  if (restoringSession) return <main className="grid min-h-dvh place-items-center bg-[var(--cream)] text-sm font-semibold text-[var(--green)]">{translate((localStorage.getItem("halalmap-language") ?? "ko") as "ko" | "en" | "uz", "common.session_checking")}</main>;
 
   if (user?.role === "owner" && viewMode === "role") return <DashboardApp onSwitch={switchToCustomer} />;
   if (user?.role === "courier" && viewMode === "role") return <CourierApp onSwitch={switchToCustomer} />;
   if (user?.role === "admin" && viewMode === "role") return <AdminApp onSwitch={switchToCustomer} />;
 
-  const handleTabChange = (tab: TabId) => navigateTo(TAB_SCREENS[tab], true);
+  const handleTabChange = (tab: TabId) => navigateTo(TAB_SCREENS[tab]);
+  if (!user && !["splash", "onboarding", "signup", "language"].includes(current)) {
+    return <LanguageProvider><main className="customer-shell mx-auto h-dvh w-full max-w-[430px] bg-[var(--cream)]"><CustomerFeedback /><LoginScreen onLogin={handleLogin} onNavigate={handleNavigate} /></main></LanguageProvider>;
+  }
 
   return (
     <LanguageProvider>
@@ -194,13 +193,13 @@ function AppShell({
 }) {
   const { t } = useLanguage();
   const isDesktop = useIsDesktop();
-  const showDesktopHome = isDesktop && current === "home";
   const roleDashboardLabel = role && ROLE_DASHBOARD_LABELS[role];
   const [devPanelOpen, setDevPanelOpen] = useState(false);
 
   return (
     <div className="relative min-h-dvh bg-[#EDEAE5]">
-      <div className="fixed right-3 top-3 z-50">
+      <CustomerFeedback />
+      {import.meta.env.DEV && new URLSearchParams(location.search).has("qa") && <div className="fixed right-3 top-3 z-50">
         {!devPanelOpen ? (
           <button onClick={() => setDevPanelOpen(true)} aria-label="QA panelini ochish" title="QA panel (dizaynni Figma bilan solishtirish uchun)"
             className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border)] bg-white/95 text-base shadow-lg backdrop-blur">
@@ -216,18 +215,15 @@ function AppShell({
           </div>
         )}
       </div>
+      }
       {roleDashboardLabel && (
         <button onClick={switchToRole} className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-full bg-[var(--green)] px-4 py-3 text-xs font-bold text-white shadow-xl">
           {roleDashboardLabel}
         </button>
       )}
-      {showDesktopHome ? (
-        <HomeDesktop onNavigate={handleNavigate} />
-      ) : (
-        <main className={isDesktop ? "mx-auto h-dvh w-full max-w-[390px] overflow-hidden bg-[var(--cream)] shadow-2xl" : "mx-auto h-dvh w-full max-w-[390px] overflow-hidden bg-[var(--cream)]"}>
-          <CustomerScreen id={current} onTabChange={handleTabChange} onLogout={handleLogout} onNavigate={handleNavigate} />
+        <main className="customer-shell mx-auto h-dvh w-full max-w-[430px] overflow-hidden bg-[var(--cream)] shadow-xl">
+          <CustomerScreen key={window.location.hash} id={current} onTabChange={handleTabChange} onLogout={handleLogout} onNavigate={handleNavigate} />
         </main>
-      )}
     </div>
   );
 }

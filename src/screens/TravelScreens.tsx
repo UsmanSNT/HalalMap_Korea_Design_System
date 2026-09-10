@@ -1,3 +1,7 @@
+import { tx } from "../i18n/content";
+import { showUnavailable, showFeedback } from "../components/CustomerFeedback";
+import { goBack, openEntity, routeParam, navigateTo } from "../services/navigation";
+import { useLocal, writeLocal, directions } from "../services/customerState";
 import React, { useState } from "react";
 import { GeometricPattern, StatusBar, BackButton, Toggle } from "../components/Shared";
 import type { ScreenId } from "../App";
@@ -20,6 +24,7 @@ const nearbySpots = [
 export const TravelPlannerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const { t } = useLanguage();
   const [city, setCity] = useState("부산");
+  const [trips, setTrips] = useLocal("trips", savedTrips);
   const [dates, setDates] = useState("12월 8일 – 10일");
 
   return (
@@ -29,7 +34,7 @@ export const TravelPlannerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId)
         <StatusBar dark />
         <div className="relative z-10 px-5 pb-6">
           <div className="flex items-center gap-3 mb-4">
-            <BackButton dark onBack={() => onNavigate?.("home")} />
+            <BackButton dark onBack={() => goBack("home")} />
             <h1 className="font-bold text-lg text-white">{t("travel.trip_planner_title")}</h1>
           </div>
 
@@ -58,26 +63,26 @@ export const TravelPlannerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId)
         <div>
           <div className="flex items-center justify-between mb-2">
             <p className="font-bold text-sm text-[#1A1A18]">{t("travel.saved_trips")}</p>
-            <button className="text-xs font-medium" style={{ color: "var(--green)" }}>{t("travel.new_trip")}</button>
+            <button type="button" onClick={() => { setCity(""); setDates(""); }} className="text-xs font-medium" style={{ color: "var(--green)" }}>{t("travel.new_trip")}</button>
           </div>
           <div className="flex gap-3 overflow-x-auto scrollbar-hide">
-            {savedTrips.map((trip, i) => (
-              <div key={i} className="relative w-36 h-24 rounded-2xl overflow-hidden flex-shrink-0 shadow-sm">
-                <img src={`https://images.unsplash.com/photo-${trip.imageId}?w=180&h=120&fit=crop&auto=format&q=80`} alt={trip.city} className="w-full h-full object-cover" />
+            {tx(trips.map((trip, i) => (
+              <div onClick={() => { setCity(trip.city); setDates(trip.dates); }} key={i} className="relative w-36 h-24 rounded-2xl overflow-hidden flex-shrink-0 shadow-sm">
+                <img src={`https://images.unsplash.com/photo-${trip.imageId}?w=180&h=120&fit=crop&auto=format&q=80`} alt={tx(trip.city)} className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                 <div className="absolute bottom-0 left-0 p-2.5">
-                  <p className="text-white font-bold text-sm">{trip.city}</p>
-                  <p className="text-white/70 text-[10px]">{trip.dates}</p>
-                  <p className="text-white/60 text-[10px]">{t("travel.spots_saved").replace("{count}", String(trip.spots))}</p>
+                  <p className="text-white font-bold text-sm">{tx(trip.city)}</p>
+                  <p className="text-white/70 text-[10px]">{tx(trip.dates)}</p>
+                  <p className="text-white/60 text-[10px]">{tx(t("travel.spots_saved").replace("{count}", String(trip.spots)))}</p>
                 </div>
               </div>
-            ))}
+            )))}
           </div>
         </div>
 
         {/* Map preview for Busan */}
         <div>
-          <p className="font-bold text-sm text-[#1A1A18] mb-2">부산역 주변 할랄 지도</p>
+          <p className="font-bold text-sm text-[#1A1A18] mb-2">{tx("부산역 주변 할랄 지도")}</p>
           <div className="relative h-44 rounded-2xl overflow-hidden shadow-sm bg-[#E8E4DC]">
             {/* Fake map */}
             <svg className="absolute inset-0 w-full h-full" viewBox="0 0 360 176" xmlns="http://www.w3.org/2000/svg">
@@ -103,8 +108,8 @@ export const TravelPlannerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId)
             </svg>
             <div className="absolute bottom-3 left-3">
               <div className="bg-white rounded-xl px-3 py-2 shadow-md">
-                <p className="text-xs font-bold text-[#1A1A18]">부산역 주변</p>
-                <p className="text-[10px] text-[var(--muted)]">5곳 할랄 · 2곳 모스크</p>
+                <p className="text-xs font-bold text-[#1A1A18]">{tx("부산역 주변")}</p>
+                <p className="text-[10px] text-[var(--muted)]">{tx("5곳 할랄 · 2곳 모스크")}</p>
               </div>
             </div>
           </div>
@@ -112,41 +117,41 @@ export const TravelPlannerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId)
 
         {/* Nearby spots */}
         <div>
-          <p className="font-bold text-sm text-[#1A1A18] mb-2">부산역 근처 추천 ({nearbySpots.length}곳)</p>
+          <p className="font-bold text-sm text-[#1A1A18] mb-2">{tx("부산역 근처 추천 (")}{tx(nearbySpots.length)}{tx("곳)")}</p>
           <div className="space-y-2">
-            {nearbySpots.map((spot, i) => (
+            {tx(nearbySpots.map((spot, i) => (
               <div key={i} className="bg-white rounded-xl p-3.5 flex items-center gap-3 shadow-sm">
                 <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
                   style={{ backgroundColor: spot.type === "restaurant" ? "var(--green-light)" : "var(--gold-light)" }}>
-                  <span className="text-lg">{spot.type === "restaurant" ? "🍽️" : "🕌"}</span>
+                  <span className="text-lg">{tx(spot.type === "restaurant" ? "🍽️" : "🕌")}</span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-sm text-[#1A1A18] truncate">{spot.name}</p>
-                  <p className="text-xs text-[var(--muted)]">{spot.dist}</p>
+                  <p className="font-semibold text-sm text-[#1A1A18] truncate">{tx(spot.name)}</p>
+                  <p className="text-xs text-[var(--muted)]">{tx(spot.dist)}</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  {spot.badge && (
+                  {tx(spot.badge && (
                     <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full"
                       style={{ backgroundColor: "var(--green-light)", color: "var(--green)" }}>
-                      {spot.badge === "certified" ? t("travel.badge_certified") : t("travel.badge_friendly")}
+                      {tx(spot.badge === "certified" ? t("travel.badge_certified") : t("travel.badge_friendly"))}
                     </span>
-                  )}
-                  <button className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: "var(--cream)" }}>
+                  ))}
+                  <button type="button" onClick={() => directions(spot.name)} className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: "var(--cream)" }}>
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--muted)" strokeWidth="1.6">
                       <path d="M7 1.5C4.8 1.5 3 3.3 3 5.5C3 8.5 7 12.5 7 12.5C7 12.5 11 8.5 11 5.5C11 3.3 9.2 1.5 7 1.5ZM7 6.5C6.4 6.5 5.9 6 5.9 5.4C5.9 4.8 6.4 4.3 7 4.3C7.6 4.3 8.1 4.8 8.1 5.4C8.1 6 7.6 6.5 7 6.5Z"/>
                     </svg>
                   </button>
                 </div>
               </div>
-            ))}
+            )))}
           </div>
         </div>
 
         <div className="flex gap-3">
-          <button className="flex-1 py-4 rounded-2xl font-bold text-white text-sm" style={{ backgroundColor: "var(--green)" }}>
+          <button type="button" onClick={() => { setTrips(trips => [...trips, {city, dates, spots: 0, imageId:"1614854262318-831574f15f1f"}]); showFeedback("flow.saved"); }} className="flex-1 py-4 rounded-2xl font-bold text-white text-sm" style={{ backgroundColor: "var(--green)" }}>
             {t("travel.save_trip")}
           </button>
-          <button className="flex-1 py-4 rounded-2xl font-semibold text-sm border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>
+          <button type="button" onClick={() => onNavigate?.("share")} className="flex-1 py-4 rounded-2xl font-semibold text-sm border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>
             {t("travel.share")}
           </button>
         </div>
@@ -177,7 +182,9 @@ const offlinePrayers = [
 export const OfflinePrayerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const { t } = useLanguage();
   const [downloading, setDownloading] = useState<string | null>(null);
-  const [downloaded, setDownloaded] = useState<string[]>(["서울 Seoul", "부산 Busan"]);
+  const [downloaded, setDownloaded] = useLocal<string[]>("offline-cities", []);
+  const [wifi, setWifi] = useLocal("offline-wifi", true);
+  const [sync, setSync] = useLocal("offline-sync", true);
 
   const handleDownload = (cityName: string) => {
     setDownloading(cityName);
@@ -190,9 +197,9 @@ export const OfflinePrayerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId)
   return (
     <div className="flex flex-col h-full bg-[var(--cream)]">
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
-        <StatusBar />
+        <StatusBar /><p className="px-4 py-1 text-xs text-[var(--muted)]">{t("flow.demo_notice")}</p>
         <div className="flex items-center gap-3 px-4 pb-3">
-          <BackButton onBack={() => onNavigate?.("home")} />
+          <BackButton onBack={() => goBack("prayer-times")} />
           <div className="flex-1">
             <h1 className="font-bold text-lg">{t("travel.offline_prayer_title")}</h1>
             <p className="text-xs text-[var(--muted)]">{t("travel.offline_prayer_subtitle")}</p>
@@ -219,16 +226,16 @@ export const OfflinePrayerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId)
         {/* Quick preview — current city */}
         <div className="bg-white rounded-2xl p-4 shadow-sm">
           <div className="flex items-center justify-between mb-3">
-            <p className="font-bold text-sm text-[#1A1A18]">서울 · 오늘 기도 시간</p>
+            <p className="font-bold text-sm text-[#1A1A18]">{tx("서울 · 오늘 기도 시간")}</p>
             <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ backgroundColor: "var(--green-light)", color: "var(--green)" }}>{t("travel.offline_saved_badge")}</span>
           </div>
           <div className="space-y-2">
-            {offlinePrayers.map((p, i) => (
+            {tx(offlinePrayers.map((p, i) => (
               <div key={p.name} className="flex items-center justify-between py-1.5" style={{ opacity: i < 3 ? 0.5 : 1 }}>
-                <p className="text-sm font-medium text-[#1A1A18]">{p.name}</p>
-                <p className={`font-bold tabular-nums ${i === 2 ? "text-[var(--green)]" : "text-[#1A1A18]"} text-sm`}>{p.time}</p>
+                <p className="text-sm font-medium text-[#1A1A18]">{tx(p.name)}</p>
+                <p className={`font-bold tabular-nums ${i === 2 ? "text-[var(--green)]" : "text-[#1A1A18]"} text-sm`}>{tx(p.time)}</p>
               </div>
-            ))}
+            )))}
           </div>
         </div>
 
@@ -236,31 +243,31 @@ export const OfflinePrayerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId)
         <div>
           <p className="font-bold text-sm text-[#1A1A18] mb-2">{t("travel.download_by_city")}</p>
           <div className="space-y-2">
-            {cities.map((city) => {
+            {tx(cities.map((city) => {
               const isDownloaded = downloaded.includes(city.name);
               const isDownloading = downloading === city.name;
               return (
                 <div key={city.name} className="bg-white rounded-xl px-4 py-3.5 flex items-center gap-3 shadow-sm">
                   <div className="w-8 h-8 rounded-lg flex items-center justify-center text-base flex-shrink-0"
                     style={{ backgroundColor: isDownloaded ? "var(--green-light)" : "var(--cream)" }}>
-                    {isDownloaded ? "✓" : "🏙️"}
+                    {tx(isDownloaded ? "✓" : "🏙️")}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-sm text-[#1A1A18]">{city.name}</p>
+                    <p className="font-semibold text-sm text-[#1A1A18]">{tx(city.name)}</p>
                     <p className="text-xs text-[var(--muted)]">
-                      {isDownloaded
-                        ? t("travel.updated_label").replace("{updated}", String(city.updated)).replace("{size}", city.size)
-                        : t("travel.size_year_label").replace("{size}", city.size)}
+                      {tx(isDownloaded
+                        ? t("travel.updated_label").replace("{updated}", String(city.updated ?? "2024.11")).replace("{size}", city.size)
+                        : t("travel.size_year_label").replace("{size}", city.size))}
                     </p>
                   </div>
-                  {isDownloading ? (
+                  {tx(isDownloading ? (
                     <div className="flex items-center gap-1.5">
                       <div className="w-4 h-4 rounded-full border-2 border-[var(--green)] border-t-transparent animate-spin" />
                       <span className="text-xs text-[var(--muted)]">{t("travel.downloading")}</span>
                     </div>
                   ) : isDownloaded ? (
                     <div className="flex items-center gap-1.5">
-                      <button className="text-xs text-[var(--muted)]">{t("travel.delete")}</button>
+                      <button type="button" onClick={() => setDownloaded(d => d.filter(name => name !== city.name))} className="text-xs text-[var(--muted)]">{t("travel.delete")}</button>
                       <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ backgroundColor: "var(--green)" }}>
                         <svg width="10" height="8" viewBox="0 0 10 8" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round"><path d="M1 4l2.5 2.5L9 1"/></svg>
                       </div>
@@ -276,10 +283,10 @@ export const OfflinePrayerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId)
                         <line x1="2" y1="12" x2="12" y2="12" strokeWidth="1.5"/>
                       </svg>
                     </button>
-                  )}
+                  ))}
                 </div>
               );
-            })}
+            }))}
           </div>
         </div>
 
@@ -288,11 +295,11 @@ export const OfflinePrayerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId)
           <p className="font-bold text-sm text-[#1A1A18]">{t("travel.auto_update")}</p>
           <div className="flex items-center justify-between">
             <p className="text-sm text-[var(--muted)]">{t("travel.auto_update_wifi")}</p>
-            <Toggle on={true} />
+            <Toggle on={wifi} onToggle={() => setWifi(v => !v)} />
           </div>
           <div className="flex items-center justify-between">
             <p className="text-sm text-[var(--muted)]">{t("travel.auto_update_sync")}</p>
-            <Toggle on={true} />
+            <Toggle on={sync} onToggle={() => setSync(v => !v)} />
           </div>
         </div>
         <div className="h-4" />

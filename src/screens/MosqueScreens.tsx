@@ -1,3 +1,7 @@
+import { tx } from "../i18n/content";
+import { showUnavailable, showFeedback } from "../components/CustomerFeedback";
+import { goBack, openEntity, routeParam, navigateTo } from "../services/navigation";
+import { useLocal, writeLocal, directions } from "../services/customerState";
 import React, { useState, useEffect } from "react";
 import { GeometricPattern, StatusBar, BottomNav, BackButton, Toggle, TabId } from "../components/Shared";
 import { getMosques, getMosque, getPrayerTimes, type Mosque, type PrayerTimesData } from "@/api/mosques";
@@ -27,7 +31,7 @@ export const MosqueListScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t
         <div className="px-5 pb-3">
           <div className="flex items-center justify-between mb-3">
             <h1 className="font-bold text-xl text-[#1A1A18]">{t("mosque.title")}</h1>
-            <button className="w-9 h-9 rounded-xl bg-[var(--cream)] flex items-center justify-center">
+            <button type="button" onClick={() => onNavigate?.("map-view")} className="w-9 h-9 rounded-xl bg-[var(--cream)] flex items-center justify-center">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--charcoal)" strokeWidth="1.8">
                 <rect x="2" y="2" width="6" height="6" rx="1.5"/>
                 <rect x="10" y="2" width="6" height="6" rx="1.5"/>
@@ -37,7 +41,7 @@ export const MosqueListScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t
             </button>
           </div>
           <div className="flex bg-[var(--cream)] rounded-xl p-1">
-            {(["mosque", "prayer-room"] as const).map((tabId) => (
+            {tx((["mosque", "prayer-room"] as const).map((tabId) => (
               <button
                 key={tabId}
                 onClick={() => setTab(tabId)}
@@ -47,55 +51,55 @@ export const MosqueListScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t
                   color: tab === tabId ? "white" : "var(--muted)",
                 }}
               >
-                {tabId === "mosque" ? t("mosque.tab_mosque") : t("mosque.tab_prayer_room")}
+                {tx(tabId === "mosque" ? t("mosque.tab_mosque") : t("mosque.tab_prayer_room"))}
               </button>
-            ))}
+            )))}
           </div>
         </div>
       </div>
 
       <div className="flex-1 phone-scroll px-4 py-4 space-y-3">
-        {loading ? (
+        {tx(loading ? (
           <p className="text-sm text-[var(--muted)]">{t("common.loading")}</p>
         ) : (
           filtered.map((m) => (
-            <div key={m.id} onClick={() => onNavigate?.("mosque-detail")} className="bg-white rounded-2xl overflow-hidden shadow-sm cursor-pointer active:scale-[0.98] transition-transform">
+            <div key={m.id} onClick={() => openEntity("mosque-detail", "mosque", m.id)} className="bg-white rounded-2xl overflow-hidden shadow-sm cursor-pointer active:scale-[0.98] transition-transform">
               <div className="h-28 bg-[#D8D4CC] relative">
-                {m.photo && (
+                {tx(m.photo && (
                   <img
                     src={`${m.photo}&w=390&h=130&fit=crop&auto=format&q=80`}
-                    alt={m.nameKo}
+                    alt={tx(m.nameKo)}
                     className="w-full h-full object-cover"
                   />
-                )}
+                ))}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                 <div className="absolute bottom-3 left-3">
                   <span className="text-[10px] font-bold px-2 py-1 rounded-full text-white" style={{ backgroundColor: m.type === "mosque" ? "var(--gold)" : "var(--info)" }}>
-                    {m.type === "mosque" ? t("mosque.type_mosque") : t("mosque.type_prayer_room")}
+                    {tx(m.type === "mosque" ? t("mosque.type_mosque") : t("mosque.type_prayer_room"))}
                   </span>
                 </div>
               </div>
               <div className="p-4">
-                <h3 className="font-bold text-base text-[#1A1A18]">{m.nameKo}</h3>
-                <p className="text-xs text-[var(--muted)] mt-0.5">{m.name}</p>
-                <p className="text-xs text-[var(--muted)] mt-1">📍 {m.address}</p>
+                <h3 className="font-bold text-base text-[#1A1A18]">{tx(m.nameKo)}</h3>
+                <p className="text-xs text-[var(--muted)] mt-0.5">{tx(m.name)}</p>
+                <p className="text-xs text-[var(--muted)] mt-1">📍 {tx(m.address)}</p>
                 <div className="flex items-center justify-between mt-3">
                   <div className="flex items-center gap-3 text-xs text-[var(--muted)]">
-                    <span>{m.distance}</span>
+                    <span>{tx(m.distance)}</span>
                     <span>·</span>
-                    <span>{m.walkTime ?? ""}</span>
+                    <span>{tx(m.walkTime ?? "")}</span>
                   </div>
                   <div
                     className="text-xs font-semibold px-3 py-1.5 rounded-full"
                     style={{ backgroundColor: "var(--green-light)", color: "var(--green)" }}
                   >
-                    {m.subtitle ?? ""}
+                    {tx(m.subtitle ?? "")}
                   </div>
                 </div>
               </div>
             </div>
           ))
-        )}
+        ))}
       </div>
 
       <BottomNav active="prayer" onTabChange={onTabChange} />
@@ -107,12 +111,13 @@ export const MosqueListScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t
 export const MosqueDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const { t } = useLanguage();
   const [mosque, setMosque] = useState<Mosque | null>(null);
+  const [favorites, setFavorites] = useLocal<string[]>("favorite-mosques", ["seoul-central", "itaewon-masjid"]);
   const [prayerData, setPrayerData] = useState<PrayerTimesData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all([getMosque("seoul-central"), getPrayerTimes()])
+    Promise.all([getMosque(routeParam("mosque", "seoul-central")), getPrayerTimes()])
       .then(([m, p]) => {
         if (cancelled) return;
         setMosque(m);
@@ -126,7 +131,7 @@ export const MosqueDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
   if (loading || !mosque) {
     return (
       <div className="flex flex-col h-full bg-[var(--cream)] items-center justify-center">
-        <p className="text-sm text-[var(--muted)]">{t("common.loading")}</p>
+        <p className="text-sm text-[var(--muted)]">{loading ? t("common.loading") : t("flow.empty")}</p><BackButton onBack={() => goBack("home")} />
       </div>
     );
   }
@@ -145,23 +150,23 @@ export const MosqueDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
     <div className="flex flex-col h-full bg-[var(--cream)]">
       <div className="relative flex-shrink-0">
         <div className="h-52 bg-[#D8D4CC] relative">
-          {mosque.photo && (
+          {tx(mosque.photo && (
             <img
               src={`${mosque.photo}&w=390&h=210&fit=crop&auto=format&q=80`}
-              alt={mosque.nameKo}
+              alt={tx(mosque.nameKo)}
               className="w-full h-full object-cover"
             />
-          )}
+          ))}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-black/10" />
         </div>
         <div className="absolute top-0 left-0 right-0">
           <StatusBar dark />
         </div>
         <div className="absolute top-12 left-4 flex gap-2">
-          <BackButton dark onBack={() => onNavigate?.("home")} />
+          <BackButton dark onBack={() => goBack("mosque-list")} />
         </div>
         <div className="absolute top-12 right-4">
-          <button className="w-9 h-9 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
+          <button type="button" onClick={() => onNavigate?.("share")} className="w-9 h-9 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="white" strokeWidth="1.6">
               <circle cx="14" cy="4" r="2.5"/><circle cx="4" cy="9" r="2.5"/><circle cx="14" cy="14" r="2.5"/>
               <line x1="11.5" y1="5.5" x2="6.5" y2="7.5"/><line x1="11.5" y1="12.5" x2="6.5" y2="10.5"/>
@@ -174,15 +179,16 @@ export const MosqueDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
         <div className="bg-white px-5 pt-5 pb-4">
           <div className="flex items-start justify-between gap-2 mb-1">
             <div>
-              <h1 className="font-bold text-xl text-[#1A1A18]">{mosque.nameKo}</h1>
-              <p className="text-sm text-[var(--muted)]">{mosque.name}{mosque.subtitle ? ` · ${mosque.subtitle}` : ""}</p>
+              <h1 className="font-bold text-xl text-[#1A1A18]">{tx(mosque.nameKo)}</h1>
+              <p className="text-sm text-[var(--muted)]">{tx(mosque.name)}{tx(mosque.subtitle ? ` · ${mosque.subtitle}` : "")}</p>
             </div>
-            <span className="text-2xl">{mosque.type === "mosque" ? "🕌" : "🙏"}</span>
+            <span className="text-2xl">{tx(mosque.type === "mosque" ? "🕌" : "🙏")}</span>
           </div>
-          <p className="text-sm text-[var(--muted)] mt-2">📍 {mosque.address}</p>
-          {mosque.phone && <p className="text-xs text-[var(--muted)] mt-0.5">☎ {mosque.phone}</p>}
+          <p className="text-sm text-[var(--muted)] mt-2">📍 {tx(mosque.address)}</p>
+          <button aria-pressed={favorites.includes(mosque.id)} className="text-[var(--green)] py-2" onClick={() => setFavorites(f => f.includes(mosque.id) ? f.filter(id => id !== mosque.id) : [...f,mosque.id])}>{favorites.includes(mosque.id) ? "♥" : "♡"} {t("profile.menu_saved")}</button>
+          {tx(mosque.phone && <p className="text-xs text-[var(--muted)] mt-0.5">☎ {tx(mosque.phone)}</p>)}
 
-          {mosque.juma && (
+          {tx(mosque.juma && (
             <div
               className="mt-3 flex items-center gap-3 p-3 rounded-xl"
               style={{ backgroundColor: "var(--gold-light)" }}
@@ -190,19 +196,19 @@ export const MosqueDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
               <span className="text-xl">🌟</span>
               <div>
                 <p className="font-bold text-sm" style={{ color: "#7A5220" }}>{t("mosque.juma_prayer")}</p>
-                <p className="text-xs" style={{ color: "#9A6830" }}>{mosque.juma}</p>
+                <p className="text-xs" style={{ color: "#9A6830" }}>{tx(mosque.juma)}</p>
               </div>
             </div>
-          )}
+          ))}
         </div>
 
         <div className="bg-white mt-2 px-5 py-4">
           <div className="flex items-center justify-between mb-3">
             <p className="font-semibold text-sm text-[#1A1A18]">{t("mosque.todays_prayer_times")}</p>
-            {prayerData && <p className="text-xs text-[var(--muted)]">{prayerData.hijriDate}</p>}
+            {tx(prayerData && <p className="text-xs text-[var(--muted)]">{tx(prayerData.hijriDate)}</p>)}
           </div>
           <div className="space-y-1">
-            {prayerTimesForDetail.map((p, i) => {
+            {tx(prayerTimesForDetail.map((p, i) => {
               const isNext = i === nextIdx;
               return (
                 <div
@@ -214,37 +220,37 @@ export const MosqueDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
                   }}
                 >
                   <div className="flex items-center gap-2.5">
-                    {isNext ? (
+                    {tx(isNext ? (
                       <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: "var(--green)" }} />
                     ) : (
                       <div className="w-2 h-2 rounded-full" style={{ backgroundColor: p.passed ? "var(--border)" : "var(--muted)" }} />
-                    )}
-                    <p className={`text-sm font-semibold ${isNext ? "text-[var(--green)]" : "text-[#1A1A18]"}`}>{p.name} {p.nameEn}</p>
+                    ))}
+                    <p className={`text-sm font-semibold ${isNext ? "text-[var(--green)]" : "text-[#1A1A18]"}`}>{tx(p.name)} {tx(p.nameEn)}</p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <p className={`text-sm font-bold tabular-nums ${isNext ? "text-[var(--green)]" : "text-[#1A1A18]"}`}>{p.time}</p>
-                    {isNext && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full text-white" style={{ backgroundColor: "var(--green)" }}>{t("mosque.next_badge")}</span>}
+                    <p className={`text-sm font-bold tabular-nums ${isNext ? "text-[var(--green)]" : "text-[#1A1A18]"}`}>{tx(p.time)}</p>
+                    {tx(isNext && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full text-white" style={{ backgroundColor: "var(--green)" }}>{t("mosque.next_badge")}</span>)}
                   </div>
                 </div>
               );
-            })}
+            }))}
           </div>
         </div>
 
         <div className="bg-white mt-2 px-5 py-4">
           <p className="font-semibold text-sm text-[#1A1A18] mb-3">{t("mosque.facilities")}</p>
           <div className="flex flex-wrap gap-2">
-            {mosque.facilities.map((f) => (
-              <span key={f} className="text-xs font-medium px-3 py-2 rounded-xl bg-[var(--cream)] text-[#1A1A18]">{f}</span>
-            ))}
+            {tx(mosque.facilities.map((f) => (
+              <span key={f} className="text-xs font-medium px-3 py-2 rounded-xl bg-[var(--cream)] text-[#1A1A18]">{tx(f)}</span>
+            )))}
           </div>
         </div>
 
         <div className="px-4 py-4 flex gap-3">
-          <button className="flex-1 py-4 rounded-2xl font-bold text-white" style={{ backgroundColor: "var(--green)" }}>
+          <button type="button" onClick={() => directions(mosque.address)} className="flex-1 py-4 rounded-2xl font-bold text-white" style={{ backgroundColor: "var(--green)" }}>
             {t("mosque.get_directions")}
           </button>
-          <button className="flex-1 py-4 rounded-2xl font-semibold border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>
+          <button type="button" onClick={() => onNavigate?.("share")} className="flex-1 py-4 rounded-2xl font-semibold border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>
             {t("mosque.share")}
           </button>
         </div>
@@ -286,7 +292,9 @@ export const PrayerTimesScreen = ({ onTabChange, onNavigate }: { onTabChange?: (
   });
   const nextIdx = allPrayerTimes.findIndex((p) => !p.passed && p.id !== "sunrise");
   const nextPrayer = nextIdx >= 0 ? allPrayerTimes[nextIdx] : allPrayerTimes[0];
-  const today = now.getDate();
+  const [month, setMonth] = useState(new Date(now.getFullYear(), now.getMonth(), 1));
+  const [selectedDay, setSelectedDay] = useState(now.getDate());
+  const today = selectedDay;
 
   return (
     <div className="flex flex-col h-full bg-[var(--cream)]">
@@ -294,12 +302,12 @@ export const PrayerTimesScreen = ({ onTabChange, onNavigate }: { onTabChange?: (
         <StatusBar />
         <div className="px-5 pb-3">
           <h1 className="font-bold text-xl text-[#1A1A18]">{t("mosque.prayer_times_title")}</h1>
-          <p className="text-xs text-[var(--muted)] mt-0.5">{location || t("common.loading")}{prayerData ? ` · ${prayerData.gregorianDate}` : ""}</p>
+          <p className="text-xs text-[var(--muted)] mt-0.5">{tx(location || t("common.loading"))}{tx(prayerData ? ` · ${prayerData.gregorianDate}` : "")}</p>
         </div>
       </div>
 
       <div className="flex-1 phone-scroll">
-        {loading ? (
+        {tx(loading ? (
           <div className="flex items-center justify-center py-12">
             <p className="text-sm text-[var(--muted)]">{t("common.loading")}</p>
           </div>
@@ -314,18 +322,18 @@ export const PrayerTimesScreen = ({ onTabChange, onNavigate }: { onTabChange?: (
                 <div className="flex items-center justify-between mb-4">
                   <div>
                     <p className="text-white/70 text-xs">{t("mosque.hijri_label")}</p>
-                    <p className="text-white font-semibold text-sm mt-0.5">{prayerData?.hijriDate ?? ""}</p>
+                    <p className="text-white font-semibold text-sm mt-0.5">{tx(prayerData?.hijriDate ?? "")}</p>
                   </div>
                   <span className="text-3xl">🌙</span>
                 </div>
                 <p className="text-white/70 text-xs font-medium mb-1">{t("mosque.until_next_prayer")}</p>
-                <p className="text-white font-bold text-lg mb-1">{nextPrayer?.name ?? ""} {nextPrayer?.nameEn ?? ""}</p>
-                <p className="text-white font-bold tabular-nums" style={{ fontSize: "36px", lineHeight: 1 }}>{nextPrayer?.time ?? "--:--"}</p>
+                <p className="text-white font-bold text-lg mb-1">{tx(nextPrayer?.name ?? "")} {tx(nextPrayer?.nameEn ?? "")}</p>
+                <p className="text-white font-bold tabular-nums" style={{ fontSize: "36px", lineHeight: 1 }}>{tx(nextPrayer?.time ?? "--:--")}</p>
               </div>
             </div>
 
             <div className="bg-white mx-4 mt-3 rounded-2xl overflow-hidden shadow-sm">
-              {allPrayerTimes.map((p, i) => {
+              {tx(allPrayerTimes.map((p, i) => {
                 const isNext = i === nextIdx;
                 return (
                   <div
@@ -338,43 +346,43 @@ export const PrayerTimesScreen = ({ onTabChange, onNavigate }: { onTabChange?: (
                   >
                     <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
                       style={{ backgroundColor: isNext ? "var(--green)" : "var(--cream)" }}>
-                      <span className="text-sm">{prayerIconMap[p.id] ?? "🕐"}</span>
+                      <span className="text-sm">{tx(prayerIconMap[p.id] ?? "🕐")}</span>
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <p className={`font-semibold text-sm truncate ${isNext ? "text-[var(--green)]" : "text-[#1A1A18]"}`}>{p.name}</p>
-                        {isNext && <span className="flex-shrink-0 text-[9px] font-bold px-1.5 py-0.5 rounded-full text-white" style={{ backgroundColor: "var(--green)" }}>{t("mosque.next_badge")}</span>}
+                        <p className={`font-semibold text-sm truncate ${isNext ? "text-[var(--green)]" : "text-[#1A1A18]"}`}>{tx(p.name)}</p>
+                        {tx(isNext && <span className="flex-shrink-0 text-[9px] font-bold px-1.5 py-0.5 rounded-full text-white" style={{ backgroundColor: "var(--green)" }}>{t("mosque.next_badge")}</span>)}
                       </div>
-                      <p className="text-xs text-[var(--muted)] truncate">{p.nameEn}</p>
+                      <p className="text-xs text-[var(--muted)] truncate">{tx(p.nameEn)}</p>
                     </div>
-                    <p className={`flex-shrink-0 font-bold text-base tabular-nums ${isNext ? "text-[var(--green)]" : "text-[#1A1A18]"}`}>{p.time}</p>
-                    {p.id !== "sunrise" && (
+                    <p className={`flex-shrink-0 font-bold text-base tabular-nums ${isNext ? "text-[var(--green)]" : "text-[#1A1A18]"}`}>{tx(p.time)}</p>
+                    {tx(p.id !== "sunrise" && (
                       <Toggle on={notifState[p.id] ?? false} onToggle={() => setNotifState(s => ({ ...s, [p.id]: !s[p.id] }))} />
-                    )}
+                    ))}
                   </div>
                 );
-              })}
+              }))}
             </div>
 
             <div className="bg-white mx-4 mt-3 rounded-2xl p-4 shadow-sm">
               <div className="flex items-center justify-between mb-3">
-                <p className="font-semibold text-sm text-[#1A1A18]">{t("mosque.month_year").replace("{month}", String(now.getMonth() + 1)).replace("{year}", String(now.getFullYear()))}</p>
+                <p className="font-semibold text-sm text-[#1A1A18]">{tx(t("mosque.month_year").replace("{month}", String(month.getMonth() + 1)).replace("{year}", String(month.getFullYear())))}</p>
                 <div className="flex gap-1">
-                  <button className="w-7 h-7 rounded-lg bg-[var(--cream)] flex items-center justify-center">
+                  <button type="button" onClick={() => setMonth(m => new Date(m.getFullYear(),m.getMonth()-1,1))} className="w-7 h-7 rounded-lg bg-[var(--cream)] flex items-center justify-center">
                     <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="var(--charcoal)" strokeWidth="1.8"><path d="M8 9L5 6l3-3" strokeLinecap="round"/></svg>
                   </button>
-                  <button className="w-7 h-7 rounded-lg bg-[var(--cream)] flex items-center justify-center">
+                  <button type="button" onClick={() => setMonth(m => new Date(m.getFullYear(),m.getMonth()+1,1))} className="w-7 h-7 rounded-lg bg-[var(--cream)] flex items-center justify-center">
                     <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="var(--charcoal)" strokeWidth="1.8"><path d="M4 9l3-3-3-3" strokeLinecap="round"/></svg>
                   </button>
                 </div>
               </div>
               <div className="grid grid-cols-7 gap-1 text-center">
-                {["weekday_0","weekday_1","weekday_2","weekday_3","weekday_4","weekday_5","weekday_6"].map((d) => (
-                  <p key={d} className="text-[10px] font-semibold text-[var(--muted)] py-1">{t(`mosque.${d}`)}</p>
-                ))}
-                {[0,1,2,3,4].map((i) => <div key={i} />)}
-                {Array.from({ length: 30 }, (_, i) => i + 1).map((d) => (
-                  <button
+                {tx(["weekday_0","weekday_1","weekday_2","weekday_3","weekday_4","weekday_5","weekday_6"].map((d) => (
+                  <p key={d} className="text-[10px] font-semibold text-[var(--muted)] py-1">{tx(t(`mosque.${d}`))}</p>
+                )))}
+                {tx(Array.from({length: month.getDay()}, (_, i) => <div key={i} />))}
+                {tx(Array.from({ length: new Date(month.getFullYear(), month.getMonth()+1, 0).getDate() }, (_, i) => i + 1).map((d) => (
+                  <button type="button" onClick={() => setSelectedDay(d)}
                     key={d}
                     className="aspect-square rounded-full text-xs font-medium flex items-center justify-center transition-all"
                     style={{
@@ -383,12 +391,13 @@ export const PrayerTimesScreen = ({ onTabChange, onNavigate }: { onTabChange?: (
                       fontWeight: d === today ? "700" : "400",
                     }}
                   >
-                    {d}
+                    {tx(d)}
                   </button>
-                ))}
+                )))}
               </div>
             </div>
 
+            <p className="p-4 text-xs text-[var(--muted)]">{t("flow.sample_warning")}</p><button className="px-4 text-[var(--green)]" onClick={() => onNavigate?.("offline-prayer")}>{t("travel.offline_prayer_title")}</button>
             {/* Quick actions */}
             <div className="px-4 pt-3 pb-6 flex gap-3">
               <button
@@ -407,7 +416,7 @@ export const PrayerTimesScreen = ({ onTabChange, onNavigate }: { onTabChange?: (
               </button>
             </div>
           </>
-        )}
+        ))}
       </div>
 
       <BottomNav active="prayer" onTabChange={onTabChange} />
@@ -427,11 +436,11 @@ export const QiblaScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: Tab
         <GeometricPattern color="white" opacity={1} />
       </div>
 
-      <StatusBar dark />
+      <StatusBar dark /><p className="px-4 text-xs text-white/70">{t("flow.demo_notice")}</p>
 
       {/* Header */}
       <div className="relative z-10 flex items-center gap-3 px-5 pt-2 pb-4">
-        <BackButton dark onBack={() => onNavigate?.("home")} />
+        <BackButton dark onBack={() => goBack("home")} />
         <div>
           <h1 className="font-bold text-lg text-white">{t("mosque.qibla_header")}</h1>
           <p className="text-xs text-white/50">{t("mosque.direction_to_mecca")}</p>
@@ -444,33 +453,33 @@ export const QiblaScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: Tab
           {/* Outer decorative ring */}
           <svg width="280" height="280" viewBox="-140 -140 280 280" className="absolute">
             {/* Islamic 8-point star border */}
-            {Array.from({ length: 32 }, (_, i) => {
+            {tx(Array.from({ length: 32 }, (_, i) => {
               const angle = (i * 360) / 32;
               const rad = (angle * Math.PI) / 180;
               const r1 = 128, r2 = 118;
               const x1 = Math.cos(rad) * r1, y1 = Math.sin(rad) * r1;
               const x2 = Math.cos(rad) * r2, y2 = Math.sin(rad) * r2;
               return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#C4883A" strokeWidth="1.5" opacity="0.6"/>;
-            })}
+            }))}
             <circle r="125" stroke="#C4883A" strokeWidth="1" fill="none" opacity="0.3"/>
             <circle r="105" stroke="#1B6B4A" strokeWidth="0.5" fill="none" opacity="0.5"/>
 
             {/* Cardinal directions */}
-            {[{label:"N",angle:0},{label:"E",angle:90},{label:"S",angle:180},{label:"W",angle:270}].map(({label,angle}) => {
+            {tx([{label:"N",angle:0},{label:"E",angle:90},{label:"S",angle:180},{label:"W",angle:270}].map(({label,angle}) => {
               const rad = ((angle - 90) * Math.PI) / 180;
               const x = Math.cos(rad) * 90, y = Math.sin(rad) * 90;
-              return <text key={label} x={x} y={y + 5} textAnchor="middle" fill={label === "N" ? "#D94F4F" : "rgba(255,255,255,0.7)"} fontSize="14" fontWeight="700" fontFamily="sans-serif">{label}</text>;
-            })}
+              return <text key={label} x={x} y={y + 5} textAnchor="middle" fill={label === "N" ? "#D94F4F" : "rgba(255,255,255,0.7)"} fontSize="14" fontWeight="700" fontFamily="sans-serif">{tx(label)}</text>;
+            }))}
 
             {/* Degree marks */}
-            {Array.from({ length: 36 }, (_, i) => {
+            {tx(Array.from({ length: 36 }, (_, i) => {
               const angle = i * 10;
               const rad = ((angle - 90) * Math.PI) / 180;
               const r1 = 102, r2 = angle % 90 === 0 ? 88 : 96;
               const x1 = Math.cos(rad) * r1, y1 = Math.sin(rad) * r1;
               const x2 = Math.cos(rad) * r2, y2 = Math.sin(rad) * r2;
               return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="rgba(255,255,255,0.3)" strokeWidth={angle % 30 === 0 ? "1.5" : "0.8"}/>;
-            })}
+            }))}
           </svg>
 
           {/* Compass face */}
@@ -505,8 +514,8 @@ export const QiblaScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: Tab
         {/* Info */}
         <div className="text-center space-y-2">
           <p className="text-white/50 text-xs">{t("mosque.qibla_direction_label")}</p>
-          <p className="text-white font-bold text-3xl">{qiblaAngle}°</p>
-          <p className="text-white/60 text-sm">{t("mosque.current_direction").replace("{deg}", "147").replace("{dir}", t("mosque.direction_southeast"))}</p>
+          <p className="text-white font-bold text-3xl">{tx(qiblaAngle)}°</p>
+          <p className="text-white/60 text-sm">{tx(t("mosque.current_direction").replace("{deg}", "147").replace("{dir}", t("mosque.direction_southeast")))}</p>
         </div>
 
         <div

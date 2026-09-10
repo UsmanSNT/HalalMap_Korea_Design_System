@@ -105,3 +105,14 @@ body {
 .phone-scroll::-webkit-scrollbar {
   display: none;
 }
+
+/* Customer mobile shell: intrinsic flex sizes must not clip forms or carousels. */
+.customer-shell { position: relative; }
+.customer-shell .flex-1 { min-width: 0; min-height: 0; }
+.customer-shell .phone-scroll { min-height: 0; overscroll-behavior-y: contain; }
+.customer-shell .overflow-x-auto { overflow-x: auto; overflow-y: hidden; }
+.customer-shell input, .customer-shell textarea { min-width: 0; max-width: 100%; font-size: 16px; }
+.customer-shell button { touch-action: manipulation; }
+.customer-shell button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.customer-shell button:disabled { opacity: .5; cursor: not-allowed; }
+.customer-shell .phone-scroll > :last-child { scroll-margin-bottom: 24px; }

@@ -1,3 +1,7 @@
+import { tx } from "../i18n/content";
+import { showUnavailable, showFeedback } from "../components/CustomerFeedback";
+import { goBack, openEntity, routeParam, navigateTo } from "../services/navigation";
+import { useLocal, writeLocal, directions } from "../services/customerState";
 import React, { useState } from "react";
 import { StatusBar, BackButton } from "../components/Shared";
 import { useLanguage } from "../i18n/LanguageContext";
@@ -14,10 +18,10 @@ export const ScannerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
 
       {/* Controls */}
       <div className="flex items-center justify-between px-5 pb-4 relative z-20">
-        <BackButton dark onBack={() => onNavigate?.("home")} />
+        <BackButton dark onBack={() => goBack("home")} />
         <h1 className="font-bold text-white text-lg">{t("scanner.title")}</h1>
         <button
-          onClick={() => setFlash(!flash)}
+          onClick={showUnavailable}
           className="w-9 h-9 rounded-full flex items-center justify-center transition-colors"
           style={{ backgroundColor: flash ? "#FCD34D" : "rgba(255,255,255,0.15)" }}
         >
@@ -56,9 +60,9 @@ export const ScannerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
           {/* Barcode placeholder */}
           <div className="absolute inset-8 flex flex-col items-center justify-center gap-3">
             <div className="flex gap-1 items-end opacity-30">
-              {[3,5,2,6,3,5,2,4,3,6,4,2,5,3].map((h, i) => (
+              {tx([3,5,2,6,3,5,2,4,3,6,4,2,5,3].map((h, i) => (
                 <div key={i} className="bg-white w-1 rounded-sm" style={{ height: `${h * 6}px` }} />
-              ))}
+              )))}
             </div>
             <p className="text-white/30 text-[10px] font-mono">8801012345678</p>
           </div>
@@ -86,14 +90,15 @@ export const ScannerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
           </div>
           <div className="flex-1">
             <p className="text-white/60 text-[10px] font-medium">{t("scanner.recent_scan_label")}</p>
-            <p className="text-white text-sm font-semibold">오리온 초코파이 정 (12개입)</p>
+            <p className="text-white text-sm font-semibold">{tx("오리온 초코파이 정 (12개입)")}</p>
           </div>
           <span className="text-[10px] font-bold px-2 py-1 rounded-full" style={{ backgroundColor: "var(--green)", color: "white" }}>HALAL</span>
         </div>
 
+        <button className="w-full text-white py-3 border rounded-xl" onClick={() => onNavigate?.("scan-result")}>{t("flow.sample_scan")}</button><button className="text-white" onClick={() => onNavigate?.("scan-history")}>{t("scanner.history_title")}</button>
         {/* Gallery button */}
         <div className="flex gap-3">
-          <button className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl border border-white/20 text-white font-semibold text-sm">
+          <button type="button" onClick={showUnavailable} className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl border border-white/20 text-white font-semibold text-sm">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="white" strokeWidth="1.6">
               <rect x="2" y="2" width="14" height="14" rx="2.5"/>
               <circle cx="6.5" cy="6.5" r="1.5"/>
@@ -144,6 +149,7 @@ const ingredients = [
 
 export const ScanResultScreen = ({ verdict = "halal", onNavigate }: { verdict?: Verdict; onNavigate?: (s: ScreenId) => void }) => {
   const { t } = useLanguage();
+  verdict = (routeParam("verdict", verdict) in verdictConfig ? routeParam("verdict", verdict) : "mashbooh") as Verdict;
   const cfg = verdictConfig[verdict];
   const verdictLabel = t(`scanner.verdict_${verdict}_label`);
   const verdictDesc = t(`scanner.verdict_${verdict}_desc`);
@@ -158,25 +164,26 @@ export const ScanResultScreen = ({ verdict = "halal", onNavigate }: { verdict?: 
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
-          <BackButton onBack={() => onNavigate?.("home")} />
+          <BackButton onBack={() => goBack("scanner")} />
           <h1 className="font-bold text-lg flex-1">{t("scanner.scan_result_title")}</h1>
-          <button className="text-sm font-medium" style={{ color: "var(--muted)" }}>{t("scanner.share")}</button>
+          <button type="button" onClick={() => onNavigate?.("share")} className="text-sm font-medium" style={{ color: "var(--muted)" }}>{t("scanner.share")}</button>
         </div>
       </div>
 
       <div className="flex-1 phone-scroll px-4 py-4 space-y-4">
+        <p className="text-sm text-[var(--danger)]">{t("flow.sample_warning")}</p>
         {/* Product */}
         <div className="bg-white rounded-2xl p-4 flex gap-4 shadow-sm">
           <div className="w-20 h-20 rounded-xl overflow-hidden bg-[#E8E6E1] flex-shrink-0">
             <img
               src="https://images.unsplash.com/photo-1567620905572-d1d0d6ca9ea0?w=120&h=120&fit=crop&auto=format&q=80"
-              alt="오리온 초코파이"
+              alt={tx("오리온 초코파이")}
               className="w-full h-full object-cover"
             />
           </div>
           <div className="flex-1 py-1">
-            <p className="text-xs text-[var(--muted)]">오리온 (Orion)</p>
-            <p className="font-bold text-base text-[#1A1A18] leading-tight">초코파이 정 (12개입)</p>
+            <p className="text-xs text-[var(--muted)]">{tx("오리온 (Orion)")}</p>
+            <p className="font-bold text-base text-[#1A1A18] leading-tight">{tx(routeParam("product", "초코파이 정 (12개입)"))}</p>
             <p className="text-xs text-[var(--muted)] mt-1 font-mono">8801012345678</p>
           </div>
         </div>
@@ -188,38 +195,38 @@ export const ScanResultScreen = ({ verdict = "halal", onNavigate }: { verdict?: 
         >
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-4xl flex-shrink-0" style={{ backgroundColor: cfg.color }}>
-              {verdict === "halal" ? (
+              {tx(verdict === "halal" ? (
                 <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
                   <path d="M16 4C9.4 4 4 9.4 4 16C4 22.6 9.4 28 16 28C22.6 28 28 22.6 28 16C28 9.4 22.6 4 16 4Z" fill="rgba(255,255,255,0.2)"/>
                   <path d="M10 16l4 4 8-8" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
-              ) : <span>{cfg.icon}</span>}
+              ) : <span>{tx(cfg.icon)}</span>)}
             </div>
             <div className="flex-1">
-              <span className="text-xs font-bold tracking-widest" style={{ color: cfg.color }}>{cfg.label}</span>
-              <p className="font-bold text-xl text-[#1A1A18] mt-0.5">{verdictLabel}</p>
-              <p className="text-xs text-[var(--muted)] mt-1 leading-relaxed">{verdictDesc}</p>
+              <span className="text-xs font-bold tracking-widest" style={{ color: cfg.color }}>{tx(cfg.label)}</span>
+              <p className="font-bold text-xl text-[#1A1A18] mt-0.5">{tx(verdictLabel)}</p>
+              <p className="text-xs text-[var(--muted)] mt-1 leading-relaxed">{tx(verdictDesc)}</p>
             </div>
           </div>
 
-          {verdict === "halal" && (
+          {tx(verdict === "halal" && (
             <div className="mt-4 flex items-center gap-2 pt-3 border-t" style={{ borderColor: `${cfg.color}20` }}>
               <svg width="14" height="14" viewBox="0 0 14 14" fill={cfg.color}>
                 <path d="M7 1L8.5 5H12.5L9.5 7.5L10.5 12L7 9.5L3.5 12L4.5 7.5L1.5 5H5.5L7 1Z"/>
               </svg>
-              <p className="text-xs font-semibold" style={{ color: cfg.color }}>{t("scanner.cert_authority_prefix")}한국이슬람교중앙회 (KMF)</p>
+              <p className="text-xs font-semibold" style={{ color: cfg.color }}>{t("scanner.cert_authority_prefix")}{tx("한국이슬람교중앙회 (KMF)")}</p>
             </div>
-          )}
+          ))}
         </div>
 
         {/* Ingredients */}
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
           <div className="px-4 py-3 border-b border-[var(--border)]">
             <p className="font-semibold text-sm text-[#1A1A18]">{t("scanner.ingredients_analysis_title")}</p>
-            <p className="text-xs text-[var(--muted)] mt-0.5">{t("scanner.ingredients_count").replace("{count}", String(ingredients.length))}</p>
+            <p className="text-xs text-[var(--muted)] mt-0.5">{tx(t("scanner.ingredients_count").replace("{count}", String(ingredients.length)))}</p>
           </div>
           <div className="divide-y divide-[var(--border)]">
-            {ingredients.map((ing) => (
+            {tx(ingredients.map((ing) => (
               <div key={ing.name} className="flex items-center gap-3 px-4 py-3">
                 <div
                   className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-xs"
@@ -227,47 +234,47 @@ export const ScanResultScreen = ({ verdict = "halal", onNavigate }: { verdict?: 
                     backgroundColor: ing.status === "ok" ? "var(--green-light)" : "var(--gold-light)",
                   }}
                 >
-                  {ing.status === "ok" ? (
+                  {tx(ing.status === "ok" ? (
                     <svg width="10" height="8" viewBox="0 0 10 8" fill="none" stroke="var(--green)" strokeWidth="1.8" strokeLinecap="round"><path d="M1 4l2.5 2.5L9 1"/></svg>
                   ) : (
                     <svg width="10" height="10" viewBox="0 0 10 10" fill="var(--gold)" strokeWidth="0"><path d="M5 1L1 9h8L5 1Z"/><rect x="4.5" y="4.5" width="1" height="2.5" fill="white"/><rect x="4.5" y="7.5" width="1" height="1" fill="white"/></svg>
-                  )}
+                  ))}
                 </div>
-                <p className="text-sm text-[#1A1A18] flex-1">{ing.name}</p>
-                {ing.status === "warn" && (
+                <p className="text-sm text-[#1A1A18] flex-1">{tx(ing.name)}</p>
+                {tx(ing.status === "warn" && (
                   <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ backgroundColor: "var(--gold-light)", color: "#92400E" }}>{t("scanner.needs_check")}</span>
-                )}
+                ))}
               </div>
-            ))}
+            )))}
           </div>
         </div>
 
         {/* Positive notes */}
-        {verdict === "halal" && (
+        {tx(verdict === "halal" && (
           <div className="bg-white rounded-2xl px-4 py-3 shadow-sm space-y-2">
             <p className="font-semibold text-sm text-[#1A1A18]">{t("scanner.confirmed_items_title")}</p>
-            {confirmedNotes.map((note) => (
+            {tx(confirmedNotes.map((note) => (
               <div key={note} className="flex items-center gap-2 text-sm" style={{ color: "var(--green)" }}>
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M2 7l3.5 3.5L12 4"/></svg>
-                {note}
+                {tx(note)}
               </div>
-            ))}
+            )))}
           </div>
-        )}
+        ))}
 
         {/* Source */}
         <div className="bg-white rounded-2xl px-4 py-3 shadow-sm flex items-center justify-between">
           <div>
             <p className="text-xs text-[var(--muted)]">{t("scanner.data_source_label")}</p>
-            <p className="text-sm font-semibold text-[#1A1A18]">KMF 할랄 데이터베이스</p>
+            <p className="text-sm font-semibold text-[#1A1A18]">{tx("KMF 할랄 데이터베이스")}</p>
             <p className="text-xs text-[var(--muted)]">{t("scanner.last_updated")}</p>
           </div>
-          <button className="text-xs font-medium px-3 py-2 rounded-xl border border-[var(--border)]" style={{ color: "var(--muted)" }}>
+          <button type="button" onClick={showUnavailable} className="text-xs font-medium px-3 py-2 rounded-xl border border-[var(--border)]" style={{ color: "var(--muted)" }}>
             {t("scanner.report_error")}
           </button>
         </div>
 
-        <button
+        <button type="button" onClick={() => onNavigate?.("scanner")}
           className="w-full py-4 rounded-2xl font-bold text-white text-base"
           style={{ backgroundColor: "var(--green)" }}
         >
@@ -289,6 +296,7 @@ const scanHistory = [
 ];
 
 export const ScanHistoryScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
+  const [history, setHistory] = useLocal("scan-history", scanHistory);
   const { t } = useLanguage();
 
   return (
@@ -296,36 +304,36 @@ export const ScanHistoryScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =
     <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
       <StatusBar />
       <div className="flex items-center gap-3 px-4 pb-3">
-        <BackButton onBack={() => onNavigate?.("home")} />
+        <BackButton onBack={() => goBack("profile")} />
         <h1 className="font-bold text-lg flex-1">{t("scanner.history_title")}</h1>
-        <button className="text-sm font-medium" style={{ color: "var(--danger)" }}>{t("scanner.clear_all")}</button>
+        <button type="button" onClick={() => setHistory([])} className="text-sm font-medium" style={{ color: "var(--danger)" }}>{t("scanner.clear_all")}</button>
       </div>
     </div>
 
     <div className="flex-1 phone-scroll px-4 py-4 space-y-2.5">
-      {scanHistory.map((item) => {
+      {tx(history.map((item) => {
         const cfg = verdictConfig[item.verdict];
         return (
-          <div key={item.name} className="bg-white rounded-2xl p-4 flex items-center gap-3 shadow-sm">
+          <div onClick={() => navigateTo(`scan-result?verdict=${item.verdict}&product=${encodeURIComponent(item.name)}`)} key={item.name} className="bg-white rounded-2xl p-4 flex items-center gap-3 shadow-sm">
             <div
               className="w-12 h-12 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
               style={{ backgroundColor: cfg.bg }}
             >
-              {item.verdict === "halal" ? "✅" : item.verdict === "haram" ? "❌" : "⚠️"}
+              {tx(item.verdict === "halal" ? "✅" : item.verdict === "haram" ? "❌" : "⚠️")}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-semibold text-sm text-[#1A1A18] truncate">{item.name}</p>
-              <p className="text-xs text-[var(--muted)]">{item.brand} · {item.date}</p>
+              <p className="font-semibold text-sm text-[#1A1A18] truncate">{tx(item.name)}</p>
+              <p className="text-xs text-[var(--muted)]">{tx(item.brand)} · {tx(item.date)}</p>
             </div>
             <span
               className="text-[10px] font-bold px-2 py-1 rounded-full flex-shrink-0"
               style={{ backgroundColor: cfg.bg, color: cfg.color }}
             >
-              {cfg.label}
+              {tx(cfg.label)}
             </span>
           </div>
         );
-      })}
+      }))}
 
       <div className="h-4" />
     </div>

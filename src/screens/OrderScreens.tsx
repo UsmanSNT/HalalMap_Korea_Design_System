@@ -1,3 +1,6 @@
+import { tx } from "../i18n/content";
+import { showUnavailable, showFeedback } from "../components/CustomerFeedback";
+import { goBack, openEntity, routeParam, navigateTo } from "../services/navigation";
 import React, { useState, useEffect } from "react";
 import { StatusBar, BottomNav, BackButton, OrderStatusChip, TabId } from "../components/Shared";
 import { getOrders, getOrder, type Order } from "../api/orders";
@@ -15,9 +18,9 @@ const RouteSVG = () => (
     <rect x="120" y="0" width="12" height="320" fill="#F5F2EC"/>
     <rect x="280" y="0" width="12" height="320" fill="#F5F2EC"/>
     {/* Blocks */}
-    {[[10,15,100,80],[10,120,100,90],[10,240,100,70],[140,15,130,80],[140,120,130,90],[140,240,130,70],[300,15,80,80],[300,120,80,90],[300,240,80,70]].map(([x,y,w,h],i)=>(
+    {tx([[10,15,100,80],[10,120,100,90],[10,240,100,70],[140,15,130,80],[140,120,130,90],[140,240,130,70],[300,15,80,80],[300,120,80,90],[300,240,80,70]].map(([x,y,w,h],i)=>(
       <rect key={i} x={x} y={y} width={w} height={h} fill="#D8D4CC" rx="3" opacity="0.6"/>
-    ))}
+    )))}
     {/* Route path */}
     <path d="M70 260 Q70 232 126 232 Q290 232 286 126 Q286 60 200 60" stroke="#1B6B4A" strokeWidth="4" fill="none" strokeDasharray="8 4" strokeLinecap="round" opacity="0.7"/>
     {/* Restaurant */}
@@ -59,8 +62,8 @@ export const OrderTrackingScreen = ({ onTabChange, onNavigate }: { onTabChange?:
       <div className="absolute top-0 left-0 right-0">
         <StatusBar dark />
         <div className="flex items-center px-4 gap-3">
-          <BackButton dark onBack={() => onNavigate?.("home")} />
-          <h1 className="font-bold text-white text-lg">{t("order.tracking_title")}</h1>
+          <BackButton dark onBack={() => goBack("order-history")} />
+          <h1 className="font-bold text-white text-lg">{t("order.tracking_title")} · {t("flow.demo")}</h1>
         </div>
       </div>
     </div>
@@ -82,14 +85,14 @@ export const OrderTrackingScreen = ({ onTabChange, onNavigate }: { onTabChange?:
 
         {/* Status stepper */}
         <div className="flex items-center justify-between py-3">
-          {trackSteps.map((step, i) => (
+          {tx(trackSteps.map((step, i) => (
             <div key={step.key} className="flex flex-col items-center gap-1.5 relative flex-1">
-              {i < trackSteps.length - 1 && (
+              {tx(i < trackSteps.length - 1 && (
                 <div
                   className="absolute top-3.5 left-1/2 w-full h-0.5"
                   style={{ backgroundColor: step.done ? "var(--green)" : "var(--border)" }}
                 />
-              )}
+              ))}
               <div
                 className="w-7 h-7 rounded-full z-10 flex items-center justify-center border-2 transition-all"
                 style={{
@@ -97,23 +100,23 @@ export const OrderTrackingScreen = ({ onTabChange, onNavigate }: { onTabChange?:
                   borderColor: step.done || step.active ? "var(--green)" : "var(--border)",
                 }}
               >
-                {step.active ? (
+                {tx(step.active ? (
                   <div className="w-2.5 h-2.5 rounded-full bg-white animate-pulse" />
                 ) : step.done ? (
                   <svg width="12" height="10" viewBox="0 0 12 10" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round"><path d="M1 5l3 3 7-7"/></svg>
                 ) : (
                   <div className="w-2 h-2 rounded-full bg-[var(--border)]" />
-                )}
+                ))}
               </div>
-              <p className="text-[9px] font-medium text-center leading-tight text-[var(--muted)] whitespace-nowrap">{step.label}</p>
+              <p className="text-[9px] font-medium text-center leading-tight text-[var(--muted)] whitespace-nowrap">{tx(step.label)}</p>
             </div>
-          ))}
+          )))}
         </div>
 
         {/* Order info */}
         <div className="bg-[var(--cream)] rounded-2xl p-3 flex items-center gap-2">
           <span className="text-base">📦</span>
-          <p className="text-sm text-[#1A1A18] flex-1">신당 할랄 키친 · <span className="font-semibold">할랄 갈비탕 외 2개</span></p>
+          <p className="text-sm text-[#1A1A18] flex-1">{tx("신당 할랄 키친 ·")}<span className="font-semibold">{tx("할랄 갈비탕 외 2개")}</span></p>
         </div>
 
         {/* Courier card */}
@@ -124,20 +127,20 @@ export const OrderTrackingScreen = ({ onTabChange, onNavigate }: { onTabChange?:
               👨‍🦱
             </div>
             <div className="flex-1">
-              <p className="font-bold text-base text-[#1A1A18]">김민준</p>
+              <p className="font-bold text-base text-[#1A1A18]">{tx("김민준")}</p>
               <div className="flex items-center gap-1.5 mt-0.5">
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="#C4883A"><path d="M6 1l1.2 2.5 2.8.4-2 2 .5 2.7L6 7.3 3.5 8.6l.5-2.7-2-2 2.8-.4L6 1z"/></svg>
                 <span className="text-xs font-semibold text-[#1A1A18]">4.9</span>
-                <span className="text-xs text-[var(--muted)]">· {t("order.courier_deliveries").replace("{count}", "8,241")}</span>
+                <span className="text-xs text-[var(--muted)]">· {tx(t("order.courier_deliveries").replace("{count}", "8,241"))}</span>
               </div>
             </div>
             <div className="flex gap-2">
-              <button className="w-10 h-10 rounded-xl border border-[var(--border)] flex items-center justify-center">
+              <button type="button" onClick={showUnavailable} className="w-10 h-10 rounded-xl border border-[var(--border)] flex items-center justify-center">
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--green)" strokeWidth="1.6">
                   <path d="M5 3a2 2 0 012-2h.5l1 3-1.5 1.5A11 11 0 0013 11l1.5-1.5 3 1V11a2 2 0 01-2 2A13 13 0 013 5z"/>
                 </svg>
               </button>
-              <button className="w-10 h-10 rounded-xl border border-[var(--border)] flex items-center justify-center">
+              <button type="button" onClick={showUnavailable} className="w-10 h-10 rounded-xl border border-[var(--border)] flex items-center justify-center">
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--green)" strokeWidth="1.6">
                   <path d="M3 3h4l2 4-2.5 1.5A11 11 0 0011.5 12l1.5-2.5 4 2v3a1 1 0 01-1 1A16 16 0 012 4a1 1 0 011-1z" strokeWidth="0"/>
                   <rect x="2" y="12" width="14" height="3" rx="1" fill="none" stroke="var(--green)"/>
@@ -160,6 +163,7 @@ export const OrderTrackingScreen = ({ onTabChange, onNavigate }: { onTabChange?:
 export const OrderHistoryScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabId) => void; onNavigate?: (s: ScreenId) => void }) => {
   const { t } = useLanguage();
   const [orders, setOrders] = useState<Order[]>([]);
+  const [activeTab, setActiveTab] = useState(1);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -184,65 +188,66 @@ export const OrderHistoryScreen = ({ onTabChange, onNavigate }: { onTabChange?: 
       <div className="px-5 pb-3">
         <h1 className="font-bold text-xl text-[#1A1A18]">{t("order.history_title")}</h1>
         <div className="flex gap-4 mt-3">
-          {historyTabs.map((tab, i) => (
-            <button
+          {tx(historyTabs.map((tab, i) => (
+            <button type="button" onClick={() => setActiveTab(i)}
               key={tab}
               className="pb-2 text-sm font-semibold border-b-2 transition-all"
               style={{
-                borderColor: i === 1 ? "var(--green)" : "transparent",
-                color: i === 1 ? "var(--green)" : "var(--muted)",
+                borderColor: i === activeTab ? "var(--green)" : "transparent",
+                color: i === activeTab ? "var(--green)" : "var(--muted)",
               }}
             >
-              {tab}
+              {tx(tab)}
             </button>
-          ))}
+          )))}
         </div>
       </div>
     </div>
 
     <div className="flex-1 phone-scroll px-4 py-4 space-y-3">
-      {loading ? (
+      {tx(loading ? (
         <p className="text-center text-sm text-[var(--muted)] py-8">{t("common.loading")}</p>
       ) : (
-        orders.map((order) => (
+        (activeTab === 0 ? active : delivered).map((order) => (
           <div key={order.id} className="bg-white rounded-2xl shadow-sm overflow-hidden">
-            <div className="p-4">
+            <div onClick={() => openEntity("order-detail", "order", order.id)} className="p-4 cursor-pointer">
               <div className="flex items-start justify-between gap-2 mb-2">
                 <div>
-                  <p className="font-bold text-base text-[#1A1A18]">{order.restaurant}</p>
-                  <p className="text-xs text-[var(--muted)] mt-0.5">{order.date} · {order.items}</p>
+                  <p className="font-bold text-base text-[#1A1A18]">{tx(order.restaurant)}</p>
+                  <p className="text-xs text-[var(--muted)] mt-0.5">{tx(order.date)} · {tx(order.items)}</p>
                 </div>
                 <OrderStatusChip status={order.status} />
               </div>
-              <p className="font-bold text-lg text-[#1A1A18]">₩{order.total.toLocaleString()}</p>
+              <p className="font-bold text-lg text-[#1A1A18]">₩{tx(order.total.toLocaleString())}</p>
 
-              {!order.rated && order.status === "delivered" && (
+              {tx(!order.rated && order.status === "delivered" && (
                 <div className="mt-3 flex items-center gap-2 p-3 rounded-xl" style={{ backgroundColor: "var(--gold-light)" }}>
                   <div className="flex gap-0.5">
-                    {[1,2,3,4,5].map((s) => (
+                    {tx([1,2,3,4,5].map((s) => (
                       <svg key={s} width="16" height="16" viewBox="0 0 16 16" fill="#C4883A">
                         <path d="M8 1.5l1.6 3.3 3.7.5-2.7 2.6.6 3.6L8 9.7l-3.2 1.8.6-3.6L2.7 5.3l3.7-.5L8 1.5z"/>
                       </svg>
-                    ))}
+                    )))}
                   </div>
                   <p className="text-xs font-medium flex-1" style={{ color: "#7A5220" }}>{t("order.rate_prompt")}</p>
                 </div>
-              )}
+              ))}
             </div>
 
-            {order.status !== "cancelled" && (
+            {tx(order.status !== "cancelled" && (
               <div className="flex border-t border-[var(--border)] divide-x divide-[var(--border)]">
-                <button className="flex-1 py-3 text-sm font-semibold" style={{ color: "var(--green)" }}>
+                <button type="button" onClick={() => openEntity("menu","restaurant",order.restaurantId)} className="flex-1 py-3 text-sm font-semibold" style={{ color: "var(--green)" }}>
                   {t("order.reorder")}
                 </button>
-                <button className="flex-1 py-3 text-sm font-medium text-[var(--muted)]">
+                <button type="button" onClick={() => openEntity("order-detail","order",order.id)} className="flex-1 py-3 text-sm font-medium text-[var(--muted)]">
                   {t("order.receipt")}
                 </button>
               </div>
-            )}
+            ))}
           </div>
         ))
-      )}
+      ))}
+      <p className="text-xs text-[var(--muted)]">{t("flow.demo_notice")}</p>
       <div className="h-4" />
     </div>
 
@@ -255,9 +260,10 @@ export const OrderHistoryScreen = ({ onTabChange, onNavigate }: { onTabChange?: 
 export const OrderDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const { t } = useLanguage();
   const [order, setOrder] = useState<Order | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getOrder("order-1").then(setOrder).catch(() => {});
+    getOrder(routeParam("order", "order-1")).then(setOrder).catch(() => {}).finally(() => setLoading(false));
   }, []);
 
   if (!order) {
@@ -266,12 +272,12 @@ export const OrderDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =
         <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
           <StatusBar />
           <div className="flex items-center gap-3 px-4 pb-3">
-            <BackButton onBack={() => onNavigate?.("home")} />
+            <BackButton onBack={() => goBack("order-history")} />
             <h1 className="font-bold text-lg flex-1">{t("order.detail_title")}</h1>
           </div>
         </div>
         <div className="flex-1 flex items-center justify-center">
-          <p className="text-sm text-[var(--muted)]">{t("common.loading")}</p>
+          <p className="text-sm text-[var(--muted)]">{t(loading ? "common.loading" : "flow.empty")}</p>
         </div>
       </div>
     );
@@ -289,9 +295,9 @@ export const OrderDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =
     <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
       <StatusBar />
       <div className="flex items-center gap-3 px-4 pb-3">
-        <BackButton onBack={() => onNavigate?.("home")} />
+        <BackButton onBack={() => goBack("order-history")} />
         <h1 className="font-bold text-lg flex-1">{t("order.detail_title")}</h1>
-        <button className="text-sm font-medium" style={{ color: "var(--green)" }}>{t("order.receipt")}</button>
+        <button type="button" onClick={() => window.print()} className="text-sm font-medium" style={{ color: "var(--green)" }}>{t("order.receipt")}</button>
       </div>
     </div>
 
@@ -300,74 +306,75 @@ export const OrderDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) =
         <div className="flex items-center justify-between mb-3">
           <div>
             <p className="text-xs text-[var(--muted)]">{t("order.order_number_label")}</p>
-            <p className="font-bold text-base text-[#1A1A18]">{order.orderNumber}</p>
+            <p className="font-bold text-base text-[#1A1A18]">{tx(order.orderNumber ?? order.id)}</p>
           </div>
           <OrderStatusChip status={order.status} />
         </div>
         <div className="text-xs text-[var(--muted)] space-y-0.5">
-          <p>{t("order.order_date_prefix")}{order.orderDate}</p>
-          {order.deliveredDate && <p>{t("order.delivered_date_prefix")}{order.deliveredDate}</p>}
+          <p>{t("order.order_date_prefix")}{tx(order.orderDate ?? order.date)}</p>
+          {tx(order.deliveredDate && <p>{t("order.delivered_date_prefix")}{tx(order.deliveredDate)}</p>)}
         </div>
       </div>
 
       <div className="bg-white rounded-2xl p-4 shadow-sm flex items-center gap-3">
         <div className="w-12 h-12 rounded-xl bg-[var(--green-light)] flex items-center justify-center text-xl">🍖</div>
         <div>
-          <p className="font-bold text-base text-[#1A1A18]">{order.restaurant}</p>
-          <p className="text-xs text-[var(--muted)]">{order.items}</p>
+          <p className="font-bold text-base text-[#1A1A18]">{tx(order.restaurant)}</p>
+          <p className="text-xs text-[var(--muted)]">{tx(order.items)}</p>
         </div>
       </div>
 
-      {order.orderItems && (
+      {tx(order.orderItems && (
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
           <div className="px-4 py-3 border-b border-[var(--border)]">
             <p className="font-semibold text-sm text-[#1A1A18]">{t("order.order_items_title")}</p>
           </div>
           <div className="divide-y divide-[var(--border)]">
-            {order.orderItems.map((item) => (
+            {tx(order.orderItems.map((item) => (
               <div key={item.name} className="flex items-center justify-between px-4 py-3">
                 <div>
-                  <p className="text-sm font-medium text-[#1A1A18]">{item.name}</p>
-                  <p className="text-xs text-[var(--muted)]">{item.option} · {item.qty}{t("order.qty_unit")}</p>
+                  <p className="text-sm font-medium text-[#1A1A18]">{tx(item.name)}</p>
+                  <p className="text-xs text-[var(--muted)]">{tx(item.option)} · {tx(item.qty)}{t("order.qty_unit")}</p>
                 </div>
-                <p className="text-sm font-semibold text-[#1A1A18]">₩{(item.price * item.qty).toLocaleString()}</p>
+                <p className="text-sm font-semibold text-[#1A1A18]">₩{tx((item.price * item.qty).toLocaleString())}</p>
               </div>
-            ))}
+            )))}
           </div>
         </div>
-      )}
+      ))}
 
       <div className="bg-white rounded-2xl p-4 shadow-sm space-y-2.5">
         <p className="font-semibold text-sm text-[#1A1A18]">{t("order.payment_history_title")}</p>
-        {paymentRows.map((row) => (
+        {tx(paymentRows.map((row) => (
           <div key={row.label} className="flex justify-between text-sm">
-            <span style={{ color: "var(--muted)" }}>{row.label}</span>
-            <span className={row.accent ? "font-semibold" : ""} style={{ color: row.accent ? "var(--danger)" : "#1A1A18" }}>{row.val}</span>
+            <span style={{ color: "var(--muted)" }}>{tx(row.label)}</span>
+            <span className={row.accent ? "font-semibold" : ""} style={{ color: row.accent ? "var(--danger)" : "#1A1A18" }}>{tx(row.val)}</span>
           </div>
-        ))}
+        )))}
         <div className="flex justify-between font-bold text-base pt-2 border-t border-[var(--border)]">
           <span>{t("order.total")}</span>
-          <span>₩{order.total.toLocaleString()}</span>
+          <span>₩{tx(order.total.toLocaleString())}</span>
         </div>
-        {order.paymentMethod && <p className="text-xs text-[var(--muted)]">{t("order.payment_method_prefix")}{order.paymentMethod}</p>}
+        {tx(order.paymentMethod && <p className="text-xs text-[var(--muted)]">{t("order.payment_method_prefix")}{tx(order.paymentMethod)}</p>)}
       </div>
 
-      {order.deliveryAddress && (
+      {tx(order.deliveryAddress && (
         <div className="bg-white rounded-2xl p-4 shadow-sm space-y-2">
           <p className="font-semibold text-sm text-[#1A1A18]">{t("order.delivery_info_title")}</p>
-          <p className="text-sm text-[var(--muted)]">📍 {order.deliveryAddress}</p>
-          {order.courier && <p className="text-sm text-[var(--muted)]">{t("order.courier_prefix")}{order.courier.name} · ⭐ {order.courier.rating}</p>}
+          <p className="text-sm text-[var(--muted)]">📍 {tx(order.deliveryAddress)}</p>
+          {tx(order.courier && <p className="text-sm text-[var(--muted)]">{t("order.courier_prefix")}{tx(order.courier.name)} · ⭐ {tx(order.courier.rating)}</p>)}
         </div>
-      )}
+      ))}
 
       <div className="flex gap-3">
-        <button className="flex-1 py-4 rounded-2xl font-bold text-white text-base" style={{ backgroundColor: "var(--green)" }}>
+        <button type="button" onClick={() => openEntity("menu","restaurant",order.restaurantId)} className="flex-1 py-4 rounded-2xl font-bold text-white text-base" style={{ backgroundColor: "var(--green)" }}>
           {t("order.reorder")}
         </button>
-        <button className="flex-1 py-4 rounded-2xl font-semibold text-sm border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>
+        <button type="button" onClick={() => onNavigate?.("reviews")} className="flex-1 py-4 rounded-2xl font-semibold text-sm border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>
           {t("order.write_review")}
         </button>
       </div>
+      <p className="text-xs text-[var(--muted)]">{t("flow.demo_notice")}</p>
       <div className="h-4" />
     </div>
   </div>

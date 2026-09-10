@@ -1,4 +1,9 @@
-import React, { useState } from "react";
+import { tx } from "../i18n/content";
+import { showUnavailable, showFeedback } from "../components/CustomerFeedback";
+import { goBack, openEntity, routeParam, navigateTo } from "../services/navigation";
+import { getRestaurant } from "../api/restaurants";
+import { getMosque } from "../api/mosques";
+import React, { useState, useEffect } from "react";
 import { GeometricPattern, StatusBar, BackButton, HalalBadge, StarRating } from "../components/Shared";
 import { useLanguage } from "../i18n/LanguageContext";
 import type { ScreenId } from "../App";
@@ -60,7 +65,7 @@ const sortKeys = ["sort_latest", "sort_recommended", "sort_photos_only", "sort_h
 export const ReviewsScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const { t } = useLanguage();
   const sortOptions = sortKeys.map((k) => t(`community.${k}`));
-  const [sortBy, setSortBy] = useState(sortOptions[0]);
+  const [sortBy, setSortBy] = useState(0);
   const [helpful, setHelpful] = useState<Record<number, boolean>>({});
 
   return (
@@ -68,12 +73,12 @@ export const ReviewsScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
-          <BackButton onBack={() => onNavigate?.("home")} />
+          <BackButton onBack={() => goBack("restaurant-detail")} />
           <div className="flex-1">
             <h1 className="font-bold text-lg">{t("community.reviews_title")}</h1>
-            <p className="text-xs text-[var(--muted)]">신당 할랄 키친</p>
+            <p className="text-xs text-[var(--muted)]">{tx("신당 할랄 키친")}</p>
           </div>
-          <button className="text-sm font-bold px-3 py-1.5 rounded-xl text-white" style={{ backgroundColor: "var(--green)" }}>
+          <button type="button" onClick={showUnavailable} className="text-sm font-bold px-3 py-1.5 rounded-xl text-white" style={{ backgroundColor: "var(--green)" }}>
             {t("community.write_review")}
           </button>
         </div>
@@ -87,115 +92,115 @@ export const ReviewsScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
             <div className="flex flex-col items-center">
               <p className="font-bold text-5xl text-[#1A1A18]">4.8</p>
               <div className="flex gap-0.5 mt-1.5">
-                {[1,2,3,4,5].map(s => (
+                {tx([1,2,3,4,5].map(s => (
                   <svg key={s} width="14" height="14" viewBox="0 0 14 14" fill={s <= 4 ? "#C4883A" : "#E5E7EB"}>
                     <path d="M7 1l1.6 3.3 3.7.5-2.7 2.6.6 3.6L7 9.3 3.8 11l.6-3.6L1.7 4.8l3.7-.5L7 1z"/>
                   </svg>
-                ))}
+                )))}
               </div>
-              <p className="text-xs text-[var(--muted)] mt-1">{t("community.review_count").replace("{count}", "3,241")}</p>
+              <p className="text-xs text-[var(--muted)] mt-1">{tx(t("community.review_count").replace("{count}", "3,241"))}</p>
             </div>
 
             {/* Distribution */}
             <div className="flex-1 space-y-1.5">
-              {ratingDist.map((r) => (
+              {tx(ratingDist.map((r) => (
                 <div key={r.stars} className="flex items-center gap-2">
-                  <span className="text-xs text-[var(--muted)] w-3">{r.stars}</span>
+                  <span className="text-xs text-[var(--muted)] w-3">{tx(r.stars)}</span>
                   <svg width="10" height="10" viewBox="0 0 10 10" fill="#C4883A"><path d="M5 1l1.1 2.3 2.6.4-1.9 1.8.4 2.6L5 6.8l-2.2 1.3.4-2.6L1.3 3.7l2.6-.4L5 1z"/></svg>
                   <div className="flex-1 h-1.5 rounded-full overflow-hidden bg-[var(--cream)]">
                     <div className="h-full rounded-full" style={{ width: `${r.pct}%`, backgroundColor: r.stars >= 4 ? "var(--gold)" : r.stars === 3 ? "#9CA3AF" : "#EF4444" }} />
                   </div>
-                  <span className="text-[10px] text-[var(--muted)] w-6">{r.pct}%</span>
+                  <span className="text-[10px] text-[var(--muted)] w-6">{tx(r.pct)}%</span>
                 </div>
-              ))}
+              )))}
             </div>
           </div>
 
           {/* Halal-specific categories */}
           <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide mb-3">{t("community.category_ratings_title")}</p>
           <div className="grid grid-cols-2 gap-2">
-            {ratingCategories.map((cat) => (
+            {tx(ratingCategories.map((cat) => (
               <div key={cat.key} className="flex items-center justify-between p-3 rounded-xl" style={{ backgroundColor: "var(--cream)" }}>
                 <div>
-                  <p className="text-xs font-bold text-[#1A1A18]">{cat.labelKo}</p>
-                  <p className="text-[10px] text-[var(--muted)]">{cat.labelEn}</p>
+                  <p className="text-xs font-bold text-[#1A1A18]">{tx(cat.labelKo)}</p>
+                  <p className="text-[10px] text-[var(--muted)]">{tx(cat.labelEn)}</p>
                 </div>
                 <div className="text-right">
-                  <p className="font-bold text-lg" style={{ color: cat.key === "halal" ? "var(--green)" : "#1A1A18" }}>{cat.score}</p>
+                  <p className="font-bold text-lg" style={{ color: cat.key === "halal" ? "var(--green)" : "#1A1A18" }}>{tx(cat.score)}</p>
                   <div className="flex gap-0.5 mt-0.5">
-                    {[1,2,3,4,5].map(s => (
+                    {tx([1,2,3,4,5].map(s => (
                       <div key={s} className="w-2 h-1 rounded-full" style={{ backgroundColor: s <= Math.round(cat.score) ? (cat.key === "halal" ? "var(--green)" : "var(--gold)") : "var(--border)" }} />
-                    ))}
+                    )))}
                   </div>
                 </div>
               </div>
-            ))}
+            )))}
           </div>
         </div>
 
         {/* Sort + filter */}
-        <div className="flex items-center gap-2 px-4 py-3">
-          {sortOptions.map((s) => (
-            <button key={s} onClick={() => setSortBy(s)}
+        <div className="flex items-center gap-2 px-4 py-3 overflow-x-auto scrollbar-hide">
+          {tx(sortOptions.map((s, index) => (
+            <button key={s} onClick={() => setSortBy(index)}
               className="flex-shrink-0 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all"
               style={{
-                backgroundColor: sortBy === s ? "var(--green)" : "white",
-                color: sortBy === s ? "white" : "var(--muted)",
-                borderColor: sortBy === s ? "var(--green)" : "var(--border)",
+                backgroundColor: sortBy === index ? "var(--green)" : "white",
+                color: sortBy === index ? "white" : "var(--muted)",
+                borderColor: sortBy === index ? "var(--green)" : "var(--border)",
               }}>
-              {s}
+              {tx(s)}
             </button>
-          ))}
+          )))}
         </div>
 
         {/* Reviews list */}
         <div className="space-y-3 px-4 pb-6">
-          {reviews.map((rev, i) => (
+          {tx([...reviews].sort((a,b) => sortBy === 1 ? b.helpful-a.helpful : sortBy === 2 ? b.rating-a.rating : b.date.localeCompare(a.date)).map((rev, i) => (
             <div key={i} className="bg-white rounded-2xl p-4 shadow-sm space-y-3">
               {/* User row */}
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-[var(--cream)] flex items-center justify-center text-xl flex-shrink-0">
-                  {rev.avatar}
+                  {tx(rev.avatar)}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5">
-                    <p className="font-bold text-sm text-[#1A1A18]">{rev.user}</p>
-                    {rev.verified && (
+                    <p className="font-bold text-sm text-[#1A1A18]">{tx(rev.user)}</p>
+                    {tx(rev.verified && (
                       <div className="w-4 h-4 rounded-full flex items-center justify-center" style={{ backgroundColor: "var(--green)" }}>
                         <svg width="8" height="6" viewBox="0 0 8 6" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round"><path d="M1 3l2 2 4-4"/></svg>
                       </div>
-                    )}
+                    ))}
                   </div>
-                  <p className="text-xs text-[var(--muted)]">{rev.date}</p>
+                  <p className="text-xs text-[var(--muted)]">{tx(rev.date)}</p>
                 </div>
                 <div className="flex gap-0.5">
-                  {[1,2,3,4,5].map(s => (
+                  {tx([1,2,3,4,5].map(s => (
                     <svg key={s} width="12" height="12" viewBox="0 0 12 12" fill={s <= rev.rating ? "#C4883A" : "#E5E7EB"}>
                       <path d="M6 1l1.2 2.5 2.8.4-2 2 .5 2.7L6 7.3 3.5 8.6l.5-2.7-2-2 2.8-.4L6 1z"/>
                     </svg>
-                  ))}
+                  )))}
                 </div>
               </div>
 
               {/* Review text */}
-              <p className="text-sm text-[#1A1A18] leading-relaxed">{rev.text}</p>
+              <p className="text-sm text-[#1A1A18] leading-relaxed">{tx(rev.text)}</p>
 
               {/* Photos */}
-              {rev.photos.length > 0 && (
+              {tx(rev.photos.length > 0 && (
                 <div className="flex gap-2">
-                  {rev.photos.map((id, pi) => (
+                  {tx(rev.photos.map((id, pi) => (
                     <div key={pi} className="w-20 h-20 rounded-xl overflow-hidden bg-[#E8E6E1]">
                       <img src={`https://images.unsplash.com/photo-${id}?w=120&h=120&fit=crop&auto=format&q=80`} alt="review" className="w-full h-full object-cover" />
                     </div>
-                  ))}
+                  )))}
                 </div>
-              )}
+              ))}
 
               {/* Tags */}
               <div className="flex flex-wrap gap-1.5">
-                {rev.tags.map((tag) => (
-                  <span key={tag} className="text-[10px] font-semibold px-2 py-1 rounded-full" style={{ backgroundColor: "var(--green-light)", color: "var(--green)" }}>{tag}</span>
-                ))}
+                {tx(rev.tags.map((tag) => (
+                  <span key={tag} className="text-[10px] font-semibold px-2 py-1 rounded-full" style={{ backgroundColor: "var(--green-light)", color: "var(--green)" }}>{tx(tag)}</span>
+                )))}
               </div>
 
               {/* Helpful */}
@@ -213,11 +218,11 @@ export const ReviewsScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => vo
                   <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.6">
                     <path d="M4 5V10M4 5L7 2a1 1 0 011 1v1h2a1 1 0 011 1l-.5 4A1 1 0 019.5 10H4M4 5H2a1 1 0 00-1 1v3a1 1 0 001 1h2" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
-                  {t("community.helpful_count").replace("{count}", String(rev.helpful + (helpful[i] ? 1 : 0)))}
+                  {tx(t("community.helpful_count").replace("{count}", String(rev.helpful + (helpful[i] ? 1 : 0))))}
                 </button>
               </div>
             </div>
-          ))}
+          )))}
         </div>
       </div>
     </div>
@@ -289,7 +294,7 @@ const categoryKeys = ["category_all", "category_restaurant_discovery", "category
 export const CommunityScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const { t } = useLanguage();
   const categories = categoryKeys.map((k) => t(`community.${k}`));
-  const [activeCategory, setActiveCategory] = useState(categories[0]);
+  const [activeCategory, setActiveCategory] = useState(0);
   const [liked, setLiked] = useState<Record<number, boolean>>({});
 
   return (
@@ -299,71 +304,71 @@ export const CommunityScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => 
         <div className="px-5 pb-2">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <h1 className="font-bold text-xl text-[#1A1A18]">{t("community.community_title")}</h1>
+              <div className="flex gap-2 items-center"><BackButton onBack={() => goBack("profile")} /><h1 className="font-bold text-xl">{t("community.community_title")}</h1></div>
               <p className="text-xs text-[var(--muted)]">{t("community.community_subtitle")}</p>
             </div>
-            <button className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-bold text-white" style={{ backgroundColor: "var(--green)" }}>
+            <button type="button" onClick={showUnavailable} className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-bold text-white" style={{ backgroundColor: "var(--green)" }}>
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round"><line x1="7" y1="2" x2="7" y2="12"/><line x1="2" y1="7" x2="12" y2="7"/></svg>
               {t("community.write_post")}
             </button>
           </div>
           <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
-            {categories.map((c) => (
-              <button key={c} onClick={() => setActiveCategory(c)}
+            {tx(categories.map((c, index) => (
+              <button key={c} onClick={() => setActiveCategory(index)}
                 className="flex-shrink-0 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all"
                 style={{
-                  backgroundColor: activeCategory === c ? "var(--green)" : "white",
-                  color: activeCategory === c ? "white" : "var(--muted)",
-                  borderColor: activeCategory === c ? "var(--green)" : "var(--border)",
+                  backgroundColor: activeCategory === index ? "var(--green)" : "white",
+                  color: activeCategory === index ? "white" : "var(--muted)",
+                  borderColor: activeCategory === index ? "var(--green)" : "var(--border)",
                 }}>
-                {c}
+                {tx(c)}
               </button>
-            ))}
+            )))}
           </div>
         </div>
       </div>
 
       <div className="flex-1 phone-scroll px-4 py-3 space-y-3">
-        {posts.map((post, i) => (
+        {tx(posts.filter(post => activeCategory === 0 || post.category === ["", "레스토랑 발견", "식료품 정보", "모스크 정보", "생활 팁", "할랄 스캔"][activeCategory]).map((post, i) => (
           <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-sm">
-            {post.pinned && (
+            {tx(post.pinned && (
               <div className="px-4 pt-2.5 pb-0 flex items-center gap-1.5">
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="var(--gold)"><path d="M6 1l1.1 2.3L10 3.7 8 5.7l.5 3L6 7.5 3.5 8.7 4 5.7 2 3.7l2.9-.4L6 1z"/></svg>
                 <span className="text-[10px] font-bold text-[var(--gold)]">{t("community.pinned_label")}</span>
               </div>
-            )}
+            ))}
             <div className="p-4 space-y-3">
               {/* User */}
               <div className="flex items-center gap-2.5">
                 <div className="w-9 h-9 rounded-full bg-[var(--cream)] flex items-center justify-center text-lg flex-shrink-0">
-                  {post.avatar}
+                  {tx(post.avatar)}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5 flex-wrap">
-                    <p className="font-bold text-xs text-[#1A1A18]">{post.user}</p>
+                    <p className="font-bold text-xs text-[#1A1A18]">{tx(post.user)}</p>
                     <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full text-white" style={{ backgroundColor: post.badgeColor }}>
-                      {post.badge}
+                      {tx(post.badge)}
                     </span>
                   </div>
-                  <p className="text-[10px] text-[var(--muted)]">{post.time}</p>
+                  <p className="text-[10px] text-[var(--muted)]">{tx(post.time)}</p>
                 </div>
                 <span className="text-[10px] font-bold px-2 py-1 rounded-full" style={{ backgroundColor: "var(--green-light)", color: "var(--green)" }}>
-                  {post.category}
+                  {tx(post.category)}
                 </span>
               </div>
 
               {/* Content */}
               <div>
-                <h3 className="font-bold text-sm text-[#1A1A18] mb-1.5">{post.title}</h3>
-                <p className="text-xs text-[var(--muted)] leading-relaxed line-clamp-3">{post.body}</p>
+                <h3 className="font-bold text-sm text-[#1A1A18] mb-1.5">{tx(post.title)}</h3>
+                <p className="text-xs text-[var(--muted)] leading-relaxed line-clamp-3">{tx(post.body)}</p>
               </div>
 
               {/* Image */}
-              {post.image && (
+              {tx(post.image && (
                 <div className="h-36 rounded-xl overflow-hidden bg-[#E8E6E1]">
                   <img src={`https://images.unsplash.com/photo-${post.image}?w=360&h=180&fit=crop&auto=format&q=80`} alt="" className="w-full h-full object-cover" />
                 </div>
-              )}
+              ))}
 
               {/* Actions */}
               <div className="flex items-center gap-4 pt-1 border-t border-[var(--border)]">
@@ -375,15 +380,15 @@ export const CommunityScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => 
                   <svg width="14" height="14" viewBox="0 0 14 14" fill={liked[i] ? "var(--danger)" : "none"} stroke="currentColor" strokeWidth="1.6">
                     <path d="M7 12S1 8 1 4.5C1 2.5 2.7 1 4.5 1c.9 0 1.8.4 2.5 1C7.7 1.4 8.6 1 9.5 1 11.3 1 13 2.5 13 4.5 13 8 7 12 7 12Z" strokeLinecap="round"/>
                   </svg>
-                  {post.likes + (liked[i] ? 1 : 0)}
+                  {tx(post.likes + (liked[i] ? 1 : 0))}
                 </button>
-                <button className="flex items-center gap-1.5 text-xs font-semibold text-[var(--muted)]">
+                <button type="button" onClick={showUnavailable} className="flex items-center gap-1.5 text-xs font-semibold text-[var(--muted)]">
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.6">
                     <path d="M1 2.5C1 1.7 1.7 1 2.5 1h9A1.5 1.5 0 0113 2.5v6A1.5 1.5 0 0111.5 10H8L5 13v-3H2.5A1.5 1.5 0 011 8.5v-6z" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
-                  {post.comments}
+                  {tx(post.comments)}
                 </button>
-                <button className="flex items-center gap-1.5 text-xs font-semibold text-[var(--muted)] ml-auto">
+                <button type="button" onClick={() => onNavigate?.("share")} className="flex items-center gap-1.5 text-xs font-semibold text-[var(--muted)] ml-auto">
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.6">
                     <circle cx="11" cy="3" r="1.5"/><circle cx="3" cy="7" r="1.5"/><circle cx="11" cy="11" r="1.5"/>
                     <line x1="9.5" y1="4" x2="4.5" y2="6"/><line x1="9.5" y1="10" x2="4.5" y2="8"/>
@@ -393,7 +398,7 @@ export const CommunityScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => 
               </div>
             </div>
           </div>
-        ))}
+        )))}
         <div className="h-4" />
       </div>
     </div>
@@ -413,11 +418,21 @@ const shareTargetKeys = [
 export const ShareScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const { t } = useLanguage();
   const [copied, setCopied] = useState(false);
+  const [placeName, setPlaceName] = useState("HalalMap Korea");
+  const [photo, setPhoto] = useState("");
+  const shareParams = new URLSearchParams(location.hash.split("?")[1]);
+  const source = shareParams.get("source") ?? "restaurant-detail";
+  shareParams.delete("source");
+  const shareUrl = `${location.origin}${location.pathname}#/${source}${shareParams.size ? `?${shareParams}` : ""}`;
+  useEffect(() => {
+    if (routeParam("mosque")) getMosque(routeParam("mosque")).then(m => { setPlaceName(m.nameKo); setPhoto(m.photo ?? ""); }).catch(() => {});
+    else if (source.includes("restaurant") || source === "menu") getRestaurant(routeParam("restaurant", "sindang-halal")).then(r => {setPlaceName(r.nameKo);setPhoto(r.photo);}).catch(() => {});
+  }, []);
   const shareTargets = shareTargetKeys.map((target) => ({ ...target, label: t(`community.${target.key}`) }));
 
-  const handleCopy = () => {
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const handleCopy = async () => {
+    try { await navigator.clipboard.writeText(shareUrl); setCopied(true); }
+    catch { showFeedback("flow.copy_failed"); }
   };
 
   return (
@@ -425,7 +440,7 @@ export const ShareScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void
       <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
         <StatusBar />
         <div className="flex items-center gap-3 px-4 pb-3">
-          <BackButton onBack={() => onNavigate?.("home")} />
+          <BackButton onBack={() => goBack("profile")} />
           <h1 className="font-bold text-lg">{t("community.share_title")}</h1>
         </div>
       </div>
@@ -437,7 +452,7 @@ export const ShareScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void
           {/* KakaoTalk card */}
           <div className="bg-white rounded-2xl overflow-hidden shadow-md border border-[var(--border)]">
             <div className="h-40 bg-[#D8D4CC] relative">
-              <img src="https://images.unsplash.com/photo-1498654896293-37c98e7f5fe4?w=390&h=180&fit=crop&auto=format&q=80" alt="restaurant" className="w-full h-full object-cover" />
+              <img src={photo || undefined} alt="restaurant" className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
               <div className="absolute bottom-3 left-3">
                 <HalalBadge variant="certified" />
@@ -451,11 +466,11 @@ export const ShareScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void
             <div className="p-4">
               <div className="flex items-start justify-between gap-2">
                 <div>
-                  <p className="font-bold text-base text-[#1A1A18]">신당 할랄 키친</p>
+                  <p className="font-bold text-base text-[#1A1A18]">{tx(placeName)}</p>
                   <div className="flex items-center gap-2 mt-1">
                     <StarRating rating={4.8} count={3241} />
                   </div>
-                  <p className="text-xs text-[var(--muted)] mt-1">📍 서울 용산구 · 2.3km · ₩2,000 배달비</p>
+                  <p className="text-xs text-[var(--muted)] mt-1">{t("flow.demo_notice")}</p>
                 </div>
               </div>
               <div className="mt-3 flex items-center gap-2 p-2 rounded-lg" style={{ backgroundColor: "var(--cream)" }}>
@@ -479,7 +494,7 @@ export const ShareScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void
                 <p className="text-white font-bold text-sm mt-1">HalalMap Korea</p>
               </div>
               <div className="bg-white/15 backdrop-blur rounded-xl p-3">
-                <p className="text-white font-bold text-base">신당 할랄 키친</p>
+                <p className="text-white font-bold text-base">{tx(placeName)}</p>
                 <div className="flex items-center gap-2 mt-1">
                   <HalalBadge variant="certified" />
                   <span className="text-white/70 text-xs">⭐ 4.8 · 2.3km</span>
@@ -487,7 +502,7 @@ export const ShareScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void
               </div>
               <div className="flex items-center gap-2">
                 <div className="flex-1 h-px bg-white/20" />
-                <p className="text-white/50 text-[10px]">halalmap.kr/restaurant/sindang</p>
+                <p className="text-white/50 text-[10px]">{shareUrl}</p>
                 <div className="flex-1 h-px bg-white/20" />
               </div>
             </div>
@@ -498,18 +513,18 @@ export const ShareScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void
         <div>
           <p className="text-xs font-bold text-[var(--muted)] uppercase tracking-wide mb-3">{t("community.share_via_app_label")}</p>
           <div className="grid grid-cols-3 gap-3">
-            {shareTargets.map((target) => (
-              <button key={target.key} onClick={target.key === "share_target_copy_link" ? handleCopy : undefined}
+            {tx(shareTargets.map((target) => (
+              <button key={target.key} onClick={target.key === "share_target_copy_link" ? handleCopy : showUnavailable}
                 className="flex flex-col items-center gap-2 py-4 bg-white rounded-2xl border border-[var(--border)] transition-all active:scale-95">
                 <div
                   className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
                   style={{ background: target.color, color: target.textColor }}
                 >
-                  {target.icon}
+                  {tx(target.icon)}
                 </div>
-                <p className="text-xs font-semibold text-[#1A1A18]">{target.key === "share_target_copy_link" && copied ? t("community.copied_check") : target.label}</p>
+                <p className="text-xs font-semibold text-[#1A1A18]">{tx(target.key === "share_target_copy_link" && copied ? t("community.copied_check") : target.label)}</p>
               </button>
-            ))}
+            )))}
           </div>
         </div>
 
@@ -517,9 +532,9 @@ export const ShareScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void
         <div className="bg-white rounded-2xl p-4 border border-[var(--border)] space-y-2">
           <p className="text-xs font-semibold text-[var(--muted)]">{t("community.direct_link_label")}</p>
           <div className="flex items-center gap-2 bg-[var(--cream)] rounded-xl px-3 py-2.5">
-            <p className="flex-1 text-xs text-[#1A1A18] font-mono truncate">halalmap.kr/r/sindang-halal</p>
+            <p className="flex-1 text-xs text-[#1A1A18] font-mono truncate">{shareUrl}</p>
             <button onClick={handleCopy} className="text-xs font-bold flex-shrink-0" style={{ color: "var(--green)" }}>
-              {copied ? t("community.copied") : t("community.copy")}
+              {tx(copied ? t("community.copied") : t("community.copy"))}
             </button>
           </div>
         </div>
