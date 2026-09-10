@@ -140,13 +140,17 @@ export default function App() {
   const handleLogin = async (email: string, password: string) => {
     try {
       setUser(await login(email, password));
-      navigateTo(["login", "signup", "splash", "onboarding", "language"].includes(current) ? "home" : window.location.hash.replace(/^#\/?/, "") || "home", true);
+      const authScreens = ["login", "signup", "splash", "onboarding", "language"];
+      const restored = localStorage.getItem("halalmap-last-screen");
+      navigateTo(!authScreens.includes(current) ? window.location.hash.replace(/^#\/?/, "") || "home" : restored || "home", true);
       setViewMode("role");
       return true;
     } catch { return false; }
   };
 
   const handleLogout = async () => {
+    const authScreens = ["login", "signup", "splash", "onboarding", "language"];
+    if (!authScreens.includes(current)) localStorage.setItem("halalmap-last-screen", window.location.hash.replace(/^#\/?/, "") || "home");
     try { await logout(); } catch {}
     setUser(null);
     navigateTo("login", true);

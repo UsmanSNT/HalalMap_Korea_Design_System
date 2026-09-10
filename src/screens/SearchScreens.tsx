@@ -254,6 +254,7 @@ export const MapViewScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: T
 
       <div className="relative z-10 px-4 pb-3 flex-shrink-0">
         <div className="flex items-center gap-2">
+          <BackButton onBack={() => goBack("search")} />
           <div className="flex-1 flex items-center gap-2 bg-white/95 backdrop-blur rounded-xl px-4 py-3 shadow-sm">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--muted)" strokeWidth="1.8">
               <circle cx="7" cy="7" r="5"/>
