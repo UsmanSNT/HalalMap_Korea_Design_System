@@ -198,28 +198,10 @@ function AppShell({
   const { t } = useLanguage();
   const isDesktop = useIsDesktop();
   const roleDashboardLabel = role && ROLE_DASHBOARD_LABELS[role];
-  const [devPanelOpen, setDevPanelOpen] = useState(false);
 
   return (
     <div className="relative min-h-dvh bg-[#EDEAE5]">
       <CustomerFeedback />
-      {import.meta.env.DEV && new URLSearchParams(location.search).has("qa") && <div className="fixed right-3 top-3 z-50">
-        {!devPanelOpen ? (
-          <button onClick={() => setDevPanelOpen(true)} aria-label="QA panelini ochish" title="QA panel (dizaynni Figma bilan solishtirish uchun)"
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border)] bg-white/95 text-base shadow-lg backdrop-blur">
-            🛠️
-          </button>
-        ) : (
-          <div className="flex items-center gap-2 rounded-xl border border-[var(--border)] bg-white/95 p-2 shadow-lg backdrop-blur">
-            <select value={current} onChange={(event) => navigateTo(event.target.value, true)} aria-label="Ekranni tanlash" className="max-w-40 rounded-lg bg-[var(--cream)] px-2 py-1.5 text-xs font-semibold outline-none">
-              {SCREEN_GROUPS.map((group) => <optgroup key={group.section} label={group.section}>{group.screens.map((screen) => <option key={screen.id} value={screen.id}>{screen.label}</option>)}</optgroup>)}
-            </select>
-            <button onClick={handleLogout} className="rounded-lg bg-[var(--danger)] px-3 py-1.5 text-xs font-bold text-white">{t("common.logout")}</button>
-            <button onClick={() => setDevPanelOpen(false)} aria-label="QA panelini yopish" className="rounded-lg border border-[var(--border)] px-2 py-1.5 text-xs font-bold text-[var(--muted)]">✕</button>
-          </div>
-        )}
-      </div>
-      }
       {roleDashboardLabel && (
         <button onClick={switchToRole} className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-full bg-[var(--green)] px-4 py-3 text-xs font-bold text-white shadow-xl">
           {roleDashboardLabel}
