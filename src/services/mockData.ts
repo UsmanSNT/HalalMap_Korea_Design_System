@@ -265,8 +265,6 @@ const mockResponses: Record<string, (params?: Record<string, string>) => any> = 
   "/api/profile": () => ({ profile: PROFILE }),
   "/api/orders": () => ({ orders: ORDERS }),
   "/api/saved-places": () => ({ savedPlaces: SAVED_PLACES }),
-  "/api/auth/login": () => ({ token: "demo-token", user: PROFILE }),
-  "/api/auth/me": () => ({ user: PROFILE }),
 };
 
 export function getMockResponse<T>(path: string): T | null {

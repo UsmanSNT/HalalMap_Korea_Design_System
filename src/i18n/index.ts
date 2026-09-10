@@ -14,6 +14,9 @@ import { rewardsDict } from "./dictionaries/rewards";
 import { accessibilityDict } from "./dictionaries/accessibility";
 import { desktopDict } from "./dictionaries/desktop";
 
+import { contentDict } from "./dictionaries/content";
+import { flowDict } from "./dictionaries/flow";
+
 export type Lang = "ko" | "en" | "uz";
 
 export const LANGUAGES: { code: Lang; flag: string; name: string; sub: string }[] = [
@@ -25,6 +28,8 @@ export const LANGUAGES: { code: Lang; flag: string; name: string; sub: string }[
 type Dict = Record<string, Partial<Record<Lang, Record<string, string>>>>;
 
 export const dictionaries: Dict = {
+  content: contentDict,
+  flow: flowDict,
   common: commonDict,
   onboarding: onboardingDict,
   home: homeDict,

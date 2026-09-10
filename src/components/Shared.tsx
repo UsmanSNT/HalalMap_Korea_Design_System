@@ -1,4 +1,6 @@
+import { tx } from "../i18n/content";
 import React from "react";
+import { navigateTo } from "../services/navigation";
 import { useLanguage } from "../i18n/LanguageContext";
 
 // ── Geometric Pattern ────────────────────────────────────────────────────────
@@ -137,24 +139,25 @@ export const BottomNav = ({
   const { t } = useLanguage();
   return (
     <div className="flex items-center border-t border-[#E8E6E1] bg-white px-1 pt-2 pb-5 flex-shrink-0">
-      {tabs.map((tab) => (
+      {tx(tabs.map((tab) => (
         <button
           key={tab.id}
-          onClick={() => onTabChange?.(tab.id)}
+          aria-current={active === tab.id ? "page" : undefined}
+          onClick={() => onTabChange ? onTabChange(tab.id) : navigateTo(({home:"home",search:"search",orders:"order-history",prayer:"prayer-times",profile:"profile"})[tab.id])}
           className="flex flex-col items-center gap-0.5 flex-1 py-0.5 transition-opacity active:opacity-70"
         >
-          {tab.icon(active === tab.id)}
+          {tx(tab.icon(active === tab.id))}
           <span
             className="text-[10px] font-medium"
             style={{ color: active === tab.id ? "var(--green)" : "var(--muted)" }}
           >
-            {t(tab.key)}
+            {tx(t(tab.key))}
           </span>
-          {active === tab.id && (
+          {tx(active === tab.id && (
             <span className="w-1 h-1 rounded-full" style={{ backgroundColor: "var(--green)" }} />
-          )}
+          ))}
         </button>
-      ))}
+      )))}
     </div>
   );
 };
@@ -178,7 +181,7 @@ export const HalalBadge = ({ variant = "certified" }: { variant?: BadgeVariant }
       <svg width="8" height="10" viewBox="0 0 8 10" fill={cfg.text}>
         <path d="M4 0L7.5 1.5V5C7.5 7.2 6 9 4 10C2 9 0.5 7.2 0.5 5V1.5L4 0Z"/>
       </svg>
-      {t(cfg.key)}
+      {tx(t(cfg.key))}
     </span>
   );
 };
@@ -189,8 +192,8 @@ export const StarRating = ({ rating, count }: { rating: number; count?: number }
     <svg width="12" height="12" viewBox="0 0 12 12" fill="#C4883A">
       <path d="M6 1l1.5 3 3.5.5-2.5 2.5.6 3.5L6 9 2.9 10.5l.6-3.5L1 4.5 4.5 4z"/>
     </svg>
-    <span className="text-sm font-semibold text-[#1A1A18]">{rating}</span>
-    {count && <span className="text-xs text-[#6B7280]">({count.toLocaleString()})</span>}
+    <span className="text-sm font-semibold text-[#1A1A18]">{tx(rating)}</span>
+    {tx(count && <span className="text-xs text-[#6B7280]">({tx(count.toLocaleString())})</span>)}
   </div>
 );
 
@@ -220,20 +223,20 @@ export const RestaurantCardV = ({
     <div className="relative h-32 bg-[#E8E6E1]">
       <img
         src={`https://images.unsplash.com/photo-${imageId}?w=300&h=200&fit=crop&auto=format&q=80`}
-        alt={name}
+        alt={tx(name)}
         className="w-full h-full object-cover"
       />
     </div>
     <div className="p-3 space-y-1.5">
-      <p className="font-semibold text-sm text-[#1A1A18] leading-tight">{name}</p>
-      {badge && <HalalBadge variant={badge} />}
+      <p className="font-semibold text-sm text-[#1A1A18] leading-tight">{tx(name)}</p>
+      {tx(badge && <HalalBadge variant={badge} />)}
       <StarRating rating={rating} count={count} />
       <div className="flex items-center gap-2 text-xs text-[#6B7280]">
-        <span>📍 {distance}</span>
+        <span>📍 {tx(distance)}</span>
         <span>·</span>
-        <span>⏱ {eta}</span>
+        <span>⏱ {tx(eta)}</span>
         <span>·</span>
-        <span>{fee}</span>
+        <span>{tx(fee)}</span>
       </div>
     </div>
   </div>
@@ -267,23 +270,23 @@ export const RestaurantCardH = ({
     <div className="w-24 h-24 flex-shrink-0 bg-[#E8E6E1]">
       <img
         src={`https://images.unsplash.com/photo-${imageId}?w=200&h=200&fit=crop&auto=format&q=80`}
-        alt={name}
+        alt={tx(name)}
         className="w-full h-full object-cover"
       />
     </div>
     <div className="p-3 flex-1 space-y-1">
       <div className="flex items-start justify-between gap-2">
-        <p className="font-semibold text-sm text-[#1A1A18] leading-tight">{name}</p>
-        {cuisine && <span className="text-[10px] text-[#6B7280] bg-[#F5F3EF] px-2 py-0.5 rounded-full flex-shrink-0">{cuisine}</span>}
+        <p className="font-semibold text-sm text-[#1A1A18] leading-tight">{tx(name)}</p>
+        {tx(cuisine && <span className="text-[10px] text-[#6B7280] bg-[#F5F3EF] px-2 py-0.5 rounded-full flex-shrink-0">{tx(cuisine)}</span>)}
       </div>
-      {badge && <HalalBadge variant={badge} />}
+      {tx(badge && <HalalBadge variant={badge} />)}
       <StarRating rating={rating} count={count} />
       <div className="flex items-center gap-2 text-xs text-[#6B7280]">
-        <span>{distance}</span>
+        <span>{tx(distance)}</span>
         <span>·</span>
-        <span>{eta}</span>
+        <span>{tx(eta)}</span>
         <span>·</span>
-        <span>{fee}</span>
+        <span>{tx(fee)}</span>
       </div>
     </div>
   </div>
@@ -320,19 +323,19 @@ export const MosqueCard = ({
       </svg>
     </div>
     <div className="flex-1 min-w-0">
-      <p className="font-semibold text-sm text-[#1A1A18] truncate">{name}</p>
-      {nameKo && <p className="text-xs text-[#6B7280]">{nameKo}</p>}
+      <p className="font-semibold text-sm text-[#1A1A18] truncate">{tx(name)}</p>
+      {tx(nameKo && <p className="text-xs text-[#6B7280]">{tx(nameKo)}</p>)}
       <div className="flex items-center gap-2 mt-1">
-        <span className="text-xs text-[#6B7280]">📍 {distance}</span>
+        <span className="text-xs text-[#6B7280]">📍 {tx(distance)}</span>
         <span className="text-xs text-[#6B7280]">·</span>
-        <span className="text-xs text-[#6B7280]">🚶 {walkTime}</span>
+        <span className="text-xs text-[#6B7280]">🚶 {tx(walkTime)}</span>
       </div>
     </div>
     <div
       className="text-xs font-medium px-2 py-1 rounded-full flex-shrink-0"
       style={{ backgroundColor: "var(--green-light)", color: "var(--green)" }}
     >
-      {nextPrayer}
+      {tx(nextPrayer)}
     </div>
   </div>
 );
@@ -355,7 +358,7 @@ export const OrderStatusChip = ({ status }: { status: OrderStatus }) => {
       className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold"
       style={{ backgroundColor: cfg.bg, color: cfg.text }}
     >
-      {t(cfg.key)}
+      {tx(t(cfg.key))}
     </span>
   );
 };
@@ -363,26 +366,26 @@ export const OrderStatusChip = ({ status }: { status: OrderStatus }) => {
 // ── Section Header ────────────────────────────────────────────────────────────
 export const SectionHeader = ({ title, action, onAction }: { title: string; action?: string; onAction?: () => void }) => (
   <div className="flex items-center justify-between px-4 mb-3">
-    <h3 className="font-bold text-base text-[#1A1A18]">{title}</h3>
-    {action && (
+    <h3 className="font-bold text-base text-[#1A1A18]">{tx(title)}</h3>
+    {tx(action && (
       <button onClick={onAction} className="text-sm font-medium" style={{ color: "var(--green)" }}>
-        {action} →
+        {tx(action)} →
       </button>
-    )}
+    ))}
   </div>
 );
 
 // ── Price Tag ─────────────────────────────────────────────────────────────────
 export const PriceTag = ({ amount, className = "" }: { amount: number; className?: string }) => (
   <span className={`font-bold text-[#1A1A18] ${className}`}>
-    ₩{amount.toLocaleString()}
+    ₩{tx(amount.toLocaleString())}
   </span>
 );
 
 // ── Toggle ────────────────────────────────────────────────────────────────────
 export const Toggle = ({ on, onToggle }: { on: boolean; onToggle?: () => void }) => (
   <button
-    onClick={onToggle}
+    role="switch" aria-checked={on} aria-label="Toggle preference" onClick={onToggle}
     className="relative w-12 h-6 rounded-full transition-colors duration-200 flex-shrink-0"
     style={{ backgroundColor: on ? "var(--green)" : "#D1D5DB" }}
   >
@@ -396,7 +399,7 @@ export const Toggle = ({ on, onToggle }: { on: boolean; onToggle?: () => void })
 // ── Back Button ────────────────────────────────────────────────────────────────
 export const BackButton = ({ onBack, dark = false }: { onBack?: () => void; dark?: boolean }) => (
   <button
-    onClick={onBack}
+    aria-label="Back" onClick={onBack}
     className="w-9 h-9 rounded-full flex items-center justify-center"
     style={{ backgroundColor: dark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.06)" }}
   >
@@ -429,7 +432,7 @@ export const MapPin = ({ type }: { type: "restaurant" | "mosque" | "user" }) => 
         className="w-8 h-8 rounded-full border-2 border-white shadow-md flex items-center justify-center"
         style={{ backgroundColor: color }}
       >
-        {type === "restaurant" ? (
+        {tx(type === "restaurant" ? (
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="white" strokeWidth="1.5">
             <path d="M5 1v4M7 1v4M9 1v4M5 5c0 2 1.5 3 2 3s2-1 2-3"/>
             <line x1="7" y1="8" x2="7" y2="13"/>
@@ -439,7 +442,7 @@ export const MapPin = ({ type }: { type: "restaurant" | "mosque" | "user" }) => 
             <path d="M6 1C4 1 2.5 2.8 2.5 4.5C2.5 7 5 8.5 6 10C7 8.5 9.5 7 9.5 4.5C9.5 2.8 8 1 6 1Z"/>
             <path d="M4 4C4 3 4.8 2 6 2" stroke="rgba(255,255,255,0.6)" strokeWidth="0.8" strokeLinecap="round"/>
           </svg>
-        )}
+        ))}
       </div>
       <div className="w-1.5 h-1.5 rounded-full mt-0.5" style={{ backgroundColor: color }} />
     </div>
@@ -474,7 +477,7 @@ export const FloatingInput = ({
         }`}
         style={{ top: "8px" }}
       >
-        {label}
+        {tx(label)}
       </label>
       <input
         type={type}
@@ -482,9 +485,9 @@ export const FloatingInput = ({
         onChange={(e) => onChange(e.target.value)}
         className="w-full bg-transparent text-sm text-[#1A1A18] outline-none placeholder:text-[#9CA3AF]"
       />
-      {icon && <div className="absolute right-4 top-1/2 -translate-y-1/2">{icon}</div>}
+      {tx(icon && <div className="absolute right-4 top-1/2 -translate-y-1/2">{tx(icon)}</div>)}
     </div>
-    {error && <p className="mt-1 text-xs text-[#D94F4F] px-1">{error}</p>}
+    {tx(error && <p className="mt-1 text-xs text-[#D94F4F] px-1">{tx(error)}</p>)}
   </div>
 );
 

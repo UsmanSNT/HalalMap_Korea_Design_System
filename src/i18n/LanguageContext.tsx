@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { translate, type Lang } from "./index";
 
 const STORAGE_KEY = "halalmap-language";
@@ -21,6 +21,8 @@ const readStoredLang = (): Lang => {
 
 export const LanguageProvider = ({ children }: { children: React.ReactNode }) => {
   const [lang, setLangState] = useState<Lang>(readStoredLang);
+
+  useEffect(() => { document.documentElement.lang = lang; }, [lang]);
 
   const setLang = (next: Lang) => {
     setLangState(next);

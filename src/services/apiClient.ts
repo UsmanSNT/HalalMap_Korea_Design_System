@@ -17,9 +17,16 @@ export class ApiError extends Error {
 }
 
 export const apiClient = async <T>(path: string, init?: RequestInit): Promise<T> => {
+  const method = init?.method ?? "GET";
+  const canMock = method === "GET" && !path.startsWith("/api/auth/");
+  if (getToken() === "demo-token" && canMock) {
+    const mock = getMockResponse<T>(path);
+    if (mock !== null) return mock;
+  }
   try {
     const token = getToken();
     const response = await fetch(path, {
+      signal: AbortSignal.timeout(5000),
       ...init,
       headers: {
         "Content-Type": "application/json",
@@ -31,8 +38,8 @@ export const apiClient = async <T>(path: string, init?: RequestInit): Promise<T>
     if (!response.ok) throw new ApiError(data.error || "So'rov bajarilmadi", response.status);
     return data;
   } catch (err) {
-    const mock = getMockResponse<T>(path);
-    if (mock) return mock;
+    const mock = canMock && !(err instanceof ApiError && err.status < 500) ? getMockResponse<T>(path) : null;
+    if (mock !== null) return mock;
     throw err;
   }
 };
