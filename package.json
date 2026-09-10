@@ -11,7 +11,11 @@
     "preview": "vite preview",
     "format": "oxfmt",
     "android:sync": "vite build && npx cap sync android",
-    "android:open": "npx cap open android"
+    "android:open": "npx cap open android",
+    "typecheck": "tsc --noEmit",
+    "audit:customer": "node scripts/audit-customer.mjs",
+    "test:customer": "node scripts/customer-walkthrough.cjs",
+    "test:customer-routes": "node scripts/customer-routes.cjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",
