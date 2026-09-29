@@ -168,10 +168,11 @@ try {
   await page.waitForSelector("text=Scan history");
   check("scan history lists scanned products", (await page.locator("button:has-text('테스트')").count()) >= 2);
   await shot("13-history");
-  for (const [hash, expect, name] of [["#/mosque-list", "DEMO", "14-mosque-list"], ["#/restaurant-list", "DEMO", "15-restaurant-list"], ["#/home", "DEMO", "16-home"]]) {
+  // Place lists come from the database: imported (community-reported) places, or the DEMO rows when nothing is imported.
+  for (const [hash, name] of [["#/mosque-list", "14-mosque-list"], ["#/restaurant-list", "15-restaurant-list"], ["#/home", "16-home"]]) {
     await page.goto(`${base}/${hash}`);
     await page.waitForTimeout(1200);
-    check(`${hash} renders places (demo rows are labelled ${expect})`, (await page.locator(`text=${expect}`).count()) > 0);
+    check(`${hash} renders places with a provenance label (COMMUNITY or DEMO)`, (await page.locator("text=/COMMUNITY|Community-reported|DEMO/").count()) > 0);
     await shot(name);
   }
   check("no uncaught page errors", pageErrors.length === 0, pageErrors.join(" | "));

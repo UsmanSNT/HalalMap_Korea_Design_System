@@ -1,6 +1,7 @@
 // Imports restaurants / mosques / prayer rooms / halal markets from open sources into the HalalMap database.
 //
 //   node scripts/import-places.mjs --source osm [--snapshot] [--no-db]
+//   node scripts/import-places.mjs --source osm --input data/imports/osm-korea-core.json [--retrieved-at ISO]   (replay a saved Overpass response, no network)
 //   node scripts/import-places.mjs --source wikidata [--snapshot]
 //   node scripts/import-places.mjs --source file --file places.csv --default-source "KTO" --default-license "KOGL Type 1"
 //
@@ -8,7 +9,7 @@
 // --no-db     only write the snapshot, do not touch the database
 // Every record keeps its provenance (source, source URL, licence, attribution, retrieved-at).
 
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { nowIso, openDatabase } from "../server/db.mjs";
@@ -47,11 +48,23 @@ let records = [];
 let meta;
 
 if (source === "osm") {
-  console.log("Querying Overpass (OpenStreetMap, ODbL) …");
-  const { body, endpoint } = await fetchOverpass();
-  const result = normalizeOsmResponse(body, { retrievedAt: startedAt });
+  const input = option("input");
+  let body;
+  let endpoint;
+  let retrievedAt = startedAt;
+  if (input) {
+    // Offline replay of a previously saved Overpass response; the retrieval time is the time the data was fetched, not now.
+    console.log(`Reading saved Overpass response ${input} …`);
+    body = JSON.parse(readFileSync(input, "utf8"));
+    endpoint = `file:${input}`;
+    retrievedAt = option("retrieved-at") ?? body.osm3s?.timestamp_osm_base ?? statSync(input).mtime.toISOString();
+  } else {
+    console.log("Querying Overpass (OpenStreetMap, ODbL) …");
+    ({ body, endpoint } = await fetchOverpass());
+  }
+  const result = normalizeOsmResponse(body, { retrievedAt });
   records = result.records;
-  meta = { source: OSM_SOURCE, license: OSM_LICENSE, attribution: OSM_ATTRIBUTION, endpoint, osmBase: result.osmBase, query: OVERPASS_QUERY, skipped: result.skipped };
+  meta = { source: OSM_SOURCE, license: OSM_LICENSE, attribution: OSM_ATTRIBUTION, endpoint, osmBase: result.osmBase, retrievedAt, query: input ? null : OVERPASS_QUERY, ...(input ? { note: "Replay of a saved Overpass response; the queries that produced it are listed in data/imports/osm-korea-core.report.json." } : {}), skipped: result.skipped };
 } else if (source === "wikidata") {
   console.log("Querying Wikidata (CC0) …");
   const result = normalizeWikidataBindings(await fetchWikidata(), { retrievedAt: startedAt });
@@ -70,12 +83,13 @@ if (source === "osm") {
   for (const error of result.errors.slice(0, 20)) console.warn(`  row ${error.row}: ${error.error}`);
 }
 
+const startedAtForRun = meta.retrievedAt ?? startedAt;
 console.log(`Normalised ${records.length} places.`, meta.skipped ? `Skipped: ${JSON.stringify(meta.skipped)}` : "");
 
 if (flag("snapshot")) {
   const out = resolve(root, "server/seed/places", `${source === "file" ? "admin" : source}-kr.json`);
   mkdirSync(dirname(out), { recursive: true });
-  writeFileSync(out, JSON.stringify({ meta: { ...meta, generatedAt: startedAt, count: records.length }, places: records }, null, 1) + "\n");
+  writeFileSync(out, JSON.stringify({ meta: { ...meta, generatedAt: startedAtForRun, count: records.length }, places: records }, null, 1) + "\n");
   console.log(`Snapshot written: ${out}`);
 }
 

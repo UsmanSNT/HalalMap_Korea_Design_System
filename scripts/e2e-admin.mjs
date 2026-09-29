@@ -142,7 +142,8 @@ try {
   await nav("장소 (식당");
   await page.waitForSelector("text=장소 데이터");
   await shot("11-places");
-  check("places list shows demo rows as demo", (await page.textContent("body")).includes("데모(가상)"));
+  const placesText = await page.textContent("body");
+  check("places list shows the source and licence of imported rows", placesText.includes("osm · ODbL"));
   check("no uncaught page errors", pageErrors.length === 0, pageErrors.join(" | "));
 } catch (error) {
   check("script completed without exceptions", false, error.message);

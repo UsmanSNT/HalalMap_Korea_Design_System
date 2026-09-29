@@ -7,6 +7,8 @@ import { normalizeKey } from "../products/ingredients/normalize.mjs";
 
 export const PLACE_KINDS = ["restaurant", "mosque", "prayer_room", "market"];
 
+const GROUP_SQL = (alias) => `CASE WHEN ${alias}.kind IN ('mosque', 'prayer_room') THEN 'worship' ELSE ${alias}.kind END`;
+
 const EARTH_KM = 6371;
 export const haversineKm = (lat1, lng1, lat2, lng2) => {
   const rad = (deg) => (deg * Math.PI) / 180;
@@ -94,8 +96,10 @@ export const queryPlaces = (db, { kinds = PLACE_KINDS, q, category, halalStatus,
   const where = [`p.kind IN (${validKinds.map(() => "?").join(",")})`, "p.is_active = 1"];
   const args = [...validKinds];
   if (!includeRejected) where.push("p.verification_status != 'rejected'");
-  // Demo rows disappear as soon as real places of the same kind exist.
-  where.push("(p.data_origin != 'demo' OR NOT EXISTS (SELECT 1 FROM places r WHERE r.kind = p.kind AND r.data_origin != 'demo' AND r.is_active = 1 AND r.verification_status != 'rejected'))");
+  // Demo rows disappear as soon as real places of the same group exist (mosques and prayer rooms are one list in the UI).
+  where.push(`(p.data_origin != 'demo' OR NOT EXISTS (
+    SELECT 1 FROM places r
+    WHERE ${GROUP_SQL("r")} = ${GROUP_SQL("p")} AND r.data_origin != 'demo' AND r.is_active = 1 AND r.verification_status != 'rejected'))`);
   if (q) {
     const like = `%${escapeLike(q.toLowerCase())}%`;
     where.push("(lower(p.name) LIKE ? ESCAPE '\\' OR lower(COALESCE(p.name_ko,'')) LIKE ? ESCAPE '\\' OR lower(COALESCE(p.name_en,'')) LIKE ? ESCAPE '\\' OR lower(COALESCE(p.category,'')) LIKE ? ESCAPE '\\' OR lower(COALESCE(p.address,'')) LIKE ? ESCAPE '\\')");
@@ -127,6 +131,21 @@ export const queryPlaces = (db, { kinds = PLACE_KINDS, q, category, halalStatus,
   }
   return { total: rows.length, rows: rows.slice(offset, offset + limit) };
 };
+
+/** Number of visible places per kind (same visibility rules as the list endpoints). */
+export const placeCounts = (db) =>
+  Object.fromEntries(PLACE_KINDS.map((kind) => [kind, queryPlaces(db, { kinds: [kind], limit: 1 }).total]));
+
+/** Attribution notices required by the open-data sources of the places that are currently visible (e.g. ODbL for OSM). */
+export const placeAttributions = (db) =>
+  db.prepare(`
+    SELECT DISTINCT ps.source AS source, ps.attribution AS text, ps.license AS license, COALESCE(ds.license_url, ds.homepage_url) AS url
+    FROM place_sources ps
+    JOIN places p ON p.id = ps.place_id AND p.is_active = 1 AND p.data_origin != 'demo' AND p.verification_status != 'rejected'
+    LEFT JOIN data_sources ds ON ds.key = ps.source
+    WHERE ps.attribution IS NOT NULL AND ps.attribution != ''
+    ORDER BY ps.source
+  `).all();
 
 export const getPlace = (db, id) => db.prepare("SELECT * FROM places WHERE id = ? AND is_active = 1").get(id) ?? null;
 

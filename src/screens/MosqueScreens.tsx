@@ -82,7 +82,7 @@ export const MosqueListScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t
               <div className="p-4">
                 <h3 className="font-bold text-base text-[#1A1A18]">{m.nameKo}</h3>
                 <p className="text-xs text-[var(--muted)] mt-0.5">{m.name}</p>
-                <p className="text-xs text-[var(--muted)] mt-1">📍 {m.address}</p>
+                {m.address && <p className="text-xs text-[var(--muted)] mt-1">📍 {m.address}</p>}
                 <div className="flex items-center justify-between mt-3">
                   <div className="flex items-center gap-3 text-xs text-[var(--muted)]">
                     {m.distance && <span>{m.distance}</span>}

@@ -7,7 +7,7 @@ import { getRestaurants, getRestaurant, getRestaurantMenu, type Restaurant, type
 import { getMosques, getPrayerTimes, type Mosque, type PrayerTimesData } from "@/api/mosques";
 import { useLanguage } from "../i18n/LanguageContext";
 import type { ScreenId } from "../App";
-import { formatFee, halalBadgeMap } from "@/services/placeUi";
+import { cuisineLabel, formatFee, halalBadgeMap, placeTag } from "@/services/placeUi";
 import { getOrigin } from "@/services/location";
 import { navigateTo, screenPath, useRouteParams } from "@/services/navigation";
 import { PlaceDetailView } from "./PlaceDetail";
@@ -162,7 +162,7 @@ export const HomeScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabI
                   distance={r.distance}
                   eta={r.deliveryTime}
                   fee={formatFee(r.deliveryFee, t("common.free"))}
-                  tag={r.dataOrigin === "demo" ? t("place.demo_tag") : null}
+                  tag={placeTag(r, t)}
                   onClick={() => openRestaurant(r.id)}
                 />
               ))
@@ -246,11 +246,6 @@ export const HomeScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabI
 // ── 7. Restaurant List ─────────────────────────────────────────────────────────
 const filterKeys = ["filter_distance", "filter_rating", "filter_fee", "filter_cert", "filter_cuisine"];
 
-const categoryMap: Record<string, string> = {
-  korean: "한식", turkish: "터키", uzbek: "우즈베크", indian: "인도",
-  indonesian: "인도네시아", cafe: "카페", arabic: "아랍",
-};
-
 export const RestaurantListScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const { t } = useLanguage();
   const filters = filterKeys.map((k) => t(`home.${k}`));
@@ -284,7 +279,7 @@ export const RestaurantListScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId
         </div>
         {/* Sort + filters */}
         <div className="flex items-center gap-2 px-4 pb-3 overflow-x-auto scrollbar-hide">
-          <button
+          {list.some((r) => r.deliveryTime != null) && <button
             className="flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border border-[var(--green)] text-[var(--green)] bg-[var(--green-light)]"
           >
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -293,7 +288,7 @@ export const RestaurantListScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId
               <line x1="6" y1="9" x2="6" y2="9" strokeLinecap="round" strokeWidth="2"/>
             </svg>
             {t("home.filter_fastest")}
-          </button>
+          </button>}
           {filters.map((f) => (
             <button
               key={f}
@@ -329,8 +324,8 @@ export const RestaurantListScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId
                   distance={r.distance}
                   eta={r.deliveryTime}
                   fee={formatFee(r.deliveryFee, t("common.free"))}
-                  tag={r.dataOrigin === "demo" ? t("place.demo_tag") : null}
-                  cuisine={categoryMap[r.category] ?? r.category}
+                  tag={placeTag(r, t)}
+                  cuisine={cuisineLabel(r.category)}
                 />
               </div>
             ))}
@@ -440,8 +435,8 @@ export const RestaurantDetailScreen = ({ onNavigate }: { onNavigate?: (s: Screen
             {restaurant.rating != null && <StarRating rating={restaurant.rating} count={restaurant.reviewCount} />}
             <span className="text-xs text-[var(--muted)]">·</span>
             <span className="text-xs text-[var(--muted)]">📍 {restaurant.distance}</span>
-            <span className="text-xs text-[var(--muted)]">·</span>
-            <span className="text-xs text-[var(--muted)]">⏱ {restaurant.deliveryTime}</span>
+            {restaurant.deliveryTime != null && <><span className="text-xs text-[var(--muted)]">·</span>
+            <span className="text-xs text-[var(--muted)]">⏱ {restaurant.deliveryTime}</span></>}
           </div>
 
           <div className="grid grid-cols-3 gap-3 py-3 border-t border-b border-[var(--border)]">

@@ -1,5 +1,5 @@
 import { HttpError, floatParam, intParam, json } from "../lib/http.mjs";
-import { getPlace, mosqueView, placeSources, queryPlaces, restaurantView, PLACE_KINDS } from "./repo.mjs";
+import { getPlace, mosqueView, placeAttributions, placeCounts, placeSources, queryPlaces, restaurantView, PLACE_KINDS } from "./repo.mjs";
 import { loadDemoSeed } from "./seed.mjs";
 
 const originFrom = (url) => {
@@ -64,14 +64,28 @@ export const createPlaceRoutes = ({ db }) => async (request, response, url) => {
 
   // Unified endpoint (all kinds, including halal markets).
   if (path === "/api/places") {
-    const kindParam = url.searchParams.get("kind");
-    const kinds = kindParam ? kindParam.split(",").map((k) => k.trim().replace("-", "_")).filter((k) => PLACE_KINDS.includes(k)) : PLACE_KINDS;
+    // `kind=a,b` (current) or repeated `type=a&type=b` (earlier client); "halal_market" is the older name of "market".
+    const kindParam = url.searchParams.get("kind") ?? url.searchParams.getAll("type").join(",");
+    const kinds = kindParam
+      ? kindParam.split(",").map((k) => k.trim().replace("-", "_").replace("halal_market", "market")).filter((k) => PLACE_KINDS.includes(k))
+      : PLACE_KINDS;
     const query = listQuery(url, kinds);
     const { rows, total } = queryPlaces(db, query);
     json(response, 200, {
       places: rows.map((row) => (row.kind === "mosque" || row.kind === "prayer_room" ? mosqueView(row, query.origin) : restaurantView(row, query.origin))),
       total,
+      counts: placeCounts(db),
+      attributions: placeAttributions(db),
     });
+    return true;
+  }
+
+  const placeMatch = /^\/api\/places\/([^/]+)$/.exec(path);
+  if (placeMatch) {
+    const row = getPlace(db, decodeURIComponent(placeMatch[1]));
+    if (!row) throw new HttpError(404, "Joy topilmadi", "not_found");
+    const view = row.kind === "mosque" || row.kind === "prayer_room" ? mosqueView(row, originFrom(url)) : restaurantView(row, originFrom(url));
+    json(response, 200, { place: { ...view, sources: placeSources(db, row.id) } });
     return true;
   }
   return false;

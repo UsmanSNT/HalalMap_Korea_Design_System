@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { openDatabase } from "../db.mjs";
-import { createApi } from "../index.mjs";
+import { createApi } from "../app.mjs";
 import { seedProductKnowledge } from "../products/seed.mjs";
 import { RulesetCache } from "../products/rules/ruleset.mjs";
 
@@ -28,9 +28,10 @@ export const fakeFetch = (handler) => {
   return impl;
 };
 
-export const startApp = async ({ fetchImpl = fakeFetch(() => ({ status: 404 })), env = {} } = {}) => {
+/** `snapshots: true` also loads the committed open-data place snapshots (off by default so tests start from the demo places). */
+export const startApp = async ({ fetchImpl = fakeFetch(() => ({ status: 404 })), env = {}, snapshots = false } = {}) => {
   const db = openDatabase(":memory:");
-  const server = createApi({ db, fetchImpl, env: { ...env } });
+  const server = createApi({ db, fetchImpl, env: { ...env }, seedSnapshots: snapshots });
   await new Promise((resolveListen) => server.listen(0, "127.0.0.1", resolveListen));
   const base = `http://127.0.0.1:${server.address().port}`;
   const request = async (path, { method = "GET", body, token, headers = {} } = {}) => {

@@ -2,6 +2,7 @@ import { DatabaseSync } from "node:sqlite";
 import { mkdirSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { importLegacyPlaces, stashLegacyPlaces } from "./places/legacy-codex.mjs";
 
 const serverDir = dirname(fileURLToPath(import.meta.url));
 
@@ -44,7 +45,11 @@ export function openDatabase(path = dbPath) {
   if (path !== ":memory:") mkdirSync(dirname(path), { recursive: true });
   const db = new DatabaseSync(path);
   db.exec("PRAGMA journal_mode = WAL; PRAGMA foreign_keys = ON; PRAGMA busy_timeout = 5000;");
+  // A database written by the earlier places implementation has a differently shaped `places` table: move it aside,
+  // migrate, then carry its rows over (see places/legacy-codex.mjs).
+  stashLegacyPlaces(db);
   migrate(db);
+  importLegacyPlaces(db);
   return db;
 }
 

@@ -42,6 +42,32 @@ test("restaurants and mosques are served from the database with the same paths a
   } finally { await app.close(); }
 });
 
+test("committed OSM snapshot: real places are served with counts, ODbL attribution and no invented certification", async () => {
+  const app = await startApp({ snapshots: true });
+  try {
+    const body = (await app.request("/api/places?limit=500")).body;
+    assert.equal(body.total, 33);
+    assert.deepEqual(body.counts, { restaurant: 22, mosque: 11, prayer_room: 0, market: 0 });
+    assert.ok(body.places.every((p) => p.dataOrigin === "imported" && p.provenance.source === "osm" && /ODbL/.test(p.provenance.license) && p.provenance.sourceUrl?.startsWith("https://www.openstreetmap.org/")));
+    assert.ok(body.places.every((p) => p.lat > 33 && p.lat < 39 && p.lng > 124 && p.lng < 132), "all inside South Korea");
+    assert.ok(body.places.every((p) => p.halalStatus !== "certified"), "community tags never produce a certified badge");
+    assert.deepEqual(body.attributions.map((a) => [a.source, a.text]), [["osm", "© OpenStreetMap contributors"]]);
+    assert.ok(body.places.every((p) => p.dataOrigin !== "demo"), "demo rows are hidden once real data exists");
+    // earlier client query style + single place endpoint
+    assert.equal((await app.request("/api/places?type=mosque&type=prayer_room")).body.total, 11);
+    const one = (await app.request(`/api/places/${encodeURIComponent(body.places[0].id)}`)).body.place;
+    assert.equal(one.id, body.places[0].id);
+    assert.ok(one.sources.length >= 1);
+    assert.equal((await app.request("/api/places/nope")).status, 404);
+    // legacy shapes still work on top of the same rows
+    assert.equal((await app.request("/api/mosques")).body.mosques.length, 11);
+    assert.equal((await app.request("/api/restaurants?limit=100")).body.restaurants.length, 22);
+    // running the seed again changes nothing
+    const again = await startApp({ snapshots: true });
+    await again.close();
+  } finally { await app.close(); }
+});
+
 test("scan flow: invalid barcode -> 400, unknown barcode -> found:false with next steps, known -> product + analysis", async () => {
   const app = await startApp({ fetchImpl: fakeFetch(offHandler) });
   try {

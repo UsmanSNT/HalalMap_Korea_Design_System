@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { Suspense, lazy, useEffect, useMemo, useState } from "react";
 import { StatusBar, BottomNav, MapPin, RestaurantCardV, RestaurantCardH, HalalBadge, BackButton, TabId } from "../components/Shared";
 import { getRestaurants, getRestaurant, type Restaurant } from "@/api/restaurants";
+import { getPlaces, type MapPlace, type PlaceKind, type PlacesResponse } from "@/api/places";
+import type { MapMarker } from "../components/PlacesMap";
 import { useLanguage } from "../i18n/LanguageContext";
 import type { ScreenId } from "../App";
-import { formatFee, halalBadgeMap, mapsUrl } from "@/services/placeUi";
-import { getOrigin } from "@/services/location";
+import { formatDate, formatFee, halalBadgeMap, mapsUrl, placeTag } from "@/services/placeUi";
+import { getOrigin, type Origin } from "@/services/location";
 import { navigateTo, screenPath, useRouteParams } from "@/services/navigation";
 
 const openRestaurant = (id: string) => navigateTo(screenPath("restaurant-detail", { id }));
@@ -96,7 +98,7 @@ export const SearchScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: Ta
                         eta={r.deliveryTime}
                         fee={formatFee(r.deliveryFee, t("common.free"))}
                         cuisine={r.category}
-                        tag={r.dataOrigin === "demo" ? t("place.demo_tag") : null}
+                        tag={placeTag(r, t)}
                       />
                     </div>
                   ))}
@@ -206,85 +208,112 @@ const FakeMapBg = () => (
   </svg>
 );
 
-const mapPins: { x: number; y: number; type: "restaurant" | "mosque" | "user"; label: string }[] = [
-  { x: 195, y: 220, type: "user", label: "현재 위치" },
-  { x: 120, y: 175, type: "restaurant", label: "신당 할랄 키친" },
-  { x: 240, y: 200, type: "restaurant", label: "이스탄불 케밥" },
-  { x: 310, y: 130, type: "restaurant", label: "델리 스파이스" },
-  { x: 80, y: 290, type: "restaurant", label: "우즈베키스탄 플로프" },
-  { x: 185, y: 120, type: "mosque", label: "서울중앙성원" },
-  { x: 330, y: 250, type: "mosque", label: "이태원 마스지드" },
-];
+const PlacesMap = lazy(() => import("../components/PlacesMap"));
 
-const mapFilterKeys = ["filter_restaurant", "filter_mosque", "filter_prayer_room"];
+type MapFilterId = "all" | PlaceKind;
+const KIND_STYLE: Record<PlaceKind, { color: string; glyph: string }> = {
+  mosque: { color: "#176B45", glyph: "M" },
+  prayer_room: { color: "#3478A8", glyph: "P" },
+  restaurant: { color: "#C0762B", glyph: "R" },
+  market: { color: "#6C4A8C", glyph: "S" },
+};
+const MAP_FILTERS: MapFilterId[] = ["all", "mosque", "prayer_room", "restaurant", "market"];
 
-export const MapViewScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabId) => void; onNavigate?: (s: ScreenId) => void }) => {
+const openPlace = (place: MapPlace) =>
+  navigateTo(screenPath(place.kind === "mosque" || place.kind === "prayer_room" ? "mosque-detail" : "restaurant-detail", { id: place.id }));
+
+export const MapViewScreen = ({ onTabChange }: { onTabChange?: (t: TabId) => void; onNavigate?: (s: ScreenId) => void }) => {
   const { t } = useLanguage();
-  const mapFilters = mapFilterKeys.map((k) => t(`search.${k}`));
-  const [activeFilter, setActiveFilter] = useState(mapFilters[0]);
-  const [nearby, setNearby] = useState<Restaurant[]>([]);
+  const [filter, setFilter] = useState<MapFilterId>("all");
+  const [query, setQuery] = useState("");
+  const [data, setData] = useState<PlacesResponse | null>(null);
+  const [failed, setFailed] = useState(false);
+  const [origin, setOrigin] = useState<Origin | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [recenterKey, setRecenterKey] = useState(0);
 
   useEffect(() => {
+    let alive = true;
     getOrigin()
-      .then((origin) => getRestaurants({ lat: origin.lat, lng: origin.lng, limit: 12 }))
-      .then(setNearby)
-      .catch(() => {});
+      .then((o) => {
+        if (alive) setOrigin(o);
+        return getPlaces({ lat: o.lat, lng: o.lng });
+      })
+      .then((result) => alive && setData(result))
+      .catch(() => alive && setFailed(true));
+    return () => { alive = false; };
   }, []);
+
+  const visible = useMemo(() => {
+    const needle = query.trim().toLowerCase();
+    return (data?.places ?? []).filter((place) =>
+      place.lat != null && place.lng != null
+      && (filter === "all" || place.kind === filter)
+      && (!needle || [place.name, place.nameKo, place.address].some((text) => text?.toLowerCase().includes(needle))));
+  }, [data, filter, query]);
+
+  const markers = useMemo<MapMarker[]>(() => visible.map((place) => ({
+    id: place.id, lat: place.lat as number, lng: place.lng as number, color: KIND_STYLE[place.kind].color,
+    label: KIND_STYLE[place.kind].glyph, title: place.nameKo || place.name,
+  })), [visible]);
+
+  const selected = visible.find((place) => place.id === selectedId) ?? null;
+  const filterLabel = (id: MapFilterId) => t(`place.map_filter_${id}`);
+  const countOf = (id: MapFilterId) => (id === "all" ? (data ? Object.values(data.counts).reduce((a, b) => a + b, 0) : null) : data?.counts[id] ?? null);
+  const osmAttribution = data?.attributions.find((a) => a.source === "osm");
 
   return (
     <div className="flex flex-col h-full bg-[var(--cream)] relative overflow-hidden">
-      <div className="absolute inset-0">
-        <FakeMapBg />
-        {mapPins.map((pin, i) => (
-          <div key={i} className="absolute" style={{ left: pin.x - 16, top: pin.y - 16 }}>
-            <MapPin type={pin.type} />
-          </div>
-        ))}
-      </div>
+      <Suspense fallback={null}>
+        <PlacesMap markers={markers} selectedId={selectedId} onSelect={setSelectedId} origin={origin} recenterKey={recenterKey} />
+      </Suspense>
 
-      <div className="relative z-10 flex-shrink-0">
+      <div className="relative z-10 flex-shrink-0 pointer-events-none">
         <StatusBar />
       </div>
 
-      <div className="relative z-10 px-4 pb-3 flex-shrink-0">
-        <div className="flex items-center gap-2">
-          <div className="flex-1 flex items-center gap-2 bg-white/95 backdrop-blur rounded-xl px-4 py-3 shadow-sm">
+      <div className="relative z-10 px-4 pb-3 flex-shrink-0 pointer-events-none">
+        <div className="flex items-center gap-2 pointer-events-auto">
+          <label className="flex-1 flex items-center gap-2 bg-white/95 backdrop-blur rounded-xl px-4 py-3 shadow-sm">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--muted)" strokeWidth="1.8">
               <circle cx="7" cy="7" r="5"/>
               <path d="M12 12L15 15" strokeLinecap="round"/>
             </svg>
-            <span className="text-sm text-[var(--muted)]">{t("search.search_this_area")}</span>
-          </div>
-          <button className="w-10 h-10 bg-white/95 backdrop-blur rounded-xl flex items-center justify-center shadow-sm">
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--charcoal)" strokeWidth="1.8">
-              <line x1="2" y1="5" x2="16" y2="5" strokeLinecap="round"/>
-              <line x1="5" y1="9" x2="13" y2="9" strokeLinecap="round"/>
-              <line x1="7" y1="13" x2="11" y2="13" strokeLinecap="round"/>
-            </svg>
-          </button>
+            <input
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder={t("search.search_this_area")}
+              className="flex-1 bg-transparent text-sm outline-none placeholder:text-[var(--muted)]"
+            />
+          </label>
         </div>
 
-        <div className="flex gap-2 mt-2 overflow-x-auto scrollbar-hide">
-          {mapFilters.map((f) => (
-            <button
-              key={f}
-              onClick={() => setActiveFilter(f)}
-              className="flex-shrink-0 px-4 py-2 rounded-xl text-xs font-semibold shadow-sm transition-all"
-              style={{
-                backgroundColor: activeFilter === f ? "var(--green)" : "white",
-                color: activeFilter === f ? "white" : "var(--charcoal)",
-              }}
-            >
-              {f}
-            </button>
-          ))}
+        <div className="flex gap-2 mt-2 overflow-x-auto scrollbar-hide pointer-events-auto">
+          {MAP_FILTERS.map((id) => {
+            const active = filter === id;
+            const count = countOf(id);
+            return (
+              <button
+                key={id}
+                onClick={() => { setFilter(id); setSelectedId(null); }}
+                className="flex-shrink-0 px-4 py-2 rounded-xl text-xs font-semibold shadow-sm transition-all"
+                style={{ backgroundColor: active ? (id === "all" ? "var(--green)" : KIND_STYLE[id].color) : "white", color: active ? "white" : "var(--charcoal)" }}
+              >
+                {filterLabel(id)}{count != null ? ` ${count}` : ""}
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      <div className="flex-1" />
+      <div className="flex-1 pointer-events-none" />
 
-      <div className="relative z-10 flex justify-end px-4 pb-3">
-        <button className="w-10 h-10 bg-white rounded-xl shadow-md flex items-center justify-center">
+      <div className="relative z-10 flex justify-end px-4 pb-3 pointer-events-none">
+        <button
+          onClick={() => setRecenterKey((key) => key + 1)}
+          aria-label={t("place.map_locate")}
+          className="w-10 h-10 bg-white rounded-xl shadow-md flex items-center justify-center pointer-events-auto"
+        >
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--info)" strokeWidth="1.8">
             <circle cx="9" cy="9" r="3"/>
             <path d="M9 1v3M9 14v3M1 9h3M14 9h3" strokeLinecap="round"/>
@@ -296,29 +325,56 @@ export const MapViewScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: T
         <div className="flex justify-center pt-3 pb-2">
           <div className="w-10 h-1 bg-[var(--border)] rounded-full" />
         </div>
-        <div className="px-4 pb-4">
-          <p className="font-bold text-sm text-[#1A1A18] mb-3">{t("search.nearby_results").replace("{count}", String(nearby.length))}</p>
-          <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-1">
-            {nearby.slice(0, 3).map((r) => (
-              <RestaurantCardV
-                key={r.id}
-                name={r.nameKo}
-                photo={r.photo}
-                badge={halalBadgeMap(r.halalStatus)}
-                rating={r.rating}
-                count={r.reviewCount}
-                distance={r.distance}
-                eta={r.deliveryTime}
-                fee={formatFee(r.deliveryFee, t("common.free"))}
-                tag={r.dataOrigin === "demo" ? t("place.demo_tag") : null}
-                onClick={() => openRestaurant(r.id)}
-              />
-            ))}
-          </div>
+        <div className="px-4 pb-4 max-h-[42vh] overflow-y-auto">
+          <p className="font-bold text-sm text-[#1A1A18]">{filterLabel(filter)} · {t("place.map_count").replace("{count}", String(visible.length))}</p>
+          {failed && <p className="text-xs text-[var(--danger,#B14B42)] mt-2">{t("place.load_error")}</p>}
+          {!failed && data && visible.length === 0 && <p className="text-xs text-[var(--muted)] mt-2">{t("place.map_empty")}</p>}
+          {!selected && visible.length > 0 && <p className="text-xs text-[var(--muted)] mt-2">{t("place.map_select_hint")}</p>}
+          {selected && <SelectedPlaceCard place={selected} />}
+          {osmAttribution && <p className="text-[10px] text-[var(--muted)] mt-3 leading-snug">{t("place.map_osm_note")}</p>}
         </div>
       </div>
 
       <BottomNav active="search" onTabChange={onTabChange} />
+    </div>
+  );
+};
+
+const SelectedPlaceCard = ({ place }: { place: MapPlace }) => {
+  const { t } = useLanguage();
+  const style = KIND_STYLE[place.kind];
+  const restaurant = "halalStatus" in place ? place : null;
+  const badge = halalBadgeMap(restaurant?.halalStatus ?? null);
+  const community = place.dataOrigin === "imported" && place.verificationStatus === "unverified";
+  const kindLabel = t(`place.map_filter_${place.kind}`);
+  return (
+    <div className="mt-3 border-t border-[var(--border)] pt-3">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h2 className="font-bold text-base text-[#1A1A18] break-words">{place.nameKo || place.name}</h2>
+          {place.name && place.name !== place.nameKo && <p className="text-xs text-[var(--muted)] mt-0.5 break-words">{place.name}</p>}
+        </div>
+        <span className="flex-shrink-0 text-[10px] font-bold px-2 py-1 rounded-full text-white" style={{ backgroundColor: style.color }}>{kindLabel}</span>
+      </div>
+      {place.address && <p className="text-xs text-[var(--muted)] mt-2">{place.address}</p>}
+      <div className="flex flex-wrap items-center gap-2 mt-2">
+        {badge && <HalalBadge variant={badge} />}
+        {community && <span className="text-[11px] px-2 py-1 rounded bg-[var(--cream)]">{t("place.community_reported")}</span>}
+        {place.dataOrigin === "demo" && <span className="text-[11px] px-2 py-1 rounded bg-[var(--cream)]">{t("place.demo_tag")}</span>}
+      </div>
+      {restaurant?.halalEvidence && <p className="text-[11px] text-[var(--muted)] mt-2">{restaurant.halalEvidence}</p>}
+      <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-xs font-semibold">
+        <button onClick={() => openPlace(place)} className="text-[var(--green)]">{t("place.map_details")}</button>
+        {place.phone && <a href={`tel:${place.phone}`} className="text-[var(--green)]">{place.phone}</a>}
+        {place.website && <a href={place.website} target="_blank" rel="noreferrer" className="text-[var(--info)]">{t("place.website")}</a>}
+        <a href={mapsUrl(place)} target="_blank" rel="noreferrer" className="text-[var(--info)]">{t("place.open_in_maps")}</a>
+      </div>
+      {place.provenance.source && (
+        <p className="text-[10px] text-[var(--muted)] mt-2">
+          {t("place.map_source_line").replace("{source}", place.provenance.attribution ?? place.provenance.source).replace("{license}", place.provenance.license ?? "—")}
+          {place.provenance.retrievedAt ? ` · ${formatDate(place.provenance.retrievedAt)}` : ""}
+        </p>
+      )}
     </div>
   );
 };
