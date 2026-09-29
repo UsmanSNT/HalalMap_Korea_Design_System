@@ -13,6 +13,7 @@ import { engagementDict } from "./dictionaries/engagement";
 import { rewardsDict } from "./dictionaries/rewards";
 import { accessibilityDict } from "./dictionaries/accessibility";
 import { desktopDict } from "./dictionaries/desktop";
+import { placeDict } from "./dictionaries/place";
 
 export type Lang = "ko" | "en" | "uz";
 
@@ -40,6 +41,7 @@ export const dictionaries: Dict = {
   rewards: rewardsDict,
   accessibility: accessibilityDict,
   desktop: desktopDict,
+  place: placeDict,
 };
 
 /**

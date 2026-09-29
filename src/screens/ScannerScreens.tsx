@@ -1,278 +1,316 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { StatusBar, BackButton } from "../components/Shared";
 import { useLanguage } from "../i18n/LanguageContext";
 import type { ScreenId } from "../App";
+import { lookupProduct, type LookupResult } from "@/api/products";
+import { acceptableBarcode } from "@/services/barcode";
+import { decodeBarcodeFromFile, startCameraScan, type ScannerHandle } from "@/services/scanner";
+import { addScanHistory, clearScanHistory, readScanHistory, saveDraft, type ScanHistoryItem } from "@/services/scanHistory";
+import { navigateTo, screenPath, useRouteParams } from "@/services/navigation";
+import { STATUS_STYLE, CertificationCard, DisclaimerNote, IngredientAnalysis, SourceCard, StatusBanner } from "./scanner/AnalysisView";
+
+type Nav = { onNavigate?: (s: ScreenId) => void };
+
+const openResult = (barcode: string) => navigateTo(screenPath("scan-result", { barcode }));
 
 // ── 22. Scanner Screen ─────────────────────────────────────────────────────────
-export const ScannerScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
+type CameraState = "starting" | "scanning" | "denied" | "unavailable" | "error";
+
+export const ScannerScreen = ({ onNavigate }: Nav) => {
   const { t } = useLanguage();
-  const [flash, setFlash] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const handleRef = useRef<ScannerHandle | null>(null);
+  const galleryRef = useRef<HTMLInputElement>(null);
+  const [camera, setCamera] = useState<CameraState>("starting");
+  const [attempt, setAttempt] = useState(0);
+  const [torch, setTorch] = useState(false);
+  const [torchSupported, setTorchSupported] = useState(false);
+  const [manual, setManual] = useState("");
+  const [manualError, setManualError] = useState(false);
+  const [gallery, setGallery] = useState<"idle" | "decoding" | "none">("idle");
+  const [mode, setMode] = useState<string | null>(null);
+  const [history] = useState<ScanHistoryItem[]>(() => readScanHistory());
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    let cancelled = false;
+    setCamera("starting");
+    startCameraScan(video, (event) => {
+      navigator.vibrate?.(60);
+      handleRef.current?.stop();
+      openResult(event.code);
+    })
+      .then((handle) => {
+        if (cancelled) return handle.stop();
+        handleRef.current = handle;
+        setMode(handle.mode);
+        setTorchSupported(handle.torchSupported);
+        setCamera("scanning");
+      })
+      .catch((error: Error) => {
+        if (cancelled) return;
+        setCamera(error.name === "NotAllowedError" || error.name === "SecurityError" ? "denied" : error.name === "NotSupportedError" ? "unavailable" : "error");
+      });
+    return () => {
+      cancelled = true;
+      handleRef.current?.stop();
+      handleRef.current = null;
+    };
+  }, [attempt]);
+
+  const submitManual = (event: React.FormEvent) => {
+    event.preventDefault();
+    const code = acceptableBarcode(manual);
+    if (!code) return setManualError(true);
+    handleRef.current?.stop();
+    openResult(code);
+  };
+
+  const onGallery = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    setGallery("decoding");
+    try {
+      const found = await decodeBarcodeFromFile(file);
+      if (found) {
+        handleRef.current?.stop();
+        return openResult(found.code);
+      }
+      setGallery("none");
+    } catch {
+      setGallery("none");
+    }
+  };
+
+  const toggleTorch = async () => {
+    const next = !torch;
+    if (await handleRef.current?.setTorch(next)) setTorch(next);
+  };
+
+  const cameraMessage = camera === "denied" ? t("scanner.camera_denied") : camera === "unavailable" ? t("scanner.camera_unavailable") : camera === "error" ? t("scanner.camera_error") : null;
+  const recent = history[0];
 
   return (
-    <div className="flex flex-col h-full" style={{ backgroundColor: "#0A0A0A" }}>
+    <div className="flex flex-col h-full" style={{ backgroundColor: "#0A0A0A" }} data-testid="scanner-screen" data-camera={camera} data-mode={mode ?? ""}>
       <StatusBar dark />
 
-      {/* Controls */}
-      <div className="flex items-center justify-between px-5 pb-4 relative z-20">
+      <div className="flex items-center justify-between px-5 pb-3 relative z-20 flex-shrink-0">
         <BackButton dark onBack={() => onNavigate?.("home")} />
         <h1 className="font-bold text-white text-lg">{t("scanner.title")}</h1>
-        <button
-          onClick={() => setFlash(!flash)}
-          className="w-9 h-9 rounded-full flex items-center justify-center transition-colors"
-          style={{ backgroundColor: flash ? "#FCD34D" : "rgba(255,255,255,0.15)" }}
-        >
-          <svg width="18" height="18" viewBox="0 0 18 18" fill={flash ? "#1A1A18" : "white"}>
-            <path d="M10 1L4 10h5l-1 7 7-10h-5L10 1z"/>
-          </svg>
-        </button>
+        {torchSupported ? (
+          <button onClick={toggleTorch} aria-label={t("scanner.torch")} className="w-9 h-9 rounded-full flex items-center justify-center transition-colors" style={{ backgroundColor: torch ? "#FCD34D" : "rgba(255,255,255,0.15)" }}>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill={torch ? "#1A1A18" : "white"}><path d="M10 1L4 10h5l-1 7 7-10h-5L10 1z" /></svg>
+          </button>
+        ) : <span className="w-9" />}
       </div>
 
-      {/* Camera area */}
-      <div className="flex-1 relative flex flex-col items-center justify-center px-6">
-        {/* Scan frame */}
-        <div className="relative w-64 h-64">
-          {/* Corner brackets */}
-          <div className="absolute top-0 left-0 w-8 h-8 border-t-3 border-l-3 border-white" style={{ borderTopWidth: 3, borderLeftWidth: 3 }} />
-          <div className="absolute top-0 right-0 w-8 h-8 border-t-3 border-r-3 border-white" style={{ borderTopWidth: 3, borderRightWidth: 3 }} />
-          <div className="absolute bottom-0 left-0 w-8 h-8 border-b-3 border-l-3 border-white" style={{ borderBottomWidth: 3, borderLeftWidth: 3 }} />
-          <div className="absolute bottom-0 right-0 w-8 h-8 border-b-3 border-r-3 border-white" style={{ borderBottomWidth: 3, borderRightWidth: 3 }} />
-
-          {/* Corner glow */}
-          <div className="absolute top-0 left-0 w-6 h-6" style={{ boxShadow: "0 0 8px 2px rgba(27,107,74,0.8)" }} />
-          <div className="absolute top-0 right-0 w-6 h-6" style={{ boxShadow: "0 0 8px 2px rgba(27,107,74,0.8)" }} />
-          <div className="absolute bottom-0 left-0 w-6 h-6" style={{ boxShadow: "0 0 8px 2px rgba(27,107,74,0.8)" }} />
-          <div className="absolute bottom-0 right-0 w-6 h-6" style={{ boxShadow: "0 0 8px 2px rgba(27,107,74,0.8)" }} />
-
-          {/* Scan beam */}
-          <div
-            className="absolute left-2 right-2 h-0.5 animate-scan-beam"
-            style={{
-              background: "linear-gradient(90deg, transparent, var(--green), transparent)",
-              boxShadow: "0 0 8px 2px rgba(27,107,74,0.6)",
-              top: "4px",
-            }}
-          />
-
-          {/* Barcode placeholder */}
-          <div className="absolute inset-8 flex flex-col items-center justify-center gap-3">
-            <div className="flex gap-1 items-end opacity-30">
-              {[3,5,2,6,3,5,2,4,3,6,4,2,5,3].map((h, i) => (
-                <div key={i} className="bg-white w-1 rounded-sm" style={{ height: `${h * 6}px` }} />
+      {/* Camera */}
+      <div className="relative flex-shrink-0 overflow-hidden" style={{ height: 300 }}>
+        <video ref={videoRef} playsInline muted autoPlay className="absolute inset-0 h-full w-full object-cover" data-testid="camera-video" />
+        {camera !== "scanning" && (
+          <div className="absolute inset-0 flex items-center justify-center px-8 text-center" style={{ backgroundColor: "#111" }}>
+            {camera === "starting" ? (
+              <p className="text-sm text-white/70">{t("scanner.camera_starting")}</p>
+            ) : (
+              <div className="space-y-3">
+                <p className="text-sm text-white/80 leading-relaxed">{cameraMessage}</p>
+                <button onClick={() => setAttempt((n) => n + 1)} className="rounded-xl border border-white/30 px-4 py-2 text-sm font-semibold text-white">{t("scanner.retry_camera")}</button>
+              </div>
+            )}
+          </div>
+        )}
+        {camera === "scanning" && (
+          <>
+            <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 260px 130px at center, transparent 0%, rgba(0,0,0,0.6) 100%)" }} />
+            <div className="absolute left-1/2 top-1/2 h-32 w-64 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+              {["top-0 left-0 border-t-[3px] border-l-[3px]", "top-0 right-0 border-t-[3px] border-r-[3px]", "bottom-0 left-0 border-b-[3px] border-l-[3px]", "bottom-0 right-0 border-b-[3px] border-r-[3px]"].map((c) => (
+                <div key={c} className={`absolute h-7 w-7 border-white ${c}`} />
               ))}
+              <div className="absolute left-2 right-2 h-0.5 animate-scan-beam" style={{ background: "linear-gradient(90deg, transparent, #34d399, transparent)", boxShadow: "0 0 8px 2px rgba(52,211,153,0.6)", top: 4 }} />
             </div>
-            <p className="text-white/30 text-[10px] font-mono">8801012345678</p>
-          </div>
-        </div>
-
-        {/* Instructions */}
-        <div className="mt-8 px-6 py-3 rounded-2xl" style={{ backgroundColor: "rgba(255,255,255,0.1)" }}>
-          <p className="text-white text-sm font-medium text-center leading-relaxed">
-            {t("scanner.instructions")}
-          </p>
-        </div>
-
-        {/* Overlay dimming */}
-        <div className="absolute inset-0 pointer-events-none" style={{
-          background: "radial-gradient(ellipse 270px 270px at center, transparent 0%, rgba(0,0,0,0.55) 100%)"
-        }} />
+          </>
+        )}
       </div>
 
-      {/* Bottom controls */}
-      <div className="px-6 pb-10 space-y-4 relative z-10">
-        {/* Recent scan */}
-        <div className="flex items-center gap-3 bg-white/10 backdrop-blur rounded-xl px-4 py-3">
-          <div className="w-10 h-10 rounded-lg overflow-hidden bg-white/10 flex-shrink-0">
-            <img src="https://images.unsplash.com/photo-1567620905572-d1d0d6ca9ea0?w=80&h=80&fit=crop&auto=format&q=80" alt="scan" className="w-full h-full object-cover" />
-          </div>
-          <div className="flex-1">
-            <p className="text-white/60 text-[10px] font-medium">{t("scanner.recent_scan_label")}</p>
-            <p className="text-white text-sm font-semibold">오리온 초코파이 정 (12개입)</p>
-          </div>
-          <span className="text-[10px] font-bold px-2 py-1 rounded-full" style={{ backgroundColor: "var(--green)", color: "white" }}>HALAL</span>
-        </div>
+      <div className="flex-1 overflow-y-auto px-5 pb-8 pt-3 space-y-3" style={{ minHeight: 0 }}>
+        <p className="text-center text-sm font-medium text-white/85">{t("scanner.instructions")}</p>
+        <p className="text-center text-[11px] text-white/45">{t("scanner.formats_note")}</p>
 
-        {/* Gallery button */}
-        <div className="flex gap-3">
-          <button className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl border border-white/20 text-white font-semibold text-sm">
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="white" strokeWidth="1.6">
-              <rect x="2" y="2" width="14" height="14" rx="2.5"/>
-              <circle cx="6.5" cy="6.5" r="1.5"/>
-              <path d="M2 12l4-4 3 3 2-2 4 4" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-            {t("scanner.choose_from_gallery")}
+        <form onSubmit={submitManual} className="rounded-2xl bg-white/10 p-3 space-y-2">
+          <label htmlFor="manual-barcode" className="text-xs font-semibold text-white/80">{t("scanner.manual_title")}</label>
+          <div className="flex gap-2">
+            <input
+              id="manual-barcode"
+              data-testid="manual-barcode"
+              value={manual}
+              onChange={(e) => { setManual(e.target.value); setManualError(false); }}
+              inputMode="numeric"
+              autoComplete="off"
+              placeholder={t("scanner.manual_placeholder")}
+              className="min-w-0 flex-1 rounded-xl bg-white px-3 py-2.5 text-sm text-[#1A1A18] outline-none"
+            />
+            <button type="submit" data-testid="manual-submit" className="rounded-xl px-4 py-2.5 text-sm font-bold text-white" style={{ backgroundColor: "var(--green)" }}>{t("scanner.manual_submit")}</button>
+          </div>
+          {manualError && <p className="text-xs text-red-300" role="alert">{t("scanner.manual_invalid")}</p>}
+        </form>
+
+        <div className="flex gap-2">
+          <button onClick={() => galleryRef.current?.click()} className="flex-1 rounded-2xl border border-white/20 py-3 text-sm font-semibold text-white">
+            {gallery === "decoding" ? t("scanner.gallery_decoding") : t("scanner.choose_from_gallery")}
+          </button>
+          <button onClick={() => navigateTo("ingredient-scan")} className="flex-1 rounded-2xl border border-white/20 py-3 text-sm font-semibold text-white" data-testid="goto-ingredient-scan">
+            {t("scanner.goto_ingredient_scan")}
           </button>
         </div>
+        <input ref={galleryRef} type="file" accept="image/*" className="hidden" onChange={onGallery} data-testid="gallery-input" />
+        {gallery === "none" && <p className="text-xs text-amber-200" role="alert">{t("scanner.gallery_not_found")}</p>}
+
+        {recent ? (
+          <button onClick={() => openResult(recent.barcode)} className="flex w-full items-center gap-3 rounded-xl bg-white/10 px-4 py-3 text-left">
+            <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-lg bg-white/10">{recent.imageUrl && <img src={recent.imageUrl} alt="" className="h-full w-full object-cover" />}</div>
+            <div className="min-w-0 flex-1">
+              <p className="text-[10px] font-medium text-white/60">{t("scanner.recent_scan_label")}</p>
+              <p className="truncate text-sm font-semibold text-white">{recent.name}</p>
+            </div>
+            <span className="rounded-full px-2 py-1 text-[9px] font-extrabold" style={{ backgroundColor: STATUS_STYLE[recent.status as keyof typeof STATUS_STYLE]?.bg, color: STATUS_STYLE[recent.status as keyof typeof STATUS_STYLE]?.color }}>{STATUS_STYLE[recent.status as keyof typeof STATUS_STYLE]?.token.split(" ").slice(0, 2).join(" ")}</span>
+          </button>
+        ) : <p className="text-center text-xs text-white/40">{t("scanner.no_history")}</p>}
+        <button onClick={() => navigateTo("scan-history")} className="w-full py-2 text-center text-xs font-semibold text-white/60">{t("scanner.open_history")}</button>
       </div>
     </div>
   );
 };
 
 // ── 23. Scan Result ────────────────────────────────────────────────────────────
-type Verdict = "halal" | "haram" | "mashbooh";
+type Load = { state: "loading" } | { state: "error" } | { state: "done"; result: LookupResult };
 
-const verdictConfig: Record<Verdict, { label: string; color: string; bg: string; icon: string }> = {
-  halal: {
-    label: "HALAL",
-    color: "#1B6B4A",
-    bg: "#E8F3ED",
-    icon: "✅",
-  },
-  haram: {
-    label: "HARAM",
-    color: "#D94F4F",
-    bg: "#FEE2E2",
-    icon: "❌",
-  },
-  mashbooh: {
-    label: "MASHBOOH",
-    color: "#D97706",
-    bg: "#FEF3C7",
-    icon: "⚠️",
-  },
-};
+export const ScanResultScreen = ({ onNavigate }: Nav) => {
+  const { t, lang } = useLanguage();
+  const barcode = useRouteParams().get("barcode") ?? "";
+  const [load, setLoad] = useState<Load>({ state: "loading" });
+  const [showList, setShowList] = useState(false);
 
-const ingredients = [
-  { name: "밀가루 (소맥분)", status: "ok" },
-  { name: "설탕", status: "ok" },
-  { name: "팜유 (말레이시아산)", status: "ok" },
-  { name: "코코아 파우더", status: "ok" },
-  { name: "전란", status: "ok" },
-  { name: "바닐라 향료 (합성)", status: "warn" },
-  { name: "유화제 (대두레시틴)", status: "ok" },
-  { name: "팽창제", status: "ok" },
-];
+  const run = useCallback(() => {
+    let cancelled = false;
+    setLoad({ state: "loading" });
+    lookupProduct(barcode)
+      .then((result) => {
+        if (cancelled) return;
+        setLoad({ state: "done", result });
+        if (result.found) {
+          addScanHistory({
+            barcode: result.barcode, name: result.product.nameKo ?? result.product.name, brand: result.product.brand,
+            status: result.analysis.status, imageUrl: result.product.imageUrl,
+          });
+        }
+      })
+      .catch(() => { if (!cancelled) setLoad({ state: "error" }); });
+    return () => { cancelled = true; };
+  }, [barcode]);
 
-export const ScanResultScreen = ({ verdict = "halal", onNavigate }: { verdict?: Verdict; onNavigate?: (s: ScreenId) => void }) => {
-  const { t } = useLanguage();
-  const cfg = verdictConfig[verdict];
-  const verdictLabel = t(`scanner.verdict_${verdict}_label`);
-  const verdictDesc = t(`scanner.verdict_${verdict}_desc`);
-  const confirmedNotes = [
-    t("scanner.note_no_pork_gelatin"),
-    t("scanner.note_no_alcohol"),
-    t("scanner.note_no_cross_contamination"),
-  ];
+  useEffect(() => (barcode ? run() : undefined), [barcode, run]);
+
+  const contribute = () => {
+    if (load.state === "done" && load.result.found) {
+      saveDraft({ barcode: load.result.barcode, name: load.result.product.name, brand: load.result.product.brand ?? undefined, ingredientsText: load.result.product.ingredientsRaw ?? undefined, ingredientsInput: "typed" });
+    } else saveDraft({ barcode });
+    navigateTo(screenPath("product-submit", { barcode }));
+  };
+  const ingredientPhoto = () => navigateTo(screenPath("ingredient-scan", { barcode }));
+
+  const header = (
+    <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
+      <StatusBar />
+      <div className="flex items-center gap-3 px-4 pb-3">
+        <BackButton onBack={() => onNavigate?.("scanner")} />
+        <h1 className="font-bold text-lg flex-1">{t("scanner.scan_result_title")}</h1>
+      </div>
+    </div>
+  );
+
+  if (!barcode) {
+    return <div className="flex h-full flex-col bg-[var(--cream)]">{header}<div className="p-6"><button onClick={() => onNavigate?.("scanner")} className="w-full rounded-2xl py-4 font-bold text-white" style={{ backgroundColor: "var(--green)" }}>{t("scanner.scan_again")}</button></div></div>;
+  }
 
   return (
-    <div className="flex flex-col h-full bg-[var(--cream)]">
-      <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
-        <StatusBar />
-        <div className="flex items-center gap-3 px-4 pb-3">
-          <BackButton onBack={() => onNavigate?.("home")} />
-          <h1 className="font-bold text-lg flex-1">{t("scanner.scan_result_title")}</h1>
-          <button className="text-sm font-medium" style={{ color: "var(--muted)" }}>{t("scanner.share")}</button>
-        </div>
-      </div>
-
+    <div className="flex flex-col h-full bg-[var(--cream)]" data-testid="scan-result" data-state={load.state === "done" ? (load.result.found ? "found" : "not-found") : load.state}>
+      {header}
       <div className="flex-1 phone-scroll px-4 py-4 space-y-4">
-        {/* Product */}
-        <div className="bg-white rounded-2xl p-4 flex gap-4 shadow-sm">
-          <div className="w-20 h-20 rounded-xl overflow-hidden bg-[#E8E6E1] flex-shrink-0">
-            <img
-              src="https://images.unsplash.com/photo-1567620905572-d1d0d6ca9ea0?w=120&h=120&fit=crop&auto=format&q=80"
-              alt="오리온 초코파이"
-              className="w-full h-full object-cover"
-            />
-          </div>
-          <div className="flex-1 py-1">
-            <p className="text-xs text-[var(--muted)]">오리온 (Orion)</p>
-            <p className="font-bold text-base text-[#1A1A18] leading-tight">초코파이 정 (12개입)</p>
-            <p className="text-xs text-[var(--muted)] mt-1 font-mono">8801012345678</p>
-          </div>
-        </div>
+        {load.state === "loading" && <p className="py-12 text-center text-sm text-[var(--muted)]" role="status">{t("scanner.looking_up")}</p>}
 
-        {/* Verdict */}
-        <div
-          className="rounded-2xl p-5 shadow-sm"
-          style={{ backgroundColor: cfg.bg, border: `2px solid ${cfg.color}30` }}
-        >
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-4xl flex-shrink-0" style={{ backgroundColor: cfg.color }}>
-              {verdict === "halal" ? (
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                  <path d="M16 4C9.4 4 4 9.4 4 16C4 22.6 9.4 28 16 28C22.6 28 28 22.6 28 16C28 9.4 22.6 4 16 4Z" fill="rgba(255,255,255,0.2)"/>
-                  <path d="M10 16l4 4 8-8" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              ) : <span>{cfg.icon}</span>}
-            </div>
-            <div className="flex-1">
-              <span className="text-xs font-bold tracking-widest" style={{ color: cfg.color }}>{cfg.label}</span>
-              <p className="font-bold text-xl text-[#1A1A18] mt-0.5">{verdictLabel}</p>
-              <p className="text-xs text-[var(--muted)] mt-1 leading-relaxed">{verdictDesc}</p>
-            </div>
-          </div>
-
-          {verdict === "halal" && (
-            <div className="mt-4 flex items-center gap-2 pt-3 border-t" style={{ borderColor: `${cfg.color}20` }}>
-              <svg width="14" height="14" viewBox="0 0 14 14" fill={cfg.color}>
-                <path d="M7 1L8.5 5H12.5L9.5 7.5L10.5 12L7 9.5L3.5 12L4.5 7.5L1.5 5H5.5L7 1Z"/>
-              </svg>
-              <p className="text-xs font-semibold" style={{ color: cfg.color }}>{t("scanner.cert_authority_prefix")}한국이슬람교중앙회 (KMF)</p>
-            </div>
-          )}
-        </div>
-
-        {/* Ingredients */}
-        <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-          <div className="px-4 py-3 border-b border-[var(--border)]">
-            <p className="font-semibold text-sm text-[#1A1A18]">{t("scanner.ingredients_analysis_title")}</p>
-            <p className="text-xs text-[var(--muted)] mt-0.5">{t("scanner.ingredients_count").replace("{count}", String(ingredients.length))}</p>
-          </div>
-          <div className="divide-y divide-[var(--border)]">
-            {ingredients.map((ing) => (
-              <div key={ing.name} className="flex items-center gap-3 px-4 py-3">
-                <div
-                  className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-xs"
-                  style={{
-                    backgroundColor: ing.status === "ok" ? "var(--green-light)" : "var(--gold-light)",
-                  }}
-                >
-                  {ing.status === "ok" ? (
-                    <svg width="10" height="8" viewBox="0 0 10 8" fill="none" stroke="var(--green)" strokeWidth="1.8" strokeLinecap="round"><path d="M1 4l2.5 2.5L9 1"/></svg>
-                  ) : (
-                    <svg width="10" height="10" viewBox="0 0 10 10" fill="var(--gold)" strokeWidth="0"><path d="M5 1L1 9h8L5 1Z"/><rect x="4.5" y="4.5" width="1" height="2.5" fill="white"/><rect x="4.5" y="7.5" width="1" height="1" fill="white"/></svg>
-                  )}
-                </div>
-                <p className="text-sm text-[#1A1A18] flex-1">{ing.name}</p>
-                {ing.status === "warn" && (
-                  <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ backgroundColor: "var(--gold-light)", color: "#92400E" }}>{t("scanner.needs_check")}</span>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Positive notes */}
-        {verdict === "halal" && (
-          <div className="bg-white rounded-2xl px-4 py-3 shadow-sm space-y-2">
-            <p className="font-semibold text-sm text-[#1A1A18]">{t("scanner.confirmed_items_title")}</p>
-            {confirmedNotes.map((note) => (
-              <div key={note} className="flex items-center gap-2 text-sm" style={{ color: "var(--green)" }}>
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M2 7l3.5 3.5L12 4"/></svg>
-                {note}
-              </div>
-            ))}
+        {load.state === "error" && (
+          <div className="rounded-2xl bg-white p-5 text-center shadow-sm space-y-3" role="alert">
+            <p className="text-sm text-[#1A1A18]">{t("scanner.lookup_error")}</p>
+            <button onClick={run} className="rounded-xl px-5 py-2.5 text-sm font-bold text-white" style={{ backgroundColor: "var(--green)" }}>{t("scanner.retry")}</button>
           </div>
         )}
 
-        {/* Source */}
-        <div className="bg-white rounded-2xl px-4 py-3 shadow-sm flex items-center justify-between">
-          <div>
-            <p className="text-xs text-[var(--muted)]">{t("scanner.data_source_label")}</p>
-            <p className="text-sm font-semibold text-[#1A1A18]">KMF 할랄 데이터베이스</p>
-            <p className="text-xs text-[var(--muted)]">{t("scanner.last_updated")}</p>
+        {load.state === "done" && !load.result.found && (
+          <div className="space-y-3" data-testid="not-found">
+            <div className="rounded-2xl bg-white p-5 shadow-sm space-y-2">
+              <p className="text-xs text-[var(--muted)] font-mono">{t("scanner.barcode_label")} {load.result.barcode}</p>
+              <p className="font-bold text-base text-[#1A1A18]">{t("scanner.not_found_title")}</p>
+              <p className="text-sm text-[var(--muted)] leading-relaxed">{t("scanner.not_found_desc")}</p>
+              {load.result.pendingSubmission && <p className="rounded-lg bg-[var(--gold-light)] px-3 py-2 text-xs text-[#7A5220]">{t("scanner.pending_contribution")}</p>}
+            </div>
+            <button onClick={ingredientPhoto} data-testid="action-ingredient-photo" className="w-full rounded-2xl py-4 font-bold text-white" style={{ backgroundColor: "var(--green)" }}>{t("scanner.action_ingredient_photo")}</button>
+            <button onClick={contribute} data-testid="action-contribute" className="w-full rounded-2xl border py-4 font-bold" style={{ color: "var(--green)", borderColor: "var(--green)" }}>{t("scanner.action_contribute")}</button>
           </div>
-          <button className="text-xs font-medium px-3 py-2 rounded-xl border border-[var(--border)]" style={{ color: "var(--muted)" }}>
-            {t("scanner.report_error")}
-          </button>
-        </div>
+        )}
 
-        <button
-          className="w-full py-4 rounded-2xl font-bold text-white text-base"
-          style={{ backgroundColor: "var(--green)" }}
-        >
-          {t("scanner.scan_again")}
-        </button>
+        {load.state === "done" && load.result.found && (() => {
+          const { product, analysis } = load.result;
+          const name = lang === "en" ? product.nameEn ?? product.name : product.nameKo ?? product.name;
+          const hasIngredients = analysis.counts.total > 0;
+          return (
+            <>
+              <div className="bg-white rounded-2xl p-4 flex gap-4 shadow-sm" data-testid="product-card">
+                <div className="w-20 h-20 rounded-xl overflow-hidden bg-[#E8E6E1] flex-shrink-0 flex items-center justify-center text-3xl">
+                  {product.imageUrl ? <img src={product.imageUrl} alt={name} className="w-full h-full object-cover" referrerPolicy="no-referrer" /> : <span aria-hidden>📦</span>}
+                </div>
+                <div className="flex-1 min-w-0 py-1">
+                  {product.brand && <p className="text-xs text-[var(--muted)]">{product.brand}</p>}
+                  <p className="font-bold text-base text-[#1A1A18] leading-tight" data-testid="product-name">{name}</p>
+                  {product.nameEn && product.nameKo && lang === "ko" && product.nameEn !== product.nameKo && <p className="text-xs text-[var(--muted)]">{product.nameEn}</p>}
+                  {product.manufacturer && <p className="text-xs text-[var(--muted)] mt-0.5">{product.manufacturer}</p>}
+                  <p className="text-xs text-[var(--muted)] mt-1 font-mono">{load.result.barcode}</p>
+                </div>
+              </div>
+
+              <StatusBanner analysis={analysis} />
+              <CertificationCard analysis={analysis} />
+
+              {hasIngredients ? <IngredientAnalysis analysis={analysis} /> : (
+                <div className="rounded-2xl bg-white p-4 shadow-sm space-y-2">
+                  <p className="font-semibold text-sm">{t("scanner.no_ingredients_title")}</p>
+                  <p className="text-xs text-[var(--muted)]">{t("scanner.no_ingredients_desc")}</p>
+                  <button onClick={ingredientPhoto} data-testid="action-ingredient-photo" className="w-full rounded-xl py-3 text-sm font-bold text-white" style={{ backgroundColor: "var(--green)" }}>{t("scanner.action_ingredient_photo")}</button>
+                </div>
+              )}
+
+              {product.ingredientsRaw && (
+                <div className="bg-white rounded-2xl px-4 py-3 shadow-sm">
+                  <button onClick={() => setShowList(!showList)} className="flex w-full items-center justify-between text-sm font-semibold">
+                    <span>{t("scanner.ingredients_full")}</span><span>{showList ? "▴" : "▾"}</span>
+                  </button>
+                  {showList && <p className="mt-2 text-xs leading-relaxed text-[#374151] break-words" data-testid="ingredients-raw">{product.ingredientsRaw}</p>}
+                  {analysis.parse.allergens.length > 0 && <p className="mt-2 text-xs text-[var(--muted)]"><span className="font-semibold">{t("scanner.allergens_title")}:</span> {analysis.parse.allergens.join(", ")}</p>}
+                </div>
+              )}
+
+              <SourceCard product={product} analysis={analysis} />
+              <DisclaimerNote analysis={analysis} />
+
+              {load.result.pendingSubmission && <p className="rounded-lg bg-[var(--gold-light)] px-3 py-2 text-xs text-[#7A5220]">{t("scanner.pending_contribution")}</p>}
+              <button onClick={contribute} className="w-full rounded-2xl border border-[var(--border)] bg-white py-3 text-sm font-semibold text-[var(--muted)]">{t("scanner.report_error")}</button>
+            </>
+          );
+        })()}
+
+        <button onClick={() => onNavigate?.("scanner")} className="w-full py-4 rounded-2xl font-bold text-white text-base" style={{ backgroundColor: "var(--green)" }} data-testid="scan-again">{t("scanner.scan_again")}</button>
+        <button onClick={() => navigateTo("scan-history")} className="w-full py-2 text-center text-sm font-semibold text-[var(--muted)]">{t("scanner.open_history")}</button>
         <div className="h-2" />
       </div>
     </div>
@@ -280,55 +318,38 @@ export const ScanResultScreen = ({ verdict = "halal", onNavigate }: { verdict?: 
 };
 
 // ── 24. Scan History ───────────────────────────────────────────────────────────
-const scanHistory = [
-  { name: "오리온 초코파이 정 (12개입)", brand: "오리온", date: "오늘 14:22", verdict: "halal" as Verdict },
-  { name: "농심 새우깡", brand: "농심", date: "어제 19:41", verdict: "mashbooh" as Verdict },
-  { name: "롯데 빼빼로 아몬드", brand: "롯데제과", date: "11월 20일", verdict: "halal" as Verdict },
-  { name: "CJ 스팸 클래식", brand: "CJ제일제당", date: "11월 19일", verdict: "haram" as Verdict },
-  { name: "해태 허니버터칩", brand: "해태제과", date: "11월 17일", verdict: "halal" as Verdict },
-];
-
-export const ScanHistoryScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
+export const ScanHistoryScreen = ({ onNavigate }: Nav) => {
   const { t } = useLanguage();
+  const [items, setItems] = useState<ScanHistoryItem[]>(() => readScanHistory());
 
   return (
-  <div className="flex flex-col h-full bg-[var(--cream)]">
-    <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
-      <StatusBar />
-      <div className="flex items-center gap-3 px-4 pb-3">
-        <BackButton onBack={() => onNavigate?.("home")} />
-        <h1 className="font-bold text-lg flex-1">{t("scanner.history_title")}</h1>
-        <button className="text-sm font-medium" style={{ color: "var(--danger)" }}>{t("scanner.clear_all")}</button>
+    <div className="flex flex-col h-full bg-[var(--cream)]">
+      <div className="bg-white border-b border-[var(--border)] flex-shrink-0">
+        <StatusBar />
+        <div className="flex items-center gap-3 px-4 pb-3">
+          <BackButton onBack={() => onNavigate?.("scanner")} />
+          <h1 className="font-bold text-lg flex-1">{t("scanner.history_title")}</h1>
+          {items.length > 0 && <button onClick={() => { clearScanHistory(); setItems([]); }} className="text-sm font-medium" style={{ color: "var(--danger)" }}>{t("scanner.clear_all")}</button>}
+        </div>
+      </div>
+      <div className="flex-1 phone-scroll px-4 py-4 space-y-2.5">
+        {items.length === 0 && <p className="py-12 text-center text-sm text-[var(--muted)]">{t("scanner.no_history")}</p>}
+        {items.map((item) => {
+          const style = STATUS_STYLE[item.status as keyof typeof STATUS_STYLE];
+          return (
+            <button key={item.barcode} onClick={() => openResult(item.barcode)} className="flex w-full items-center gap-3 rounded-2xl bg-white p-4 text-left shadow-sm">
+              <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl text-xl" style={{ backgroundColor: style?.bg ?? "#F3F4F6" }}>
+                {item.imageUrl ? <img src={item.imageUrl} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" /> : <span aria-hidden>📦</span>}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-semibold text-[#1A1A18]">{item.name}</p>
+                <p className="text-xs text-[var(--muted)]">{[item.brand, new Date(item.at).toLocaleDateString()].filter(Boolean).join(" · ")}</p>
+              </div>
+              {style && <span className="flex-shrink-0 rounded-full px-2 py-1 text-[9px] font-extrabold tracking-wide" style={{ backgroundColor: style.bg, color: style.color, border: `1px solid ${style.border}` }}>{style.token.split(" ").slice(0, 2).join(" ")}</span>}
+            </button>
+          );
+        })}
       </div>
     </div>
-
-    <div className="flex-1 phone-scroll px-4 py-4 space-y-2.5">
-      {scanHistory.map((item) => {
-        const cfg = verdictConfig[item.verdict];
-        return (
-          <div key={item.name} className="bg-white rounded-2xl p-4 flex items-center gap-3 shadow-sm">
-            <div
-              className="w-12 h-12 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
-              style={{ backgroundColor: cfg.bg }}
-            >
-              {item.verdict === "halal" ? "✅" : item.verdict === "haram" ? "❌" : "⚠️"}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="font-semibold text-sm text-[#1A1A18] truncate">{item.name}</p>
-              <p className="text-xs text-[var(--muted)]">{item.brand} · {item.date}</p>
-            </div>
-            <span
-              className="text-[10px] font-bold px-2 py-1 rounded-full flex-shrink-0"
-              style={{ backgroundColor: cfg.bg, color: cfg.color }}
-            >
-              {cfg.label}
-            </span>
-          </div>
-        );
-      })}
-
-      <div className="h-4" />
-    </div>
-  </div>
   );
 };

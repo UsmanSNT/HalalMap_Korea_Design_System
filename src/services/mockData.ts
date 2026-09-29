@@ -245,6 +245,14 @@ const PROFILE = {
   stats: { orders: 12, reviews: 8, saved: 5 },
 };
 
+/** Offline demo mode serves the same fictional places as the API's demo seed, tagged the same way. */
+const withDemoMeta = <T extends object>(kind: string, item: T) => ({
+  kind, lat: null, lng: null, website: null, distanceKm: null, halalEvidence: null, hours: (item as { hours?: string }).hours ?? null,
+  dataOrigin: "demo", verificationStatus: "unverified",
+  provenance: { source: "demo_seed", sourceId: null, sourceUrl: null, license: "n/a — fictional demonstration data", attribution: null, retrievedAt: null, lastVerifiedAt: null },
+  ...item,
+});
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockResponses: Record<string, (params?: Record<string, string>) => any> = {
   "/api/restaurants": (params) => {
@@ -254,12 +262,12 @@ const mockResponses: Record<string, (params?: Record<string, string>) => any> = 
       const q = params.q.toLowerCase();
       filtered = filtered.filter((r) => r.name.toLowerCase().includes(q) || r.nameKo.includes(q) || r.category.includes(q));
     }
-    return { restaurants: filtered };
+    return { restaurants: filtered.map((r) => withDemoMeta("restaurant", r)) };
   },
   "/api/mosques": (params) => {
     let filtered = MOSQUES;
     if (params?.type) filtered = filtered.filter((m) => m.type === params.type);
-    return { mosques: filtered };
+    return { mosques: filtered.map((m) => withDemoMeta(m.type === "prayer-room" ? "prayer_room" : "mosque", m)) };
   },
   "/api/prayer-times": () => ({ prayerTimes: PRAYER_TIMES, location: "이태원동, 서울" }),
   "/api/profile": () => ({ profile: PROFILE }),
@@ -281,7 +289,7 @@ export function getMockResponse<T>(path: string): T | null {
   const restaurantMatch = basePath.match(/^\/api\/restaurants\/([^/]+)$/);
   if (restaurantMatch) {
     const r = RESTAURANTS.find((x) => x.id === restaurantMatch[1]);
-    return r ? ({ restaurant: r } as T) : null;
+    return r ? ({ restaurant: withDemoMeta("restaurant", r) } as T) : null;
   }
 
   const menuMatch = basePath.match(/^\/api\/restaurants\/([^/]+)\/menu$/);
@@ -294,7 +302,7 @@ export function getMockResponse<T>(path: string): T | null {
   const mosqueMatch = basePath.match(/^\/api\/mosques\/([^/]+)$/);
   if (mosqueMatch) {
     const m = MOSQUES.find((x) => x.id === mosqueMatch[1]);
-    return m ? ({ mosque: m } as T) : null;
+    return m ? ({ mosque: withDemoMeta(m.type === "prayer-room" ? "prayer_room" : "mosque", m) } as T) : null;
   }
 
   const orderMatch = basePath.match(/^\/api\/orders\/([^/]+)$/);

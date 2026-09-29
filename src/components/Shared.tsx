@@ -194,46 +194,57 @@ export const StarRating = ({ rating, count }: { rating: number; count?: number }
   </div>
 );
 
+// ── Photo with graceful fallback ─────────────────────────────────────────────
+/** Remote photos can be missing, blocked or offline: fall back to a neutral placeholder instead of a broken image. */
+export const Photo = ({ src, alt, placeholder = "🍽️", className = "w-full h-full object-cover", placeholderClass = "text-4xl opacity-60" }: { src?: string | null; alt: string; placeholder?: string; className?: string; placeholderClass?: string }) => {
+  const [failed, setFailed] = React.useState(false);
+  React.useEffect(() => setFailed(false), [src]);
+  return src && !failed ? (
+    <img src={src} alt={alt} className={className} loading="lazy" onError={() => setFailed(true)} />
+  ) : (
+    <span className={placeholderClass} aria-hidden>{placeholder}</span>
+  );
+};
+
 // ── Restaurant Card (vertical, for carousels) ────────────────────────────────
 export const RestaurantCardV = ({
   name,
-  imageId,
+  photo,
   badge,
   rating,
   count,
   distance,
   eta,
   fee,
+  tag,
+  placeholder = "🍽️",
   onClick,
 }: {
   name: string;
-  imageId: string;
+  photo?: string | null;
   badge?: BadgeVariant;
-  rating: number;
+  rating?: number | null;
   count?: number;
   distance: string;
-  eta: string;
-  fee: string;
+  eta?: string | null;
+  fee?: string | null;
+  tag?: string | null;
+  placeholder?: string;
   onClick?: () => void;
 }) => (
   <div onClick={onClick} className="bg-white rounded-2xl overflow-hidden shadow-sm flex-shrink-0 w-52 cursor-pointer active:scale-[0.98] transition-transform">
-    <div className="relative h-32 bg-[#E8E6E1]">
-      <img
-        src={`https://images.unsplash.com/photo-${imageId}?w=300&h=200&fit=crop&auto=format&q=80`}
-        alt={name}
-        className="w-full h-full object-cover"
-      />
+    <div className="relative h-32 bg-[#E8E6E1] flex items-center justify-center">
+      <Photo src={photo} alt={name} placeholder={placeholder} />
+      {tag && <span className="absolute top-2 left-2 rounded-full bg-black/60 px-2 py-0.5 text-[9px] font-bold tracking-wide text-white">{tag}</span>}
     </div>
     <div className="p-3 space-y-1.5">
       <p className="font-semibold text-sm text-[#1A1A18] leading-tight">{name}</p>
       {badge && <HalalBadge variant={badge} />}
-      <StarRating rating={rating} count={count} />
-      <div className="flex items-center gap-2 text-xs text-[#6B7280]">
-        <span>📍 {distance}</span>
-        <span>·</span>
-        <span>⏱ {eta}</span>
-        <span>·</span>
-        <span>{fee}</span>
+      {rating != null && <StarRating rating={rating} count={count} />}
+      <div className="flex flex-wrap items-center gap-x-2 text-xs text-[#6B7280]">
+        {distance && <span>📍 {distance}</span>}
+        {eta && <><span>·</span><span>⏱ {eta}</span></>}
+        {fee && <><span>·</span><span>{fee}</span></>}
       </div>
     </div>
   </div>
@@ -242,7 +253,7 @@ export const RestaurantCardV = ({
 // ── Restaurant Card (horizontal, for list) ───────────────────────────────────
 export const RestaurantCardH = ({
   name,
-  imageId,
+  photo,
   badge,
   rating,
   count,
@@ -250,40 +261,39 @@ export const RestaurantCardH = ({
   eta,
   fee,
   cuisine,
+  tag,
+  placeholder = "🍽️",
   onClick,
 }: {
   name: string;
-  imageId: string;
+  photo?: string | null;
   badge?: BadgeVariant;
-  rating: number;
+  rating?: number | null;
   count?: number;
   distance: string;
-  eta: string;
-  fee: string;
+  eta?: string | null;
+  fee?: string | null;
   cuisine?: string;
+  tag?: string | null;
+  placeholder?: string;
   onClick?: () => void;
 }) => (
   <div onClick={onClick} className="bg-white rounded-2xl overflow-hidden shadow-sm flex items-stretch cursor-pointer active:scale-[0.98] transition-transform">
-    <div className="w-24 h-24 flex-shrink-0 bg-[#E8E6E1]">
-      <img
-        src={`https://images.unsplash.com/photo-${imageId}?w=200&h=200&fit=crop&auto=format&q=80`}
-        alt={name}
-        className="w-full h-full object-cover"
-      />
+    <div className="relative w-24 h-24 flex-shrink-0 bg-[#E8E6E1] flex items-center justify-center">
+      <Photo src={photo} alt={name} placeholder={placeholder} placeholderClass="text-3xl opacity-60" />
+      {tag && <span className="absolute top-1 left-1 rounded-full bg-black/60 px-1.5 py-0.5 text-[8px] font-bold tracking-wide text-white">{tag}</span>}
     </div>
-    <div className="p-3 flex-1 space-y-1">
+    <div className="p-3 flex-1 min-w-0 space-y-1">
       <div className="flex items-start justify-between gap-2">
         <p className="font-semibold text-sm text-[#1A1A18] leading-tight">{name}</p>
         {cuisine && <span className="text-[10px] text-[#6B7280] bg-[#F5F3EF] px-2 py-0.5 rounded-full flex-shrink-0">{cuisine}</span>}
       </div>
       {badge && <HalalBadge variant={badge} />}
-      <StarRating rating={rating} count={count} />
-      <div className="flex items-center gap-2 text-xs text-[#6B7280]">
-        <span>{distance}</span>
-        <span>·</span>
-        <span>{eta}</span>
-        <span>·</span>
-        <span>{fee}</span>
+      {rating != null && <StarRating rating={rating} count={count} />}
+      <div className="flex flex-wrap items-center gap-x-2 text-xs text-[#6B7280]">
+        {distance && <span>{distance}</span>}
+        {eta && <><span>·</span><span>{eta}</span></>}
+        {fee && <><span>·</span><span>{fee}</span></>}
       </div>
     </div>
   </div>
@@ -323,9 +333,9 @@ export const MosqueCard = ({
       <p className="font-semibold text-sm text-[#1A1A18] truncate">{name}</p>
       {nameKo && <p className="text-xs text-[#6B7280]">{nameKo}</p>}
       <div className="flex items-center gap-2 mt-1">
-        <span className="text-xs text-[#6B7280]">📍 {distance}</span>
-        <span className="text-xs text-[#6B7280]">·</span>
-        <span className="text-xs text-[#6B7280]">🚶 {walkTime}</span>
+        {distance && <span className="text-xs text-[#6B7280]">📍 {distance}</span>}
+        {distance && walkTime && <span className="text-xs text-[#6B7280]">·</span>}
+        {walkTime && <span className="text-xs text-[#6B7280]">🚶 {walkTime}</span>}
       </div>
     </div>
     <div

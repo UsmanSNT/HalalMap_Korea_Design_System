@@ -7,18 +7,13 @@ import { getRestaurants, getRestaurant, getRestaurantMenu, type Restaurant, type
 import { getMosques, getPrayerTimes, type Mosque, type PrayerTimesData } from "@/api/mosques";
 import { useLanguage } from "../i18n/LanguageContext";
 import type { ScreenId } from "../App";
+import { formatFee, halalBadgeMap } from "@/services/placeUi";
+import { getOrigin } from "@/services/location";
+import { navigateTo, screenPath, useRouteParams } from "@/services/navigation";
+import { PlaceDetailView } from "./PlaceDetail";
 
-const extractImageId = (url: string): string => {
-  const match = url.match(/photo-([^?]+)/);
-  return match ? match[1] : "1498654896293-37c98e7f5fe4";
-};
-
-const halalBadgeMap = (status: string) =>
-  status === "certified" ? "certified" as const
-    : status === "muslim-owned" ? "owned" as const
-    : "friendly" as const;
-
-const formatFee = (fee: number, freeLabel: string) => fee === 0 ? freeLabel : `₩${fee.toLocaleString()}`;
+const openRestaurant = (id: string) => navigateTo(screenPath("restaurant-detail", { id }));
+const openMosque = (id: string) => navigateTo(screenPath("mosque-detail", { id }));
 
 // ── 6. Home Screen ─────────────────────────────────────────────────────────────
 const categoryKeys = [
@@ -42,7 +37,8 @@ export const HomeScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabI
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all([getRestaurants(), getMosques(), getPrayerTimes()])
+    getOrigin()
+      .then((origin) => Promise.all([getRestaurants({ lat: origin.lat, lng: origin.lng, limit: 12 }), getMosques({ lat: origin.lat, lng: origin.lng }), getPrayerTimes()]))
       .then(([r, m, p]) => {
         if (cancelled) return;
         setRestaurantList(r);
@@ -159,14 +155,15 @@ export const HomeScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabI
                 <RestaurantCardV
                   key={r.id}
                   name={r.nameKo}
-                  imageId={extractImageId(r.photo)}
+                  photo={r.photo}
                   badge={halalBadgeMap(r.halalStatus)}
                   rating={r.rating}
                   count={r.reviewCount}
                   distance={r.distance}
                   eta={r.deliveryTime}
                   fee={formatFee(r.deliveryFee, t("common.free"))}
-                  onClick={() => onNavigate?.("restaurant-detail")}
+                  tag={r.dataOrigin === "demo" ? t("place.demo_tag") : null}
+                  onClick={() => openRestaurant(r.id)}
                 />
               ))
             )}
@@ -188,7 +185,7 @@ export const HomeScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabI
                   distance={m.distance}
                   nextPrayer={prayer.next ? `${prayer.next.name} ${prayer.next.time}` : ""}
                   walkTime={m.walkTime ?? ""}
-                  onClick={() => onNavigate?.("mosque-detail")}
+                  onClick={() => openMosque(m.id)}
                 />
               ))
             )}
@@ -262,7 +259,8 @@ export const RestaurantListScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getRestaurants()
+    getOrigin()
+      .then((origin) => getRestaurants({ lat: origin.lat, lng: origin.lng }))
       .then(setList)
       .catch(() => {})
       .finally(() => setLoading(false));
@@ -321,16 +319,17 @@ export const RestaurantListScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId
           <>
             <p className="text-xs text-[var(--muted)] font-medium mb-1">{t("home.nearby_count").replace("{count}", String(list.length))}</p>
             {list.map((r) => (
-              <div key={r.id} onClick={() => onNavigate?.("restaurant-detail")} className="cursor-pointer">
+              <div key={r.id} onClick={() => openRestaurant(r.id)} className="cursor-pointer">
                 <RestaurantCardH
                   name={r.nameKo}
-                  imageId={extractImageId(r.photo)}
+                  photo={r.photo}
                   badge={halalBadgeMap(r.halalStatus)}
                   rating={r.rating}
                   count={r.reviewCount}
                   distance={r.distance}
                   eta={r.deliveryTime}
                   fee={formatFee(r.deliveryFee, t("common.free"))}
+                  tag={r.dataOrigin === "demo" ? t("place.demo_tag") : null}
                   cuisine={categoryMap[r.category] ?? r.category}
                 />
               </div>
@@ -354,30 +353,39 @@ export const RestaurantDetailScreen = ({ onNavigate }: { onNavigate?: (s: Screen
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
   const [menuItems, setMenuItems] = useState<import("@/api/restaurants").MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [failed, setFailed] = useState(false);
+  const routeId = useRouteParams().get("id");
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all([
-      getRestaurant("sindang-halal"),
-      getRestaurantMenu("sindang-halal"),
-    ])
-      .then(([r, m]) => {
-        if (cancelled) return;
-        setRestaurant(r);
-        setMenuItems(m.menu);
-      })
-      .catch(() => {})
+    setLoading(true);
+    setFailed(false);
+    (async () => {
+      const origin = await getOrigin();
+      // Opened from the QA screen picker without an id: show the first restaurant of the list.
+      const id = routeId ?? (await getRestaurants({ lat: origin.lat, lng: origin.lng, limit: 1 }))[0]?.id;
+      if (!id) throw new Error("no restaurants");
+      const [r, m] = await Promise.all([getRestaurant(id), getRestaurantMenu(id)]);
+      if (cancelled) return;
+      setRestaurant(r);
+      setMenuItems(m.menu);
+    })()
+      .catch(() => { if (!cancelled) setFailed(true); })
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
-  }, []);
+  }, [routeId]);
 
   if (loading || !restaurant) {
     return (
-      <div className="flex flex-col h-full bg-[var(--cream)] items-center justify-center">
-        <p className="text-sm text-[var(--muted)]">{t("common.loading")}</p>
+      <div className="flex flex-col h-full bg-[var(--cream)] items-center justify-center gap-3">
+        <p className="text-sm text-[var(--muted)]">{failed ? t("place.load_error") : t("common.loading")}</p>
+        {failed && <button onClick={() => onNavigate?.("home")} className="rounded-xl border border-[var(--border)] px-4 py-2 text-sm font-semibold">{t("common.back")}</button>}
       </div>
     );
   }
+
+  // Real imported places have no menu or delivery data: show the place information instead of an order screen.
+  if (restaurant.deliveryFee == null) return <PlaceDetailView place={restaurant} onBack={() => onNavigate?.("restaurant-list")} />;
 
   const previewItems = menuItems.slice(0, 3);
 
@@ -386,11 +394,13 @@ export const RestaurantDetailScreen = ({ onNavigate }: { onNavigate?: (s: Screen
       {/* Hero */}
       <div className="relative flex-shrink-0">
         <div className="h-52 bg-[#D8D4CD] relative">
-          <img
-            src={`${restaurant.photo}&w=390&h=210&fit=crop&auto=format&q=80`}
-            alt={restaurant.nameKo}
-            className="w-full h-full object-cover"
-          />
+          {restaurant.photo && (
+            <img
+              src={`${restaurant.photo}&w=390&h=210&fit=crop&auto=format&q=80`}
+              alt={restaurant.nameKo}
+              className="w-full h-full object-cover"
+            />
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
         </div>
         <div className="absolute top-0 left-0 right-0">
@@ -422,12 +432,12 @@ export const RestaurantDetailScreen = ({ onNavigate }: { onNavigate?: (s: Screen
         <div className="bg-white px-5 pt-4 pb-4">
           <div className="flex items-start justify-between gap-2 mb-2">
             <h1 className="font-bold text-xl text-[#1A1A18] leading-tight">{restaurant.nameKo}</h1>
-            <HalalBadge variant={halalBadgeMap(restaurant.halalStatus)} />
+            {halalBadgeMap(restaurant.halalStatus) && <HalalBadge variant={halalBadgeMap(restaurant.halalStatus)!} />}
           </div>
           <p className="text-sm text-[var(--muted)] mb-3">{restaurant.description}</p>
 
           <div className="flex items-center gap-4 mb-4">
-            <StarRating rating={restaurant.rating} count={restaurant.reviewCount} />
+            {restaurant.rating != null && <StarRating rating={restaurant.rating} count={restaurant.reviewCount} />}
             <span className="text-xs text-[var(--muted)]">·</span>
             <span className="text-xs text-[var(--muted)]">📍 {restaurant.distance}</span>
             <span className="text-xs text-[var(--muted)]">·</span>
@@ -436,8 +446,8 @@ export const RestaurantDetailScreen = ({ onNavigate }: { onNavigate?: (s: Screen
 
           <div className="grid grid-cols-3 gap-3 py-3 border-t border-b border-[var(--border)]">
             {[
-              { label: t("home.min_order"), value: `₩${restaurant.minOrder.toLocaleString()}` },
-              { label: t("home.delivery_fee"), value: formatFee(restaurant.deliveryFee, t("common.free")) },
+              { label: t("home.min_order"), value: `₩${(restaurant.minOrder ?? 0).toLocaleString()}` },
+              { label: t("home.delivery_fee"), value: formatFee(restaurant.deliveryFee, t("common.free")) ?? "" },
               { label: t("home.business_hours"), value: restaurant.hours },
             ].map((item) => (
               <div key={item.label} className="text-center">

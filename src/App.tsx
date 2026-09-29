@@ -9,6 +9,7 @@ import { HomeScreen, RestaurantListScreen, RestaurantDetailScreen, MenuScreen, I
 import { SearchScreen, MapViewScreen, CitySelectorScreen, RestaurantMapDetailScreen } from "./screens/SearchScreens";
 import { MosqueListScreen, MosqueDetailScreen, PrayerTimesScreen, QiblaScreen } from "./screens/MosqueScreens";
 import { ScannerScreen, ScanResultScreen, ScanHistoryScreen } from "./screens/ScannerScreens";
+import { IngredientScanScreen, ProductSubmitScreen } from "./screens/IngredientScreens";
 import { OrderTrackingScreen, OrderHistoryScreen, OrderDetailScreen } from "./screens/OrderScreens";
 import { ProfileScreen, SavedPlacesScreen, AddressScreen, SettingsScreen } from "./screens/ProfileScreens";
 import { ReviewsScreen, CommunityScreen, ShareScreen } from "./screens/CommunityScreens";
@@ -27,7 +28,7 @@ export type ScreenId =
   | "home" | "restaurant-list" | "restaurant-detail" | "menu" | "item-detail" | "cart" | "checkout" | "order-confirmation"
   | "search" | "map-view" | "city-selector" | "restaurant-map-detail"
   | "mosque-list" | "mosque-detail" | "prayer-times" | "qibla"
-  | "scanner" | "scan-result" | "scan-history"
+  | "scanner" | "scan-result" | "scan-history" | "ingredient-scan" | "product-submit"
   | "order-tracking" | "order-history" | "order-detail"
   | "profile" | "saved-places" | "address" | "settings"
   | "reviews" | "community" | "share"
@@ -42,7 +43,7 @@ const SCREEN_GROUPS: { section: string; screens: { id: ScreenId; label: string }
   { section: "Home", screens: [{ id: "home", label: "Home" }, { id: "restaurant-list", label: "Restaurant List" }, { id: "restaurant-detail", label: "Restaurant Detail" }, { id: "menu", label: "Menu" }, { id: "item-detail", label: "Item Detail" }, { id: "cart", label: "Cart" }, { id: "checkout", label: "Checkout" }, { id: "order-confirmation", label: "Order Confirmed" }] },
   { section: "Search & Map", screens: [{ id: "search", label: "Search" }, { id: "map-view", label: "Map View" }, { id: "city-selector", label: "City Selector" }, { id: "restaurant-map-detail", label: "Map Detail" }] },
   { section: "Mosque & Prayer", screens: [{ id: "mosque-list", label: "Mosque List" }, { id: "mosque-detail", label: "Mosque Detail" }, { id: "prayer-times", label: "Prayer Times" }, { id: "qibla", label: "Qibla" }] },
-  { section: "Scanner", screens: [{ id: "scanner", label: "Scanner" }, { id: "scan-result", label: "Scan Result" }, { id: "scan-history", label: "Scan History" }] },
+  { section: "Scanner", screens: [{ id: "scanner", label: "Scanner" }, { id: "scan-result", label: "Scan Result" }, { id: "scan-history", label: "Scan History" }, { id: "ingredient-scan", label: "Ingredient Photo" }, { id: "product-submit", label: "Contribute Product" }] },
   { section: "Orders", screens: [{ id: "order-tracking", label: "Order Tracking" }, { id: "order-history", label: "Order History" }, { id: "order-detail", label: "Order Detail" }] },
   { section: "Profile", screens: [{ id: "profile", label: "Profile" }, { id: "saved-places", label: "Saved Places" }, { id: "address", label: "Address" }, { id: "settings", label: "Settings" }] },
   { section: "Community", screens: [{ id: "reviews", label: "Reviews" }, { id: "community", label: "Community" }, { id: "share", label: "Share" }] },
@@ -95,8 +96,10 @@ function CustomerScreen({ id, onTabChange, onLogout, onNavigate }: { id: ScreenI
     case "prayer-times": return <PrayerTimesScreen onTabChange={onTabChange} onNavigate={onNavigate} />;
     case "qibla": return <QiblaScreen onTabChange={onTabChange} onNavigate={onNavigate} />;
     case "scanner": return <ScannerScreen onNavigate={onNavigate} />;
-    case "scan-result": return <ScanResultScreen verdict="halal" onNavigate={onNavigate} />;
+    case "scan-result": return <ScanResultScreen onNavigate={onNavigate} />;
     case "scan-history": return <ScanHistoryScreen onNavigate={onNavigate} />;
+    case "ingredient-scan": return <IngredientScanScreen onNavigate={onNavigate} />;
+    case "product-submit": return <ProductSubmitScreen onNavigate={onNavigate} />;
     case "order-tracking": return <OrderTrackingScreen onTabChange={onTabChange} onNavigate={onNavigate} />;
     case "order-history": return <OrderHistoryScreen onTabChange={onTabChange} onNavigate={onNavigate} />;
     case "order-detail": return <OrderDetailScreen onNavigate={onNavigate} />;

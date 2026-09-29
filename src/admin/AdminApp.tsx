@@ -5,7 +5,9 @@ import { RestaurantList, RestaurantApproval, RestaurantDetail } from "./Restaura
 import { UserList, UserDetail } from "./UserScreens";
 import { CourierList, CourierApproval, CourierDetail } from "./CourierAdminScreens";
 import { AllOrders, LiveOperationsMap } from "./OrdersScreens";
-import { HalalDatabase, MosqueManagement, PromotionsManagement } from "./ContentScreens";
+import { PromotionsManagement } from "./ContentScreens";
+import { CertificationsAdmin, IngredientsAdmin, PlacesAdmin, ProductsAdmin, RulesAdmin, ScannerOverview, SourcesAdmin, SubmissionsAdmin } from "./ProductDataScreens";
+import { adminApi } from "@/api/admin";
 import { PlatformAnalytics } from "./AnalyticsScreens";
 import { PlatformSettings, AdminUsers } from "./SettingsScreens";
 
@@ -16,7 +18,8 @@ export type AdminScreenId =
   | "users" | "user-detail"
   | "couriers" | "courier-approval" | "courier-detail"
   | "orders" | "live-map"
-  | "halal-db" | "mosques" | "promotions"
+  | "scanner-overview" | "scanner-products" | "scanner-submissions" | "scanner-ingredients" | "scanner-rules" | "scanner-certs" | "scanner-places" | "scanner-sources"
+  | "promotions"
   | "analytics"
   | "settings" | "admin-users";
 
@@ -78,12 +81,21 @@ const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
-    section: "콘텐츠 & 데이터",
+    section: "제품 스캐너 & 장소 데이터",
     items: [
-      { id: "halal-db", label: "할랄 데이터베이스", icon: ICONS.database },
-      { id: "mosques", label: "모스크 관리", icon: ICONS.mosque },
-      { id: "promotions", label: "프로모션 관리", icon: ICONS.promo },
+      { id: "scanner-overview", label: "개요", icon: ICONS.database },
+      { id: "scanner-products", label: "제품", icon: ICONS.orders },
+      { id: "scanner-submissions", label: "사용자 제보", icon: ICONS.users },
+      { id: "scanner-ingredients", label: "성분 · 별칭", icon: ICONS.database },
+      { id: "scanner-rules", label: "성분 규칙", icon: ICONS.settings },
+      { id: "scanner-certs", label: "할랄 인증", icon: ICONS.admin },
+      { id: "scanner-places", label: "장소 (식당·모스크)", icon: ICONS.mosque },
+      { id: "scanner-sources", label: "데이터 출처·라이선스", icon: ICONS.analytics },
     ],
+  },
+  {
+    section: "콘텐츠",
+    items: [{ id: "promotions", label: "프로모션 관리", icon: ICONS.promo }],
   },
   {
     section: "분석",
@@ -112,8 +124,14 @@ function renderAdminScreen(id: AdminScreenId, navigate: (id: AdminScreenId) => v
     case "courier-detail":      return <CourierDetail />;
     case "orders":              return <AllOrders />;
     case "live-map":            return <LiveOperationsMap />;
-    case "halal-db":            return <HalalDatabase />;
-    case "mosques":             return <MosqueManagement />;
+    case "scanner-overview":    return <ScannerOverview onNavigate={(next) => navigate(next as AdminScreenId)} />;
+    case "scanner-products":    return <ProductsAdmin />;
+    case "scanner-submissions": return <SubmissionsAdmin />;
+    case "scanner-ingredients": return <IngredientsAdmin />;
+    case "scanner-rules":       return <RulesAdmin />;
+    case "scanner-certs":       return <CertificationsAdmin />;
+    case "scanner-places":      return <PlacesAdmin />;
+    case "scanner-sources":     return <SourcesAdmin />;
     case "promotions":          return <PromotionsManagement />;
     case "analytics":           return <PlatformAnalytics />;
     case "settings":            return <PlatformSettings />;
@@ -128,7 +146,12 @@ export default function AdminApp({ onSwitch }: { onSwitch: () => void }) {
   const [collapsed, setCollapsed] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [notifCount] = useState(7);
+  const [pendingSubmissions, setPendingSubmissions] = useState(0);
   const [toast, setToast] = useState<{ msg: string; type: "success" | "error" | "info" } | null>(null);
+
+  useEffect(() => {
+    adminApi.stats().then((stats) => setPendingSubmissions(stats.submissions.byStatus.pending ?? 0)).catch(() => undefined);
+  }, [current]);
 
   // ⌘K / Ctrl+K
   useEffect(() => {
@@ -212,6 +235,10 @@ export default function AdminApp({ onSwitch }: { onSwitch: () => void }) {
                     {!collapsed && (
                       <>
                         <span className="text-sm font-medium flex-1 text-left truncate">{item.label}</span>
+                        {item.id === "scanner-submissions" && pendingSubmissions > 0 && (
+                          <span className="min-w-5 h-5 px-1 rounded-full flex items-center justify-center text-[10px] font-bold"
+                            style={{ backgroundColor: A.gold, color: "#fff" }}>{pendingSubmissions}</span>
+                        )}
                         {item.badge && (
                           <span className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold"
                             style={{ backgroundColor: A.danger, color: "#fff" }}>{item.badge}</span>

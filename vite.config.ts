@@ -2,6 +2,7 @@ import { defineConfig, type HtmlTagDescriptor, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'node:path'
+import fs from 'node:fs'
 
 import siteConfiguration from './.figma/make/site.json'
 
@@ -23,6 +24,7 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       tailwindcss(),
+      ocrAssetsPlugin(),
       figmaSiteConfiguration(siteConfiguration),
       figmaErrorOverlayReplay(),
       figmaReactRefreshBoundaryFallback(),
@@ -358,6 +360,43 @@ function figmaMakeKitPlugin(options: { storiesGlob: string | string[] }): Plugin
           next(err as Error)
         }
       })
+    },
+  }
+}
+
+
+/**
+ * Serves (dev) and emits (build) the Tesseract.js worker, WASM core and Korean/English language data under
+ * `<base>/ocr-assets/`, straight from node_modules. The ingredient-label OCR then works without any third-party
+ * CDN and offline; the files are only downloaded when the user actually photographs a label.
+ */
+function ocrAssetsPlugin(): Plugin {
+  const nm = (...parts: string[]) => path.resolve(__dirname, 'node_modules', ...parts)
+  const coreFiles = ['tesseract-core-lstm.wasm.js', 'tesseract-core-simd-lstm.wasm.js', 'tesseract-core-relaxedsimd-lstm.wasm.js']
+  const assets: Record<string, string> = {
+    'ocr-assets/worker.min.js': nm('tesseract.js', 'dist', 'worker.min.js'),
+    'ocr-assets/lang/kor.traineddata.gz': nm('@tesseract.js-data', 'kor', '4.0.0_best_int', 'kor.traineddata.gz'),
+    'ocr-assets/lang/eng.traineddata.gz': nm('@tesseract.js-data', 'eng', '4.0.0_best_int', 'eng.traineddata.gz'),
+    ...Object.fromEntries(coreFiles.map((file) => [`ocr-assets/core/${file}`, nm('tesseract.js-core', file)])),
+  }
+  return {
+    name: 'halalmap-ocr-assets',
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        let url = (req.url ?? '').split('?')[0].replace(/^\/+/, '')
+        const base = server.config.base.replace(/^\/+|\/+$/g, '')
+        if (base && url.startsWith(`${base}/`)) url = url.slice(base.length + 1)
+        const file = assets[url]
+        if (!file || !fs.existsSync(file)) return next()
+        res.setHeader('Content-Type', url.endsWith('.js') ? 'text/javascript' : 'application/octet-stream')
+        res.setHeader('Cache-Control', 'public, max-age=3600')
+        fs.createReadStream(file).pipe(res)
+      })
+    },
+    generateBundle() {
+      for (const [fileName, file] of Object.entries(assets)) {
+        if (fs.existsSync(file)) this.emitFile({ type: 'asset', fileName, source: fs.readFileSync(file) })
+      }
     },
   }
 }

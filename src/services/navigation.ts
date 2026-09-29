@@ -15,7 +15,23 @@ window.addEventListener("hashchange", emit);
 window.addEventListener("popstate", emit);
 
 function currentHashScreen(): string {
-  return window.location.hash.replace(/^#\/?/, "");
+  // "#/scan-result?barcode=880…" -> "scan-result" (the query string carries screen parameters)
+  return window.location.hash.replace(/^#\/?/, "").split("?")[0];
+}
+
+/** Screen parameters from the hash query, e.g. `#/mosque-detail?id=osm-node-1` -> id = "osm-node-1". */
+export function getRouteParams(): URLSearchParams {
+  const hash = window.location.hash;
+  const index = hash.indexOf("?");
+  return new URLSearchParams(index === -1 ? "" : hash.slice(index + 1));
+}
+
+/** Builds a screen path with parameters: `screenPath("scan-result", { barcode })`. */
+export function screenPath(screen: string, params: Record<string, string | null | undefined> = {}): string {
+  const query = new URLSearchParams();
+  for (const [key, value] of Object.entries(params)) if (value != null && value !== "") query.set(key, value);
+  const qs = query.toString();
+  return qs ? `${screen}?${qs}` : screen;
 }
 
 /** Reads the screen id encoded in the URL hash, falling back if it's missing or not a known screen. */
@@ -56,4 +72,16 @@ export function useRouteScreen<T extends string>(validScreens: readonly T[], fal
     () => window.location.hash
   );
   return readRouteScreen(validScreens, fallback);
+}
+
+/** Re-renders on navigation and returns the current screen parameters. */
+export function useRouteParams(): URLSearchParams {
+  useSyncExternalStore(
+    (listener) => {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    },
+    () => window.location.hash
+  );
+  return getRouteParams();
 }

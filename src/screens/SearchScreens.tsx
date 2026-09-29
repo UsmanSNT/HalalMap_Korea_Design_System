@@ -3,16 +3,11 @@ import { StatusBar, BottomNav, MapPin, RestaurantCardV, RestaurantCardH, HalalBa
 import { getRestaurants, getRestaurant, type Restaurant } from "@/api/restaurants";
 import { useLanguage } from "../i18n/LanguageContext";
 import type { ScreenId } from "../App";
+import { formatFee, halalBadgeMap, mapsUrl } from "@/services/placeUi";
+import { getOrigin } from "@/services/location";
+import { navigateTo, screenPath, useRouteParams } from "@/services/navigation";
 
-const extractImageId = (url: string): string => {
-  const match = url.match(/photo-([^?]+)/);
-  return match ? match[1] : "1498654896293-37c98e7f5fe4";
-};
-const halalBadgeMap = (status: string) =>
-  status === "certified" ? "certified" as const
-    : status === "muslim-owned" ? "owned" as const
-    : "friendly" as const;
-const formatFee = (fee: number, freeLabel: string) => fee === 0 ? freeLabel : `₩${fee.toLocaleString()}`;
+const openRestaurant = (id: string) => navigateTo(screenPath("restaurant-detail", { id }));
 
 // ── 14. Search Screen ──────────────────────────────────────────────────────────
 const recentSearches = ["이태원 할랄", "케밥", "모스크 근처 식당", "할랄 치킨"];
@@ -37,7 +32,8 @@ export const SearchScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: Ta
     if (!query.trim()) { setResults([]); return; }
     const timer = setTimeout(() => {
       setSearching(true);
-      getRestaurants({ q: query.trim() })
+      getOrigin()
+        .then((origin) => getRestaurants({ q: query.trim(), lat: origin.lat, lng: origin.lng }))
         .then(setResults)
         .catch(() => setResults([]))
         .finally(() => setSearching(false));
@@ -89,10 +85,10 @@ export const SearchScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: Ta
                 <p className="text-xs text-[var(--muted)] font-medium">{t("search.results_count").replace("{count}", String(results.length))}</p>
                 <div className="space-y-3">
                   {results.map((r) => (
-                    <div key={r.id} onClick={() => onNavigate?.("restaurant-detail")} className="cursor-pointer">
+                    <div key={r.id} onClick={() => openRestaurant(r.id)} className="cursor-pointer">
                       <RestaurantCardH
                         name={r.nameKo}
-                        imageId={extractImageId(r.photo)}
+                        photo={r.photo}
                         badge={halalBadgeMap(r.halalStatus)}
                         rating={r.rating}
                         count={r.reviewCount}
@@ -100,6 +96,7 @@ export const SearchScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: Ta
                         eta={r.deliveryTime}
                         fee={formatFee(r.deliveryFee, t("common.free"))}
                         cuisine={r.category}
+                        tag={r.dataOrigin === "demo" ? t("place.demo_tag") : null}
                       />
                     </div>
                   ))}
@@ -228,7 +225,10 @@ export const MapViewScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: T
   const [nearby, setNearby] = useState<Restaurant[]>([]);
 
   useEffect(() => {
-    getRestaurants().then(setNearby).catch(() => {});
+    getOrigin()
+      .then((origin) => getRestaurants({ lat: origin.lat, lng: origin.lng, limit: 12 }))
+      .then(setNearby)
+      .catch(() => {});
   }, []);
 
   return (
@@ -303,14 +303,15 @@ export const MapViewScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: T
               <RestaurantCardV
                 key={r.id}
                 name={r.nameKo}
-                imageId={extractImageId(r.photo)}
+                photo={r.photo}
                 badge={halalBadgeMap(r.halalStatus)}
                 rating={r.rating}
                 count={r.reviewCount}
                 distance={r.distance}
                 eta={r.deliveryTime}
                 fee={formatFee(r.deliveryFee, t("common.free"))}
-                onClick={() => onNavigate?.("restaurant-detail")}
+                tag={r.dataOrigin === "demo" ? t("place.demo_tag") : null}
+                onClick={() => openRestaurant(r.id)}
               />
             ))}
           </div>
@@ -427,10 +428,14 @@ export const CitySelectorScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
 export const RestaurantMapDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) => void }) => {
   const { t } = useLanguage();
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
+  const routeId = useRouteParams().get("id");
 
   useEffect(() => {
-    getRestaurant("sindang-halal").then(setRestaurant).catch(() => {});
-  }, []);
+    getOrigin()
+      .then(async (origin) => getRestaurant(routeId ?? (await getRestaurants({ lat: origin.lat, lng: origin.lng, limit: 1 }))[0]?.id))
+      .then(setRestaurant)
+      .catch(() => {});
+  }, [routeId]);
 
   return (
     <div className="flex flex-col h-full relative overflow-hidden bg-[var(--cream)]">
@@ -475,20 +480,20 @@ export const RestaurantMapDetailScreen = ({ onNavigate }: { onNavigate?: (s: Scr
             )}
           </div>
           <div className="flex-1 space-y-1.5">
-            {restaurant && <HalalBadge variant={halalBadgeMap(restaurant.halalStatus)} />}
+            {restaurant && halalBadgeMap(restaurant.halalStatus) && <HalalBadge variant={halalBadgeMap(restaurant.halalStatus)!} />}
             <h2 className="font-bold text-lg text-[#1A1A18] leading-tight">{restaurant?.nameKo ?? t("common.loading")}</h2>
             {restaurant && (
               <div className="flex items-center gap-2 text-xs text-[var(--muted)]">
-                <span>⭐ {restaurant.rating}</span>
-                <span>·</span>
-                <span>📍 {restaurant.distance}</span>
-                <span>·</span>
-                <span>⏱ {restaurant.deliveryTime}</span>
+                {restaurant.rating != null && <><span>⭐ {restaurant.rating}</span><span>·</span></>}
+                {restaurant.distance && <span>📍 {restaurant.distance}</span>}
+                {restaurant.deliveryTime && <><span>·</span><span>⏱ {restaurant.deliveryTime}</span></>}
               </div>
             )}
             <div className="flex gap-2 pt-1">
-              <button className="flex-1 py-2.5 rounded-xl font-bold text-white text-sm" style={{ backgroundColor: "var(--green)" }}>{t("search.view_menu")}</button>
-              <button className="flex-1 py-2.5 rounded-xl font-semibold text-sm border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>{t("search.get_directions")}</button>
+              <button onClick={() => restaurant && openRestaurant(restaurant.id)} className="flex-1 py-2.5 rounded-xl font-bold text-white text-sm" style={{ backgroundColor: "var(--green)" }}>{t("search.view_menu")}</button>
+              {restaurant && (
+                <a href={mapsUrl(restaurant)} target="_blank" rel="noreferrer" className="flex-1 py-2.5 rounded-xl font-semibold text-sm border text-center" style={{ color: "var(--green)", borderColor: "var(--green)" }}>{t("search.get_directions")}</a>
+              )}
             </div>
           </div>
         </div>

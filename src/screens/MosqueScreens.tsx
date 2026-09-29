@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { GeometricPattern, StatusBar, BottomNav, BackButton, Toggle, TabId } from "../components/Shared";
+import { GeometricPattern, StatusBar, BottomNav, BackButton, Toggle, TabId, Photo } from "../components/Shared";
 import { getMosques, getMosque, getPrayerTimes, type Mosque, type PrayerTimesData } from "@/api/mosques";
 import { useLanguage } from "../i18n/LanguageContext";
 import type { ScreenId } from "../App";
+import { getOrigin } from "@/services/location";
+import { navigateTo, screenPath, useRouteParams } from "@/services/navigation";
+import { mapsUrl } from "@/services/placeUi";
+import { ProvenanceCard, TrustChip } from "./PlaceDetail";
 
 // ── 18. Mosque List ────────────────────────────────────────────────────────────
 export const MosqueListScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabId) => void; onNavigate?: (s: ScreenId) => void }) => {
@@ -12,7 +16,8 @@ export const MosqueListScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getMosques()
+    getOrigin()
+      .then((origin) => getMosques({ lat: origin.lat, lng: origin.lng }))
       .then(setMosqueList)
       .catch(() => {})
       .finally(() => setLoading(false));
@@ -57,22 +62,21 @@ export const MosqueListScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t
       <div className="flex-1 phone-scroll px-4 py-4 space-y-3">
         {loading ? (
           <p className="text-sm text-[var(--muted)]">{t("common.loading")}</p>
+        ) : filtered.length === 0 ? (
+          <p className="text-sm text-[var(--muted)] text-center py-8">{t("place.empty_places")}</p>
         ) : (
           filtered.map((m) => (
-            <div key={m.id} onClick={() => onNavigate?.("mosque-detail")} className="bg-white rounded-2xl overflow-hidden shadow-sm cursor-pointer active:scale-[0.98] transition-transform">
+            <div key={m.id} onClick={() => navigateTo(screenPath("mosque-detail", { id: m.id }))} className="bg-white rounded-2xl overflow-hidden shadow-sm cursor-pointer active:scale-[0.98] transition-transform">
               <div className="h-28 bg-[#D8D4CC] relative">
-                {m.photo && (
-                  <img
-                    src={`${m.photo}&w=390&h=130&fit=crop&auto=format&q=80`}
-                    alt={m.nameKo}
-                    className="w-full h-full object-cover"
-                  />
-                )}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Photo src={m.photo ? `${m.photo}&w=390&h=130&fit=crop&auto=format&q=80` : null} alt={m.nameKo} placeholder={m.type === "mosque" ? "🕌" : "🙏"} placeholderClass="text-5xl opacity-40" />
+                </div>
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                <div className="absolute bottom-3 left-3">
+                <div className="absolute bottom-3 left-3 flex items-center gap-1.5">
                   <span className="text-[10px] font-bold px-2 py-1 rounded-full text-white" style={{ backgroundColor: m.type === "mosque" ? "var(--gold)" : "var(--info)" }}>
                     {m.type === "mosque" ? t("mosque.type_mosque") : t("mosque.type_prayer_room")}
                   </span>
+                  <TrustChip place={m} />
                 </div>
               </div>
               <div className="p-4">
@@ -81,16 +85,18 @@ export const MosqueListScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t
                 <p className="text-xs text-[var(--muted)] mt-1">📍 {m.address}</p>
                 <div className="flex items-center justify-between mt-3">
                   <div className="flex items-center gap-3 text-xs text-[var(--muted)]">
-                    <span>{m.distance}</span>
-                    <span>·</span>
-                    <span>{m.walkTime ?? ""}</span>
+                    {m.distance && <span>{m.distance}</span>}
+                    {m.distance && m.walkTime && <span>·</span>}
+                    {m.walkTime && <span>{m.walkTime}</span>}
                   </div>
-                  <div
-                    className="text-xs font-semibold px-3 py-1.5 rounded-full"
-                    style={{ backgroundColor: "var(--green-light)", color: "var(--green)" }}
-                  >
-                    {m.subtitle ?? ""}
-                  </div>
+                  {m.subtitle && (
+                    <div
+                      className="text-xs font-semibold px-3 py-1.5 rounded-full"
+                      style={{ backgroundColor: "var(--green-light)", color: "var(--green)" }}
+                    >
+                      {m.subtitle}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -109,24 +115,33 @@ export const MosqueDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
   const [mosque, setMosque] = useState<Mosque | null>(null);
   const [prayerData, setPrayerData] = useState<PrayerTimesData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [failed, setFailed] = useState(false);
+  const routeId = useRouteParams().get("id");
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all([getMosque("seoul-central"), getPrayerTimes()])
-      .then(([m, p]) => {
-        if (cancelled) return;
-        setMosque(m);
-        setPrayerData(p.prayerTimes);
-      })
-      .catch(() => {})
+    setLoading(true);
+    setFailed(false);
+    (async () => {
+      const origin = await getOrigin();
+      // Opened from the QA screen picker without an id: show the nearest mosque.
+      const id = routeId ?? (await getMosques({ type: "mosque", lat: origin.lat, lng: origin.lng }))[0]?.id;
+      if (!id) throw new Error("no mosques");
+      const [m, p] = await Promise.all([getMosque(id, origin), getPrayerTimes()]);
+      if (cancelled) return;
+      setMosque(m);
+      setPrayerData(p.prayerTimes);
+    })()
+      .catch(() => { if (!cancelled) setFailed(true); })
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
-  }, []);
+  }, [routeId]);
 
   if (loading || !mosque) {
     return (
-      <div className="flex flex-col h-full bg-[var(--cream)] items-center justify-center">
-        <p className="text-sm text-[var(--muted)]">{t("common.loading")}</p>
+      <div className="flex flex-col h-full bg-[var(--cream)] items-center justify-center gap-3">
+        <p className="text-sm text-[var(--muted)]">{failed ? t("place.load_error") : t("common.loading")}</p>
+        {failed && <button onClick={() => onNavigate?.("mosque-list")} className="rounded-xl border border-[var(--border)] px-4 py-2 text-sm font-semibold">{t("common.back")}</button>}
       </div>
     );
   }
@@ -158,7 +173,7 @@ export const MosqueDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
           <StatusBar dark />
         </div>
         <div className="absolute top-12 left-4 flex gap-2">
-          <BackButton dark onBack={() => onNavigate?.("home")} />
+          <BackButton dark onBack={() => onNavigate?.("mosque-list")} />
         </div>
         <div className="absolute top-12 right-4">
           <button className="w-9 h-9 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
@@ -179,8 +194,11 @@ export const MosqueDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
             </div>
             <span className="text-2xl">{mosque.type === "mosque" ? "🕌" : "🙏"}</span>
           </div>
-          <p className="text-sm text-[var(--muted)] mt-2">📍 {mosque.address}</p>
-          {mosque.phone && <p className="text-xs text-[var(--muted)] mt-0.5">☎ {mosque.phone}</p>}
+          <div className="mt-2 flex flex-wrap items-center gap-2"><TrustChip place={mosque} />{mosque.distance && <span className="text-xs text-[var(--muted)]">📍 {mosque.distance}{mosque.walkTime ? ` · ${mosque.walkTime}` : ""}</span>}</div>
+          <p className="text-sm text-[var(--muted)] mt-2">{mosque.address || t("place.location_unknown")}</p>
+          {mosque.phone && <p className="text-xs mt-0.5"><a href={`tel:${mosque.phone.replace(/[^\d+]/g, "")}`} className="text-[var(--green)] font-semibold">☎ {mosque.phone}</a></p>}
+          {mosque.website && <p className="text-xs mt-0.5"><a href={mosque.website} target="_blank" rel="noreferrer" className="text-[var(--green)] font-semibold break-all">🌐 {mosque.website.replace(/^https?:\/\//, "")}</a></p>}
+          {mosque.hours && <p className="text-xs text-[var(--muted)] mt-0.5">🕒 {mosque.hours}</p>}
 
           {mosque.juma && (
             <div
@@ -231,23 +249,23 @@ export const MosqueDetailScreen = ({ onNavigate }: { onNavigate?: (s: ScreenId) 
           </div>
         </div>
 
-        <div className="bg-white mt-2 px-5 py-4">
-          <p className="font-semibold text-sm text-[#1A1A18] mb-3">{t("mosque.facilities")}</p>
-          <div className="flex flex-wrap gap-2">
-            {mosque.facilities.map((f) => (
-              <span key={f} className="text-xs font-medium px-3 py-2 rounded-xl bg-[var(--cream)] text-[#1A1A18]">{f}</span>
-            ))}
+        {mosque.facilities.length > 0 && (
+          <div className="bg-white mt-2 px-5 py-4">
+            <p className="font-semibold text-sm text-[#1A1A18] mb-3">{t("mosque.facilities")}</p>
+            <div className="flex flex-wrap gap-2">
+              {mosque.facilities.map((f) => (
+                <span key={f} className="text-xs font-medium px-3 py-2 rounded-xl bg-[var(--cream)] text-[#1A1A18]">{f}</span>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         <div className="px-4 py-4 flex gap-3">
-          <button className="flex-1 py-4 rounded-2xl font-bold text-white" style={{ backgroundColor: "var(--green)" }}>
+          <a href={mapsUrl(mosque)} target="_blank" rel="noreferrer" className="flex-1 py-4 rounded-2xl font-bold text-white text-center" style={{ backgroundColor: "var(--green)" }}>
             {t("mosque.get_directions")}
-          </button>
-          <button className="flex-1 py-4 rounded-2xl font-semibold border" style={{ color: "var(--green)", borderColor: "var(--green)" }}>
-            {t("mosque.share")}
-          </button>
+          </a>
         </div>
+        <div className="px-4 pb-4"><ProvenanceCard place={mosque} /></div>
         <div className="h-4" />
       </div>
     </div>
