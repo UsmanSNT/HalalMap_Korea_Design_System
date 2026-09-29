@@ -105,6 +105,8 @@ export const adminApi = {
   updateSource: (key: string, body: Record<string, unknown>) => send<unknown>("PATCH", `/api/admin/sources/${key}`, body),
 
   places: (params: { q?: string; kind?: string; status?: string; origin?: string; page?: number }) => get<Paged<"places", AdminPlace>>(`/api/admin/places${qs(params)}`),
+  createPlace: (body: Record<string, unknown>) => send<{ place: AdminPlace; action: string }>("POST", "/api/admin/places", body),
+  deactivatePlace: (id: string) => send<{ success: boolean }>("DELETE", `/api/admin/places/${encodeURIComponent(id)}`),
   updatePlace: (id: string, body: Record<string, unknown>) => send<{ place: AdminPlace }>("PATCH", `/api/admin/places/${encodeURIComponent(id)}`, body),
   importPlaces: (body: { filename: string; content: string; defaults?: { source?: string; license?: string; attribution?: string } }) =>
     send<{ imported: number; inserted: number; updated: number; merged: number; rejected: number; errors: { row: number; error: string }[] }>("POST", "/api/admin/places/import", body),

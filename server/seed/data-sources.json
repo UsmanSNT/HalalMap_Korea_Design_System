@@ -186,7 +186,7 @@
       "licenseStatus": "rejected",
       "usageStatus": "rejected",
       "termsNote": null,
-      "reason": "These 6 restaurants and 4 mosques predate the data pipeline and are not verified real places. They are tagged data_origin=demo, labelled 'DEMO' in the UI and hidden automatically as soon as real places of the same kind exist."
+      "reason": "These 6 restaurants and 4 mosques predate the data pipeline and are not verified real places. They are tagged data_origin=demo, labelled 'DEMO' in the UI and hidden automatically as soon as real places of the same group exist (mosques and prayer rooms count as one group)."
     }
   ]
 }

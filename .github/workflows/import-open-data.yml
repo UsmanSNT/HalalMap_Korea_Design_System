@@ -1,0 +1,74 @@
+name: Import open data (places)
+
+# Manual only. Runs the place importers on a runner with normal internet access (the OpenStreetMap Overpass API and
+# Wikidata are not reachable from every sandbox) and uploads the refreshed snapshots. Optionally commits them.
+# Licences: OpenStreetMap = ODbL 1.0 (attribution + share-alike), Wikidata = CC0. See docs/data-sources.md.
+
+on:
+  workflow_dispatch:
+    inputs:
+      osm:
+        description: "Refresh OpenStreetMap places (mosques, prayer rooms, halal restaurants/markets)"
+        type: boolean
+        default: true
+      wikidata:
+        description: "Refresh Wikidata mosques"
+        type: boolean
+        default: true
+      commit:
+        description: "Commit the refreshed snapshots to the selected branch"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: import-open-data
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    env:
+      HALALMAP_DATA_DIR: ${{ runner.temp }}/halalmap-data
+      OVERPASS_USER_AGENT: "HalalMapKorea/1.0 (https://github.com/${{ github.repository }})"
+      WIKIDATA_USER_AGENT: "HalalMapKorea/1.0 (https://github.com/${{ github.repository }})"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: OpenStreetMap (Overpass)
+        if: ${{ inputs.osm }}
+        run: node --no-warnings scripts/import-places.mjs --source osm --snapshot --no-db
+
+      - name: Wikidata (SPARQL)
+        if: ${{ inputs.wikidata }}
+        run: node --no-warnings scripts/import-places.mjs --source wikidata --snapshot --no-db
+
+      - name: Check that the snapshots load and the tests still pass
+        run: pnpm test
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: place-snapshots
+          path: server/seed/places/*.json
+
+      - name: Commit refreshed snapshots
+        if: ${{ inputs.commit }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add server/seed/places/*.json
+          git diff --cached --quiet && echo "No snapshot changes" && exit 0
+          git commit -m "Refresh open-data place snapshots (OSM/Wikidata)"
+          git push

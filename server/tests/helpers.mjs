@@ -9,6 +9,9 @@ import { RulesetCache } from "../products/rules/ruleset.mjs";
 const here = dirname(fileURLToPath(import.meta.url));
 export const fixture = (name) => JSON.parse(readFileSync(resolve(here, "fixtures", name), "utf8"));
 
+/** The committed OpenStreetMap place snapshot (server/seed/places/osm-kr.json). */
+export const fixtureSnapshot = () => JSON.parse(readFileSync(resolve(here, "..", "seed", "places", "osm-kr.json"), "utf8"));
+
 export const makeKnowledgeDb = () => {
   const db = openDatabase(":memory:");
   seedProductKnowledge(db);

@@ -144,6 +144,23 @@ try {
   await shot("11-places");
   const placesText = await page.textContent("body");
   check("places list shows the source and licence of imported rows", placesText.includes("osm · ODbL"));
+  await page.getByRole("button", { name: "+ 장소 추가" }).click();
+  await page.waitForSelector("text=직접 입력한 장소는");
+  const placeName = `E2E Mosque ${Date.now() % 100000}`;
+  await page.locator('label:has(> span:text-is("이름")) input').fill(placeName);
+  await page.locator('label:has(> span:text-is("종류")) select').selectOption("mosque");
+  await page.locator('label:has-text("위도") input').fill("35.1796");
+  await page.locator('label:has-text("경도") input').fill("129.0756");
+  await page.getByRole("button", { name: "저장", exact: true }).click();
+  await page.fill('input[placeholder="이름, 주소…"]', placeName);
+  await page.waitForSelector(`text=${placeName}`);
+  check("a hand-entered place appears in the list as an admin record", (await page.locator("tr", { hasText: placeName }).textContent()).includes("admin_import"));
+  const listed = await api("/api/mosques?limit=500");
+  check("and is served to the app", listed.body.mosques.some((m) => m.name === placeName));
+  await page.locator("tr", { hasText: placeName }).getByRole("button", { name: "숨김" }).click();
+  await page.waitForTimeout(600);
+  check("hiding it removes it from the app", !(await api("/api/mosques?limit=500")).body.mosques.some((m) => m.name === placeName));
+  await shot("12-place-added");
   check("no uncaught page errors", pageErrors.length === 0, pageErrors.join(" | "));
 } catch (error) {
   check("script completed without exceptions", false, error.message);

@@ -42,7 +42,11 @@ calls from the installed app will fail (they'd try to hit the app's own
 
 ## Backend
 
-`server/index.mjs` now talks to **Postgres** (via `DATABASE_URL`), not
+> **Note (current code):** the API stores users, places and products in **SQLite**
+> (`server/data/halalmap.sqlite`, see `.env.example`); `DATABASE_URL` is only used by
+> `/api/health`. The paragraph below predates that and is kept for the hosting advice.
+
+`server/index.mjs` used to talk to **Postgres** (via `DATABASE_URL`) instead of
 SQLite. It needs to run somewhere reachable from the internet before the
 Android app can log in or submit restaurants/mosques — this repo doesn't
 include a hosting setup yet. Options: Render, Railway, Fly.io, or any VPS,

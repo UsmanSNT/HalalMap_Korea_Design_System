@@ -1,6 +1,7 @@
 // Admin API (Bearer token, role=admin). Everything the admin console edits lives here:
 // products, ingredients + aliases, ingredient rules, certifications, user submissions, data sources, places.
 
+import { randomBytes } from "node:crypto";
 import { transaction, nowIso } from "../db.mjs";
 import { requireAdmin } from "../lib/auth.mjs";
 import { HttpError, intParam, json, parseJsonColumn, readJson } from "../lib/http.mjs";
@@ -11,7 +12,7 @@ import { analyzeStoredProduct, getProductById, listCertifications, listSources, 
 import { refreshIngredientAnalysis } from "./seed.mjs";
 import { getSubmission, listSubmissions, reviewSubmission, SUBMISSION_STATUSES } from "./submissions.mjs";
 import { normalizeBarcode } from "./barcode.mjs";
-import { parsePlacesFile } from "../places/importers/file.mjs";
+import { normalizeFileRecord, parsePlacesFile } from "../places/importers/file.mjs";
 import { placeSources, recordImportRun, upsertImportedPlace, PLACE_KINDS } from "../places/repo.mjs";
 import { STATUS } from "./rules/ruleset.mjs";
 import { sourceUsable } from "./lookup.mjs";
@@ -626,6 +627,37 @@ export const createAdminRoutes = ({ db, rulesetCache, env = process.env }) => {
     const total = db.prepare(`SELECT COUNT(*) n FROM places ${clause}`).get(...args).n;
     const rows = db.prepare(`SELECT * FROM places ${clause} ORDER BY data_origin = 'demo', updated_at DESC, name LIMIT ? OFFSET ?`).all(...args, perPage, (pageNo - 1) * perPage);
     json(response, 200, { total, page: pageNo, perPage, places: rows.map((row) => ({ ...placeAdminView(row), sources: placeSources(db, row.id) })) });
+  });
+
+  // A single place entered by hand. Provenance is the administrator; it stays "unverified" until someone marks it verified.
+  router.post("/api/admin/places", async ({ request, response }) => {
+    const user = admin(request);
+    const body = await readJson(request, 32 * 1024);
+    const { record, error } = normalizeFileRecord({
+      kind: body.kind, name: body.name, name_ko: body.nameKo, name_en: body.nameEn, category: body.category, halal_status: body.halalStatus ?? undefined,
+      cert_body: body.certBody, halal_evidence: body.halalEvidence, address: body.address, lat: body.lat, lng: body.lng, phone: body.phone, website: body.website,
+      description: body.description, source_url: body.sourceUrl,
+    }, { source: "admin_import", license: "First-party record entered by a HalalMap administrator" });
+    if (error) throw new HttpError(400, error, "invalid_place");
+    record.dataOrigin = "admin";
+    record.sourceId = `manual-${Date.now()}-${randomBytes(3).toString("hex")}`;
+    record.attribution = `Entered by ${user.email}`;
+    const { id, action } = upsertImportedPlace(db, record);
+    if (body.verificationStatus !== undefined) {
+      const status = oneOf(body.verificationStatus, VERIFICATION, "verificationStatus");
+      db.prepare("UPDATE places SET verification_status = ?, last_verified_at = ? WHERE id = ?").run(status, status === "verified" ? nowIso() : null, id);
+    }
+    console.log(`[admin] ${user.email} created place ${id} (${action})`);
+    json(response, 201, { place: placeAdminView(db.prepare("SELECT * FROM places WHERE id = ?").get(id)), action });
+  });
+
+  // Soft delete: the row and its provenance stay, the place disappears from the app.
+  router.delete("/api/admin/places/:id", ({ request, response, params }) => {
+    const user = admin(request);
+    const result = db.prepare("UPDATE places SET is_active = 0, updated_at = ? WHERE id = ?").run(nowIso(), params.id);
+    if (result.changes === 0) throw new HttpError(404, "Place not found", "not_found");
+    console.log(`[admin] ${user.email} deactivated place ${params.id}`);
+    json(response, 200, { success: true });
   });
 
   router.patch("/api/admin/places/:id", async ({ request, response, params }) => {

@@ -1,6 +1,6 @@
 // OpenStreetMap importer via the Overpass API (ODbL 1.0 — attribution "© OpenStreetMap contributors").
 // Mosques, prayer rooms, halal restaurants/cafés and halal markets in South Korea, from community tags:
-//   amenity=place_of_worship + religion=muslim, amenity=prayer_room, diet:halal=yes|only, cuisine=halal.
+//   amenity=place_of_worship + religion=muslim, building=mosque, amenity=prayer_room, diet:halal=yes|only, cuisine=halal.
 // These tags are community-contributed and NOT certification: everything is imported as `unverified`.
 
 export const OSM_SOURCE = "osm";
@@ -11,6 +11,7 @@ export const OVERPASS_QUERY = `[out:json][timeout:180];
 area["ISO3166-1"="KR"]["admin_level"="2"]->.kr;
 (
   nwr["amenity"="place_of_worship"]["religion"="muslim"](area.kr);
+  nwr["building"="mosque"](area.kr);
   nwr["amenity"="prayer_room"](area.kr);
   nwr["amenity"~"^(restaurant|fast_food|cafe|food_court|bar|pub|ice_cream)$"]["diet:halal"~"^(yes|only)$"](area.kr);
   nwr["amenity"~"^(restaurant|fast_food|cafe|food_court)$"]["cuisine"~"(^|;)halal(;|$)"](area.kr);
@@ -65,7 +66,7 @@ export const normalizeOsmElement = (element, { retrievedAt = new Date().toISOStr
   let halalStatus = null;
   let halalEvidence = null;
   if (tags.amenity === "prayer_room") kind = "prayer_room";
-  else if (tags.amenity === "place_of_worship" && tags.religion === "muslim") {
+  else if (tags.building === "mosque" || (tags.amenity === "place_of_worship" && tags.religion === "muslim")) {
     kind = PRAYER_ROOM_NAME.test([tags.name, tags["name:en"], tags["name:ko"]].filter(Boolean).join(" ")) ? "prayer_room" : "mosque";
   } else if (FOOD_AMENITIES.has(tags.amenity)) kind = "restaurant";
   else if (tags.shop) kind = "market";

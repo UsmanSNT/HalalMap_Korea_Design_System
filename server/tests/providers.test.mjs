@@ -96,6 +96,15 @@ test("Overpass: mosques, prayer rooms, halal restaurants and markets are classif
   }
 });
 
+test("Overpass: building=mosque without religion tags is still a mosque; a bare place_of_worship is not", () => {
+  const { records, skipped } = normalizeOsmResponse({ elements: [
+    { type: "way", id: 1, center: { lat: 37.5, lon: 127 }, tags: { building: "mosque", name: "Masjid Test" } },
+    { type: "node", id: 2, lat: 37.5, lon: 127, tags: { amenity: "place_of_worship", name: "Some Chapel" } },
+  ] }, { retrievedAt: "2099-01-01T00:00:00Z" });
+  assert.deepEqual(records.map((r) => [r.sourceId, r.kind, r.halalStatus]), [["way/1", "mosque", null]]);
+  assert.deepEqual(skipped, { unsupported: 1 });
+});
+
 test("Wikidata bindings -> mosques with CC0 provenance; entries without coordinates are skipped", () => {
   assert.deepEqual(parseWktPoint("Point(126.99 37.53)"), { lng: 126.99, lat: 37.53 });
   const { records, skipped } = normalizeWikidataBindings(fixture("wikidata.json"));

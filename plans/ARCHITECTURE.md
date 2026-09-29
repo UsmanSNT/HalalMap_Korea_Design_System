@@ -10,8 +10,8 @@ Janubiy Koreyadagi musulmon jamiyatiga halol ovqat, masjidlar va namoz vaqtlarin
 | Qatlam | Texnologiya |
 |--------|-------------|
 | Frontend | React 19 + TypeScript 5.9 + Vite 8 + Tailwind CSS 4 |
-| Backend | Node.js HTTP server (`server/index.mjs`) |
-| Ma'lumotlar bazasi (hozirgi) | SQLite (node:sqlite) — auth uchun |
+| Backend | Node.js HTTP server (`server/index.mjs` ishga tushiradi, `server/app.mjs` — so'rovlar mantig'i) |
+| Ma'lumotlar bazasi (hozirgi) | SQLite (node:sqlite, versiyalangan migratsiyalar `server/migrations`) — auth, joylar, mahsulotlar, ingredientlar |
 | Ma'lumotlar bazasi (maqsad) | Neon PostgreSQL (`DATABASE_URL` orqali) |
 | Autentifikatsiya | Session token + scrypt password hashing |
 
@@ -19,7 +19,13 @@ Janubiy Koreyadagi musulmon jamiyatiga halol ovqat, masjidlar va namoz vaqtlarin
 
 ```
 ├── server/
-│   └── index.mjs              # Backend API server (port 8787)
+│   ├── index.mjs              # API serverni ishga tushiradi (port 8787)
+│   ├── app.mjs                # createApi(): marshrutlar, auth, seed
+│   ├── db.mjs, migrations/    # SQLite + migratsiyalar
+│   ├── places/                # joylar (masjid, restoran, market): repo, routes, importerlar, snapshot seed
+│   ├── products/              # barcode, lookup (MFDS/OFF), ingredient parser+matcher, qoidalar mexanizmi, admin API
+│   ├── seed/                  # ingredient lug'ati, qoidalar, ma'lumot manbalari, demo joylar, joylar snapshot
+│   └── tests/                 # node:test (101 test)
 ├── src/
 │   ├── main.tsx                # React entry point
 │   ├── App.tsx                 # Asosiy navigator (sidebar + phone frame)
@@ -55,24 +61,23 @@ Janubiy Koreyadagi musulmon jamiyatiga halol ovqat, masjidlar va namoz vaqtlarin
 | POST | `/api/auth/login` | Foydalanuvchi kirishi |
 | GET | `/api/auth/me` | Joriy foydalanuvchi |
 | POST | `/api/auth/logout` | Chiqish |
+| GET | `/api/places` | Barcha joylar (`kind`, `q`, `lat/lng`) + `counts` + `attributions` |
+| GET | `/api/places/:id` | Joy tafsilotlari + manbalari |
+| GET | `/api/restaurants`, `/api/restaurants/:id`, `/api/restaurants/:id/menu` | Restoranlar (DB dan) |
+| GET | `/api/mosques`, `/api/mosques/:id` | Masjid va namozxonalar (DB dan) |
+| GET | `/api/products/lookup/:barcode` | Barcode → mahsulot → ingredient tahlili (lokal DB → MFDS → Open Food Facts) |
+| POST | `/api/ingredients/analyze` | Ingredient matnini tahlil qilish |
+| GET/POST | `/api/ocr/config`, `/api/ocr/ingredients` | Ingredient rasmi OCR (server provayder ixtiyoriy) |
+| POST | `/api/product-submissions` | Foydalanuvchi mahsulot ma'lumoti yuboradi (pending) |
+| GET | `/api/data-sources` | Ma'lumot manbalari va litsenziyalar |
+| * | `/api/admin/*` | Admin: stats, products, ingredients, aliases, rules, certifications, submissions, sources, places |
 
-### Rejalashtirilgan endpointlar
-| Method | Path | Tavsif |
-|--------|------|--------|
-| GET | `/api/restaurants` | Restoranlar ro'yxati (filter, search) |
-| GET | `/api/restaurants/:id` | Restoran tafsilotlari |
-| GET | `/api/restaurants/:id/menu` | Restoran menyusi |
-| GET | `/api/mosques` | Masjidlar ro'yxati |
-| GET | `/api/mosques/:id` | Masjid tafsilotlari |
-| GET | `/api/prayer-times` | Namoz vaqtlari |
-| POST | `/api/orders` | Yangi buyurtma |
-| GET | `/api/orders` | Buyurtma tarixi |
-| GET | `/api/orders/:id` | Buyurtma tafsilotlari |
-| GET | `/api/scanner/:barcode` | Halol tekshiruv |
+Namoz vaqtlari (`/api/prayer-times`) va buyurtmalar (`/api/orders`) hozircha statik/namuna ma'lumot qaytaradi;
+haqiqiy hisoblash (`adhan`) va buyurtma saqlash keyingi bosqich.
 
 ## Ma'lumotlar bazasi migratsiya rejasi
 
-**Hozirgi holat:** SQLite'da `users` va `sessions` jadvallari mavjud.
+**Hozirgi holat:** SQLite'da `users`, `sessions`, `places`, `products`, `ingredients`, `ingredient_rules` va boshqa jadvallar mavjud (migratsiyalar: `server/migrations`).
 
 **Migratsiya tartibi (xavfsiz, bosqichma-bosqich):**
 1. PostgreSQL'da yangi jadvallar yaratish (SQLite'ni o'chirmasdan)

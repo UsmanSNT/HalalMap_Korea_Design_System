@@ -704,6 +704,7 @@ export const PlacesAdmin = ({ initialKind = "전체" }: { initialKind?: string }
   const [q, setQ] = useState("");
   const [page, setPage] = useState(1);
   const [importing, setImporting] = useState(false);
+  const [adding, setAdding] = useState(false);
   const { data, loading, error, reload } = useLoad(() => adminApi.places({ q, kind: kind === "전체" ? undefined : kind, status: status === "전체" ? undefined : status, origin: origin === "전체" ? undefined : origin, page }), [q, kind, status, origin, page]);
   const set = async (p: AdminPlace, body: Record<string, unknown>) => { try { await adminApi.updatePlace(p.id, body); reload(); } catch (e) { toast.fail(e); } };
   const columns: Column<AdminPlace>[] = [
@@ -716,12 +717,13 @@ export const PlacesAdmin = ({ initialKind = "전체" }: { initialKind?: string }
         <Btn variant="primary" onClick={() => set(p, { verificationStatus: "verified" })}>검증</Btn>
         <Btn variant="warning" onClick={() => set(p, { verificationStatus: "needs_review" })}>검토</Btn>
         <Btn variant="danger" onClick={() => set(p, { verificationStatus: "rejected" })}>거부</Btn>
+        <Btn onClick={() => set(p, { isActive: !p.isActive })}>{p.isActive ? "숨김" : "복원"}</Btn>
       </div>
     ) },
   ];
   return (
     <div>
-      <PageHeader breadcrumb={["HalalMap Admin", "제품 스캐너", "장소"]} title="장소 데이터" subtitle="식당 · 모스크 · 기도실 · 할랄 마트 — 각 레코드의 출처와 라이선스가 함께 저장됩니다" actions={<Btn variant="primary" size="md" onClick={() => setImporting(true)}>CSV/JSON 가져오기</Btn>} />
+      <PageHeader breadcrumb={["HalalMap Admin", "제품 스캐너", "장소"]} title="장소 데이터" subtitle="식당 · 모스크 · 기도실 · 할랄 마트 — 각 레코드의 출처와 라이선스가 함께 저장됩니다" actions={<div className="flex gap-2"><Btn size="md" onClick={() => setImporting(true)}>CSV/JSON 가져오기</Btn><Btn variant="primary" size="md" onClick={() => setAdding(true)}>+ 장소 추가</Btn></div>} />
       <Card>
         <div className="flex flex-wrap items-center justify-between gap-2 px-5 py-3.5" style={{ borderBottom: `1px solid ${A.border}` }}>
           <div className="flex flex-col gap-2"><FilterChips options={["전체", "restaurant", "mosque", "prayer_room", "market"]} value={kind} onChange={(v) => { setKind(v); setPage(1); }} /><FilterChips options={["전체", "unverified", "verified", "needs_review", "rejected"]} value={status} onChange={(v) => { setStatus(v); setPage(1); }} /></div>
@@ -731,9 +733,57 @@ export const PlacesAdmin = ({ initialKind = "전체" }: { initialKind?: string }
           <><AdminTable columns={columns} data={data.places} selectable={false} /><Pagination page={page} total={data.total} perPage={data.perPage} onChange={setPage} /></>
         )}
       </Card>
+      {adding && <PlaceCreateModal onClose={(changed) => { setAdding(false); if (changed) reload(); }} />}
       {importing && <PlacesImportModal onClose={(changed) => { setImporting(false); if (changed) reload(); }} />}
       {toast.node}
     </div>
+  );
+};
+
+const PlaceCreateModal = ({ onClose }: { onClose: (changed: boolean) => void }) => {
+  const toast = useToast();
+  const [f, setF] = useState({ kind: "restaurant", name: "", nameKo: "", nameEn: "", category: "", halalStatus: "", certBody: "", address: "", lat: "", lng: "", phone: "", website: "", sourceUrl: "" });
+  const save = async () => {
+    try {
+      const blank = (v: string) => (v.trim() === "" ? undefined : v.trim());
+      await adminApi.createPlace({
+        kind: f.kind, name: f.name, nameKo: blank(f.nameKo), nameEn: blank(f.nameEn), category: blank(f.category), halalStatus: blank(f.halalStatus), certBody: blank(f.certBody),
+        address: blank(f.address), lat: blank(f.lat), lng: blank(f.lng), phone: blank(f.phone), website: blank(f.website), sourceUrl: blank(f.sourceUrl),
+      });
+      onClose(true);
+    } catch (e) { toast.fail(e); }
+  };
+  return (
+    <Modal open onClose={() => onClose(false)} title="장소 추가" width={620}>
+      <div className="space-y-3 p-6">
+        <p className="text-xs leading-relaxed" style={{ color: A.muted }}>직접 입력한 장소는 출처가 「관리자 입력」으로 기록되고 <b>미검증</b> 상태로 저장됩니다. 좌표는 대한민국 안이어야 합니다. 할랄 등급 「certified」는 인증서를 확인한 경우에만 선택하세요.</p>
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="종류"><Select value={f.kind} onChange={(v) => setF({ ...f, kind: v })} options={Object.entries(KIND_LABEL).map(([value, label]) => ({ value, label }))} /></Field>
+          <Field label="할랄 등급"><Select value={f.halalStatus} onChange={(v) => setF({ ...f, halalStatus: v })} options={[{ value: "", label: "표시 안 함" }, { value: "certified", label: "certified (인증 확인됨)" }, { value: "muslim-owned", label: "muslim-owned" }, { value: "halal-friendly", label: "halal-friendly" }]} /></Field>
+        </div>
+        <Field label="이름"><TextInput value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} /></Field>
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="한국어 이름"><TextInput value={f.nameKo} onChange={(e) => setF({ ...f, nameKo: e.target.value })} /></Field>
+          <Field label="영어 이름"><TextInput value={f.nameEn} onChange={(e) => setF({ ...f, nameEn: e.target.value })} /></Field>
+        </div>
+        <Field label="주소"><TextInput value={f.address} onChange={(e) => setF({ ...f, address: e.target.value })} /></Field>
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="위도 (lat)"><TextInput value={f.lat} onChange={(e) => setF({ ...f, lat: e.target.value })} placeholder="37.5345" /></Field>
+          <Field label="경도 (lng)"><TextInput value={f.lng} onChange={(e) => setF({ ...f, lng: e.target.value })} placeholder="126.9946" /></Field>
+        </div>
+        <div className="grid grid-cols-3 gap-3">
+          <Field label="분류 (예: turkish)"><TextInput value={f.category} onChange={(e) => setF({ ...f, category: e.target.value })} /></Field>
+          <Field label="전화"><TextInput value={f.phone} onChange={(e) => setF({ ...f, phone: e.target.value })} /></Field>
+          <Field label="웹사이트"><TextInput value={f.website} onChange={(e) => setF({ ...f, website: e.target.value })} /></Field>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="인증 기관"><TextInput value={f.certBody} onChange={(e) => setF({ ...f, certBody: e.target.value })} /></Field>
+          <Field label="근거 URL"><TextInput value={f.sourceUrl} onChange={(e) => setF({ ...f, sourceUrl: e.target.value })} /></Field>
+        </div>
+        <div className="flex justify-end gap-2"><Btn onClick={() => onClose(false)}>취소</Btn><Btn variant="primary" onClick={save}>저장</Btn></div>
+      </div>
+      {toast.node}
+    </Modal>
   );
 };
 

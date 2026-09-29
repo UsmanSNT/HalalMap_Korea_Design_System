@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { fakeFetch, fixture, startApp, TINY_PNG } from "./helpers.mjs";
+import { fakeFetch, fixture, fixtureSnapshot, startApp, TINY_PNG } from "./helpers.mjs";
 
 const OFF = "8809999900016";
 const offHandler = (url) => (url.includes("openfoodfacts") && url.includes(OFF) ? { body: fixture("off-product.json") } : { body: { status: 0 } });
@@ -43,28 +43,29 @@ test("restaurants and mosques are served from the database with the same paths a
 });
 
 test("committed OSM snapshot: real places are served with counts, ODbL attribution and no invented certification", async () => {
+  const snapshot = fixtureSnapshot();
   const app = await startApp({ snapshots: true });
   try {
     const body = (await app.request("/api/places?limit=500")).body;
-    assert.equal(body.total, 33);
-    assert.deepEqual(body.counts, { restaurant: 22, mosque: 11, prayer_room: 0, market: 0 });
-    assert.ok(body.places.every((p) => p.dataOrigin === "imported" && p.provenance.source === "osm" && /ODbL/.test(p.provenance.license) && p.provenance.sourceUrl?.startsWith("https://www.openstreetmap.org/")));
+    const osm = body.places.filter((p) => p.provenance.source === "osm");
+    assert.equal(osm.length, snapshot.places.length, "every snapshot record is served exactly once");
+    assert.ok(osm.length >= 30, "the shipped snapshot holds the real OSM places");
+    assert.equal(Object.values(body.counts).reduce((a, b) => a + b, 0), body.total);
+    assert.ok(body.places.every((p) => p.dataOrigin === "imported" && p.provenance.sourceUrl && p.provenance.license), "every record carries provenance");
+    assert.ok(osm.every((p) => /ODbL/.test(p.provenance.license) && p.provenance.sourceUrl.startsWith("https://www.openstreetmap.org/")));
     assert.ok(body.places.every((p) => p.lat > 33 && p.lat < 39 && p.lng > 124 && p.lng < 132), "all inside South Korea");
     assert.ok(body.places.every((p) => p.halalStatus !== "certified"), "community tags never produce a certified badge");
-    assert.deepEqual(body.attributions.map((a) => [a.source, a.text]), [["osm", "© OpenStreetMap contributors"]]);
+    assert.ok(body.attributions.some((a) => a.source === "osm" && a.text === "© OpenStreetMap contributors"));
     assert.ok(body.places.every((p) => p.dataOrigin !== "demo"), "demo rows are hidden once real data exists");
     // earlier client query style + single place endpoint
-    assert.equal((await app.request("/api/places?type=mosque&type=prayer_room")).body.total, 11);
+    assert.equal((await app.request("/api/places?type=mosque&type=prayer_room")).body.total, body.counts.mosque + body.counts.prayer_room);
     const one = (await app.request(`/api/places/${encodeURIComponent(body.places[0].id)}`)).body.place;
     assert.equal(one.id, body.places[0].id);
     assert.ok(one.sources.length >= 1);
     assert.equal((await app.request("/api/places/nope")).status, 404);
     // legacy shapes still work on top of the same rows
-    assert.equal((await app.request("/api/mosques")).body.mosques.length, 11);
-    assert.equal((await app.request("/api/restaurants?limit=100")).body.restaurants.length, 22);
-    // running the seed again changes nothing
-    const again = await startApp({ snapshots: true });
-    await again.close();
+    assert.equal((await app.request("/api/mosques?limit=500")).body.mosques.length, body.counts.mosque + body.counts.prayer_room);
+    assert.equal((await app.request("/api/restaurants?limit=500")).body.restaurants.length, body.counts.restaurant + body.counts.market);
   } finally { await app.close(); }
 });
 
@@ -327,6 +328,32 @@ test("admin places: list with provenance, moderate, import CSV with mandatory pr
     await app.request(`/api/admin/places/${listed.places[0].id}`, { method: "PATCH", token: admin, body: { isActive: false } });
     assert.equal((await app.request(`/api/restaurants/${listed.places[0].id}`)).status, 404);
     assert.equal((await app.request(`/api/admin/places/${listed.places[0].id}`, { method: "PATCH", token: admin, body: { halalStatus: "super" } })).status, 400);
+  } finally { await app.close(); }
+});
+
+test("admin can add a single place by hand (admin provenance, unverified, inside Korea only) and hide it again", async () => {
+  const app = await startApp();
+  try {
+    const user = await app.login("user@halalmap.test", "User123!");
+    const admin = await app.login();
+    const body = { kind: "mosque", name: "Hand Entered Mosque", nameKo: "손입력 성원", lat: 35.1, lng: 129.03, address: "부산 어딘가" };
+    assert.equal((await app.request("/api/admin/places", { method: "POST", token: user, body })).status, 403);
+    assert.equal((await app.request("/api/admin/places", { method: "POST", token: admin, body: { ...body, lat: 10, lng: 10 } })).status, 400, "outside South Korea");
+    assert.equal((await app.request("/api/admin/places", { method: "POST", token: admin, body: { ...body, kind: "castle" } })).status, 400);
+    assert.equal((await app.request("/api/admin/places", { method: "POST", token: admin, body: { ...body, halalStatus: "haram" } })).status, 400);
+    const created = await app.request("/api/admin/places", { method: "POST", token: admin, body });
+    assert.equal(created.status, 201);
+    const place = created.body.place;
+    assert.equal(place.dataOrigin, "admin");
+    assert.equal(place.verificationStatus, "unverified");
+    assert.equal(place.provenance.source, "admin_import");
+    assert.match(place.provenance.attribution, /admin@halalmap\.test/);
+    assert.ok((await app.request("/api/mosques")).body.mosques.some((m) => m.id === place.id));
+    assert.equal((await app.request(`/api/admin/places/${place.id}`, { method: "DELETE", token: user })).status, 403);
+    assert.equal((await app.request(`/api/admin/places/${place.id}`, { method: "DELETE", token: admin })).status, 200);
+    assert.ok(!(await app.request("/api/mosques")).body.mosques.some((m) => m.id === place.id), "deactivated places leave the app");
+    assert.equal((await app.request(`/api/admin/places/${place.id}`, { method: "PATCH", token: admin, body: { isActive: true } })).status, 200, "and can be restored");
+    assert.equal((await app.request("/api/admin/places/nope", { method: "DELETE", token: admin })).status, 404);
   } finally { await app.close(); }
 });
 
