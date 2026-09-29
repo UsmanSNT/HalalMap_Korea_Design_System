@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { StatusBar, BottomNav, MapPin, RestaurantCardV, RestaurantCardH, HalalBadge, BackButton, TabId } from "../components/Shared";
 import { getRestaurants, getRestaurant, type Restaurant } from "@/api/restaurants";
+import { getPlaces, type Place, type PlaceHalalStatus, type PlaceType } from "@/api/places";
 import { useLanguage } from "../i18n/LanguageContext";
 import type { ScreenId } from "../App";
 
-const extractImageId = (url: string): string => {
+const extractImageId = (url: string | null): string => {
+  if (!url) return "1498654896293-37c98e7f5fe4";
   const match = url.match(/photo-([^?]+)/);
   return match ? match[1] : "1498654896293-37c98e7f5fe4";
 };
 const halalBadgeMap = (status: string) =>
-  status === "certified" ? "certified" as const
-    : status === "muslim-owned" ? "owned" as const
+  ["certified", "halal_certified"].includes(status) ? "certified" as const
+    : ["muslim-owned", "self_certified"].includes(status) ? "owned" as const
     : "friendly" as const;
 const formatFee = (fee: number, freeLabel: string) => fee === 0 ? freeLabel : `₩${fee.toLocaleString()}`;
 
@@ -209,37 +211,61 @@ const FakeMapBg = () => (
   </svg>
 );
 
-const mapPins: { x: number; y: number; type: "restaurant" | "mosque" | "user"; label: string }[] = [
-  { x: 195, y: 220, type: "user", label: "현재 위치" },
-  { x: 120, y: 175, type: "restaurant", label: "신당 할랄 키친" },
-  { x: 240, y: 200, type: "restaurant", label: "이스탄불 케밥" },
-  { x: 310, y: 130, type: "restaurant", label: "델리 스파이스" },
-  { x: 80, y: 290, type: "restaurant", label: "우즈베키스탄 플로프" },
-  { x: 185, y: 120, type: "mosque", label: "서울중앙성원" },
-  { x: 330, y: 250, type: "mosque", label: "이태원 마스지드" },
+type MapFilter = { id: string; label: string; types: PlaceType[]; statuses?: PlaceHalalStatus[]; color: string; icon: string };
+const mapFilters: MapFilter[] = [
+  { id: "mosque", label: "Mosque", types: ["mosque"], color: "#176B45", icon: "M" },
+  { id: "prayer", label: "Prayer Room", types: ["prayer_room"], color: "#3478A8", icon: "P" },
+  { id: "halal", label: "Halal Restaurant", types: ["restaurant"], statuses: ["halal_certified", "self_certified"], color: "#0E8A5A", icon: "H" },
+  { id: "friendly", label: "Muslim Friendly", types: ["restaurant"], statuses: ["muslim_friendly"], color: "#B07A24", icon: "F" },
+  { id: "pork-free", label: "Pork Free", types: ["restaurant"], statuses: ["pork_free"], color: "#B14B42", icon: "PF" },
+  { id: "market", label: "Halal Market", types: ["halal_market"], color: "#6C4A8C", icon: "S" },
 ];
 
-const mapFilterKeys = ["filter_restaurant", "filter_mosque", "filter_prayer_room"];
+const halalStatusLabels: Record<PlaceHalalStatus, string> = {
+  halal_certified: "Halal Certified",
+  self_certified: "Self-certified",
+  muslim_friendly: "Muslim Friendly",
+  pork_free: "Pork Free",
+  unknown: "Status not verified",
+};
+
+const projectPlace = (place: Place) => ({
+  x: Math.min(360, Math.max(18, ((place.longitude - 124.5) / (131.8 - 124.5)) * 342 + 18)),
+  y: Math.min(400, Math.max(70, ((38.8 - place.latitude) / (38.8 - 33.0)) * 330 + 70)),
+});
 
 export const MapViewScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: TabId) => void; onNavigate?: (s: ScreenId) => void }) => {
   const { t } = useLanguage();
-  const mapFilters = mapFilterKeys.map((k) => t(`search.${k}`));
-  const [activeFilter, setActiveFilter] = useState(mapFilters[0]);
-  const [nearby, setNearby] = useState<Restaurant[]>([]);
+  const [activeFilter, setActiveFilter] = useState("mosque");
+  const [places, setPlaces] = useState<Place[]>([]);
+  const [selected, setSelected] = useState<Place | null>(null);
+  const [attribution, setAttribution] = useState<{ text: string; url: string; license: string } | null>(null);
 
   useEffect(() => {
-    getRestaurants().then(setNearby).catch(() => {});
+    getPlaces().then((result) => {
+      setPlaces(result.places);
+      setAttribution(result.attribution ?? null);
+    }).catch(() => {});
   }, []);
+
+  const filter = mapFilters.find((item) => item.id === activeFilter) ?? mapFilters[0];
+  const visiblePlaces = places.filter((place) => filter.types.includes(place.type) && (!filter.statuses || filter.statuses.includes(place.halalStatus)));
 
   return (
     <div className="flex flex-col h-full bg-[var(--cream)] relative overflow-hidden">
       <div className="absolute inset-0">
         <FakeMapBg />
-        {mapPins.map((pin, i) => (
-          <div key={i} className="absolute" style={{ left: pin.x - 16, top: pin.y - 16 }}>
-            <MapPin type={pin.type} />
-          </div>
-        ))}
+        {visiblePlaces.map((place) => {
+          const point = projectPlace(place);
+          return (
+            <button key={place.id} title={place.nameKo || place.nameEn || place.name} onClick={() => setSelected(place)} className="absolute w-8 h-8 rounded-full border-2 border-white text-white text-[10px] font-bold shadow-md flex items-center justify-center" style={{ left: point.x - 16, top: point.y - 16, backgroundColor: filter.color }}>
+              {filter.icon}
+            </button>
+          );
+        })}
+        <div className="absolute left-3 bottom-2 text-[9px] bg-white/90 px-2 py-1 rounded shadow-sm">
+          <a href={attribution?.url || "https://www.openstreetmap.org/copyright"} target="_blank" rel="noreferrer" className="underline text-[#4A4A46]">{attribution?.text || "© OpenStreetMap contributors"}</a>
+        </div>
       </div>
 
       <div className="relative z-10 flex-shrink-0">
@@ -265,17 +291,17 @@ export const MapViewScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: T
         </div>
 
         <div className="flex gap-2 mt-2 overflow-x-auto scrollbar-hide">
-          {mapFilters.map((f) => (
+          {mapFilters.map((item) => (
             <button
-              key={f}
-              onClick={() => setActiveFilter(f)}
+              key={item.id}
+              onClick={() => { setActiveFilter(item.id); setSelected(null); }}
               className="flex-shrink-0 px-4 py-2 rounded-xl text-xs font-semibold shadow-sm transition-all"
               style={{
-                backgroundColor: activeFilter === f ? "var(--green)" : "white",
-                color: activeFilter === f ? "white" : "var(--charcoal)",
+                backgroundColor: activeFilter === item.id ? item.color : "white",
+                color: activeFilter === item.id ? "white" : "var(--charcoal)",
               }}
             >
-              {f}
+              {item.label}
             </button>
           ))}
         </div>
@@ -297,23 +323,16 @@ export const MapViewScreen = ({ onTabChange, onNavigate }: { onTabChange?: (t: T
           <div className="w-10 h-1 bg-[var(--border)] rounded-full" />
         </div>
         <div className="px-4 pb-4">
-          <p className="font-bold text-sm text-[#1A1A18] mb-3">{t("search.nearby_results").replace("{count}", String(nearby.length))}</p>
-          <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-1">
-            {nearby.slice(0, 3).map((r) => (
-              <RestaurantCardV
-                key={r.id}
-                name={r.nameKo}
-                imageId={extractImageId(r.photo)}
-                badge={halalBadgeMap(r.halalStatus)}
-                rating={r.rating}
-                count={r.reviewCount}
-                distance={r.distance}
-                eta={r.deliveryTime}
-                fee={formatFee(r.deliveryFee, t("common.free"))}
-                onClick={() => onNavigate?.("restaurant-detail")}
-              />
-            ))}
-          </div>
+          <p className="font-bold text-sm text-[#1A1A18]">{filter.label} · {visiblePlaces.length}</p>
+          {selected ? (
+            <div className="mt-3 border-t border-[var(--border)] pt-3">
+              <div className="flex items-start justify-between gap-3"><div><h2 className="font-bold text-base text-[#1A1A18]">{selected.nameKo || selected.nameEn || selected.name}</h2>{selected.nameEn && selected.nameEn !== selected.nameKo && <p className="text-xs text-[var(--muted)] mt-0.5">{selected.nameEn}</p>}</div><span className="text-[10px] font-bold px-2 py-1 rounded-full text-white" style={{ backgroundColor: filter.color }}>{selected.type.replace("_", " ")}</span></div>
+              <p className="text-xs text-[var(--muted)] mt-2">{selected.address || `${selected.latitude.toFixed(5)}, ${selected.longitude.toFixed(5)}`}</p>
+              <div className="flex flex-wrap gap-2 mt-2 text-[11px]"><span className="px-2 py-1 rounded bg-[var(--cream)]">{halalStatusLabels[selected.halalStatus]}</span>{selected.certification && <span className="px-2 py-1 rounded bg-[var(--green-light)] text-[var(--green)]">{selected.certification}</span>}{selected.hasPrayerRoom && <span className="px-2 py-1 rounded bg-[var(--cream)]">Prayer room</span>}{selected.hasWudu && <span className="px-2 py-1 rounded bg-[var(--cream)]">Wudu</span>}</div>
+              <div className="flex gap-3 mt-3 text-xs">{selected.phone && <a href={`tel:${selected.phone}`} className="font-semibold text-[var(--green)]">{selected.phone}</a>}{selected.website && <a href={selected.website} target="_blank" rel="noreferrer" className="font-semibold text-[var(--info)]">Website</a>}<a href={`https://www.openstreetmap.org/?mlat=${selected.latitude}&mlon=${selected.longitude}#map=17/${selected.latitude}/${selected.longitude}`} target="_blank" rel="noreferrer" className="font-semibold text-[var(--info)]">Map location</a></div>
+              <p className="text-[9px] text-[var(--muted)] mt-2">Source: {selected.source} · {selected.sourceLicense} · verified {selected.lastVerifiedAt?.slice(0, 10) || "unknown"}</p>
+            </div>
+          ) : <p className="text-xs text-[var(--muted)] mt-2">Select a marker to view place details.</p>}
         </div>
       </div>
 

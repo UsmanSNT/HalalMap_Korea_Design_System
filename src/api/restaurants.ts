@@ -1,6 +1,6 @@
 import { apiClient } from "@/services/apiClient";
 
-export type HalalStatus = "certified" | "muslim-owned" | "halal-friendly";
+export type HalalStatus = "halal_certified" | "self_certified" | "muslim_friendly" | "pork_free" | "unknown" | "certified" | "muslim-owned" | "halal-friendly";
 
 export type Restaurant = {
   id: string;
@@ -16,10 +16,19 @@ export type Restaurant = {
   deliveryFee: number;
   minOrder: number;
   address: string;
-  phone: string;
+  phone: string | null;
   hours: string;
   description: string;
-  photo: string;
+  photo: string | null;
+  latitude?: number;
+  longitude?: number;
+  website?: string | null;
+  certification?: string | null;
+  hasPrayerRoom?: boolean | null;
+  source?: string;
+  sourceUrl?: string;
+  sourceLicense?: string;
+  lastVerifiedAt?: string | null;
 };
 
 export type MenuItem = {

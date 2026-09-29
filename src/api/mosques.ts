@@ -15,6 +15,13 @@ export type Mosque = {
   facilities: string[];
   juma: string | null;
   photo: string | null;
+  latitude?: number;
+  longitude?: number;
+  website?: string | null;
+  source?: string;
+  sourceUrl?: string;
+  sourceLicense?: string;
+  lastVerifiedAt?: string | null;
 };
 
 export type Prayer = {

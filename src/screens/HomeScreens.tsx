@@ -8,7 +8,8 @@ import { getMosques, getPrayerTimes, type Mosque, type PrayerTimesData } from "@
 import { useLanguage } from "../i18n/LanguageContext";
 import type { ScreenId } from "../App";
 
-const extractImageId = (url: string): string => {
+const extractImageId = (url: string | null): string => {
+  if (!url) return "1498654896293-37c98e7f5fe4";
   const match = url.match(/photo-([^?]+)/);
   return match ? match[1] : "1498654896293-37c98e7f5fe4";
 };

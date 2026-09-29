@@ -8,6 +8,7 @@ import { AllOrders, LiveOperationsMap } from "./OrdersScreens";
 import { HalalDatabase, MosqueManagement, PromotionsManagement } from "./ContentScreens";
 import { PlatformAnalytics } from "./AnalyticsScreens";
 import { PlatformSettings, AdminUsers } from "./SettingsScreens";
+import PlaceManagement from "./PlaceManagement";
 
 // ── Screen registry ────────────────────────────────────────────────────────────
 export type AdminScreenId =
@@ -102,7 +103,7 @@ const NAV_GROUPS: NavGroup[] = [
 function renderAdminScreen(id: AdminScreenId, navigate: (id: AdminScreenId) => void): React.ReactNode {
   switch (id) {
     case "home":                return <AdminHome />;
-    case "restaurants":         return <RestaurantList onDetail={() => navigate("restaurant-detail")} />;
+    case "restaurants":         return <PlaceManagement initialType="restaurant" />;
     case "restaurant-approval": return <RestaurantApproval />;
     case "restaurant-detail":   return <RestaurantDetail />;
     case "users":               return <UserList onDetail={() => navigate("user-detail")} />;
@@ -113,7 +114,7 @@ function renderAdminScreen(id: AdminScreenId, navigate: (id: AdminScreenId) => v
     case "orders":              return <AllOrders />;
     case "live-map":            return <LiveOperationsMap />;
     case "halal-db":            return <HalalDatabase />;
-    case "mosques":             return <MosqueManagement />;
+    case "mosques":             return <PlaceManagement initialType="mosque" />;
     case "promotions":          return <PromotionsManagement />;
     case "analytics":           return <PlatformAnalytics />;
     case "settings":            return <PlatformSettings />;

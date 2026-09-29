@@ -1,10 +1,11 @@
 import { createServer } from "node:http";
 import { randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
-import { mkdirSync } from "node:fs";
+import { mkdirSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { DatabaseSync } from "node:sqlite";
 import pg from "pg";
+import { initPlacesSchema, placeFromRow, seedPlaces, validatePlaceInput } from "./places-db.mjs";
 
 const { Pool } = pg;
 const postgres = process.env.DATABASE_URL
@@ -42,6 +43,13 @@ db.exec(`
     created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
   );
 `);
+initPlacesSchema(db);
+try {
+  const seedPath = resolve(serverDir, "../data/places/osm-korea.seed.json");
+  seedPlaces(db, JSON.parse(readFileSync(seedPath, "utf8")).places);
+} catch (error) {
+  if (error?.code !== "ENOENT") console.warn("Place seed could not be loaded:", error.message);
+}
 
 const testUsers = [
   ["user@halalmap.test", "Test User", "user", "User123!"],
@@ -101,6 +109,74 @@ const authenticate = (request) => {
   return user ? { token, user } : null;
 };
 
+const listPlaces = (url, { forceType } = {}) => {
+  const clauses = ["is_active = 1"];
+  const values = [];
+  const types = forceType ? [forceType] : url.searchParams.getAll("type");
+  if (types.length) {
+    clauses.push(`type IN (${types.map(() => "?").join(", ")})`);
+    values.push(...types);
+  }
+  const halalStatuses = url.searchParams.getAll("halalStatus");
+  if (halalStatuses.length) {
+    clauses.push(`halal_status IN (${halalStatuses.map(() => "?").join(", ")})`);
+    values.push(...halalStatuses);
+  }
+  const search = url.searchParams.get("q")?.trim().toLowerCase();
+  if (search) {
+    clauses.push("(lower(name) LIKE ? OR lower(coalesce(name_ko, '')) LIKE ? OR lower(coalesce(name_en, '')) LIKE ? OR lower(coalesce(address, '')) LIKE ?)");
+    values.push(...Array(4).fill(`%${search}%`));
+  }
+  const rows = db.prepare(`
+    SELECT * FROM places
+    WHERE ${clauses.join(" AND ")}
+    ORDER BY CASE type WHEN 'mosque' THEN 1 WHEN 'prayer_room' THEN 2 WHEN 'restaurant' THEN 3 ELSE 4 END,
+      coalesce(name_ko, name_en, name)
+    LIMIT 2000
+  `).all(...values);
+  return rows.map(placeFromRow);
+};
+
+const legacyRestaurant = (place) => ({
+  ...place,
+  nameKo: place.nameKo || place.name,
+  category: place.category || "halal",
+  certBody: place.certification,
+  rating: 0,
+  reviewCount: 0,
+  distance: "",
+  deliveryTime: "",
+  deliveryFee: 0,
+  minOrder: 0,
+  hours: "",
+  description: [place.halalStatus.replaceAll("_", " "), place.source].filter(Boolean).join(" · "),
+  photo: null,
+});
+
+const legacyMosque = (place) => ({
+  ...place,
+  nameKo: place.nameKo || place.name,
+  type: place.type === "prayer_room" ? "prayer-room" : "mosque",
+  subtitle: place.nameEn && place.nameEn !== place.name ? place.nameEn : null,
+  distance: "",
+  walkTime: null,
+  facilities: [
+    place.hasWudu ? "우두 시설" : null,
+    place.hasWomenPrayerArea ? "여성 기도실" : null,
+  ].filter(Boolean),
+  juma: null,
+  photo: null,
+});
+
+const requireAdmin = (request, response) => {
+  const auth = authenticate(request);
+  if (!auth || auth.user.role !== "admin") {
+    json(response, 403, { error: "Admin huquqi talab qilinadi" });
+    return null;
+  }
+  return auth;
+};
+
 const api = createServer(async (request, response) => {
   try {
     const url = new URL(request.url ?? "/", "http://localhost");
@@ -154,12 +230,104 @@ const api = createServer(async (request, response) => {
       return json(response, 200, { success: true });
     }
 
+    // ── Unified places ───────────────────────────────────────────
+
+    if (request.method === "GET" && url.pathname === "/api/places") {
+      const places = listPlaces(url);
+      const counts = db.prepare(`
+        SELECT type, count(*) AS count FROM places WHERE is_active = 1 GROUP BY type
+      `).all();
+      return json(response, 200, {
+        places,
+        counts: Object.fromEntries(counts.map((row) => [row.type, row.count])),
+        attribution: {
+          text: "© OpenStreetMap contributors",
+          url: "https://www.openstreetmap.org/copyright",
+          license: "ODbL-1.0",
+        },
+      });
+    }
+
+    if (request.method === "GET" && url.pathname.startsWith("/api/places/")) {
+      const id = decodeURIComponent(url.pathname.split("/")[3] || "");
+      const place = placeFromRow(db.prepare("SELECT * FROM places WHERE id = ? AND is_active = 1").get(id));
+      return place ? json(response, 200, { place }) : json(response, 404, { error: "Joy topilmadi" });
+    }
+
+    if (request.method === "GET" && url.pathname === "/api/admin/places") {
+      if (!requireAdmin(request, response)) return;
+      const rows = db.prepare("SELECT * FROM places ORDER BY is_active DESC, updated_at DESC LIMIT 5000").all();
+      return json(response, 200, { places: rows.map(placeFromRow) });
+    }
+
+    if (request.method === "POST" && url.pathname === "/api/admin/places") {
+      if (!requireAdmin(request, response)) return;
+      const body = await readJson(request);
+      const errors = validatePlaceInput(body);
+      if (errors.length) return json(response, 400, { error: errors.join(", ") });
+      const id = `manual-${Date.now()}-${randomBytes(4).toString("hex")}`;
+      const sourceRecordId = body.sourceRecordId || id;
+      db.prepare(`
+        INSERT INTO places (
+          id, name, name_ko, name_en, type, category, address, latitude, longitude, phone, website,
+          halal_status, certification, has_prayer_room, has_wudu, has_women_prayer_area,
+          source_name, source_url, source_license, source_record_id, last_verified_at,
+          verification_status, is_active
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
+      `).run(
+        id, body.name, body.nameKo ?? null, body.nameEn ?? null, body.type, body.category ?? null,
+        body.address ?? null, Number(body.latitude), Number(body.longitude), body.phone ?? null,
+        body.website ?? null, body.halalStatus ?? "unknown", body.certification ?? null,
+        body.hasPrayerRoom == null ? null : Number(Boolean(body.hasPrayerRoom)),
+        body.hasWudu == null ? null : Number(Boolean(body.hasWudu)),
+        body.hasWomenPrayerArea == null ? null : Number(Boolean(body.hasWomenPrayerArea)),
+        body.source, body.sourceUrl, body.sourceLicense, sourceRecordId,
+        body.lastVerifiedAt ?? null, body.verificationStatus ?? "needs_review",
+      );
+      const place = placeFromRow(db.prepare("SELECT * FROM places WHERE id = ?").get(id));
+      return json(response, 201, { place });
+    }
+
+    if ((request.method === "PATCH" || request.method === "DELETE") && url.pathname.startsWith("/api/admin/places/")) {
+      if (!requireAdmin(request, response)) return;
+      const id = decodeURIComponent(url.pathname.split("/")[4] || "");
+      const existing = db.prepare("SELECT * FROM places WHERE id = ?").get(id);
+      if (!existing) return json(response, 404, { error: "Joy topilmadi" });
+      if (request.method === "DELETE") {
+        db.prepare("UPDATE places SET is_active = 0, updated_at = CURRENT_TIMESTAMP WHERE id = ?").run(id);
+        return json(response, 200, { success: true });
+      }
+      const body = await readJson(request);
+      const errors = validatePlaceInput(body, { partial: true });
+      if (errors.length) return json(response, 400, { error: errors.join(", ") });
+      const columns = {
+        name: "name", nameKo: "name_ko", nameEn: "name_en", type: "type", category: "category",
+        address: "address", latitude: "latitude", longitude: "longitude", phone: "phone", website: "website",
+        halalStatus: "halal_status", certification: "certification", hasPrayerRoom: "has_prayer_room",
+        hasWudu: "has_wudu", hasWomenPrayerArea: "has_women_prayer_area", lastVerifiedAt: "last_verified_at",
+        verificationStatus: "verification_status", isActive: "is_active",
+      };
+      const entries = Object.entries(columns).filter(([key]) => Object.hasOwn(body, key));
+      if (entries.length) {
+        const values = entries.map(([key]) => {
+          if (["hasPrayerRoom", "hasWudu", "hasWomenPrayerArea", "isActive"].includes(key)) {
+            return body[key] == null ? null : Number(Boolean(body[key]));
+          }
+          return body[key];
+        });
+        db.prepare(`UPDATE places SET ${entries.map(([, column]) => `${column} = ?`).join(", ")}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`)
+          .run(...values, id);
+      }
+      const place = placeFromRow(db.prepare("SELECT * FROM places WHERE id = ?").get(id));
+      return json(response, 200, { place });
+    }
+
     // ── Restaurants ──────────────────────────────────────────────
 
     if (request.method === "GET" && url.pathname === "/api/restaurants") {
       const category = url.searchParams.get("category");
       const search = url.searchParams.get("q");
-      let filtered = RESTAURANTS;
+      let filtered = listPlaces(new URL(`${url.origin}${url.pathname}${url.search}`), { forceType: "restaurant" }).map(legacyRestaurant);
       if (category) filtered = filtered.filter((r) => r.category === category);
       if (search) {
         const q = search.toLowerCase();
@@ -172,7 +340,8 @@ const api = createServer(async (request, response) => {
 
     if (request.method === "GET" && url.pathname.startsWith("/api/restaurants/")) {
       const id = url.pathname.split("/")[3];
-      const restaurant = RESTAURANTS.find((r) => r.id === id);
+      const dbPlace = placeFromRow(db.prepare("SELECT * FROM places WHERE id = ? AND type = 'restaurant' AND is_active = 1").get(id));
+      const restaurant = dbPlace ? legacyRestaurant(dbPlace) : RESTAURANTS.find((r) => r.id === id);
       if (!restaurant) return json(response, 404, { error: "Restoran topilmadi" });
 
       if (url.pathname.endsWith("/menu")) {
@@ -186,14 +355,15 @@ const api = createServer(async (request, response) => {
 
     if (request.method === "GET" && url.pathname === "/api/mosques") {
       const type = url.searchParams.get("type");
-      let filtered = MOSQUES;
+      let filtered = listPlaces(new URL(`${url.origin}${url.pathname}`)).filter((place) => ["mosque", "prayer_room"].includes(place.type)).map(legacyMosque);
       if (type) filtered = filtered.filter((m) => m.type === type);
       return json(response, 200, { mosques: filtered });
     }
 
     if (request.method === "GET" && url.pathname.startsWith("/api/mosques/")) {
       const id = url.pathname.split("/")[3];
-      const mosque = MOSQUES.find((m) => m.id === id);
+      const dbPlace = placeFromRow(db.prepare("SELECT * FROM places WHERE id = ? AND type IN ('mosque', 'prayer_room') AND is_active = 1").get(id));
+      const mosque = dbPlace ? legacyMosque(dbPlace) : MOSQUES.find((m) => m.id === id);
       return mosque
         ? json(response, 200, { mosque })
         : json(response, 404, { error: "Masjid topilmadi" });
