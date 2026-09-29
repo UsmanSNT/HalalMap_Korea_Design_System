@@ -61,6 +61,8 @@ To rebuild the local database from the committed snapshot without network access
 pnpm places:seed
 ```
 
+The seed command updates SQLite only and does not rewrite the committed snapshot, report, or normalized seed artifact.
+
 For a targeted refresh, use `--query-index 0`, `1`, or `2` and a distinct `--input`/`--report` path. Review the generated report before replacing the committed snapshot.
 
 ## Current snapshot limitations

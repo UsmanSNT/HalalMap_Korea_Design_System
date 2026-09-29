@@ -313,13 +313,15 @@ const report = {
   },
   duplicates,
 };
-await writeFile(reportPath, `${JSON.stringify(report, null, 2)}\n`, "utf8");
-await mkdir(dirname(seedOutputPath), { recursive: true });
-await writeFile(seedOutputPath, `${JSON.stringify({
-  generatedAt: importedAt,
-  source: OSM_SOURCE,
-  sourceUrl: OSM_COPYRIGHT_URL,
-  sourceLicense: OSM_LICENSE,
-  places: unique.map(({ rawTags, rawElement, ...place }) => place),
-}, null, 2)}\n`, "utf8");
+if (!args.get("no-write-artifacts")) {
+  await writeFile(reportPath, `${JSON.stringify(report, null, 2)}\n`, "utf8");
+  await mkdir(dirname(seedOutputPath), { recursive: true });
+  await writeFile(seedOutputPath, `${JSON.stringify({
+    generatedAt: importedAt,
+    source: OSM_SOURCE,
+    sourceUrl: OSM_COPYRIGHT_URL,
+    sourceLicense: OSM_LICENSE,
+    places: unique.map(({ rawTags, rawElement, ...place }) => place),
+  }, null, 2)}\n`, "utf8");
+}
 console.log(JSON.stringify(report, null, 2));
