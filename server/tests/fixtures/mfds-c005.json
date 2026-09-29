@@ -1,0 +1,18 @@
+{
+  "C005": {
+    "total_count": "1",
+    "row": [
+      {
+        "PRDLST_REPORT_NO": "2099999900001",
+        "PRMS_DT": "20990101",
+        "PRDLST_NM": "테스트 새우 과자",
+        "POG_DAYCNT": "제조일로부터 6개월",
+        "PRDLST_DCNM": "과자",
+        "CMPNY_NM": "테스트식품(주)",
+        "BAR_CD": "8809999900023",
+        "LAST_UPDT_DTM": "2099-01-02 10:00:00"
+      }
+    ],
+    "RESULT": { "MSG": "정상 처리되었습니다.", "CODE": "INFO-000" }
+  }
+}

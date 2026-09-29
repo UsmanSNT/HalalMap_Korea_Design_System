@@ -1,0 +1,21 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API (synthetic test fixture)",
+  "osm3s": { "timestamp_osm_base": "2099-01-01T00:00:00Z" },
+  "elements": [
+    { "type": "node", "id": 900000001, "lat": 37.5000, "lon": 127.0000,
+      "tags": { "amenity": "place_of_worship", "religion": "muslim", "name": "테스트 성원", "name:en": "Test Mosque", "addr:city": "서울특별시", "addr:street": "테스트로", "addr:housenumber": "1", "phone": "+82-2-000-0000", "website": "https://example.test/mosque" } },
+    { "type": "node", "id": 900000002, "lat": 37.5100, "lon": 127.0100,
+      "tags": { "amenity": "place_of_worship", "religion": "muslim", "name": "Test Mall Prayer Room" } },
+    { "type": "way", "id": 900000003, "center": { "lat": 37.5200, "lon": 127.0200 },
+      "tags": { "amenity": "restaurant", "cuisine": "turkish;kebab", "diet:halal": "only", "name": "Test Halal Kitchen", "name:ko": "테스트 할랄 키친", "opening_hours": "Mo-Su 10:00-22:00" } },
+    { "type": "node", "id": 900000004, "lat": 37.5300, "lon": 127.0300,
+      "tags": { "shop": "supermarket", "diet:halal": "yes", "name": "테스트 할랄 마트" } },
+    { "type": "node", "id": 900000005, "lat": 37.5400, "lon": 127.0400,
+      "tags": { "amenity": "restaurant", "cuisine": "korean", "name": "Plain BBQ" } },
+    { "type": "node", "id": 900000006, "lat": 37.5500, "lon": 127.0500,
+      "tags": { "amenity": "restaurant", "diet:halal": "yes" } },
+    { "type": "node", "id": 900000007, "lat": 37.5001, "lon": 127.0001,
+      "tags": { "amenity": "place_of_worship", "religion": "muslim", "name": "Test Mosque" } }
+  ]
+}

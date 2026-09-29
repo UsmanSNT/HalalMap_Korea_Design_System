@@ -1,0 +1,6206 @@
+{
+ "version": 1,
+ "source": "halalmap_editorial",
+ "note": "HalalMap editorial starter dictionary. Identity mapping only (names/aliases/categories); classification lives in ingredient-rules.json. MFDS food raw-material codes are attached by the MFDS importer, not guessed here.",
+ "ingredients": [
+  {
+   "key": "wheat_flour",
+   "ko": "밀가루",
+   "en": "Wheat flour",
+   "category": "grain",
+   "aliases": [
+    {
+     "alias": "소맥분"
+    },
+    {
+     "alias": "소맥"
+    },
+    {
+     "alias": "강력분"
+    },
+    {
+     "alias": "중력분"
+    },
+    {
+     "alias": "박력분"
+    },
+    {
+     "alias": "밀"
+    },
+    {
+     "alias": "wheat"
+    },
+    {
+     "alias": "flour"
+    },
+    {
+     "alias": "enriched wheat flour"
+    },
+    {
+     "alias": "밀가루(밀)"
+    },
+    {
+     "alias": "bug'doy uni",
+     "lang": "uz"
+    },
+    {
+     "alias": "un",
+     "lang": "uz"
+    },
+    {
+     "alias": "bug'doy",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "whole_wheat_flour",
+   "ko": "통밀가루",
+   "en": "Whole wheat flour",
+   "category": "grain",
+   "aliases": [
+    {
+     "alias": "통밀"
+    },
+    {
+     "alias": "whole wheat"
+    },
+    {
+     "alias": "wholemeal"
+    },
+    {
+     "alias": "to'liq bug'doy uni",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "rice",
+   "ko": "쌀",
+   "en": "Rice",
+   "category": "grain",
+   "aliases": [
+    {
+     "alias": "백미"
+    },
+    {
+     "alias": "현미"
+    },
+    {
+     "alias": "찹쌀"
+    },
+    {
+     "alias": "멥쌀"
+    },
+    {
+     "alias": "쌀가루"
+    },
+    {
+     "alias": "rice flour"
+    },
+    {
+     "alias": "glutinous rice"
+    },
+    {
+     "alias": "brown rice"
+    },
+    {
+     "alias": "발아현미"
+    },
+    {
+     "alias": "guruch",
+     "lang": "uz"
+    },
+    {
+     "alias": "guruch uni",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "corn",
+   "ko": "옥수수",
+   "en": "Corn",
+   "category": "grain",
+   "aliases": [
+    {
+     "alias": "옥수수가루"
+    },
+    {
+     "alias": "옥수수분"
+    },
+    {
+     "alias": "콘"
+    },
+    {
+     "alias": "maize"
+    },
+    {
+     "alias": "corn flour"
+    },
+    {
+     "alias": "cornmeal"
+    },
+    {
+     "alias": "corn grits"
+    },
+    {
+     "alias": "makkajo'xori",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "oats",
+   "ko": "귀리",
+   "en": "Oats",
+   "category": "grain",
+   "aliases": [
+    {
+     "alias": "오트"
+    },
+    {
+     "alias": "오트밀"
+    },
+    {
+     "alias": "귀리가루"
+    },
+    {
+     "alias": "oat"
+    },
+    {
+     "alias": "rolled oats"
+    },
+    {
+     "alias": "oatmeal"
+    },
+    {
+     "alias": "suli",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "barley",
+   "ko": "보리",
+   "en": "Barley",
+   "category": "grain",
+   "aliases": [
+    {
+     "alias": "보리쌀"
+    },
+    {
+     "alias": "보릿가루"
+    },
+    {
+     "alias": "겉보리"
+    },
+    {
+     "alias": "arpa",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "rye",
+   "ko": "호밀",
+   "en": "Rye",
+   "category": "grain",
+   "aliases": [
+    {
+     "alias": "호밀가루"
+    },
+    {
+     "alias": "rye flour"
+    },
+    {
+     "alias": "javdar",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "buckwheat",
+   "ko": "메밀",
+   "en": "Buckwheat",
+   "category": "grain",
+   "aliases": [
+    {
+     "alias": "메밀가루"
+    },
+    {
+     "alias": "grechka",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "quinoa",
+   "ko": "퀴노아",
+   "en": "Quinoa",
+   "category": "grain",
+   "aliases": []
+  },
+  {
+   "key": "gluten",
+   "ko": "글루텐",
+   "en": "Gluten",
+   "category": "grain",
+   "aliases": [
+    {
+     "alias": "밀글루텐"
+    },
+    {
+     "alias": "활성밀단백"
+    },
+    {
+     "alias": "wheat gluten"
+    }
+   ]
+  },
+  {
+   "key": "bread_crumbs",
+   "ko": "빵가루",
+   "en": "Bread crumbs",
+   "category": "grain",
+   "aliases": [
+    {
+     "alias": "panko"
+    }
+   ]
+  },
+  {
+   "key": "noodles",
+   "ko": "면",
+   "en": "Noodles",
+   "category": "grain",
+   "aliases": [
+    {
+     "alias": "국수"
+    },
+    {
+     "alias": "noodle"
+    },
+    {
+     "alias": "건면"
+    },
+    {
+     "alias": "유탕면"
+    }
+   ]
+  },
+  {
+   "key": "starch",
+   "ko": "전분",
+   "en": "Starch",
+   "category": "starch",
+   "aliases": [
+    {
+     "alias": "옥수수전분"
+    },
+    {
+     "alias": "감자전분"
+    },
+    {
+     "alias": "타피오카전분"
+    },
+    {
+     "alias": "고구마전분"
+    },
+    {
+     "alias": "쌀전분"
+    },
+    {
+     "alias": "변성전분"
+    },
+    {
+     "alias": "가공전분"
+    },
+    {
+     "alias": "corn starch"
+    },
+    {
+     "alias": "potato starch"
+    },
+    {
+     "alias": "tapioca starch"
+    },
+    {
+     "alias": "modified starch"
+    },
+    {
+     "alias": "타피오카"
+    },
+    {
+     "alias": "kraxmal",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "dextrin",
+   "ko": "덱스트린",
+   "en": "Dextrin",
+   "category": "starch",
+   "aliases": [
+    {
+     "alias": "난소화성덱스트린"
+    },
+    {
+     "alias": "말토덱스트린"
+    },
+    {
+     "alias": "maltodextrin"
+    },
+    {
+     "alias": "resistant dextrin"
+    }
+   ]
+  },
+  {
+   "key": "sugar",
+   "ko": "설탕",
+   "en": "Sugar",
+   "category": "sweetener",
+   "aliases": [
+    {
+     "alias": "백설탕"
+    },
+    {
+     "alias": "흑설탕"
+    },
+    {
+     "alias": "황설탕"
+    },
+    {
+     "alias": "원당"
+    },
+    {
+     "alias": "정백당"
+    },
+    {
+     "alias": "sucrose"
+    },
+    {
+     "alias": "brown sugar"
+    },
+    {
+     "alias": "cane sugar"
+    },
+    {
+     "alias": "white sugar"
+    },
+    {
+     "alias": "당"
+    },
+    {
+     "alias": "shakar",
+     "lang": "uz"
+    },
+    {
+     "alias": "qand",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "glucose_syrup",
+   "ko": "물엿",
+   "en": "Glucose syrup",
+   "category": "sweetener",
+   "aliases": [
+    {
+     "alias": "쌀엿"
+    },
+    {
+     "alias": "엿"
+    },
+    {
+     "alias": "corn syrup"
+    },
+    {
+     "alias": "starch syrup"
+    },
+    {
+     "alias": "물옛"
+    },
+    {
+     "alias": "glyukoza sirop",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "glucose",
+   "ko": "포도당",
+   "en": "Glucose",
+   "category": "sweetener",
+   "aliases": [
+    {
+     "alias": "결정포도당"
+    },
+    {
+     "alias": "dextrose"
+    },
+    {
+     "alias": "glyukoza",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "fructose",
+   "ko": "과당",
+   "en": "Fructose",
+   "category": "sweetener",
+   "aliases": [
+    {
+     "alias": "액상과당"
+    },
+    {
+     "alias": "high fructose corn syrup"
+    },
+    {
+     "alias": "hfcs"
+    },
+    {
+     "alias": "fructose syrup"
+    },
+    {
+     "alias": "fruktoza",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "oligosaccharide",
+   "ko": "올리고당",
+   "en": "Oligosaccharide",
+   "category": "sweetener",
+   "aliases": [
+    {
+     "alias": "프락토올리고당"
+    },
+    {
+     "alias": "이소말토올리고당"
+    },
+    {
+     "alias": "fructooligosaccharide"
+    },
+    {
+     "alias": "isomaltooligosaccharide"
+    }
+   ]
+  },
+  {
+   "key": "honey",
+   "ko": "꿀",
+   "en": "Honey",
+   "category": "honey_bee",
+   "aliases": [
+    {
+     "alias": "벌꿀"
+    },
+    {
+     "alias": "천연꿀"
+    },
+    {
+     "alias": "asal",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "maple_syrup",
+   "ko": "메이플시럽",
+   "en": "Maple syrup",
+   "category": "sweetener",
+   "aliases": []
+  },
+  {
+   "key": "sorbitol",
+   "ko": "소르비톨",
+   "en": "Sorbitol",
+   "category": "sweetener",
+   "aliases": [
+    {
+     "alias": "d-소르비톨"
+    },
+    {
+     "alias": "e420"
+    }
+   ]
+  },
+  {
+   "key": "xylitol",
+   "ko": "자일리톨",
+   "en": "Xylitol",
+   "category": "sweetener",
+   "aliases": [
+    {
+     "alias": "e967"
+    }
+   ]
+  },
+  {
+   "key": "maltitol",
+   "ko": "말티톨",
+   "en": "Maltitol",
+   "category": "sweetener",
+   "aliases": [
+    {
+     "alias": "e965"
+    }
+   ]
+  },
+  {
+   "key": "erythritol",
+   "ko": "에리스리톨",
+   "en": "Erythritol",
+   "category": "sweetener",
+   "aliases": [
+    {
+     "alias": "e968"
+    }
+   ]
+  },
+  {
+   "key": "aspartame",
+   "ko": "아스파탐",
+   "en": "Aspartame",
+   "category": "sweetener",
+   "aliases": [
+    {
+     "alias": "l-페닐알라닌화합물"
+    },
+    {
+     "alias": "e951"
+    }
+   ]
+  },
+  {
+   "key": "sucralose",
+   "ko": "수크랄로스",
+   "en": "Sucralose",
+   "category": "sweetener",
+   "aliases": [
+    {
+     "alias": "e955"
+    }
+   ]
+  },
+  {
+   "key": "stevia",
+   "ko": "스테비아",
+   "en": "Stevia",
+   "category": "sweetener",
+   "aliases": [
+    {
+     "alias": "스테비올배당체"
+    },
+    {
+     "alias": "steviol glycosides"
+    },
+    {
+     "alias": "e960"
+    }
+   ]
+  },
+  {
+   "key": "acesulfame_k",
+   "ko": "아세설팜칼륨",
+   "en": "Acesulfame potassium",
+   "category": "sweetener",
+   "aliases": [
+    {
+     "alias": "아세설팜k"
+    },
+    {
+     "alias": "e950"
+    }
+   ]
+  },
+  {
+   "key": "sweetener_generic",
+   "ko": "감미료",
+   "en": "Sweetener",
+   "category": "additive_class",
+   "aliases": [
+    {
+     "alias": "합성감미료"
+    },
+    {
+     "alias": "인공감미료"
+    },
+    {
+     "alias": "sweeteners"
+    },
+    {
+     "alias": "artificial sweetener"
+    }
+   ],
+   "isClass": true
+  },
+  {
+   "key": "molasses",
+   "ko": "당밀",
+   "en": "Molasses",
+   "category": "sweetener",
+   "aliases": []
+  },
+  {
+   "key": "salt",
+   "ko": "소금",
+   "en": "Salt",
+   "category": "salt_mineral",
+   "aliases": [
+    {
+     "alias": "정제소금"
+    },
+    {
+     "alias": "천일염"
+    },
+    {
+     "alias": "꽃소금"
+    },
+    {
+     "alias": "죽염"
+    },
+    {
+     "alias": "가공소금"
+    },
+    {
+     "alias": "sea salt"
+    },
+    {
+     "alias": "table salt"
+    },
+    {
+     "alias": "sodium chloride"
+    },
+    {
+     "alias": "염화나트륨"
+    },
+    {
+     "alias": "tuz",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "baking_soda",
+   "ko": "탄산수소나트륨",
+   "en": "Sodium bicarbonate",
+   "category": "leavening",
+   "aliases": [
+    {
+     "alias": "중조"
+    },
+    {
+     "alias": "베이킹소다"
+    },
+    {
+     "alias": "e500ii"
+    },
+    {
+     "alias": "e500"
+    },
+    {
+     "alias": "sodium carbonate"
+    },
+    {
+     "alias": "sodium hydrogen carbonate"
+    },
+    {
+     "alias": "탄산나트륨"
+    },
+    {
+     "alias": "소다회"
+    }
+   ]
+  },
+  {
+   "key": "baking_powder",
+   "ko": "베이킹파우더",
+   "en": "Baking powder",
+   "category": "leavening",
+   "aliases": [
+    {
+     "alias": "팽창제"
+    },
+    {
+     "alias": "raising agent"
+    }
+   ]
+  },
+  {
+   "key": "ammonium_bicarbonate",
+   "ko": "탄산수소암모늄",
+   "en": "Ammonium bicarbonate",
+   "category": "leavening",
+   "aliases": [
+    {
+     "alias": "e503ii"
+    }
+   ]
+  },
+  {
+   "key": "calcium_carbonate",
+   "ko": "탄산칼슘",
+   "en": "Calcium carbonate",
+   "category": "salt_mineral",
+   "aliases": [
+    {
+     "alias": "e170"
+    },
+    {
+     "alias": "패각칼슘"
+    },
+    {
+     "alias": "산호칼슘"
+    }
+   ]
+  },
+  {
+   "key": "potassium_chloride",
+   "ko": "염화칼륨",
+   "en": "Potassium chloride",
+   "category": "salt_mineral",
+   "aliases": [
+    {
+     "alias": "e508"
+    }
+   ]
+  },
+  {
+   "key": "sodium_phosphate",
+   "ko": "인산나트륨",
+   "en": "Sodium phosphate",
+   "category": "salt_mineral",
+   "aliases": [
+    {
+     "alias": "인산염"
+    },
+    {
+     "alias": "폴리인산나트륨"
+    },
+    {
+     "alias": "피로인산나트륨"
+    },
+    {
+     "alias": "메타인산나트륨"
+    },
+    {
+     "alias": "인산이나트륨"
+    },
+    {
+     "alias": "phosphate"
+    },
+    {
+     "alias": "polyphosphate"
+    },
+    {
+     "alias": "e450"
+    },
+    {
+     "alias": "e451"
+    },
+    {
+     "alias": "e452"
+    }
+   ]
+  },
+  {
+   "key": "tricalcium_phosphate",
+   "ko": "인산삼칼슘",
+   "en": "Tricalcium phosphate",
+   "category": "salt_mineral",
+   "aliases": [
+    {
+     "alias": "e341"
+    }
+   ]
+  },
+  {
+   "key": "iron",
+   "ko": "철분",
+   "en": "Iron",
+   "category": "salt_mineral",
+   "aliases": [
+    {
+     "alias": "황산제일철"
+    },
+    {
+     "alias": "피로인산제이철"
+    },
+    {
+     "alias": "ferrous sulfate"
+    }
+   ]
+  },
+  {
+   "key": "zinc",
+   "ko": "아연",
+   "en": "Zinc",
+   "category": "salt_mineral",
+   "aliases": [
+    {
+     "alias": "황산아연"
+    },
+    {
+     "alias": "zinc sulfate"
+    }
+   ]
+  },
+  {
+   "key": "vegetable_oil",
+   "ko": "식물성유지",
+   "en": "Vegetable oil",
+   "category": "plant_oil",
+   "aliases": [
+    {
+     "alias": "식용유"
+    },
+    {
+     "alias": "식물성유"
+    },
+    {
+     "alias": "식용식물성유지"
+    },
+    {
+     "alias": "식물성기름"
+    },
+    {
+     "alias": "vegetable fat"
+    },
+    {
+     "alias": "plant oil"
+    },
+    {
+     "alias": "cooking oil"
+    },
+    {
+     "alias": "o'simlik yog'i",
+     "lang": "uz"
+    },
+    {
+     "alias": "yog'",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "soybean_oil",
+   "ko": "대두유",
+   "en": "Soybean oil",
+   "category": "plant_oil",
+   "aliases": [
+    {
+     "alias": "콩기름"
+    },
+    {
+     "alias": "soya oil"
+    },
+    {
+     "alias": "soya yog'i",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "palm_oil",
+   "ko": "팜유",
+   "en": "Palm oil",
+   "category": "plant_oil",
+   "aliases": [
+    {
+     "alias": "팜올레인유"
+    },
+    {
+     "alias": "팜스테아린"
+    },
+    {
+     "alias": "팜핵유"
+    },
+    {
+     "alias": "야자유"
+    },
+    {
+     "alias": "팜올레인"
+    },
+    {
+     "alias": "palm olein"
+    },
+    {
+     "alias": "palm kernel oil"
+    },
+    {
+     "alias": "coconut oil"
+    },
+    {
+     "alias": "코코넛오일"
+    },
+    {
+     "alias": "코코넛유"
+    },
+    {
+     "alias": "palma yog'i",
+     "lang": "uz"
+    },
+    {
+     "alias": "kokos yog'i",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "sunflower_oil",
+   "ko": "해바라기유",
+   "en": "Sunflower oil",
+   "category": "plant_oil",
+   "aliases": [
+    {
+     "alias": "해바라기씨유"
+    },
+    {
+     "alias": "sunflower seed oil"
+    },
+    {
+     "alias": "kungaboqar yog'i",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "canola_oil",
+   "ko": "카놀라유",
+   "en": "Canola oil",
+   "category": "plant_oil",
+   "aliases": [
+    {
+     "alias": "유채유"
+    },
+    {
+     "alias": "rapeseed oil"
+    }
+   ]
+  },
+  {
+   "key": "corn_oil",
+   "ko": "옥수수유",
+   "en": "Corn oil",
+   "category": "plant_oil",
+   "aliases": [
+    {
+     "alias": "옥배유"
+    }
+   ]
+  },
+  {
+   "key": "olive_oil",
+   "ko": "올리브유",
+   "en": "Olive oil",
+   "category": "plant_oil",
+   "aliases": [
+    {
+     "alias": "올리브오일"
+    },
+    {
+     "alias": "엑스트라버진올리브유"
+    },
+    {
+     "alias": "extra virgin olive oil"
+    },
+    {
+     "alias": "zaytun yog'i",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "rice_bran_oil",
+   "ko": "미강유",
+   "en": "Rice bran oil",
+   "category": "plant_oil",
+   "aliases": [
+    {
+     "alias": "현미유"
+    }
+   ]
+  },
+  {
+   "key": "grapeseed_oil",
+   "ko": "포도씨유",
+   "en": "Grapeseed oil",
+   "category": "plant_oil",
+   "aliases": []
+  },
+  {
+   "key": "sesame_oil",
+   "ko": "참기름",
+   "en": "Sesame oil",
+   "category": "plant_oil",
+   "aliases": [
+    {
+     "alias": "볶음참기름"
+    },
+    {
+     "alias": "kunjut yog'i",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "perilla_oil",
+   "ko": "들기름",
+   "en": "Perilla oil",
+   "category": "plant_oil",
+   "aliases": []
+  },
+  {
+   "key": "cocoa_butter",
+   "ko": "코코아버터",
+   "en": "Cocoa butter",
+   "category": "plant_oil",
+   "aliases": [
+    {
+     "alias": "카카오버터"
+    }
+   ]
+  },
+  {
+   "key": "shea_butter",
+   "ko": "시어버터",
+   "en": "Shea butter",
+   "category": "plant_oil",
+   "aliases": [
+    {
+     "alias": "시어스테아린"
+    }
+   ]
+  },
+  {
+   "key": "hydrogenated_vegetable_oil",
+   "ko": "경화유",
+   "en": "Hydrogenated vegetable oil",
+   "category": "plant_oil",
+   "aliases": [
+    {
+     "alias": "부분경화유"
+    },
+    {
+     "alias": "식물성경화유"
+    },
+    {
+     "alias": "partially hydrogenated vegetable oil"
+    }
+   ]
+  },
+  {
+   "key": "lecithin",
+   "ko": "레시틴",
+   "en": "Lecithin",
+   "category": "plant_other",
+   "aliases": [
+    {
+     "alias": "대두레시틴"
+    },
+    {
+     "alias": "해바라기레시틴"
+    },
+    {
+     "alias": "해바라기유레시틴"
+    },
+    {
+     "alias": "soy lecithin"
+    },
+    {
+     "alias": "sunflower lecithin"
+    },
+    {
+     "alias": "lecithins"
+    },
+    {
+     "alias": "e322"
+    },
+    {
+     "alias": "soya lecithin"
+    },
+    {
+     "alias": "lesitin",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "shortening",
+   "ko": "쇼트닝",
+   "en": "Shortening",
+   "category": "animal_fat",
+   "aliases": [
+    {
+     "alias": "가공유지"
+    },
+    {
+     "alias": "processed fat"
+    }
+   ]
+  },
+  {
+   "key": "margarine",
+   "ko": "마가린",
+   "en": "Margarine",
+   "category": "animal_fat",
+   "aliases": []
+  },
+  {
+   "key": "garlic",
+   "ko": "마늘",
+   "en": "Garlic",
+   "category": "spice_herb",
+   "aliases": [
+    {
+     "alias": "다진마늘"
+    },
+    {
+     "alias": "마늘분말"
+    },
+    {
+     "alias": "garlic powder"
+    },
+    {
+     "alias": "sarimsoq",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "onion",
+   "ko": "양파",
+   "en": "Onion",
+   "category": "spice_herb",
+   "aliases": [
+    {
+     "alias": "양파분말"
+    },
+    {
+     "alias": "onion powder"
+    },
+    {
+     "alias": "piyoz",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "green_onion",
+   "ko": "대파",
+   "en": "Green onion",
+   "category": "spice_herb",
+   "aliases": [
+    {
+     "alias": "파"
+    },
+    {
+     "alias": "쪽파"
+    },
+    {
+     "alias": "scallion"
+    },
+    {
+     "alias": "spring onion"
+    }
+   ]
+  },
+  {
+   "key": "ginger",
+   "ko": "생강",
+   "en": "Ginger",
+   "category": "spice_herb",
+   "aliases": [
+    {
+     "alias": "생강분말"
+    },
+    {
+     "alias": "zanjabil",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "red_pepper",
+   "ko": "고춧가루",
+   "en": "Red pepper powder",
+   "category": "spice_herb",
+   "aliases": [
+    {
+     "alias": "고추"
+    },
+    {
+     "alias": "고추분말"
+    },
+    {
+     "alias": "chili powder"
+    },
+    {
+     "alias": "chilli"
+    },
+    {
+     "alias": "chili"
+    },
+    {
+     "alias": "cayenne"
+    },
+    {
+     "alias": "paprika"
+    },
+    {
+     "alias": "qizil qalampir",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "black_pepper",
+   "ko": "후추",
+   "en": "Black pepper",
+   "category": "spice_herb",
+   "aliases": [
+    {
+     "alias": "후추가루"
+    },
+    {
+     "alias": "pepper"
+    },
+    {
+     "alias": "qalampir",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "tomato",
+   "ko": "토마토",
+   "en": "Tomato",
+   "category": "fruit_veg",
+   "aliases": [
+    {
+     "alias": "토마토페이스트"
+    },
+    {
+     "alias": "토마토분말"
+    },
+    {
+     "alias": "토마토농축액"
+    },
+    {
+     "alias": "tomato paste"
+    },
+    {
+     "alias": "tomato powder"
+    },
+    {
+     "alias": "pomidor",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "potato",
+   "ko": "감자",
+   "en": "Potato",
+   "category": "fruit_veg",
+   "aliases": [
+    {
+     "alias": "감자분말"
+    },
+    {
+     "alias": "potato flakes"
+    },
+    {
+     "alias": "kartoshka",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "sweet_potato",
+   "ko": "고구마",
+   "en": "Sweet potato",
+   "category": "fruit_veg",
+   "aliases": []
+  },
+  {
+   "key": "carrot",
+   "ko": "당근",
+   "en": "Carrot",
+   "category": "fruit_veg",
+   "aliases": [
+    {
+     "alias": "당근분말"
+    },
+    {
+     "alias": "sabzi",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "cabbage",
+   "ko": "양배추",
+   "en": "Cabbage",
+   "category": "fruit_veg",
+   "aliases": [
+    {
+     "alias": "배추"
+    },
+    {
+     "alias": "napa cabbage"
+    },
+    {
+     "alias": "karam",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "radish",
+   "ko": "무",
+   "en": "Radish",
+   "category": "fruit_veg",
+   "aliases": [
+    {
+     "alias": "무말랭이"
+    },
+    {
+     "alias": "daikon"
+    }
+   ]
+  },
+  {
+   "key": "spinach",
+   "ko": "시금치",
+   "en": "Spinach",
+   "category": "fruit_veg",
+   "aliases": []
+  },
+  {
+   "key": "mushroom",
+   "ko": "버섯",
+   "en": "Mushroom",
+   "category": "fruit_veg",
+   "aliases": [
+    {
+     "alias": "표고버섯"
+    },
+    {
+     "alias": "느타리버섯"
+    },
+    {
+     "alias": "양송이"
+    },
+    {
+     "alias": "shiitake"
+    },
+    {
+     "alias": "qo'ziqorin",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "apple",
+   "ko": "사과",
+   "en": "Apple",
+   "category": "fruit_veg",
+   "aliases": [
+    {
+     "alias": "사과농축액"
+    },
+    {
+     "alias": "사과농축과즙"
+    },
+    {
+     "alias": "apple juice concentrate"
+    },
+    {
+     "alias": "olma",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "orange",
+   "ko": "오렌지",
+   "en": "Orange",
+   "category": "fruit_veg",
+   "aliases": [
+    {
+     "alias": "귤"
+    },
+    {
+     "alias": "오렌지농축액"
+    },
+    {
+     "alias": "오렌지과즙"
+    },
+    {
+     "alias": "orange juice"
+    },
+    {
+     "alias": "orange juice concentrate"
+    },
+    {
+     "alias": "mandarin"
+    },
+    {
+     "alias": "apelsin",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "lemon",
+   "ko": "레몬",
+   "en": "Lemon",
+   "category": "fruit_veg",
+   "aliases": [
+    {
+     "alias": "레몬즙"
+    },
+    {
+     "alias": "레몬농축액"
+    },
+    {
+     "alias": "lemon juice"
+    },
+    {
+     "alias": "limon",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "grape",
+   "ko": "포도",
+   "en": "Grape",
+   "category": "fruit_veg",
+   "aliases": [
+    {
+     "alias": "포도농축액"
+    },
+    {
+     "alias": "포도과즙"
+    },
+    {
+     "alias": "grape juice"
+    },
+    {
+     "alias": "grape juice concentrate"
+    },
+    {
+     "alias": "uzum",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "strawberry",
+   "ko": "딸기",
+   "en": "Strawberry",
+   "category": "fruit_veg",
+   "aliases": [
+    {
+     "alias": "딸기농축액"
+    },
+    {
+     "alias": "qulupnay",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "banana",
+   "ko": "바나나",
+   "en": "Banana",
+   "category": "fruit_veg",
+   "aliases": [
+    {
+     "alias": "바나나분말"
+    },
+    {
+     "alias": "banan",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "peach",
+   "ko": "복숭아",
+   "en": "Peach",
+   "category": "fruit_veg",
+   "aliases": [
+    {
+     "alias": "shaftoli",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "mango",
+   "ko": "망고",
+   "en": "Mango",
+   "category": "fruit_veg",
+   "aliases": [
+    {
+     "alias": "망고퓨레"
+    }
+   ]
+  },
+  {
+   "key": "pineapple",
+   "ko": "파인애플",
+   "en": "Pineapple",
+   "category": "fruit_veg",
+   "aliases": []
+  },
+  {
+   "key": "coconut",
+   "ko": "코코넛",
+   "en": "Coconut",
+   "category": "fruit_veg",
+   "aliases": [
+    {
+     "alias": "코코넛밀크"
+    },
+    {
+     "alias": "코코넛분말"
+    },
+    {
+     "alias": "coconut milk"
+    }
+   ]
+  },
+  {
+   "key": "blueberry",
+   "ko": "블루베리",
+   "en": "Blueberry",
+   "category": "fruit_veg",
+   "aliases": []
+  },
+  {
+   "key": "cranberry",
+   "ko": "크랜베리",
+   "en": "Cranberry",
+   "category": "fruit_veg",
+   "aliases": []
+  },
+  {
+   "key": "jujube",
+   "ko": "대추",
+   "en": "Jujube",
+   "category": "fruit_veg",
+   "aliases": [
+    {
+     "alias": "대추농축액"
+    }
+   ]
+  },
+  {
+   "key": "plum",
+   "ko": "매실",
+   "en": "Plum (maesil)",
+   "category": "fruit_veg",
+   "aliases": [
+    {
+     "alias": "매실농축액"
+    },
+    {
+     "alias": "prune"
+    }
+   ]
+  },
+  {
+   "key": "pumpkin",
+   "ko": "호박",
+   "en": "Pumpkin",
+   "category": "fruit_veg",
+   "aliases": [
+    {
+     "alias": "단호박"
+    }
+   ]
+  },
+  {
+   "key": "cucumber",
+   "ko": "오이",
+   "en": "Cucumber",
+   "category": "fruit_veg",
+   "aliases": [
+    {
+     "alias": "bodring",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "bell_pepper",
+   "ko": "피망",
+   "en": "Bell pepper",
+   "category": "fruit_veg",
+   "aliases": [
+    {
+     "alias": "파프리카채소"
+    }
+   ]
+  },
+  {
+   "key": "kelp",
+   "ko": "다시마",
+   "en": "Kelp",
+   "category": "fruit_veg",
+   "aliases": [
+    {
+     "alias": "다시마추출물"
+    },
+    {
+     "alias": "kombu"
+    }
+   ]
+  },
+  {
+   "key": "seaweed",
+   "ko": "김",
+   "en": "Seaweed (laver)",
+   "category": "fruit_veg",
+   "aliases": [
+    {
+     "alias": "조미김"
+    },
+    {
+     "alias": "미역"
+    },
+    {
+     "alias": "파래"
+    },
+    {
+     "alias": "laver"
+    },
+    {
+     "alias": "nori"
+    },
+    {
+     "alias": "wakame"
+    }
+   ]
+  },
+  {
+   "key": "cinnamon",
+   "ko": "계피",
+   "en": "Cinnamon",
+   "category": "spice_herb",
+   "aliases": [
+    {
+     "alias": "시나몬"
+    },
+    {
+     "alias": "dolchin",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "curry_powder",
+   "ko": "카레분말",
+   "en": "Curry powder",
+   "category": "spice_herb",
+   "aliases": [
+    {
+     "alias": "카레"
+    },
+    {
+     "alias": "카레가루"
+    },
+    {
+     "alias": "curry"
+    }
+   ]
+  },
+  {
+   "key": "mustard",
+   "ko": "겨자",
+   "en": "Mustard",
+   "category": "spice_herb",
+   "aliases": [
+    {
+     "alias": "머스타드"
+    },
+    {
+     "alias": "겨자분말"
+    },
+    {
+     "alias": "xantal",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "basil",
+   "ko": "바질",
+   "en": "Basil",
+   "category": "spice_herb",
+   "aliases": []
+  },
+  {
+   "key": "parsley",
+   "ko": "파슬리",
+   "en": "Parsley",
+   "category": "spice_herb",
+   "aliases": []
+  },
+  {
+   "key": "oregano",
+   "ko": "오레가노",
+   "en": "Oregano",
+   "category": "spice_herb",
+   "aliases": []
+  },
+  {
+   "key": "cumin",
+   "ko": "커민",
+   "en": "Cumin",
+   "category": "spice_herb",
+   "aliases": [
+    {
+     "alias": "zira"
+    }
+   ]
+  },
+  {
+   "key": "turmeric",
+   "ko": "강황",
+   "en": "Turmeric",
+   "category": "spice_herb",
+   "aliases": [
+    {
+     "alias": "울금"
+    },
+    {
+     "alias": "curcuma"
+    }
+   ]
+  },
+  {
+   "key": "spice_generic",
+   "ko": "향신료",
+   "en": "Spices",
+   "category": "spice_herb",
+   "aliases": [
+    {
+     "alias": "spice"
+    },
+    {
+     "alias": "seasoning spices"
+    }
+   ]
+  },
+  {
+   "key": "soybean",
+   "ko": "대두",
+   "en": "Soybean",
+   "category": "legume_soy",
+   "aliases": [
+    {
+     "alias": "콩"
+    },
+    {
+     "alias": "탈지대두"
+    },
+    {
+     "alias": "대두분말"
+    },
+    {
+     "alias": "soy"
+    },
+    {
+     "alias": "soya"
+    },
+    {
+     "alias": "soybeans"
+    }
+   ]
+  },
+  {
+   "key": "soy_protein",
+   "ko": "대두단백",
+   "en": "Soy protein",
+   "category": "legume_soy",
+   "aliases": [
+    {
+     "alias": "분리대두단백"
+    },
+    {
+     "alias": "농축대두단백"
+    },
+    {
+     "alias": "조직대두단백"
+    },
+    {
+     "alias": "soy protein isolate"
+    },
+    {
+     "alias": "textured soy protein"
+    }
+   ]
+  },
+  {
+   "key": "tofu",
+   "ko": "두부",
+   "en": "Tofu",
+   "category": "legume_soy",
+   "aliases": [
+    {
+     "alias": "bean curd"
+    }
+   ]
+  },
+  {
+   "key": "soy_sauce",
+   "ko": "간장",
+   "en": "Soy sauce",
+   "category": "fermented_sauce",
+   "aliases": [
+    {
+     "alias": "양조간장"
+    },
+    {
+     "alias": "진간장"
+    },
+    {
+     "alias": "국간장"
+    },
+    {
+     "alias": "혼합간장"
+    },
+    {
+     "alias": "산분해간장"
+    },
+    {
+     "alias": "shoyu"
+    },
+    {
+     "alias": "soya sousi",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "soybean_paste",
+   "ko": "된장",
+   "en": "Soybean paste",
+   "category": "fermented_sauce",
+   "aliases": [
+    {
+     "alias": "doenjang"
+    },
+    {
+     "alias": "miso"
+    },
+    {
+     "alias": "된장분말"
+    }
+   ]
+  },
+  {
+   "key": "red_pepper_paste",
+   "ko": "고추장",
+   "en": "Gochujang",
+   "category": "fermented_sauce",
+   "aliases": [
+    {
+     "alias": "고추장분말"
+    }
+   ]
+  },
+  {
+   "key": "peanut",
+   "ko": "땅콩",
+   "en": "Peanut",
+   "category": "nut_seed",
+   "aliases": [
+    {
+     "alias": "땅콩분태"
+    },
+    {
+     "alias": "땅콩버터"
+    },
+    {
+     "alias": "peanuts"
+    },
+    {
+     "alias": "peanut butter"
+    },
+    {
+     "alias": "yeryong'oq",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "almond",
+   "ko": "아몬드",
+   "en": "Almond",
+   "category": "nut_seed",
+   "aliases": [
+    {
+     "alias": "아몬드분태"
+    },
+    {
+     "alias": "almonds"
+    },
+    {
+     "alias": "bodom",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "walnut",
+   "ko": "호두",
+   "en": "Walnut",
+   "category": "nut_seed",
+   "aliases": [
+    {
+     "alias": "walnuts"
+    },
+    {
+     "alias": "yong'oq",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "cashew",
+   "ko": "캐슈넛",
+   "en": "Cashew",
+   "category": "nut_seed",
+   "aliases": [
+    {
+     "alias": "cashews"
+    }
+   ]
+  },
+  {
+   "key": "hazelnut",
+   "ko": "헤이즐넛",
+   "en": "Hazelnut",
+   "category": "nut_seed",
+   "aliases": [
+    {
+     "alias": "hazelnuts"
+    },
+    {
+     "alias": "findiq",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "pistachio",
+   "ko": "피스타치오",
+   "en": "Pistachio",
+   "category": "nut_seed",
+   "aliases": [
+    {
+     "alias": "pista",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "sesame",
+   "ko": "참깨",
+   "en": "Sesame",
+   "category": "nut_seed",
+   "aliases": [
+    {
+     "alias": "깨"
+    },
+    {
+     "alias": "볶음참깨"
+    },
+    {
+     "alias": "검정깨"
+    },
+    {
+     "alias": "흑임자"
+    },
+    {
+     "alias": "sesame seeds"
+    },
+    {
+     "alias": "sesame seed"
+    },
+    {
+     "alias": "kunjut",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "perilla_seed",
+   "ko": "들깨",
+   "en": "Perilla seed",
+   "category": "nut_seed",
+   "aliases": [
+    {
+     "alias": "들깨가루"
+    }
+   ]
+  },
+  {
+   "key": "sunflower_seed",
+   "ko": "해바라기씨",
+   "en": "Sunflower seed",
+   "category": "nut_seed",
+   "aliases": [
+    {
+     "alias": "sunflower seeds"
+    }
+   ]
+  },
+  {
+   "key": "chestnut",
+   "ko": "밤",
+   "en": "Chestnut",
+   "category": "nut_seed",
+   "aliases": []
+  },
+  {
+   "key": "chickpea",
+   "ko": "병아리콩",
+   "en": "Chickpea",
+   "category": "legume_soy",
+   "aliases": [
+    {
+     "alias": "chickpeas"
+    },
+    {
+     "alias": "hummus"
+    },
+    {
+     "alias": "no'xat",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "red_bean",
+   "ko": "팥",
+   "en": "Red bean",
+   "category": "legume_soy",
+   "aliases": [
+    {
+     "alias": "팥앙금"
+    },
+    {
+     "alias": "붉은팥"
+    },
+    {
+     "alias": "adzuki"
+    }
+   ]
+  },
+  {
+   "key": "green_bean",
+   "ko": "녹두",
+   "en": "Mung bean",
+   "category": "legume_soy",
+   "aliases": []
+  },
+  {
+   "key": "cocoa",
+   "ko": "코코아",
+   "en": "Cocoa",
+   "category": "plant_other",
+   "aliases": [
+    {
+     "alias": "코코아분말"
+    },
+    {
+     "alias": "카카오매스"
+    },
+    {
+     "alias": "카카오분말"
+    },
+    {
+     "alias": "카카오"
+    },
+    {
+     "alias": "코코아매스"
+    },
+    {
+     "alias": "cocoa powder"
+    },
+    {
+     "alias": "cocoa mass"
+    },
+    {
+     "alias": "cacao"
+    },
+    {
+     "alias": "cocoa solids"
+    },
+    {
+     "alias": "kakao",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "coffee",
+   "ko": "커피",
+   "en": "Coffee",
+   "category": "plant_other",
+   "aliases": [
+    {
+     "alias": "커피추출물"
+    },
+    {
+     "alias": "인스턴트커피"
+    },
+    {
+     "alias": "instant coffee"
+    },
+    {
+     "alias": "qahva",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "tea",
+   "ko": "차",
+   "en": "Tea",
+   "category": "plant_other",
+   "aliases": [
+    {
+     "alias": "녹차"
+    },
+    {
+     "alias": "홍차"
+    },
+    {
+     "alias": "녹차분말"
+    },
+    {
+     "alias": "green tea"
+    },
+    {
+     "alias": "black tea"
+    },
+    {
+     "alias": "tea extract"
+    },
+    {
+     "alias": "choy",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "ginseng",
+   "ko": "인삼",
+   "en": "Ginseng",
+   "category": "plant_other",
+   "aliases": [
+    {
+     "alias": "홍삼"
+    },
+    {
+     "alias": "홍삼농축액"
+    },
+    {
+     "alias": "인삼농축액"
+    },
+    {
+     "alias": "red ginseng"
+    }
+   ]
+  },
+  {
+   "key": "agave",
+   "ko": "아가베",
+   "en": "Agave",
+   "category": "sweetener",
+   "aliases": [
+    {
+     "alias": "아가베시럽"
+    },
+    {
+     "alias": "agave syrup"
+    }
+   ]
+  },
+  {
+   "key": "pectin",
+   "ko": "펙틴",
+   "en": "Pectin",
+   "category": "plant_thickener",
+   "aliases": [
+    {
+     "alias": "e440"
+    }
+   ]
+  },
+  {
+   "key": "agar",
+   "ko": "한천",
+   "en": "Agar",
+   "category": "plant_thickener",
+   "aliases": [
+    {
+     "alias": "agar agar"
+    },
+    {
+     "alias": "e406"
+    }
+   ]
+  },
+  {
+   "key": "carrageenan",
+   "ko": "카라기난",
+   "en": "Carrageenan",
+   "category": "plant_thickener",
+   "aliases": [
+    {
+     "alias": "e407"
+    }
+   ]
+  },
+  {
+   "key": "xanthan_gum",
+   "ko": "잔탄검",
+   "en": "Xanthan gum",
+   "category": "plant_thickener",
+   "aliases": [
+    {
+     "alias": "e415"
+    },
+    {
+     "alias": "xanthan"
+    }
+   ]
+  },
+  {
+   "key": "guar_gum",
+   "ko": "구아검",
+   "en": "Guar gum",
+   "category": "plant_thickener",
+   "aliases": [
+    {
+     "alias": "e412"
+    }
+   ]
+  },
+  {
+   "key": "locust_bean_gum",
+   "ko": "로커스트콩검",
+   "en": "Locust bean gum",
+   "category": "plant_thickener",
+   "aliases": [
+    {
+     "alias": "로커스트빈검"
+    },
+    {
+     "alias": "carob bean gum"
+    },
+    {
+     "alias": "e410"
+    }
+   ]
+  },
+  {
+   "key": "alginate",
+   "ko": "알긴산나트륨",
+   "en": "Sodium alginate",
+   "category": "plant_thickener",
+   "aliases": [
+    {
+     "alias": "알긴산"
+    },
+    {
+     "alias": "alginic acid"
+    },
+    {
+     "alias": "e401"
+    },
+    {
+     "alias": "e400"
+    }
+   ]
+  },
+  {
+   "key": "cellulose",
+   "ko": "셀룰로스",
+   "en": "Cellulose",
+   "category": "plant_thickener",
+   "aliases": [
+    {
+     "alias": "카르복시메틸셀룰로스나트륨"
+    },
+    {
+     "alias": "CMC"
+    },
+    {
+     "alias": "미결정셀룰로스"
+    },
+    {
+     "alias": "히드록시프로필메틸셀룰로스"
+    },
+    {
+     "alias": "microcrystalline cellulose"
+    },
+    {
+     "alias": "carboxymethyl cellulose"
+    },
+    {
+     "alias": "e460"
+    },
+    {
+     "alias": "e466"
+    },
+    {
+     "alias": "hpmc"
+    },
+    {
+     "alias": "methylcellulose"
+    }
+   ]
+  },
+  {
+   "key": "konjac",
+   "ko": "곤약",
+   "en": "Konjac",
+   "category": "plant_thickener",
+   "aliases": [
+    {
+     "alias": "곤약분말"
+    },
+    {
+     "alias": "glucomannan"
+    },
+    {
+     "alias": "e425"
+    }
+   ]
+  },
+  {
+   "key": "gellan_gum",
+   "ko": "젤란검",
+   "en": "Gellan gum",
+   "category": "plant_thickener",
+   "aliases": [
+    {
+     "alias": "e418"
+    }
+   ]
+  },
+  {
+   "key": "gum_arabic",
+   "ko": "아라비아검",
+   "en": "Gum arabic",
+   "category": "plant_thickener",
+   "aliases": [
+    {
+     "alias": "acacia gum"
+    },
+    {
+     "alias": "e414"
+    }
+   ]
+  },
+  {
+   "key": "thickener_generic",
+   "ko": "증점제",
+   "en": "Thickener",
+   "category": "additive_class",
+   "aliases": [
+    {
+     "alias": "안정제"
+    },
+    {
+     "alias": "겔화제"
+    },
+    {
+     "alias": "thickeners"
+    },
+    {
+     "alias": "stabilizer"
+    },
+    {
+     "alias": "stabiliser"
+    },
+    {
+     "alias": "gelling agent"
+    }
+   ],
+   "isClass": true
+  },
+  {
+   "key": "citric_acid",
+   "ko": "구연산",
+   "en": "Citric acid",
+   "category": "additive_fermentation",
+   "aliases": [
+    {
+     "alias": "e330"
+    },
+    {
+     "alias": "citrate"
+    },
+    {
+     "alias": "구연산나트륨"
+    },
+    {
+     "alias": "구연산칼륨"
+    },
+    {
+     "alias": "sodium citrate"
+    },
+    {
+     "alias": "e331"
+    },
+    {
+     "alias": "limon kislotasi",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "lactic_acid",
+   "ko": "젖산",
+   "en": "Lactic acid",
+   "category": "additive_fermentation",
+   "aliases": [
+    {
+     "alias": "젖산칼슘"
+    },
+    {
+     "alias": "e270"
+    },
+    {
+     "alias": "calcium lactate"
+    },
+    {
+     "alias": "e327"
+    },
+    {
+     "alias": "sodium lactate"
+    },
+    {
+     "alias": "e325"
+    }
+   ]
+  },
+  {
+   "key": "malic_acid",
+   "ko": "사과산",
+   "en": "Malic acid",
+   "category": "additive_fermentation",
+   "aliases": [
+    {
+     "alias": "e296"
+    }
+   ]
+  },
+  {
+   "key": "acetic_acid",
+   "ko": "초산",
+   "en": "Acetic acid",
+   "category": "additive_fermentation",
+   "aliases": [
+    {
+     "alias": "빙초산"
+    },
+    {
+     "alias": "e260"
+    }
+   ]
+  },
+  {
+   "key": "tartaric_acid",
+   "ko": "주석산",
+   "en": "Tartaric acid",
+   "category": "additive_fermentation",
+   "aliases": [
+    {
+     "alias": "e334"
+    }
+   ]
+  },
+  {
+   "key": "phosphoric_acid",
+   "ko": "인산",
+   "en": "Phosphoric acid",
+   "category": "additive_synthetic",
+   "aliases": [
+    {
+     "alias": "e338"
+    }
+   ]
+  },
+  {
+   "key": "msg",
+   "ko": "글루탐산나트륨",
+   "en": "Monosodium glutamate",
+   "category": "additive_fermentation",
+   "aliases": [
+    {
+     "alias": "l-글루탐산나트륨"
+    },
+    {
+     "alias": "엠에스지"
+    },
+    {
+     "alias": "e621"
+    },
+    {
+     "alias": "조미료(글루탐산나트륨)"
+    },
+    {
+     "alias": "글루탐산"
+    }
+   ]
+  },
+  {
+   "key": "vinegar",
+   "ko": "식초",
+   "en": "Vinegar",
+   "category": "vinegar",
+   "aliases": [
+    {
+     "alias": "양조식초"
+    },
+    {
+     "alias": "현미식초"
+    },
+    {
+     "alias": "사과식초"
+    },
+    {
+     "alias": "곡물식초"
+    },
+    {
+     "alias": "빙초산희석"
+    },
+    {
+     "alias": "apple cider vinegar"
+    },
+    {
+     "alias": "rice vinegar"
+    },
+    {
+     "alias": "grain vinegar"
+    },
+    {
+     "alias": "distilled vinegar"
+    },
+    {
+     "alias": "white vinegar"
+    },
+    {
+     "alias": "sirka",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "wine_vinegar",
+   "ko": "와인식초",
+   "en": "Wine vinegar",
+   "category": "vinegar_wine",
+   "aliases": [
+    {
+     "alias": "포도식초"
+    },
+    {
+     "alias": "balsamic vinegar"
+    },
+    {
+     "alias": "발사믹식초"
+    },
+    {
+     "alias": "발사믹"
+    },
+    {
+     "alias": "red wine vinegar"
+    },
+    {
+     "alias": "white wine vinegar"
+    }
+   ]
+  },
+  {
+   "key": "yeast",
+   "ko": "효모",
+   "en": "Yeast",
+   "category": "yeast",
+   "aliases": [
+    {
+     "alias": "이스트"
+    },
+    {
+     "alias": "건조효모"
+    },
+    {
+     "alias": "맥주효모"
+    },
+    {
+     "alias": "효모분말"
+    },
+    {
+     "alias": "dry yeast"
+    },
+    {
+     "alias": "baker's yeast"
+    },
+    {
+     "alias": "brewer's yeast"
+    },
+    {
+     "alias": "nutritional yeast"
+    },
+    {
+     "alias": "xamirturush",
+     "lang": "uz"
+    },
+    {
+     "alias": "drojji",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "yeast_extract",
+   "ko": "효모추출물",
+   "en": "Yeast extract",
+   "category": "yeast",
+   "aliases": [
+    {
+     "alias": "효모엑기스"
+    },
+    {
+     "alias": "yeast extracts"
+    },
+    {
+     "alias": "autolyzed yeast extract"
+    }
+   ]
+  },
+  {
+   "key": "sorbic_acid",
+   "ko": "소르빈산",
+   "en": "Sorbic acid",
+   "category": "additive_synthetic",
+   "aliases": [
+    {
+     "alias": "소르빈산칼륨"
+    },
+    {
+     "alias": "potassium sorbate"
+    },
+    {
+     "alias": "e200"
+    },
+    {
+     "alias": "e202"
+    }
+   ]
+  },
+  {
+   "key": "benzoate",
+   "ko": "안식향산나트륨",
+   "en": "Sodium benzoate",
+   "category": "additive_synthetic",
+   "aliases": [
+    {
+     "alias": "안식향산"
+    },
+    {
+     "alias": "benzoic acid"
+    },
+    {
+     "alias": "e210"
+    },
+    {
+     "alias": "e211"
+    }
+   ]
+  },
+  {
+   "key": "propionate",
+   "ko": "프로피온산칼슘",
+   "en": "Calcium propionate",
+   "category": "additive_synthetic",
+   "aliases": [
+    {
+     "alias": "프로피온산"
+    },
+    {
+     "alias": "프로피온산나트륨"
+    },
+    {
+     "alias": "e282"
+    },
+    {
+     "alias": "propionic acid"
+    },
+    {
+     "alias": "e280"
+    }
+   ]
+  },
+  {
+   "key": "nitrite",
+   "ko": "아질산나트륨",
+   "en": "Sodium nitrite",
+   "category": "additive_synthetic",
+   "aliases": [
+    {
+     "alias": "e250"
+    },
+    {
+     "alias": "sodium nitrate"
+    },
+    {
+     "alias": "질산나트륨"
+    },
+    {
+     "alias": "e251"
+    }
+   ]
+  },
+  {
+   "key": "sulfite",
+   "ko": "아황산나트륨",
+   "en": "Sodium sulfite",
+   "category": "additive_synthetic",
+   "aliases": []
+  },
+  {
+   "key": "ascorbic_acid",
+   "ko": "아스코르빈산",
+   "en": "Ascorbic acid",
+   "category": "vitamin_synthetic",
+   "aliases": [
+    {
+     "alias": "비타민c"
+    },
+    {
+     "alias": "l-아스코르브산"
+    },
+    {
+     "alias": "아스코르빈산나트륨"
+    },
+    {
+     "alias": "vitamin c"
+    },
+    {
+     "alias": "e300"
+    },
+    {
+     "alias": "sodium ascorbate"
+    },
+    {
+     "alias": "e301"
+    }
+   ]
+  },
+  {
+   "key": "tocopherol",
+   "ko": "토코페롤",
+   "en": "Tocopherol",
+   "category": "vitamin_synthetic",
+   "aliases": [
+    {
+     "alias": "혼합토코페롤"
+    },
+    {
+     "alias": "비타민e"
+    },
+    {
+     "alias": "d-알파토코페롤"
+    },
+    {
+     "alias": "mixed tocopherols"
+    },
+    {
+     "alias": "vitamin e"
+    },
+    {
+     "alias": "e306"
+    },
+    {
+     "alias": "e307"
+    }
+   ]
+  },
+  {
+   "key": "vitamin_b_complex",
+   "ko": "비타민B군",
+   "en": "B vitamins",
+   "category": "vitamin_synthetic",
+   "aliases": [
+    {
+     "alias": "비타민b1"
+    },
+    {
+     "alias": "비타민b2"
+    },
+    {
+     "alias": "비타민b6"
+    },
+    {
+     "alias": "니아신"
+    },
+    {
+     "alias": "나이아신"
+    },
+    {
+     "alias": "엽산"
+    },
+    {
+     "alias": "판토텐산"
+    },
+    {
+     "alias": "티아민질산염"
+    },
+    {
+     "alias": "리보플라빈"
+    },
+    {
+     "alias": "피리독신"
+    },
+    {
+     "alias": "niacin"
+    },
+    {
+     "alias": "folic acid"
+    },
+    {
+     "alias": "thiamine"
+    },
+    {
+     "alias": "riboflavin"
+    },
+    {
+     "alias": "pyridoxine"
+    },
+    {
+     "alias": "vitamin b1"
+    },
+    {
+     "alias": "vitamin b2"
+    },
+    {
+     "alias": "vitamin b6"
+    },
+    {
+     "alias": "pantothenic acid"
+    }
+   ]
+  },
+  {
+   "key": "vitamin_d3",
+   "ko": "비타민D3",
+   "en": "Vitamin D3",
+   "category": "animal_derived_other",
+   "aliases": [
+    {
+     "alias": "비타민d"
+    },
+    {
+     "alias": "콜레칼시페롤"
+    },
+    {
+     "alias": "vitamin d"
+    },
+    {
+     "alias": "cholecalciferol"
+    }
+   ]
+  },
+  {
+   "key": "vitamin_a",
+   "ko": "비타민A",
+   "en": "Vitamin A",
+   "category": "animal_derived_other",
+   "aliases": [
+    {
+     "alias": "비타민a팔미테이트"
+    },
+    {
+     "alias": "레티닐팔미테이트"
+    },
+    {
+     "alias": "retinyl palmitate"
+    },
+    {
+     "alias": "vitamin a palmitate"
+    }
+   ]
+  },
+  {
+   "key": "caramel_color",
+   "ko": "카라멜색소",
+   "en": "Caramel colour",
+   "category": "colorant",
+   "aliases": [
+    {
+     "alias": "카라멜"
+    },
+    {
+     "alias": "e150"
+    },
+    {
+     "alias": "e150a"
+    },
+    {
+     "alias": "e150c"
+    },
+    {
+     "alias": "e150d"
+    }
+   ]
+  },
+  {
+   "key": "paprika_color",
+   "ko": "파프리카추출색소",
+   "en": "Paprika extract colour",
+   "category": "colorant",
+   "aliases": [
+    {
+     "alias": "파프리카색소"
+    },
+    {
+     "alias": "paprika oleoresin"
+    },
+    {
+     "alias": "paprika extract"
+    },
+    {
+     "alias": "e160c"
+    }
+   ]
+  },
+  {
+   "key": "gardenia_color",
+   "ko": "치자황색소",
+   "en": "Gardenia colour",
+   "category": "colorant",
+   "aliases": [
+    {
+     "alias": "치자색소"
+    },
+    {
+     "alias": "치자청색소"
+    },
+    {
+     "alias": "gardenia yellow"
+    },
+    {
+     "alias": "gardenia blue"
+    }
+   ]
+  },
+  {
+   "key": "curcumin",
+   "ko": "커큐민",
+   "en": "Curcumin",
+   "category": "colorant",
+   "aliases": [
+    {
+     "alias": "e100"
+    },
+    {
+     "alias": "강황색소"
+    }
+   ]
+  },
+  {
+   "key": "beta_carotene",
+   "ko": "베타카로틴",
+   "en": "Beta-carotene",
+   "category": "colorant",
+   "aliases": [
+    {
+     "alias": "β-카로틴"
+    },
+    {
+     "alias": "e160a"
+    },
+    {
+     "alias": "카로틴"
+    },
+    {
+     "alias": "카로티노이드"
+    }
+   ]
+  },
+  {
+   "key": "anthocyanin",
+   "ko": "안토시아닌",
+   "en": "Anthocyanin",
+   "category": "colorant",
+   "aliases": [
+    {
+     "alias": "적양배추색소"
+    },
+    {
+     "alias": "자색고구마색소"
+    },
+    {
+     "alias": "포도과피색소"
+    },
+    {
+     "alias": "안토시아닌색소"
+    },
+    {
+     "alias": "anthocyanins"
+    },
+    {
+     "alias": "e163"
+    }
+   ]
+  },
+  {
+   "key": "synthetic_color",
+   "ko": "합성착색료",
+   "en": "Synthetic colour",
+   "category": "colorant",
+   "aliases": [
+    {
+     "alias": "식용색소"
+    },
+    {
+     "alias": "식용색소적색40호"
+    },
+    {
+     "alias": "식용색소황색5호"
+    },
+    {
+     "alias": "식용색소청색1호"
+    },
+    {
+     "alias": "식용적색40호"
+    },
+    {
+     "alias": "식용황색5호"
+    },
+    {
+     "alias": "식용황색4호"
+    },
+    {
+     "alias": "식용청색1호"
+    },
+    {
+     "alias": "적색40호"
+    },
+    {
+     "alias": "황색5호"
+    },
+    {
+     "alias": "황색4호"
+    },
+    {
+     "alias": "청색1호"
+    },
+    {
+     "alias": "allura red"
+    },
+    {
+     "alias": "tartrazine"
+    },
+    {
+     "alias": "sunset yellow"
+    },
+    {
+     "alias": "brilliant blue"
+    },
+    {
+     "alias": "e129"
+    },
+    {
+     "alias": "e102"
+    },
+    {
+     "alias": "e110"
+    },
+    {
+     "alias": "e133"
+    }
+   ]
+  },
+  {
+   "key": "titanium_dioxide",
+   "ko": "이산화티타늄",
+   "en": "Titanium dioxide",
+   "category": "colorant",
+   "aliases": [
+    {
+     "alias": "e171"
+    }
+   ]
+  },
+  {
+   "key": "color_generic",
+   "ko": "착색료",
+   "en": "Colouring",
+   "category": "additive_class",
+   "aliases": [
+    {
+     "alias": "색소"
+    },
+    {
+     "alias": "식용색소류"
+    },
+    {
+     "alias": "colour"
+    },
+    {
+     "alias": "color"
+    },
+    {
+     "alias": "colours"
+    },
+    {
+     "alias": "colors"
+    },
+    {
+     "alias": "coloring"
+    },
+    {
+     "alias": "food colouring"
+    },
+    {
+     "alias": "food coloring"
+    }
+   ],
+   "isClass": true
+  },
+  {
+   "key": "carmine",
+   "ko": "코치닐추출색소",
+   "en": "Carmine (cochineal)",
+   "category": "insect_derived",
+   "aliases": [
+    {
+     "alias": "카민"
+    },
+    {
+     "alias": "카르민"
+    },
+    {
+     "alias": "코치닐"
+    },
+    {
+     "alias": "코치닐색소"
+    },
+    {
+     "alias": "연지벌레색소"
+    },
+    {
+     "alias": "카민산"
+    },
+    {
+     "alias": "cochineal"
+    },
+    {
+     "alias": "carminic acid"
+    },
+    {
+     "alias": "e120"
+    },
+    {
+     "alias": "natural red 4"
+    }
+   ]
+  },
+  {
+   "key": "shellac",
+   "ko": "셸락",
+   "en": "Shellac",
+   "category": "insect_derived",
+   "aliases": [
+    {
+     "alias": "쉘락"
+    },
+    {
+     "alias": "락색소"
+    },
+    {
+     "alias": "confectioner's glaze"
+    },
+    {
+     "alias": "e904"
+    },
+    {
+     "alias": "lac resin"
+    },
+    {
+     "alias": "glazing agent shellac"
+    }
+   ]
+  },
+  {
+   "key": "beeswax",
+   "ko": "밀랍",
+   "en": "Beeswax",
+   "category": "honey_bee",
+   "aliases": [
+    {
+     "alias": "비즈왁스"
+    },
+    {
+     "alias": "e901"
+    }
+   ]
+  },
+  {
+   "key": "carnauba_wax",
+   "ko": "카나우바왁스",
+   "en": "Carnauba wax",
+   "category": "plant_other",
+   "aliases": [
+    {
+     "alias": "카르나우바왁스"
+    },
+    {
+     "alias": "e903"
+    }
+   ]
+  },
+  {
+   "key": "glazing_generic",
+   "ko": "광택제",
+   "en": "Glazing agent",
+   "category": "additive_class",
+   "aliases": [
+    {
+     "alias": "코팅제"
+    },
+    {
+     "alias": "피막제"
+    },
+    {
+     "alias": "coating agent"
+    }
+   ],
+   "isClass": true
+  },
+  {
+   "key": "emulsifier_generic",
+   "ko": "유화제",
+   "en": "Emulsifier",
+   "category": "additive_class",
+   "aliases": [
+    {
+     "alias": "emulsifiers"
+    },
+    {
+     "alias": "emulsifying agent"
+    },
+    {
+     "alias": "유화제류"
+    },
+    {
+     "alias": "emulgator",
+     "lang": "uz"
+    }
+   ],
+   "isClass": true
+  },
+  {
+   "key": "flavour_generic",
+   "ko": "향료",
+   "en": "Flavouring",
+   "category": "flavor",
+   "aliases": [
+    {
+     "alias": "합성향료"
+    },
+    {
+     "alias": "천연향료"
+    },
+    {
+     "alias": "혼합향료"
+    },
+    {
+     "alias": "합성착향료"
+    },
+    {
+     "alias": "착향료"
+    },
+    {
+     "alias": "천연착향료"
+    },
+    {
+     "alias": "분말향료"
+    },
+    {
+     "alias": "유화향료"
+    },
+    {
+     "alias": "향"
+    },
+    {
+     "alias": "flavor"
+    },
+    {
+     "alias": "flavour"
+    },
+    {
+     "alias": "flavors"
+    },
+    {
+     "alias": "flavours"
+    },
+    {
+     "alias": "flavoring"
+    },
+    {
+     "alias": "natural flavor"
+    },
+    {
+     "alias": "natural flavour"
+    },
+    {
+     "alias": "artificial flavor"
+    },
+    {
+     "alias": "artificial flavour"
+    },
+    {
+     "alias": "natural flavors"
+    },
+    {
+     "alias": "natural flavourings"
+    },
+    {
+     "alias": "aroma"
+    },
+    {
+     "alias": "aromas"
+    },
+    {
+     "alias": "xushbo'y qo'shimcha",
+     "lang": "uz"
+    }
+   ],
+   "isClass": true
+  },
+  {
+   "key": "enzyme_generic",
+   "ko": "효소",
+   "en": "Enzyme",
+   "category": "enzyme",
+   "aliases": [
+    {
+     "alias": "효소제"
+    },
+    {
+     "alias": "효소류"
+    },
+    {
+     "alias": "enzymes"
+    },
+    {
+     "alias": "amylase"
+    },
+    {
+     "alias": "아밀라아제"
+    },
+    {
+     "alias": "락타아제"
+    },
+    {
+     "alias": "lactase"
+    },
+    {
+     "alias": "프로테아제"
+    },
+    {
+     "alias": "protease"
+    },
+    {
+     "alias": "리파아제"
+    },
+    {
+     "alias": "lipase"
+    },
+    {
+     "alias": "트랜스글루타미나아제"
+    },
+    {
+     "alias": "transglutaminase"
+    },
+    {
+     "alias": "글루코아밀라아제"
+    },
+    {
+     "alias": "셀룰라아제"
+    },
+    {
+     "alias": "펙티나아제"
+    },
+    {
+     "alias": "키모신"
+    },
+    {
+     "alias": "chymosin"
+    },
+    {
+     "alias": "ferment",
+     "lang": "uz"
+    }
+   ],
+   "isClass": true
+  },
+  {
+   "key": "acidity_regulator_generic",
+   "ko": "산도조절제",
+   "en": "Acidity regulator",
+   "category": "additive_class",
+   "aliases": [
+    {
+     "alias": "acidity regulators"
+    },
+    {
+     "alias": "acid regulator"
+    },
+    {
+     "alias": "산도조정제"
+    }
+   ],
+   "isClass": true
+  },
+  {
+   "key": "preservative_generic",
+   "ko": "보존료",
+   "en": "Preservative",
+   "category": "additive_class",
+   "aliases": [
+    {
+     "alias": "보존제"
+    },
+    {
+     "alias": "preservatives"
+    }
+   ],
+   "isClass": true
+  },
+  {
+   "key": "antioxidant_generic",
+   "ko": "산화방지제",
+   "en": "Antioxidant",
+   "category": "additive_class",
+   "aliases": [
+    {
+     "alias": "antioxidants"
+    }
+   ],
+   "isClass": true
+  },
+  {
+   "key": "leavening_generic",
+   "ko": "팽창제류",
+   "en": "Raising agent",
+   "category": "additive_class",
+   "aliases": [
+    {
+     "alias": "raising agents"
+    }
+   ],
+   "isClass": true
+  },
+  {
+   "key": "seasoning_generic",
+   "ko": "조미료",
+   "en": "Seasoning",
+   "category": "additive_class",
+   "aliases": [
+    {
+     "alias": "복합조미식품"
+    },
+    {
+     "alias": "복합조미료"
+    },
+    {
+     "alias": "혼합조미료"
+    },
+    {
+     "alias": "조미식품"
+    },
+    {
+     "alias": "시즈닝"
+    },
+    {
+     "alias": "seasonings"
+    },
+    {
+     "alias": "seasoning powder"
+    },
+    {
+     "alias": "condiment"
+    }
+   ],
+   "isClass": true
+  },
+  {
+   "key": "nutrient_generic",
+   "ko": "영양강화제",
+   "en": "Nutrient fortificant",
+   "category": "additive_class",
+   "aliases": [
+    {
+     "alias": "비타민류"
+    },
+    {
+     "alias": "무기질류"
+    },
+    {
+     "alias": "vitamins"
+    },
+    {
+     "alias": "minerals"
+    },
+    {
+     "alias": "vitamin mix"
+    },
+    {
+     "alias": "mineral mix"
+    },
+    {
+     "alias": "fortificants"
+    }
+   ],
+   "isClass": true
+  },
+  {
+   "key": "extract_generic",
+   "ko": "추출물",
+   "en": "Extract",
+   "category": "additive_class",
+   "aliases": [
+    {
+     "alias": "엑기스"
+    },
+    {
+     "alias": "농축액"
+    },
+    {
+     "alias": "extracts"
+    }
+   ],
+   "isClass": true
+  },
+  {
+   "key": "protein_generic",
+   "ko": "단백질",
+   "en": "Protein",
+   "category": "additive_class",
+   "aliases": [
+    {
+     "alias": "가수분해단백"
+    },
+    {
+     "alias": "가수분해단백질"
+    },
+    {
+     "alias": "식물성가수분해단백"
+    },
+    {
+     "alias": "동물성가수분해단백"
+    },
+    {
+     "alias": "hydrolyzed protein"
+    },
+    {
+     "alias": "hydrolysed protein"
+    },
+    {
+     "alias": "hydrolyzed vegetable protein"
+    },
+    {
+     "alias": "hvp"
+    },
+    {
+     "alias": "단백가수분해물"
+    }
+   ],
+   "isClass": true
+  },
+  {
+   "key": "mono_diglycerides",
+   "ko": "모노·디글리세리드",
+   "en": "Mono- and diglycerides",
+   "category": "glycerol_fatty",
+   "aliases": [
+    {
+     "alias": "모노글리세리드"
+    },
+    {
+     "alias": "디글리세리드"
+    },
+    {
+     "alias": "지방산모노글리세리드"
+    },
+    {
+     "alias": "monoglycerides"
+    },
+    {
+     "alias": "diglycerides"
+    },
+    {
+     "alias": "mono- and diglycerides of fatty acids"
+    },
+    {
+     "alias": "e471"
+    },
+    {
+     "alias": "글리세린지방산에스테르"
+    },
+    {
+     "alias": "글리세린지방산에스터"
+    }
+   ]
+  },
+  {
+   "key": "fatty_acid_esters",
+   "ko": "지방산에스테르",
+   "en": "Fatty acid esters",
+   "category": "glycerol_fatty",
+   "aliases": [
+    {
+     "alias": "지방산에스터"
+    },
+    {
+     "alias": "자당지방산에스테르"
+    },
+    {
+     "alias": "자당지방산에스터"
+    },
+    {
+     "alias": "폴리글리세린지방산에스테르"
+    },
+    {
+     "alias": "폴리글리세린지방산에스터"
+    },
+    {
+     "alias": "소르비탄지방산에스테르"
+    },
+    {
+     "alias": "프로필렌글리콜지방산에스테르"
+    },
+    {
+     "alias": "폴리소르베이트"
+    },
+    {
+     "alias": "sucrose esters of fatty acids"
+    },
+    {
+     "alias": "polyglycerol esters"
+    },
+    {
+     "alias": "polysorbate"
+    },
+    {
+     "alias": "e473"
+    },
+    {
+     "alias": "e475"
+    },
+    {
+     "alias": "e491"
+    },
+    {
+     "alias": "e432"
+    },
+    {
+     "alias": "e433"
+    },
+    {
+     "alias": "e477"
+    },
+    {
+     "alias": "e472e"
+    },
+    {
+     "alias": "e472b"
+    },
+    {
+     "alias": "e472a"
+    },
+    {
+     "alias": "e472c"
+    },
+    {
+     "alias": "e472"
+    },
+    {
+     "alias": "스테아릴젖산나트륨"
+    },
+    {
+     "alias": "스테아로일젖산나트륨"
+    },
+    {
+     "alias": "sodium stearoyl lactylate"
+    },
+    {
+     "alias": "e481"
+    }
+   ]
+  },
+  {
+   "key": "fatty_acid",
+   "ko": "지방산",
+   "en": "Fatty acids",
+   "category": "glycerol_fatty",
+   "aliases": [
+    {
+     "alias": "지방산칼슘"
+    },
+    {
+     "alias": "지방산마그네슘"
+    },
+    {
+     "alias": "스테아린산"
+    },
+    {
+     "alias": "스테아린산마그네슘"
+    },
+    {
+     "alias": "스테아르산"
+    },
+    {
+     "alias": "스테아르산마그네슘"
+    },
+    {
+     "alias": "마그네슘스테아레이트"
+    },
+    {
+     "alias": "stearic acid"
+    },
+    {
+     "alias": "magnesium stearate"
+    },
+    {
+     "alias": "e570"
+    },
+    {
+     "alias": "e470b"
+    },
+    {
+     "alias": "e572"
+    },
+    {
+     "alias": "calcium stearate"
+    },
+    {
+     "alias": "e470a"
+    }
+   ]
+  },
+  {
+   "key": "glycerin",
+   "ko": "글리세린",
+   "en": "Glycerin",
+   "category": "glycerol_fatty",
+   "aliases": [
+    {
+     "alias": "글리세롤"
+    },
+    {
+     "alias": "glycerine"
+    },
+    {
+     "alias": "glycerol"
+    },
+    {
+     "alias": "e422"
+    }
+   ]
+  },
+  {
+   "key": "glycerin_plant",
+   "ko": "식물성 글리세린",
+   "en": "Vegetable glycerin",
+   "category": "glycerol_fatty_plant",
+   "aliases": [
+    {
+     "alias": "글리세린식물성"
+    },
+    {
+     "alias": "글리세롤식물성"
+    },
+    {
+     "alias": "vegetable glycerine"
+    },
+    {
+     "alias": "plant glycerin"
+    }
+   ]
+  },
+  {
+   "key": "ethanol",
+   "ko": "주정",
+   "en": "Ethanol (food-grade alcohol)",
+   "category": "alcohol_ethanol",
+   "aliases": [
+    {
+     "alias": "발효주정"
+    },
+    {
+     "alias": "식용주정"
+    },
+    {
+     "alias": "에탄올"
+    },
+    {
+     "alias": "알코올"
+    },
+    {
+     "alias": "알콜"
+    },
+    {
+     "alias": "에틸알코올"
+    },
+    {
+     "alias": "에틸알콜"
+    },
+    {
+     "alias": "식용알코올"
+    },
+    {
+     "alias": "alcohol"
+    },
+    {
+     "alias": "ethyl alcohol"
+    },
+    {
+     "alias": "food grade alcohol"
+    },
+    {
+     "alias": "spirit vinegar alcohol"
+    },
+    {
+     "alias": "spirt",
+     "lang": "uz"
+    },
+    {
+     "alias": "etanol",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "wine",
+   "ko": "와인",
+   "en": "Wine",
+   "category": "alcohol_beverage",
+   "aliases": [
+    {
+     "alias": "포도주"
+    },
+    {
+     "alias": "적포도주"
+    },
+    {
+     "alias": "백포도주"
+    },
+    {
+     "alias": "화이트와인"
+    },
+    {
+     "alias": "레드와인"
+    },
+    {
+     "alias": "스파클링와인"
+    },
+    {
+     "alias": "샴페인"
+    },
+    {
+     "alias": "red wine"
+    },
+    {
+     "alias": "white wine"
+    },
+    {
+     "alias": "sparkling wine"
+    },
+    {
+     "alias": "champagne"
+    },
+    {
+     "alias": "cooking wine"
+    },
+    {
+     "alias": "요리술"
+    },
+    {
+     "alias": "vino",
+     "lang": "uz"
+    },
+    {
+     "alias": "sharob",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "beer",
+   "ko": "맥주",
+   "en": "Beer",
+   "category": "alcohol_beverage",
+   "aliases": [
+    {
+     "alias": "에일"
+    },
+    {
+     "alias": "라거"
+    },
+    {
+     "alias": "ale"
+    },
+    {
+     "alias": "lager"
+    },
+    {
+     "alias": "stout"
+    },
+    {
+     "alias": "pivo",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "sake",
+   "ko": "청주",
+   "en": "Sake / rice wine",
+   "category": "alcohol_beverage",
+   "aliases": [
+    {
+     "alias": "사케"
+    },
+    {
+     "alias": "약주"
+    },
+    {
+     "alias": "막걸리"
+    },
+    {
+     "alias": "rice wine"
+    },
+    {
+     "alias": "makgeolli"
+    }
+   ]
+  },
+  {
+   "key": "soju",
+   "ko": "소주",
+   "en": "Soju",
+   "category": "alcohol_beverage",
+   "aliases": [
+    {
+     "alias": "증류식소주"
+    },
+    {
+     "alias": "희석식소주"
+    },
+    {
+     "alias": "shochu"
+    }
+   ]
+  },
+  {
+   "key": "mirin",
+   "ko": "맛술",
+   "en": "Mirin (sweet cooking rice wine)",
+   "category": "alcohol_beverage",
+   "aliases": [
+    {
+     "alias": "미림"
+    },
+    {
+     "alias": "미린"
+    },
+    {
+     "alias": "aji-mirin"
+    },
+    {
+     "alias": "본미림"
+    }
+   ]
+  },
+  {
+   "key": "spirits",
+   "ko": "증류주",
+   "en": "Spirits",
+   "category": "alcohol_beverage",
+   "aliases": [
+    {
+     "alias": "럼"
+    },
+    {
+     "alias": "럼주"
+    },
+    {
+     "alias": "브랜디"
+    },
+    {
+     "alias": "위스키"
+    },
+    {
+     "alias": "보드카"
+    },
+    {
+     "alias": "코냑"
+    },
+    {
+     "alias": "양주"
+    },
+    {
+     "alias": "리큐르"
+    },
+    {
+     "alias": "리큐어"
+    },
+    {
+     "alias": "rum"
+    },
+    {
+     "alias": "brandy"
+    },
+    {
+     "alias": "whisky"
+    },
+    {
+     "alias": "whiskey"
+    },
+    {
+     "alias": "vodka"
+    },
+    {
+     "alias": "cognac"
+    },
+    {
+     "alias": "gin"
+    },
+    {
+     "alias": "liqueur"
+    },
+    {
+     "alias": "bourbon"
+    },
+    {
+     "alias": "tequila"
+    },
+    {
+     "alias": "aroq",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "milk",
+   "ko": "우유",
+   "en": "Milk",
+   "category": "dairy",
+   "aliases": [
+    {
+     "alias": "원유"
+    },
+    {
+     "alias": "살균우유"
+    },
+    {
+     "alias": "신선우유"
+    },
+    {
+     "alias": "whole milk"
+    },
+    {
+     "alias": "fresh milk"
+    },
+    {
+     "alias": "cow's milk"
+    },
+    {
+     "alias": "skim milk"
+    },
+    {
+     "alias": "탈지우유"
+    },
+    {
+     "alias": "milk solids"
+    },
+    {
+     "alias": "sut",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "milk_powder",
+   "ko": "분유",
+   "en": "Milk powder",
+   "category": "dairy",
+   "aliases": [
+    {
+     "alias": "전지분유"
+    },
+    {
+     "alias": "탈지분유"
+    },
+    {
+     "alias": "whole milk powder"
+    },
+    {
+     "alias": "skimmed milk powder"
+    },
+    {
+     "alias": "조제분유"
+    },
+    {
+     "alias": "dry milk"
+    },
+    {
+     "alias": "quruq sut",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "cream",
+   "ko": "크림",
+   "en": "Cream",
+   "category": "dairy",
+   "aliases": [
+    {
+     "alias": "생크림"
+    },
+    {
+     "alias": "유크림"
+    },
+    {
+     "alias": "휘핑크림"
+    },
+    {
+     "alias": "whipping cream"
+    },
+    {
+     "alias": "fresh cream"
+    },
+    {
+     "alias": "heavy cream"
+    },
+    {
+     "alias": "dairy cream"
+    },
+    {
+     "alias": "qaymoq",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "butter",
+   "ko": "버터",
+   "en": "Butter",
+   "category": "dairy",
+   "aliases": [
+    {
+     "alias": "무염버터"
+    },
+    {
+     "alias": "가염버터"
+    },
+    {
+     "alias": "발효버터"
+    },
+    {
+     "alias": "buttermilk"
+    },
+    {
+     "alias": "clarified butter"
+    },
+    {
+     "alias": "ghee"
+    },
+    {
+     "alias": "기버터"
+    },
+    {
+     "alias": "sariyog'",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "yogurt",
+   "ko": "요구르트",
+   "en": "Yogurt",
+   "category": "dairy",
+   "aliases": [
+    {
+     "alias": "요거트"
+    },
+    {
+     "alias": "발효유"
+    },
+    {
+     "alias": "yoghurt"
+    },
+    {
+     "alias": "yogurt powder"
+    },
+    {
+     "alias": "kefir"
+    },
+    {
+     "alias": "발효유분말"
+    },
+    {
+     "alias": "qatiq",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "lactose",
+   "ko": "유당",
+   "en": "Lactose",
+   "category": "dairy",
+   "aliases": [
+    {
+     "alias": "milk sugar"
+    },
+    {
+     "alias": "젖당"
+    }
+   ]
+  },
+  {
+   "key": "sodium_caseinate",
+   "ko": "카제인나트륨",
+   "en": "Sodium caseinate",
+   "category": "dairy",
+   "aliases": [
+    {
+     "alias": "e1105"
+    }
+   ]
+  },
+  {
+   "key": "milk_protein",
+   "ko": "우유단백",
+   "en": "Milk protein",
+   "category": "dairy",
+   "aliases": [
+    {
+     "alias": "유단백"
+    },
+    {
+     "alias": "우유단백질"
+    },
+    {
+     "alias": "농축우유단백"
+    },
+    {
+     "alias": "milk protein concentrate"
+    },
+    {
+     "alias": "유단백질"
+    }
+   ]
+  },
+  {
+   "key": "condensed_milk",
+   "ko": "연유",
+   "en": "Condensed milk",
+   "category": "dairy",
+   "aliases": [
+    {
+     "alias": "가당연유"
+    },
+    {
+     "alias": "sweetened condensed milk"
+    }
+   ]
+  },
+  {
+   "key": "whey",
+   "ko": "유청",
+   "en": "Whey",
+   "category": "cheese_rennet",
+   "aliases": [
+    {
+     "alias": "유청분말"
+    },
+    {
+     "alias": "유청단백"
+    },
+    {
+     "alias": "농축유청단백"
+    },
+    {
+     "alias": "탈염유청"
+    },
+    {
+     "alias": "탈염유청분말"
+    },
+    {
+     "alias": "whey powder"
+    },
+    {
+     "alias": "whey protein"
+    },
+    {
+     "alias": "whey protein concentrate"
+    },
+    {
+     "alias": "demineralized whey"
+    },
+    {
+     "alias": "sweet whey"
+    },
+    {
+     "alias": "milk whey"
+    },
+    {
+     "alias": "zardob",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "casein",
+   "ko": "카제인",
+   "en": "Casein",
+   "category": "cheese_rennet",
+   "aliases": [
+    {
+     "alias": "caseinate"
+    },
+    {
+     "alias": "카제인염"
+    },
+    {
+     "alias": "calcium caseinate"
+    }
+   ]
+  },
+  {
+   "key": "cheese",
+   "ko": "치즈",
+   "en": "Cheese",
+   "category": "cheese_rennet",
+   "aliases": [
+    {
+     "alias": "자연치즈"
+    },
+    {
+     "alias": "가공치즈"
+    },
+    {
+     "alias": "모짜렐라치즈"
+    },
+    {
+     "alias": "체다치즈"
+    },
+    {
+     "alias": "크림치즈"
+    },
+    {
+     "alias": "파마산치즈"
+    },
+    {
+     "alias": "치즈분말"
+    },
+    {
+     "alias": "cheese powder"
+    },
+    {
+     "alias": "mozzarella"
+    },
+    {
+     "alias": "cheddar"
+    },
+    {
+     "alias": "parmesan"
+    },
+    {
+     "alias": "cream cheese"
+    },
+    {
+     "alias": "processed cheese"
+    },
+    {
+     "alias": "cheese sauce"
+    },
+    {
+     "alias": "pishloq",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "rennet",
+   "ko": "레닛",
+   "en": "Rennet",
+   "category": "cheese_rennet",
+   "aliases": [
+    {
+     "alias": "응유효소"
+    },
+    {
+     "alias": "calf rennet"
+    },
+    {
+     "alias": "microbial rennet"
+    },
+    {
+     "alias": "animal rennet"
+    }
+   ]
+  },
+  {
+   "key": "egg",
+   "ko": "계란",
+   "en": "Egg",
+   "category": "egg",
+   "aliases": [
+    {
+     "alias": "달걀"
+    },
+    {
+     "alias": "전란"
+    },
+    {
+     "alias": "난백"
+    },
+    {
+     "alias": "난황"
+    },
+    {
+     "alias": "전란액"
+    },
+    {
+     "alias": "계란흰자"
+    },
+    {
+     "alias": "계란노른자"
+    },
+    {
+     "alias": "난백분말"
+    },
+    {
+     "alias": "난황분말"
+    },
+    {
+     "alias": "전란분말"
+    },
+    {
+     "alias": "eggs"
+    },
+    {
+     "alias": "egg white"
+    },
+    {
+     "alias": "egg yolk"
+    },
+    {
+     "alias": "whole egg"
+    },
+    {
+     "alias": "egg powder"
+    },
+    {
+     "alias": "dried egg"
+    },
+    {
+     "alias": "liquid egg"
+    },
+    {
+     "alias": "tuxum",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "mayonnaise",
+   "ko": "마요네즈",
+   "en": "Mayonnaise",
+   "category": "sauce_composite",
+   "aliases": [
+    {
+     "alias": "mayo"
+    }
+   ]
+  },
+  {
+   "key": "fish",
+   "ko": "생선",
+   "en": "Fish",
+   "category": "fish",
+   "aliases": [
+    {
+     "alias": "어류"
+    },
+    {
+     "alias": "어육"
+    },
+    {
+     "alias": "생선살"
+    },
+    {
+     "alias": "생선분말"
+    },
+    {
+     "alias": "fish meat"
+    },
+    {
+     "alias": "fish paste"
+    },
+    {
+     "alias": "surimi"
+    },
+    {
+     "alias": "어묵"
+    },
+    {
+     "alias": "연육"
+    },
+    {
+     "alias": "fish powder"
+    },
+    {
+     "alias": "baliq",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "anchovy",
+   "ko": "멸치",
+   "en": "Anchovy",
+   "category": "fish",
+   "aliases": [
+    {
+     "alias": "건조멸치"
+    },
+    {
+     "alias": "멸치분말"
+    },
+    {
+     "alias": "멸치추출물"
+    },
+    {
+     "alias": "멸치엑기스"
+    },
+    {
+     "alias": "anchovies"
+    },
+    {
+     "alias": "dried anchovy"
+    },
+    {
+     "alias": "anchovy extract"
+    }
+   ]
+  },
+  {
+   "key": "tuna",
+   "ko": "참치",
+   "en": "Tuna",
+   "category": "fish",
+   "aliases": [
+    {
+     "alias": "다랑어"
+    },
+    {
+     "alias": "가다랑어"
+    },
+    {
+     "alias": "가쓰오부시"
+    },
+    {
+     "alias": "가쓰오"
+    },
+    {
+     "alias": "skipjack"
+    },
+    {
+     "alias": "bonito"
+    },
+    {
+     "alias": "katsuobushi"
+    },
+    {
+     "alias": "bonito extract"
+    },
+    {
+     "alias": "가다랑어추출물"
+    },
+    {
+     "alias": "tunets",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "salmon",
+   "ko": "연어",
+   "en": "Salmon",
+   "category": "fish",
+   "aliases": [
+    {
+     "alias": "losos",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "pollock",
+   "ko": "명태",
+   "en": "Pollock",
+   "category": "fish",
+   "aliases": [
+    {
+     "alias": "명태살"
+    },
+    {
+     "alias": "alaska pollock"
+    },
+    {
+     "alias": "북어"
+    }
+   ]
+  },
+  {
+   "key": "mackerel",
+   "ko": "고등어",
+   "en": "Mackerel",
+   "category": "fish",
+   "aliases": []
+  },
+  {
+   "key": "fish_oil",
+   "ko": "어유",
+   "en": "Fish oil",
+   "category": "fish",
+   "aliases": [
+    {
+     "alias": "dha"
+    },
+    {
+     "alias": "epa"
+    },
+    {
+     "alias": "정제어유"
+    },
+    {
+     "alias": "오메가3"
+    }
+   ]
+  },
+  {
+   "key": "fish_sauce",
+   "ko": "액젓",
+   "en": "Fish sauce",
+   "category": "fish",
+   "aliases": [
+    {
+     "alias": "멸치액젓"
+    },
+    {
+     "alias": "까나리액젓"
+    },
+    {
+     "alias": "어간장"
+    }
+   ]
+  },
+  {
+   "key": "fish_gelatin",
+   "ko": "어류젤라틴",
+   "en": "Fish gelatin",
+   "category": "gelling_animal",
+   "aliases": [
+    {
+     "alias": "피쉬젤라틴"
+    },
+    {
+     "alias": "젤라틴어류"
+    },
+    {
+     "alias": "fish gelatine"
+    },
+    {
+     "alias": "marine gelatin"
+    },
+    {
+     "alias": "젤라틴생선"
+    }
+   ]
+  },
+  {
+   "key": "fish_collagen",
+   "ko": "어류콜라겐",
+   "en": "Fish collagen",
+   "category": "gelling_animal",
+   "aliases": [
+    {
+     "alias": "저분자피쉬콜라겐"
+    },
+    {
+     "alias": "피쉬콜라겐"
+    },
+    {
+     "alias": "해양콜라겐"
+    },
+    {
+     "alias": "콜라겐어류"
+    },
+    {
+     "alias": "marine collagen"
+    },
+    {
+     "alias": "저분자어류콜라겐펩타이드"
+    }
+   ]
+  },
+  {
+   "key": "shrimp",
+   "ko": "새우",
+   "en": "Shrimp",
+   "category": "shellfish",
+   "aliases": [
+    {
+     "alias": "건새우"
+    },
+    {
+     "alias": "새우분말"
+    },
+    {
+     "alias": "새우살"
+    },
+    {
+     "alias": "새우엑기스"
+    },
+    {
+     "alias": "prawn"
+    },
+    {
+     "alias": "prawns"
+    },
+    {
+     "alias": "shrimp powder"
+    },
+    {
+     "alias": "새우추출물"
+    },
+    {
+     "alias": "krevetka",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "crab",
+   "ko": "게",
+   "en": "Crab",
+   "category": "shellfish",
+   "aliases": [
+    {
+     "alias": "꽃게"
+    },
+    {
+     "alias": "대게"
+    },
+    {
+     "alias": "게살"
+    },
+    {
+     "alias": "게맛살"
+    },
+    {
+     "alias": "crab meat"
+    },
+    {
+     "alias": "snow crab"
+    },
+    {
+     "alias": "크래미"
+    },
+    {
+     "alias": "게추출물"
+    },
+    {
+     "alias": "qisqichbaqa",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "clam",
+   "ko": "조개",
+   "en": "Clam",
+   "category": "shellfish",
+   "aliases": [
+    {
+     "alias": "바지락"
+    },
+    {
+     "alias": "모시조개"
+    },
+    {
+     "alias": "백합"
+    },
+    {
+     "alias": "가리비"
+    },
+    {
+     "alias": "관자"
+    },
+    {
+     "alias": "clams"
+    },
+    {
+     "alias": "scallop"
+    },
+    {
+     "alias": "조개추출물"
+    },
+    {
+     "alias": "바지락추출물"
+    },
+    {
+     "alias": "홍합"
+    },
+    {
+     "alias": "mussel"
+    },
+    {
+     "alias": "mussels"
+    },
+    {
+     "alias": "굴"
+    },
+    {
+     "alias": "oyster"
+    },
+    {
+     "alias": "oysters"
+    },
+    {
+     "alias": "굴추출물"
+    },
+    {
+     "alias": "전복"
+    },
+    {
+     "alias": "abalone"
+    },
+    {
+     "alias": "midiya",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "squid",
+   "ko": "오징어",
+   "en": "Squid",
+   "category": "shellfish",
+   "aliases": [
+    {
+     "alias": "오징어분말"
+    },
+    {
+     "alias": "건오징어"
+    },
+    {
+     "alias": "cuttlefish"
+    },
+    {
+     "alias": "octopus"
+    },
+    {
+     "alias": "낙지"
+    },
+    {
+     "alias": "문어"
+    },
+    {
+     "alias": "쭈꾸미"
+    },
+    {
+     "alias": "오징어추출물"
+    },
+    {
+     "alias": "오징어먹물"
+    },
+    {
+     "alias": "squid ink"
+    },
+    {
+     "alias": "kalmar",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "krill",
+   "ko": "크릴",
+   "en": "Krill",
+   "category": "shellfish",
+   "aliases": [
+    {
+     "alias": "크릴오일"
+    },
+    {
+     "alias": "krill oil"
+    }
+   ]
+  },
+  {
+   "key": "lobster",
+   "ko": "바닷가재",
+   "en": "Lobster",
+   "category": "shellfish",
+   "aliases": [
+    {
+     "alias": "랍스터"
+    }
+   ]
+  },
+  {
+   "key": "sea_cucumber",
+   "ko": "해삼",
+   "en": "Sea cucumber",
+   "category": "shellfish",
+   "aliases": []
+  },
+  {
+   "key": "beef",
+   "ko": "쇠고기",
+   "en": "Beef",
+   "category": "meat_beef",
+   "aliases": [
+    {
+     "alias": "소고기"
+    },
+    {
+     "alias": "우육"
+    },
+    {
+     "alias": "쇠고기분말"
+    },
+    {
+     "alias": "쇠고기추출물"
+    },
+    {
+     "alias": "소고기추출물"
+    },
+    {
+     "alias": "우육추출물"
+    },
+    {
+     "alias": "비프"
+    },
+    {
+     "alias": "비프추출물"
+    },
+    {
+     "alias": "beef extract"
+    },
+    {
+     "alias": "beef powder"
+    },
+    {
+     "alias": "beef flavor"
+    },
+    {
+     "alias": "beef flavour"
+    },
+    {
+     "alias": "beef stock"
+    },
+    {
+     "alias": "beef broth"
+    },
+    {
+     "alias": "사골"
+    },
+    {
+     "alias": "사골추출물"
+    },
+    {
+     "alias": "사골육수"
+    },
+    {
+     "alias": "쇠고기육수"
+    },
+    {
+     "alias": "우골"
+    },
+    {
+     "alias": "우족"
+    },
+    {
+     "alias": "도가니"
+    },
+    {
+     "alias": "소뼈"
+    },
+    {
+     "alias": "beef bone"
+    },
+    {
+     "alias": "beef bone broth"
+    },
+    {
+     "alias": "beef bouillon"
+    },
+    {
+     "alias": "beef fat"
+    },
+    {
+     "alias": "소기름"
+    },
+    {
+     "alias": "쇠기름"
+    },
+    {
+     "alias": "우지"
+    },
+    {
+     "alias": "tallow"
+    },
+    {
+     "alias": "beef tallow"
+    },
+    {
+     "alias": "쇠고기지방"
+    },
+    {
+     "alias": "mol go'shti",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "chicken",
+   "ko": "닭고기",
+   "en": "Chicken",
+   "category": "meat_poultry",
+   "aliases": [
+    {
+     "alias": "계육"
+    },
+    {
+     "alias": "닭"
+    },
+    {
+     "alias": "닭고기분말"
+    },
+    {
+     "alias": "닭고기추출물"
+    },
+    {
+     "alias": "치킨"
+    },
+    {
+     "alias": "치킨분말"
+    },
+    {
+     "alias": "치킨추출물"
+    },
+    {
+     "alias": "닭뼈추출물"
+    },
+    {
+     "alias": "닭육수"
+    },
+    {
+     "alias": "chicken meat"
+    },
+    {
+     "alias": "chicken extract"
+    },
+    {
+     "alias": "chicken powder"
+    },
+    {
+     "alias": "chicken stock"
+    },
+    {
+     "alias": "chicken broth"
+    },
+    {
+     "alias": "chicken flavor"
+    },
+    {
+     "alias": "chicken flavour"
+    },
+    {
+     "alias": "chicken fat"
+    },
+    {
+     "alias": "닭기름"
+    },
+    {
+     "alias": "계지"
+    },
+    {
+     "alias": "계육분말"
+    },
+    {
+     "alias": "닭가슴살"
+    },
+    {
+     "alias": "tovuq go'shti",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "duck",
+   "ko": "오리고기",
+   "en": "Duck",
+   "category": "meat_poultry",
+   "aliases": [
+    {
+     "alias": "오리"
+    },
+    {
+     "alias": "훈제오리"
+    },
+    {
+     "alias": "duck meat"
+    }
+   ]
+  },
+  {
+   "key": "turkey",
+   "ko": "칠면조",
+   "en": "Turkey",
+   "category": "meat_poultry",
+   "aliases": [
+    {
+     "alias": "turkey meat"
+    }
+   ]
+  },
+  {
+   "key": "lamb",
+   "ko": "양고기",
+   "en": "Lamb",
+   "category": "meat_lamb",
+   "aliases": [
+    {
+     "alias": "mutton"
+    },
+    {
+     "alias": "양고기추출물"
+    },
+    {
+     "alias": "qo'y go'shti",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "meat_generic",
+   "ko": "육류",
+   "en": "Meat",
+   "category": "meat_other",
+   "aliases": [
+    {
+     "alias": "고기"
+    },
+    {
+     "alias": "육"
+    },
+    {
+     "alias": "식육"
+    },
+    {
+     "alias": "식육추출물"
+    },
+    {
+     "alias": "육수"
+    },
+    {
+     "alias": "육수분말"
+    },
+    {
+     "alias": "고기육수"
+    },
+    {
+     "alias": "육류추출물"
+    },
+    {
+     "alias": "meat extract"
+    },
+    {
+     "alias": "meat stock"
+    },
+    {
+     "alias": "meat broth"
+    },
+    {
+     "alias": "meat flavor"
+    },
+    {
+     "alias": "meat flavour"
+    },
+    {
+     "alias": "bouillon"
+    },
+    {
+     "alias": "stock"
+    },
+    {
+     "alias": "broth"
+    },
+    {
+     "alias": "고기분말"
+    },
+    {
+     "alias": "식육가공품"
+    },
+    {
+     "alias": "go'sht",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "ham",
+   "ko": "햄",
+   "en": "Ham",
+   "category": "meat_other",
+   "aliases": [
+    {
+     "alias": "런천미트"
+    },
+    {
+     "alias": "luncheon meat"
+    },
+    {
+     "alias": "소시지"
+    },
+    {
+     "alias": "sausage"
+    },
+    {
+     "alias": "프랑크소시지"
+    },
+    {
+     "alias": "핫도그"
+    },
+    {
+     "alias": "미트볼"
+    },
+    {
+     "alias": "meatball"
+    },
+    {
+     "alias": "meatballs"
+    },
+    {
+     "alias": "패티"
+    },
+    {
+     "alias": "patty"
+    },
+    {
+     "alias": "hamburger patty"
+    },
+    {
+     "alias": "육포"
+    },
+    {
+     "alias": "jerky"
+    },
+    {
+     "alias": "salami"
+    },
+    {
+     "alias": "살라미"
+    },
+    {
+     "alias": "페퍼로니"
+    },
+    {
+     "alias": "pepperoni"
+    },
+    {
+     "alias": "핫도그소시지"
+    },
+    {
+     "alias": "vienna sausage"
+    },
+    {
+     "alias": "소시지분말"
+    }
+   ]
+  },
+  {
+   "key": "animal_fat_generic",
+   "ko": "동물성유지",
+   "en": "Animal fat",
+   "category": "animal_fat",
+   "aliases": [
+    {
+     "alias": "동물성기름"
+    },
+    {
+     "alias": "유지(동물성)"
+    },
+    {
+     "alias": "동물성지방"
+    },
+    {
+     "alias": "animal oil"
+    },
+    {
+     "alias": "동물성유"
+    },
+    {
+     "alias": "혼합유지"
+    },
+    {
+     "alias": "혼합식용유"
+    }
+   ]
+  },
+  {
+   "key": "pork",
+   "ko": "돼지고기",
+   "en": "Pork",
+   "category": "meat_pork",
+   "aliases": [
+    {
+     "alias": "돈육"
+    },
+    {
+     "alias": "돈육분말"
+    },
+    {
+     "alias": "돼지고기분말"
+    },
+    {
+     "alias": "돼지고기추출물"
+    },
+    {
+     "alias": "돈육추출물"
+    },
+    {
+     "alias": "돼지"
+    },
+    {
+     "alias": "돼지뼈"
+    },
+    {
+     "alias": "돼지뼈추출물"
+    },
+    {
+     "alias": "돈골"
+    },
+    {
+     "alias": "돈골육수"
+    },
+    {
+     "alias": "돈지"
+    },
+    {
+     "alias": "돼지껍데기"
+    },
+    {
+     "alias": "돈피"
+    },
+    {
+     "alias": "족발"
+    },
+    {
+     "alias": "삼겹살"
+    },
+    {
+     "alias": "삼겹"
+    },
+    {
+     "alias": "돼지갈비"
+    },
+    {
+     "alias": "목살"
+    },
+    {
+     "alias": "앞다리살"
+    },
+    {
+     "alias": "뒷다리살"
+    },
+    {
+     "alias": "pork meat"
+    },
+    {
+     "alias": "pork extract"
+    },
+    {
+     "alias": "pork powder"
+    },
+    {
+     "alias": "pork flavor"
+    },
+    {
+     "alias": "pork flavour"
+    },
+    {
+     "alias": "pork broth"
+    },
+    {
+     "alias": "pork stock"
+    },
+    {
+     "alias": "pork rind"
+    },
+    {
+     "alias": "pork skin"
+    },
+    {
+     "alias": "pork bone"
+    },
+    {
+     "alias": "pig"
+    },
+    {
+     "alias": "pork fat"
+    },
+    {
+     "alias": "cho'chqa go'shti",
+     "lang": "uz"
+    },
+    {
+     "alias": "cho'chqa",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "lard",
+   "ko": "라드",
+   "en": "Lard",
+   "category": "meat_pork",
+   "aliases": [
+    {
+     "alias": "돼지기름"
+    },
+    {
+     "alias": "돈지방"
+    },
+    {
+     "alias": "pork lard"
+    },
+    {
+     "alias": "pig fat"
+    },
+    {
+     "alias": "돼지지방"
+    },
+    {
+     "alias": "돈유"
+    },
+    {
+     "alias": "cho'chqa yog'i",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "bacon",
+   "ko": "베이컨",
+   "en": "Bacon",
+   "category": "meat_pork",
+   "aliases": [
+    {
+     "alias": "베이컨분태"
+    },
+    {
+     "alias": "베이컨칩"
+    },
+    {
+     "alias": "bacon bits"
+    },
+    {
+     "alias": "bacon pieces"
+    },
+    {
+     "alias": "beykon",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "gelatin_pork",
+   "ko": "돼지젤라틴",
+   "en": "Pork gelatin",
+   "category": "meat_pork",
+   "aliases": [
+    {
+     "alias": "돈피젤라틴"
+    },
+    {
+     "alias": "젤라틴돈피"
+    },
+    {
+     "alias": "젤라틴돼지"
+    },
+    {
+     "alias": "돼지콜라겐"
+    },
+    {
+     "alias": "돈피콜라겐"
+    },
+    {
+     "alias": "porcine gelatin"
+    },
+    {
+     "alias": "porcine collagen"
+    },
+    {
+     "alias": "pork collagen"
+    }
+   ]
+  },
+  {
+   "key": "bacon_flavour",
+   "ko": "베이컨향",
+   "en": "Bacon flavour",
+   "category": "flavor",
+   "aliases": [
+    {
+     "alias": "베이컨맛"
+    },
+    {
+     "alias": "베이컨플레이버"
+    },
+    {
+     "alias": "베이컨시즈닝"
+    },
+    {
+     "alias": "bacon flavor"
+    },
+    {
+     "alias": "bacon seasoning"
+    },
+    {
+     "alias": "smoky bacon flavour"
+    }
+   ]
+  },
+  {
+   "key": "prosciutto",
+   "ko": "프로슈토",
+   "en": "Prosciutto",
+   "category": "meat_pork",
+   "aliases": [
+    {
+     "alias": "gammon"
+    },
+    {
+     "alias": "chorizo"
+    },
+    {
+     "alias": "초리조"
+    },
+    {
+     "alias": "판체타"
+    },
+    {
+     "alias": "pancetta"
+    }
+   ]
+  },
+  {
+   "key": "pork_cutlet",
+   "ko": "돈가스",
+   "en": "Pork cutlet",
+   "category": "meat_pork",
+   "aliases": [
+    {
+     "alias": "돈까스"
+    },
+    {
+     "alias": "포크커틀릿"
+    },
+    {
+     "alias": "tonkatsu"
+    },
+    {
+     "alias": "돈카츠"
+    }
+   ]
+  },
+  {
+   "key": "tonkatsu_sauce",
+   "ko": "돈가스소스",
+   "en": "Tonkatsu sauce",
+   "category": "sauce_composite",
+   "aliases": [
+    {
+     "alias": "돈까스소스"
+    }
+   ]
+  },
+  {
+   "key": "jerusalem_artichoke",
+   "ko": "돼지감자",
+   "en": "Jerusalem artichoke",
+   "category": "fruit_veg",
+   "aliases": [
+    {
+     "alias": "돼지감자분말"
+    },
+    {
+     "alias": "돼지감자농축액"
+    },
+    {
+     "alias": "돼지감자추출물"
+    },
+    {
+     "alias": "뚱딴지"
+    },
+    {
+     "alias": "sunchoke"
+    },
+    {
+     "alias": "sunroot"
+    }
+   ]
+  },
+  {
+   "key": "blood",
+   "ko": "혈액",
+   "en": "Blood",
+   "category": "blood",
+   "aliases": [
+    {
+     "alias": "동물혈액"
+    },
+    {
+     "alias": "혈장"
+    },
+    {
+     "alias": "혈장단백"
+    },
+    {
+     "alias": "선지"
+    },
+    {
+     "alias": "소선지"
+    },
+    {
+     "alias": "돼지선지"
+    },
+    {
+     "alias": "blood plasma"
+    },
+    {
+     "alias": "animal blood"
+    },
+    {
+     "alias": "hemoglobin"
+    },
+    {
+     "alias": "헤모글로빈"
+    },
+    {
+     "alias": "혈분"
+    },
+    {
+     "alias": "qon",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "blood_orange",
+   "ko": "블러드오렌지",
+   "en": "Blood orange",
+   "category": "fruit_veg",
+   "aliases": [
+    {
+     "alias": "블러드오렌지농축액"
+    },
+    {
+     "alias": "blood orange juice"
+    }
+   ]
+  },
+  {
+   "key": "gelatin",
+   "ko": "젤라틴",
+   "en": "Gelatin",
+   "category": "gelling_animal",
+   "aliases": [
+    {
+     "alias": "젤라친"
+    },
+    {
+     "alias": "젤라틴류"
+    },
+    {
+     "alias": "식용젤라틴"
+    },
+    {
+     "alias": "gelatine"
+    },
+    {
+     "alias": "e441"
+    },
+    {
+     "alias": "edible gelatin"
+    },
+    {
+     "alias": "젤리틴"
+    },
+    {
+     "alias": "jelatin",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "collagen",
+   "ko": "콜라겐",
+   "en": "Collagen",
+   "category": "gelling_animal",
+   "aliases": [
+    {
+     "alias": "콜라겐펩타이드"
+    },
+    {
+     "alias": "콜라겐펩티드"
+    },
+    {
+     "alias": "저분자콜라겐"
+    },
+    {
+     "alias": "가수분해콜라겐"
+    },
+    {
+     "alias": "collagen peptide"
+    },
+    {
+     "alias": "hydrolyzed collagen"
+    },
+    {
+     "alias": "hydrolysed collagen"
+    },
+    {
+     "alias": "콜라젠"
+    },
+    {
+     "alias": "collagen casing"
+    },
+    {
+     "alias": "콜라겐케이싱"
+    }
+   ]
+  },
+  {
+   "key": "l_cysteine",
+   "ko": "L-시스테인",
+   "en": "L-cysteine",
+   "category": "animal_derived_other",
+   "aliases": [
+    {
+     "alias": "엘시스테인"
+    },
+    {
+     "alias": "시스테인"
+    },
+    {
+     "alias": "cysteine"
+    },
+    {
+     "alias": "e920"
+    },
+    {
+     "alias": "l-시스테인염산염"
+    }
+   ]
+  },
+  {
+   "key": "inosinate",
+   "ko": "이노신산나트륨",
+   "en": "Sodium inosinate / ribonucleotides",
+   "category": "animal_derived_other",
+   "aliases": [
+    {
+     "alias": "5'-이노신산이나트륨"
+    },
+    {
+     "alias": "이노신산이나트륨"
+    },
+    {
+     "alias": "5'-구아닐산이나트륨"
+    },
+    {
+     "alias": "구아닐산이나트륨"
+    },
+    {
+     "alias": "5'-리보뉴클레오티드이나트륨"
+    },
+    {
+     "alias": "리보뉴클레오티드"
+    },
+    {
+     "alias": "핵산조미료"
+    },
+    {
+     "alias": "핵산"
+    },
+    {
+     "alias": "disodium inosinate"
+    },
+    {
+     "alias": "disodium guanylate"
+    },
+    {
+     "alias": "disodium 5'-ribonucleotides"
+    },
+    {
+     "alias": "ribonucleotides"
+    },
+    {
+     "alias": "e631"
+    },
+    {
+     "alias": "e627"
+    },
+    {
+     "alias": "e635"
+    },
+    {
+     "alias": "핵산계조미료"
+    }
+   ]
+  },
+  {
+   "key": "lanolin",
+   "ko": "라놀린",
+   "en": "Lanolin",
+   "category": "animal_derived_other",
+   "aliases": [
+    {
+     "alias": "울그리스"
+    },
+    {
+     "alias": "양모지"
+    }
+   ]
+  },
+  {
+   "key": "bone_char",
+   "ko": "골탄",
+   "en": "Bone char",
+   "category": "animal_derived_other",
+   "aliases": []
+  },
+  {
+   "key": "chitosan",
+   "ko": "키토산",
+   "en": "Chitosan",
+   "category": "animal_derived_other",
+   "aliases": [
+    {
+     "alias": "chitin"
+    }
+   ]
+  },
+  {
+   "key": "hyaluronic_acid",
+   "ko": "히알루론산",
+   "en": "Hyaluronic acid",
+   "category": "animal_derived_other",
+   "aliases": []
+  },
+  {
+   "key": "royal_jelly",
+   "ko": "로열젤리",
+   "en": "Royal jelly",
+   "category": "honey_bee",
+   "aliases": []
+  },
+  {
+   "key": "propolis",
+   "ko": "프로폴리스",
+   "en": "Propolis",
+   "category": "honey_bee",
+   "aliases": []
+  },
+  {
+   "key": "castoreum",
+   "ko": "해리향",
+   "en": "Castoreum",
+   "category": "animal_derived_other",
+   "aliases": []
+  },
+  {
+   "key": "water",
+   "ko": "정제수",
+   "en": "Water",
+   "category": "water",
+   "aliases": [
+    {
+     "alias": "물"
+    },
+    {
+     "alias": "생수"
+    },
+    {
+     "alias": "탄산수"
+    },
+    {
+     "alias": "먹는물"
+    },
+    {
+     "alias": "purified water"
+    },
+    {
+     "alias": "drinking water"
+    },
+    {
+     "alias": "carbonated water"
+    },
+    {
+     "alias": "spring water"
+    },
+    {
+     "alias": "mineral water"
+    },
+    {
+     "alias": "탄산가스"
+    },
+    {
+     "alias": "이산화탄소"
+    },
+    {
+     "alias": "carbon dioxide"
+    },
+    {
+     "alias": "e290"
+    },
+    {
+     "alias": "suv",
+     "lang": "uz"
+    }
+   ]
+  },
+  {
+   "key": "caffeine",
+   "ko": "카페인",
+   "en": "Caffeine",
+   "category": "additive_synthetic",
+   "aliases": []
+  },
+  {
+   "key": "taurine",
+   "ko": "타우린",
+   "en": "Taurine",
+   "category": "additive_synthetic",
+   "aliases": []
+  },
+  {
+   "key": "chewing_gum_base",
+   "ko": "껌베이스",
+   "en": "Gum base",
+   "category": "additive_class",
+   "aliases": [
+    {
+     "alias": "검베이스"
+    },
+    {
+     "alias": "껌기초제"
+    }
+   ],
+   "isClass": true
+  },
+  {
+   "key": "silicon_dioxide",
+   "ko": "이산화규소",
+   "en": "Silicon dioxide",
+   "category": "salt_mineral",
+   "aliases": [
+    {
+     "alias": "silica"
+    },
+    {
+     "alias": "e551"
+    }
+   ]
+  },
+  {
+   "key": "talc",
+   "ko": "탈크",
+   "en": "Talc",
+   "category": "salt_mineral",
+   "aliases": [
+    {
+     "alias": "e553b"
+    }
+   ]
+  },
+  {
+   "key": "cocoa_substitute",
+   "ko": "카로브",
+   "en": "Carob",
+   "category": "plant_other",
+   "aliases": [
+    {
+     "alias": "캐롭"
+    }
+   ]
+  },
+  {
+   "key": "chocolate",
+   "ko": "초콜릿",
+   "en": "Chocolate",
+   "category": "sauce_composite",
+   "aliases": [
+    {
+     "alias": "초콜렛"
+    },
+    {
+     "alias": "밀크초콜릿"
+    },
+    {
+     "alias": "다크초콜릿"
+    },
+    {
+     "alias": "화이트초콜릿"
+    },
+    {
+     "alias": "준초콜릿"
+    },
+    {
+     "alias": "milk chocolate"
+    },
+    {
+     "alias": "dark chocolate"
+    },
+    {
+     "alias": "white chocolate"
+    },
+    {
+     "alias": "cocoa preparation"
+    },
+    {
+     "alias": "코팅초콜릿"
+    }
+   ]
+  },
+  {
+   "key": "jam",
+   "ko": "잼",
+   "en": "Jam",
+   "category": "sauce_composite",
+   "aliases": [
+    {
+     "alias": "딸기잼"
+    },
+    {
+     "alias": "marmalade"
+    },
+    {
+     "alias": "jelly jam"
+    }
+   ]
+  },
+  {
+   "key": "sauce_generic",
+   "ko": "소스",
+   "en": "Sauce",
+   "category": "sauce_composite",
+   "aliases": [
+    {
+     "alias": "양념"
+    },
+    {
+     "alias": "양념장"
+    },
+    {
+     "alias": "sauces"
+    },
+    {
+     "alias": "dressing"
+    },
+    {
+     "alias": "드레싱"
+    },
+    {
+     "alias": "케첩"
+    },
+    {
+     "alias": "ketchup"
+    },
+    {
+     "alias": "tomato ketchup"
+    },
+    {
+     "alias": "굴소스"
+    },
+    {
+     "alias": "oyster sauce"
+    },
+    {
+     "alias": "worcestershire sauce"
+    },
+    {
+     "alias": "우스터소스"
+    },
+    {
+     "alias": "핫소스"
+    },
+    {
+     "alias": "hot sauce"
+    },
+    {
+     "alias": "bbq sauce"
+    },
+    {
+     "alias": "바비큐소스"
+    }
+   ]
+  },
+  {
+   "key": "tteok",
+   "ko": "떡",
+   "en": "Rice cake",
+   "category": "sauce_composite",
+   "aliases": [
+    {
+     "alias": "떡볶이떡"
+    }
+   ]
+  }
+ ]
+}

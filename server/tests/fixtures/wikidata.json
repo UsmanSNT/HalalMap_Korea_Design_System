@@ -1,0 +1,12 @@
+{
+  "head": { "vars": ["item", "nameKo", "nameEn", "coord", "website", "address"] },
+  "results": { "bindings": [
+    { "item": { "type": "uri", "value": "http://www.wikidata.org/entity/Q99999901" },
+      "nameKo": { "type": "literal", "value": "테스트 성원", "xml:lang": "ko" },
+      "nameEn": { "type": "literal", "value": "Test Mosque", "xml:lang": "en" },
+      "coord": { "type": "literal", "value": "Point(127.00002 37.50002)" },
+      "website": { "type": "uri", "value": "https://example.test/wd-mosque" } },
+    { "item": { "type": "uri", "value": "http://www.wikidata.org/entity/Q99999902" },
+      "nameEn": { "type": "literal", "value": "No Coordinates Mosque" } }
+  ] }
+}

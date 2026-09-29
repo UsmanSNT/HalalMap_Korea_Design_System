@@ -1,0 +1,941 @@
+{
+ "version": 1,
+ "source": "halalmap_editorial",
+ "rules": [
+  {
+   "key": "cat.cleared.grain",
+   "title": "Cleared: grain / cereal",
+   "matchType": "category",
+   "matchValue": "grain",
+   "status": "NO_FLAGGED_INGREDIENTS",
+   "priority": 100,
+   "reasonCode": "CLEARED_CATEGORY",
+   "reason": {
+    "ko": "곡물류 원료로, 원료명만으로는 할랄상 우려 요소가 확인되지 않았습니다.",
+    "en": "A grain / cereal ingredient; no halal concern is identified from its name alone.",
+    "uz": "Don mahsuloti tarkibi; faqat nomidan halollik bo'yicha xavotir aniqlanmadi."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Basic plant/mineral/synthetic or halal-eligible-by-nature ingredient with no known animal, pork or alcohol component in its plain form.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.cleared.starch",
+   "title": "Cleared: starch",
+   "matchType": "category",
+   "matchValue": "starch",
+   "status": "NO_FLAGGED_INGREDIENTS",
+   "priority": 100,
+   "reasonCode": "CLEARED_CATEGORY",
+   "reason": {
+    "ko": "전분류 원료로, 원료명만으로는 할랄상 우려 요소가 확인되지 않았습니다.",
+    "en": "A starch ingredient; no halal concern is identified from its name alone.",
+    "uz": "Kraxmal tarkibi; faqat nomidan halollik bo'yicha xavotir aniqlanmadi."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Basic plant/mineral/synthetic or halal-eligible-by-nature ingredient with no known animal, pork or alcohol component in its plain form.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.cleared.sweetener",
+   "title": "Cleared: sugar / sweetener",
+   "matchType": "category",
+   "matchValue": "sweetener",
+   "status": "NO_FLAGGED_INGREDIENTS",
+   "priority": 100,
+   "reasonCode": "CLEARED_CATEGORY",
+   "reason": {
+    "ko": "당류·감미료 원료로, 원료명만으로는 할랄상 우려 요소가 확인되지 않았습니다.",
+    "en": "A sugar / sweetener ingredient; no halal concern is identified from its name alone.",
+    "uz": "Shakar / ttatuvchi tarkibi; faqat nomidan halollik bo'yicha xavotir aniqlanmadi."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Basic plant/mineral/synthetic or halal-eligible-by-nature ingredient with no known animal, pork or alcohol component in its plain form.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.cleared.honey_bee",
+   "title": "Cleared: honey / bee product",
+   "matchType": "category",
+   "matchValue": "honey_bee",
+   "status": "NO_FLAGGED_INGREDIENTS",
+   "priority": 100,
+   "reasonCode": "CLEARED_CATEGORY",
+   "reason": {
+    "ko": "꿀·벌 유래(꿀, 밀랍 등) 원료로, 원료명만으로는 할랄상 우려 요소가 확인되지 않았습니다.",
+    "en": "A honey / bee product ingredient; no halal concern is identified from its name alone.",
+    "uz": "Asal / ari mahsuloti tarkibi; faqat nomidan halollik bo'yicha xavotir aniqlanmadi."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Basic plant/mineral/synthetic or halal-eligible-by-nature ingredient with no known animal, pork or alcohol component in its plain form.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.cleared.salt_mineral",
+   "title": "Cleared: salt / mineral",
+   "matchType": "category",
+   "matchValue": "salt_mineral",
+   "status": "NO_FLAGGED_INGREDIENTS",
+   "priority": 100,
+   "reasonCode": "CLEARED_CATEGORY",
+   "reason": {
+    "ko": "소금·무기질 원료로, 원료명만으로는 할랄상 우려 요소가 확인되지 않았습니다.",
+    "en": "A salt / mineral ingredient; no halal concern is identified from its name alone.",
+    "uz": "Tuz / mineral tarkibi; faqat nomidan halollik bo'yicha xavotir aniqlanmadi."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Basic plant/mineral/synthetic or halal-eligible-by-nature ingredient with no known animal, pork or alcohol component in its plain form.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.cleared.leavening",
+   "title": "Cleared: chemical raising agent",
+   "matchType": "category",
+   "matchValue": "leavening",
+   "status": "NO_FLAGGED_INGREDIENTS",
+   "priority": 100,
+   "reasonCode": "CLEARED_CATEGORY",
+   "reason": {
+    "ko": "팽창제(화학적) 원료로, 원료명만으로는 할랄상 우려 요소가 확인되지 않았습니다.",
+    "en": "A chemical raising agent ingredient; no halal concern is identified from its name alone.",
+    "uz": "Kimyoviy ko'taruvchi tarkibi; faqat nomidan halollik bo'yicha xavotir aniqlanmadi."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Basic plant/mineral/synthetic or halal-eligible-by-nature ingredient with no known animal, pork or alcohol component in its plain form.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.cleared.plant_oil",
+   "title": "Cleared: vegetable oil",
+   "matchType": "category",
+   "matchValue": "plant_oil",
+   "status": "NO_FLAGGED_INGREDIENTS",
+   "priority": 100,
+   "reasonCode": "CLEARED_CATEGORY",
+   "reason": {
+    "ko": "식물성 유지 원료로, 원료명만으로는 할랄상 우려 요소가 확인되지 않았습니다.",
+    "en": "A vegetable oil ingredient; no halal concern is identified from its name alone.",
+    "uz": "O'simlik yog'i tarkibi; faqat nomidan halollik bo'yicha xavotir aniqlanmadi."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Basic plant/mineral/synthetic or halal-eligible-by-nature ingredient with no known animal, pork or alcohol component in its plain form.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.cleared.plant_other",
+   "title": "Cleared: plant-derived ingredient",
+   "matchType": "category",
+   "matchValue": "plant_other",
+   "status": "NO_FLAGGED_INGREDIENTS",
+   "priority": 100,
+   "reasonCode": "CLEARED_CATEGORY",
+   "reason": {
+    "ko": "식물 유래 원료 원료로, 원료명만으로는 할랄상 우려 요소가 확인되지 않았습니다.",
+    "en": "A plant-derived ingredient ingredient; no halal concern is identified from its name alone.",
+    "uz": "O'simlik manbali tarkib tarkibi; faqat nomidan halollik bo'yicha xavotir aniqlanmadi."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Basic plant/mineral/synthetic or halal-eligible-by-nature ingredient with no known animal, pork or alcohol component in its plain form.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.cleared.fruit_veg",
+   "title": "Cleared: fruit / vegetable",
+   "matchType": "category",
+   "matchValue": "fruit_veg",
+   "status": "NO_FLAGGED_INGREDIENTS",
+   "priority": 100,
+   "reasonCode": "CLEARED_CATEGORY",
+   "reason": {
+    "ko": "과일·채소 원료로, 원료명만으로는 할랄상 우려 요소가 확인되지 않았습니다.",
+    "en": "A fruit / vegetable ingredient; no halal concern is identified from its name alone.",
+    "uz": "Meva / sabzavot tarkibi; faqat nomidan halollik bo'yicha xavotir aniqlanmadi."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Basic plant/mineral/synthetic or halal-eligible-by-nature ingredient with no known animal, pork or alcohol component in its plain form.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.cleared.spice_herb",
+   "title": "Cleared: spice / herb",
+   "matchType": "category",
+   "matchValue": "spice_herb",
+   "status": "NO_FLAGGED_INGREDIENTS",
+   "priority": 100,
+   "reasonCode": "CLEARED_CATEGORY",
+   "reason": {
+    "ko": "향신료·허브 원료로, 원료명만으로는 할랄상 우려 요소가 확인되지 않았습니다.",
+    "en": "A spice / herb ingredient; no halal concern is identified from its name alone.",
+    "uz": "Ziravor / o't tarkibi; faqat nomidan halollik bo'yicha xavotir aniqlanmadi."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Basic plant/mineral/synthetic or halal-eligible-by-nature ingredient with no known animal, pork or alcohol component in its plain form.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.cleared.legume_soy",
+   "title": "Cleared: legume / soy",
+   "matchType": "category",
+   "matchValue": "legume_soy",
+   "status": "NO_FLAGGED_INGREDIENTS",
+   "priority": 100,
+   "reasonCode": "CLEARED_CATEGORY",
+   "reason": {
+    "ko": "콩류 원료로, 원료명만으로는 할랄상 우려 요소가 확인되지 않았습니다.",
+    "en": "A legume / soy ingredient; no halal concern is identified from its name alone.",
+    "uz": "Dukkakli / soya tarkibi; faqat nomidan halollik bo'yicha xavotir aniqlanmadi."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Basic plant/mineral/synthetic or halal-eligible-by-nature ingredient with no known animal, pork or alcohol component in its plain form.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.cleared.nut_seed",
+   "title": "Cleared: nut / seed",
+   "matchType": "category",
+   "matchValue": "nut_seed",
+   "status": "NO_FLAGGED_INGREDIENTS",
+   "priority": 100,
+   "reasonCode": "CLEARED_CATEGORY",
+   "reason": {
+    "ko": "견과·씨앗류 원료로, 원료명만으로는 할랄상 우려 요소가 확인되지 않았습니다.",
+    "en": "A nut / seed ingredient; no halal concern is identified from its name alone.",
+    "uz": "Yong'oq / urug' tarkibi; faqat nomidan halollik bo'yicha xavotir aniqlanmadi."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Basic plant/mineral/synthetic or halal-eligible-by-nature ingredient with no known animal, pork or alcohol component in its plain form.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.cleared.dairy",
+   "title": "Cleared: dairy (excluding cheese and whey)",
+   "matchType": "category",
+   "matchValue": "dairy",
+   "status": "NO_FLAGGED_INGREDIENTS",
+   "priority": 100,
+   "reasonCode": "CLEARED_CATEGORY",
+   "reason": {
+    "ko": "유제품(치즈·유청 제외) 원료로, 원료명만으로는 할랄상 우려 요소가 확인되지 않았습니다.",
+    "en": "A dairy (excluding cheese and whey) ingredient; no halal concern is identified from its name alone.",
+    "uz": "Sut mahsuloti (pishloq va zardobdan tashqari) tarkibi; faqat nomidan halollik bo'yicha xavotir aniqlanmadi."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Basic plant/mineral/synthetic or halal-eligible-by-nature ingredient with no known animal, pork or alcohol component in its plain form.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.cleared.egg",
+   "title": "Cleared: egg",
+   "matchType": "category",
+   "matchValue": "egg",
+   "status": "NO_FLAGGED_INGREDIENTS",
+   "priority": 100,
+   "reasonCode": "CLEARED_CATEGORY",
+   "reason": {
+    "ko": "달걀류 원료로, 원료명만으로는 할랄상 우려 요소가 확인되지 않았습니다.",
+    "en": "A egg ingredient; no halal concern is identified from its name alone.",
+    "uz": "Tuxum tarkibi; faqat nomidan halollik bo'yicha xavotir aniqlanmadi."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Basic plant/mineral/synthetic or halal-eligible-by-nature ingredient with no known animal, pork or alcohol component in its plain form.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.cleared.fish",
+   "title": "Cleared: fish",
+   "matchType": "category",
+   "matchValue": "fish",
+   "status": "NO_FLAGGED_INGREDIENTS",
+   "priority": 100,
+   "reasonCode": "CLEARED_CATEGORY",
+   "reason": {
+    "ko": "생선류 원료로, 원료명만으로는 할랄상 우려 요소가 확인되지 않았습니다.",
+    "en": "A fish ingredient; no halal concern is identified from its name alone.",
+    "uz": "Baliq tarkibi; faqat nomidan halollik bo'yicha xavotir aniqlanmadi."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Basic plant/mineral/synthetic or halal-eligible-by-nature ingredient with no known animal, pork or alcohol component in its plain form.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.cleared.water",
+   "title": "Cleared: water / carbonation",
+   "matchType": "category",
+   "matchValue": "water",
+   "status": "NO_FLAGGED_INGREDIENTS",
+   "priority": 100,
+   "reasonCode": "CLEARED_CATEGORY",
+   "reason": {
+    "ko": "물·탄산 원료로, 원료명만으로는 할랄상 우려 요소가 확인되지 않았습니다.",
+    "en": "A water / carbonation ingredient; no halal concern is identified from its name alone.",
+    "uz": "Suv / karbonat tarkibi; faqat nomidan halollik bo'yicha xavotir aniqlanmadi."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Basic plant/mineral/synthetic or halal-eligible-by-nature ingredient with no known animal, pork or alcohol component in its plain form.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.cleared.plant_thickener",
+   "title": "Cleared: plant/microbial thickener",
+   "matchType": "category",
+   "matchValue": "plant_thickener",
+   "status": "NO_FLAGGED_INGREDIENTS",
+   "priority": 100,
+   "reasonCode": "CLEARED_CATEGORY",
+   "reason": {
+    "ko": "식물·미생물 유래 증점제 원료로, 원료명만으로는 할랄상 우려 요소가 확인되지 않았습니다.",
+    "en": "A plant/microbial thickener ingredient; no halal concern is identified from its name alone.",
+    "uz": "O'simlik/mikrob quyultiruvchi tarkibi; faqat nomidan halollik bo'yicha xavotir aniqlanmadi."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Basic plant/mineral/synthetic or halal-eligible-by-nature ingredient with no known animal, pork or alcohol component in its plain form.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.cleared.additive_fermentation",
+   "title": "Cleared: fermentation-derived acid or seasoning additive",
+   "matchType": "category",
+   "matchValue": "additive_fermentation",
+   "status": "NO_FLAGGED_INGREDIENTS",
+   "priority": 100,
+   "reasonCode": "CLEARED_CATEGORY",
+   "reason": {
+    "ko": "발효 유래 산·조미 첨가물 원료로, 원료명만으로는 할랄상 우려 요소가 확인되지 않았습니다.",
+    "en": "A fermentation-derived acid or seasoning additive ingredient; no halal concern is identified from its name alone.",
+    "uz": "Fermentatsiya asosidagi kislota/ta'm qo'shimchasi tarkibi; faqat nomidan halollik bo'yicha xavotir aniqlanmadi."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Basic plant/mineral/synthetic or halal-eligible-by-nature ingredient with no known animal, pork or alcohol component in its plain form.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.cleared.additive_synthetic",
+   "title": "Cleared: synthetic or mineral additive",
+   "matchType": "category",
+   "matchValue": "additive_synthetic",
+   "status": "NO_FLAGGED_INGREDIENTS",
+   "priority": 100,
+   "reasonCode": "CLEARED_CATEGORY",
+   "reason": {
+    "ko": "합성·광물 유래 첨가물 원료로, 원료명만으로는 할랄상 우려 요소가 확인되지 않았습니다.",
+    "en": "A synthetic or mineral additive ingredient; no halal concern is identified from its name alone.",
+    "uz": "Sintetik yoki mineral qo'shimcha tarkibi; faqat nomidan halollik bo'yicha xavotir aniqlanmadi."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Basic plant/mineral/synthetic or halal-eligible-by-nature ingredient with no known animal, pork or alcohol component in its plain form.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.cleared.vitamin_synthetic",
+   "title": "Cleared: synthetic vitamin / antioxidant",
+   "matchType": "category",
+   "matchValue": "vitamin_synthetic",
+   "status": "NO_FLAGGED_INGREDIENTS",
+   "priority": 100,
+   "reasonCode": "CLEARED_CATEGORY",
+   "reason": {
+    "ko": "합성 비타민·항산화제 원료로, 원료명만으로는 할랄상 우려 요소가 확인되지 않았습니다.",
+    "en": "A synthetic vitamin / antioxidant ingredient; no halal concern is identified from its name alone.",
+    "uz": "Sintetik vitamin / antioksidant tarkibi; faqat nomidan halollik bo'yicha xavotir aniqlanmadi."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Basic plant/mineral/synthetic or halal-eligible-by-nature ingredient with no known animal, pork or alcohol component in its plain form.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.cleared.colorant",
+   "title": "Cleared: colourant (plant or synthetic)",
+   "matchType": "category",
+   "matchValue": "colorant",
+   "status": "NO_FLAGGED_INGREDIENTS",
+   "priority": 100,
+   "reasonCode": "CLEARED_CATEGORY",
+   "reason": {
+    "ko": "색소(식물·합성) 원료로, 원료명만으로는 할랄상 우려 요소가 확인되지 않았습니다.",
+    "en": "A colourant (plant or synthetic) ingredient; no halal concern is identified from its name alone.",
+    "uz": "Bo'yoq (o'simlik yoki sintetik) tarkibi; faqat nomidan halollik bo'yicha xavotir aniqlanmadi."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Basic plant/mineral/synthetic or halal-eligible-by-nature ingredient with no known animal, pork or alcohol component in its plain form.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.cleared.yeast",
+   "title": "Cleared: yeast",
+   "matchType": "category",
+   "matchValue": "yeast",
+   "status": "NO_FLAGGED_INGREDIENTS",
+   "priority": 100,
+   "reasonCode": "CLEARED_CATEGORY",
+   "reason": {
+    "ko": "효모류 원료로, 원료명만으로는 할랄상 우려 요소가 확인되지 않았습니다.",
+    "en": "A yeast ingredient; no halal concern is identified from its name alone.",
+    "uz": "Xamirturush tarkibi; faqat nomidan halollik bo'yicha xavotir aniqlanmadi."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Basic plant/mineral/synthetic or halal-eligible-by-nature ingredient with no known animal, pork or alcohol component in its plain form.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.cleared.vinegar",
+   "title": "Cleared: vinegar",
+   "matchType": "category",
+   "matchValue": "vinegar",
+   "status": "NO_FLAGGED_INGREDIENTS",
+   "priority": 100,
+   "reasonCode": "CLEARED_CATEGORY",
+   "reason": {
+    "ko": "식초류 원료로, 원료명만으로는 할랄상 우려 요소가 확인되지 않았습니다.",
+    "en": "A vinegar ingredient; no halal concern is identified from its name alone.",
+    "uz": "Sirka tarkibi; faqat nomidan halollik bo'yicha xavotir aniqlanmadi."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Basic plant/mineral/synthetic or halal-eligible-by-nature ingredient with no known animal, pork or alcohol component in its plain form.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.cleared.glycerol_fatty_plant",
+   "title": "Cleared: glycerin/fatty-acid ingredient stated as plant-derived",
+   "matchType": "category",
+   "matchValue": "glycerol_fatty_plant",
+   "status": "NO_FLAGGED_INGREDIENTS",
+   "priority": 100,
+   "reasonCode": "CLEARED_CATEGORY",
+   "reason": {
+    "ko": "식물 유래로 명시된 지방산·글리세린 원료로, 원료명만으로는 할랄상 우려 요소가 확인되지 않았습니다.",
+    "en": "A glycerin/fatty-acid ingredient stated as plant-derived ingredient; no halal concern is identified from its name alone.",
+    "uz": "O'simlik manbali deb ko'rsatilgan glitserin/yog' kislotasi tarkibi; faqat nomidan halollik bo'yicha xavotir aniqlanmadi."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Basic plant/mineral/synthetic or halal-eligible-by-nature ingredient with no known animal, pork or alcohol component in its plain form.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.check.meat_beef",
+   "title": "Check: beef-derived ingredient",
+   "matchType": "category",
+   "matchValue": "meat_beef",
+   "status": "CHECK_REQUIRED",
+   "priority": 100,
+   "reasonCode": "SLAUGHTER_UNVERIFIED",
+   "reason": {
+    "ko": "소고기 유래 원료: 동물의 종류와 별개로, 성분표만으로는 할랄 도축 여부를 확인할 수 없습니다.",
+    "en": "Beef-derived ingredient: halal slaughter cannot be verified from an ingredient list.",
+    "uz": "Mol go'shti manbali tarkib: tarkib ro'yxatidan halol so'yilganini tasdiqlab bo'lmaydi."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Meat and animal fats are only halal-eligible when the animal is slaughtered according to halal requirements (see Qur'an 5:3).",
+   "evidenceUrl": "https://quran.com/5/3",
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.check.meat_poultry",
+   "title": "Check: poultry-derived ingredient",
+   "matchType": "category",
+   "matchValue": "meat_poultry",
+   "status": "CHECK_REQUIRED",
+   "priority": 100,
+   "reasonCode": "SLAUGHTER_UNVERIFIED",
+   "reason": {
+    "ko": "가금류 유래 원료: 동물의 종류와 별개로, 성분표만으로는 할랄 도축 여부를 확인할 수 없습니다.",
+    "en": "Poultry-derived ingredient: halal slaughter cannot be verified from an ingredient list.",
+    "uz": "Parranda go'shti manbali tarkib: tarkib ro'yxatidan halol so'yilganini tasdiqlab bo'lmaydi."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Meat and animal fats are only halal-eligible when the animal is slaughtered according to halal requirements (see Qur'an 5:3).",
+   "evidenceUrl": "https://quran.com/5/3",
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.check.meat_lamb",
+   "title": "Check: lamb/mutton-derived ingredient",
+   "matchType": "category",
+   "matchValue": "meat_lamb",
+   "status": "CHECK_REQUIRED",
+   "priority": 100,
+   "reasonCode": "SLAUGHTER_UNVERIFIED",
+   "reason": {
+    "ko": "양고기 유래 원료: 동물의 종류와 별개로, 성분표만으로는 할랄 도축 여부를 확인할 수 없습니다.",
+    "en": "Lamb/mutton-derived ingredient: halal slaughter cannot be verified from an ingredient list.",
+    "uz": "Qo'y go'shti manbali tarkib: tarkib ro'yxatidan halol so'yilganini tasdiqlab bo'lmaydi."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Meat and animal fats are only halal-eligible when the animal is slaughtered according to halal requirements (see Qur'an 5:3).",
+   "evidenceUrl": "https://quran.com/5/3",
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.check.meat_other",
+   "title": "Check: meat, stock or processed-meat ingredient",
+   "matchType": "category",
+   "matchValue": "meat_other",
+   "status": "CHECK_REQUIRED",
+   "priority": 100,
+   "reasonCode": "SLAUGHTER_UNVERIFIED",
+   "reason": {
+    "ko": "육류·육수·육가공품: 동물의 종류와 별개로, 성분표만으로는 할랄 도축 여부를 확인할 수 없습니다.",
+    "en": "Meat, stock or processed-meat ingredient: halal slaughter cannot be verified from an ingredient list.",
+    "uz": "Go'sht, sho'rva yoki qayta ishlangan go'sht: tarkib ro'yxatidan halol so'yilganini tasdiqlab bo'lmaydi."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Meat and animal fats are only halal-eligible when the animal is slaughtered according to halal requirements (see Qur'an 5:3).",
+   "evidenceUrl": "https://quran.com/5/3",
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.check.animal_fat",
+   "title": "Check: animal fat / shortening",
+   "matchType": "category",
+   "matchValue": "animal_fat",
+   "status": "CHECK_REQUIRED",
+   "priority": 100,
+   "reasonCode": "SLAUGHTER_UNVERIFIED",
+   "reason": {
+    "ko": "동물성 유지·쇼트닝: 동물의 종류와 별개로, 성분표만으로는 할랄 도축 여부를 확인할 수 없습니다.",
+    "en": "Animal fat / shortening: halal slaughter cannot be verified from an ingredient list.",
+    "uz": "Hayvon yog'i / shortening: tarkib ro'yxatidan halol so'yilganini tasdiqlab bo'lmaydi."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Meat and animal fats are only halal-eligible when the animal is slaughtered according to halal requirements (see Qur'an 5:3).",
+   "evidenceUrl": "https://quran.com/5/3",
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.check.shellfish",
+   "title": "Check: crustaceans / molluscs",
+   "matchType": "category",
+   "matchValue": "shellfish",
+   "status": "CHECK_REQUIRED",
+   "priority": 100,
+   "reasonCode": "SCHOOLS_DIFFER",
+   "reason": {
+    "ko": "갑각류·연체류·조개류는 이슬람 법학파에 따라 허용 여부 견해가 다릅니다. 본인이 따르는 학파 기준으로 확인하세요.",
+    "en": "Schools of Islamic jurisprudence differ on crustaceans, molluscs and shellfish. Check against the school you follow.",
+    "uz": "Qisqichbaqasimonlar, mollyuskalar va chig'anoqlilar bo'yicha fiqh maktablari fikri turlicha. O'zingiz ergashgan maktab bo'yicha tekshiring."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Fish is broadly accepted; opinions on shrimp, crab, squid and shellfish vary between schools (e.g. Hanafi vs. others).",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.check.gelling_animal",
+   "title": "Check: gelatin / collagen",
+   "matchType": "category",
+   "matchValue": "gelling_animal",
+   "status": "CHECK_REQUIRED",
+   "priority": 100,
+   "reasonCode": "ORIGIN_UNKNOWN",
+   "reason": {
+    "ko": "제품 정보만으로는 원료의 출처를 확인할 수 없습니다.",
+    "en": "Ingredient source could not be determined from available product information.",
+    "uz": "Mavjud mahsulot ma'lumotidan tarkib manbasini aniqlab bo'lmadi."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Gelatin and collagen can come from pork, beef or fish, and Korean labels normally do not state the animal source.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.check.glycerol_fatty",
+   "title": "Check: glycerin / fatty acids",
+   "matchType": "category",
+   "matchValue": "glycerol_fatty",
+   "status": "CHECK_REQUIRED",
+   "priority": 100,
+   "reasonCode": "ORIGIN_UNKNOWN",
+   "reason": {
+    "ko": "글리세린·지방산·모노/디글리세리드 등은 동물성 또는 식물성 유지에서 만들 수 있어 출처를 알 수 없습니다.",
+    "en": "Glycerin, fatty acids and mono-/diglycerides can be made from animal or plant fats; the source is not stated.",
+    "uz": "Glitserin, yog' kislotalari va mono/digliseridlar hayvon yoki o'simlik yog'idan olinishi mumkin; manba ko'rsatilmagan."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Emulsifier/fatty-acid derivatives may be animal (including pork) or plant derived.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.check.flavor",
+   "title": "Check: flavourings",
+   "matchType": "category",
+   "matchValue": "flavor",
+   "status": "CHECK_REQUIRED",
+   "priority": 100,
+   "reasonCode": "FLAVOR_UNKNOWN",
+   "reason": {
+    "ko": "향료는 알코올 용매나 동물 유래 성분을 포함할 수 있으며 성분표에는 세부 구성이 표시되지 않습니다.",
+    "en": "Flavourings may contain alcohol as a carrier or animal-derived components, and the composition is not listed.",
+    "uz": "Xushbo'ylovchilar spirtli erituvchi yoki hayvon manbali komponent o'z ichiga olishi mumkin; tarkibi ko'rsatilmagan."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Flavour compositions are trade secrets; carriers commonly include ethanol or propylene glycol.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.check.enzyme",
+   "title": "Check: enzymes",
+   "matchType": "category",
+   "matchValue": "enzyme",
+   "status": "CHECK_REQUIRED",
+   "priority": 100,
+   "reasonCode": "ORIGIN_UNKNOWN",
+   "reason": {
+    "ko": "효소는 동물(예: 돼지·송아지), 미생물 또는 식물에서 얻을 수 있어 출처를 알 수 없습니다.",
+    "en": "Enzymes can be animal (e.g. porcine or calf), microbial or plant derived; the source is not stated.",
+    "uz": "Fermentlar hayvon (masalan, cho'chqa yoki buzoq), mikrob yoki o'simlikdan olinishi mumkin; manba ko'rsatilmagan."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Enzyme preparations do not disclose their source on labels.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.check.alcohol_ethanol",
+   "title": "Check: ethanol / alcohol",
+   "matchType": "category",
+   "matchValue": "alcohol_ethanol",
+   "status": "CHECK_REQUIRED",
+   "priority": 100,
+   "reasonCode": "ALCOHOL_USE",
+   "reason": {
+    "ko": "주정(에탄올)은 제조 공정에서 용매·보존 목적으로 쓰이며, 원료와 사용 목적에 따라 판단이 달라집니다.",
+    "en": "Ethanol (주정) is used as a solvent or preservative; its acceptability depends on its origin and purpose.",
+    "uz": "Etanol (주정) erituvchi yoki konservant sifatida ishlatiladi; joizligi manbasi va maqsadiga bog'liq."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Food-grade ethanol may be fermentation- or synthetic-derived; scholarly opinions differ on residual alcohol.",
+   "evidenceUrl": "https://quran.com/5/90",
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.check.cheese_rennet",
+   "title": "Check: cheese / whey / casein",
+   "matchType": "category",
+   "matchValue": "cheese_rennet",
+   "status": "CHECK_REQUIRED",
+   "priority": 100,
+   "reasonCode": "RENNET_UNKNOWN",
+   "reason": {
+    "ko": "치즈·유청·카제인은 제조에 쓰인 응유효소(동물성 또는 미생물성)를 알 수 없습니다.",
+    "en": "For cheese, whey and casein the rennet used (animal or microbial) is not stated.",
+    "uz": "Pishloq, zardob va kazein uchun ishlatilgan ferment (hayvon yoki mikrob) ko'rsatilmagan."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Traditional rennet comes from calf stomach; microbial rennet is also common.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.check.insect_derived",
+   "title": "Check: insect-derived",
+   "matchType": "category",
+   "matchValue": "insect_derived",
+   "status": "CHECK_REQUIRED",
+   "priority": 100,
+   "reasonCode": "INSECT_DERIVED",
+   "reason": {
+    "ko": "곤충 유래 성분(연지벌레 색소, 셸락 등)으로, 허용 여부에 대한 견해가 갈립니다.",
+    "en": "Insect-derived ingredient (e.g. carmine, shellac); scholarly opinions differ on permissibility.",
+    "uz": "Hasharotdan olingan tarkib (masalan, karmin, shellak); joizligi haqida olimlar fikri turlicha."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Views differ between and within schools of jurisprudence.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.check.animal_derived_other",
+   "title": "Check: possibly animal-derived",
+   "matchType": "category",
+   "matchValue": "animal_derived_other",
+   "status": "CHECK_REQUIRED",
+   "priority": 100,
+   "reasonCode": "ANIMAL_ORIGIN_POSSIBLE",
+   "reason": {
+    "ko": "동물에서 유래했을 수 있는 성분입니다(예: 비타민 D3, L-시스테인, 핵산계 조미료). 출처를 확인해야 합니다.",
+    "en": "May be derived from animals (e.g. vitamin D3, L-cysteine, nucleotide seasonings). The source must be checked.",
+    "uz": "Hayvondan olingan bo'lishi mumkin (masalan, D3 vitamini, L-sistein, nukleotid ziravorlari). Manbani tekshirish kerak."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Some producers use animal (including hair, feather or fish) sources; alternatives exist.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.check.additive_class",
+   "title": "Check: umbrella additive term",
+   "matchType": "category",
+   "matchValue": "additive_class",
+   "status": "CHECK_REQUIRED",
+   "priority": 100,
+   "reasonCode": "UMBRELLA_TERM",
+   "reason": {
+    "ko": "포괄 명칭만 표시되어 실제 물질과 그 출처를 알 수 없습니다. 괄호 안에 세부 원료가 있으면 그 기준으로 판단합니다.",
+    "en": "Only an umbrella term is listed, so the actual substance and its source are unknown. If bracketed sub-ingredients are given, those decide the result.",
+    "uz": "Faqat umumiy nom ko'rsatilgan, haqiqiy modda va uning manbasi noma'lum. Qavs ichida aniq tarkib bo'lsa, natija shu asosida chiqariladi."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Umbrella terms such as 유화제 or 산도조절제 cover many substances with different origins.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.check.vinegar_wine",
+   "title": "Check: wine vinegar",
+   "matchType": "category",
+   "matchValue": "vinegar_wine",
+   "status": "CHECK_REQUIRED",
+   "priority": 100,
+   "reasonCode": "WINE_VINEGAR",
+   "reason": {
+    "ko": "와인·발사믹 식초는 포도주에서 만들어지며 허용 여부에 견해 차이가 있습니다.",
+    "en": "Wine and balsamic vinegar are made from wine; opinions on permissibility differ.",
+    "uz": "Vino va balzamik sirka sharobdan tayyorlanadi; joizligi haqida fikrlar turlicha."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Most authorities accept vinegar after transformation, some do not for wine-derived vinegar.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.check.fermented_sauce",
+   "title": "Check: fermented sauces",
+   "matchType": "category",
+   "matchValue": "fermented_sauce",
+   "status": "CHECK_REQUIRED",
+   "priority": 100,
+   "reasonCode": "FERMENTATION_ALCOHOL",
+   "reason": {
+    "ko": "발효 장류·간장은 발효 과정에서 미량의 알코올이 생기거나 주정이 더해질 수 있어 제조 방식 확인이 필요합니다.",
+    "en": "Fermented soy/pepper sauces and soy sauce may contain naturally formed or added trace alcohol; the production method must be checked.",
+    "uz": "Fermentatsiyalangan soya/qalampir sousi va soya sousi oz miqdorda tabiiy yoki qo'shilgan spirt saqlashi mumkin; ishlab chiqarish usulini tekshirish kerak."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Brewing produces trace ethanol and some products add 주정 as a preservative.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.flagged.meat_pork",
+   "title": "Flagged: pork and pork derivatives",
+   "matchType": "category",
+   "matchValue": "meat_pork",
+   "status": "FLAGGED_INGREDIENT",
+   "priority": 100,
+   "reasonCode": "PORK",
+   "reason": {
+    "ko": "성분표에서 돼지고기 원료가 확인되었습니다.",
+    "en": "Pork ingredient detected in the ingredient list.",
+    "uz": "Tarkib ro'yxatida cho'chqa go'shti aniqlandi."
+   },
+   "evidence": "Pork and its derivatives are prohibited (Qur'an 2:173, 5:3, 6:145, 16:115).",
+   "evidenceUrl": "https://quran.com/2/173",
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.flagged.blood",
+   "title": "Flagged: blood",
+   "matchType": "category",
+   "matchValue": "blood",
+   "status": "FLAGGED_INGREDIENT",
+   "priority": 100,
+   "reasonCode": "BLOOD",
+   "reason": {
+    "ko": "혈액 또는 혈액 유래 원료(선지 등)가 성분표에서 확인되었습니다.",
+    "en": "Blood or a blood-derived ingredient was detected in the ingredient list.",
+    "uz": "Tarkib ro'yxatida qon yoki qondan olingan tarkib aniqlandi."
+   },
+   "evidence": "Flowing blood is prohibited (Qur'an 2:173, 6:145).",
+   "evidenceUrl": "https://quran.com/6/145",
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "cat.flagged.alcohol_beverage",
+   "title": "Flagged: alcoholic beverage as ingredient",
+   "matchType": "category",
+   "matchValue": "alcohol_beverage",
+   "status": "FLAGGED_INGREDIENT",
+   "priority": 100,
+   "reasonCode": "ALCOHOLIC_BEVERAGE",
+   "reason": {
+    "ko": "술(와인·맥주·청주·맛술 등)이 원료로 사용되었습니다.",
+    "en": "An alcoholic beverage (wine, beer, sake, mirin, spirits …) is used as an ingredient.",
+    "uz": "Alkogolli ichimlik (vino, pivo, sake, mirin va h.k.) tarkib sifatida ishlatilgan."
+   },
+   "evidence": "Intoxicants are prohibited (Qur'an 5:90-91).",
+   "evidenceUrl": "https://quran.com/5/90",
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "term.pork",
+   "title": "Term: pork words",
+   "matchType": "term",
+   "matchValue": "돼지|돈육|돈지|돈피|돈골|돈코츠|족발|삼겹|베이컨|라드|포크|pork|lard|bacon|porcine|swine|beykon|chochqa",
+   "status": "FLAGGED_INGREDIENT",
+   "priority": 200,
+   "reasonCode": "PORK",
+   "reason": {
+    "ko": "성분표에서 돼지고기 원료가 확인되었습니다.",
+    "en": "Pork ingredient detected in the ingredient list.",
+    "uz": "Tarkib ro'yxatida cho'chqa go'shti aniqlandi."
+   },
+   "evidence": "Pork and its derivatives are prohibited (Qur'an 2:173, 5:3, 6:145, 16:115). Exceptions (e.g. 돼지감자, bacon flavour) are ingredient-level rules with higher priority.",
+   "evidenceUrl": "https://quran.com/2/173",
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "term.blood",
+   "title": "Term: blood words",
+   "matchType": "term",
+   "matchValue": "혈액|혈장|선지|헤모글로빈|혈분|blood|hemoglobin|haemoglobin",
+   "status": "FLAGGED_INGREDIENT",
+   "priority": 200,
+   "reasonCode": "BLOOD",
+   "reason": {
+    "ko": "성분명에 혈액 관련 표현이 포함되어 있습니다.",
+    "en": "The ingredient name contains a blood-related word.",
+    "uz": "Tarkib nomida qonga oid so'z bor."
+   },
+   "evidence": "Blood is prohibited (Qur'an 2:173, 6:145). 'Blood orange' is an ingredient-level exception.",
+   "evidenceUrl": "https://quran.com/6/145",
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "term.gelatin_collagen",
+   "title": "Term: gelatin / collagen words",
+   "matchType": "term",
+   "matchValue": "젤라틴|콜라겐|콜라젠|gelatin|gelatine|collagen|jelatin|kollagen",
+   "status": "CHECK_REQUIRED",
+   "priority": 200,
+   "reasonCode": "ORIGIN_UNKNOWN",
+   "reason": {
+    "ko": "제품 정보만으로는 원료의 출처를 확인할 수 없습니다.",
+    "en": "Ingredient source could not be determined from available product information.",
+    "uz": "Mavjud mahsulot ma'lumotidan tarkib manbasini aniqlab bo'lmadi."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Gelatin/collagen may come from pork, beef or fish (source animal not stated). Fish-derived gelatin/collagen is an explicit ingredient-level exception.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "term.alcohol_words",
+   "title": "Term: alcohol words",
+   "matchType": "term",
+   "matchValue": "알코올|알콜|에탄올|주정|alcohol|ethanol|spirt|etanol",
+   "status": "CHECK_REQUIRED",
+   "priority": 200,
+   "reasonCode": "ALCOHOL_USE",
+   "reason": {
+    "ko": "성분명에 알코올(주정) 관련 표현이 있어 사용 목적과 출처 확인이 필요합니다.",
+    "en": "The ingredient name mentions alcohol/ethanol; its purpose and origin must be checked.",
+    "uz": "Tarkib nomida spirt/etanol tilga olingan; maqsadi va manbasi tekshirilishi kerak."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Includes 'alcohol-free' wording on purpose: it is surfaced for a human to confirm.",
+   "evidenceUrl": "https://quran.com/5/90",
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "ing.jerusalem_artichoke",
+   "title": "Exception: 돼지감자 (Jerusalem artichoke) is a plant",
+   "matchType": "ingredient",
+   "matchValue": "jerusalem_artichoke",
+   "status": "NO_FLAGGED_INGREDIENTS",
+   "priority": 300,
+   "reasonCode": "PLANT_EXCEPTION",
+   "reason": {
+    "ko": "돼지감자(뚱딴지)는 이름에 '돼지'가 들어가지만 식물(뿌리채소)입니다.",
+    "en": "돼지감자 (Jerusalem artichoke) has 'pig' in its name but is a plant (tuber).",
+    "uz": "돼지감자 (yerqo'zoq) nomida 'cho'chqa' bor, lekin o'simlik (ildizmeva)."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Name-based pork term rule intentionally overridden.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "ing.blood_orange",
+   "title": "Exception: blood orange is a fruit",
+   "matchType": "ingredient",
+   "matchValue": "blood_orange",
+   "status": "NO_FLAGGED_INGREDIENTS",
+   "priority": 300,
+   "reasonCode": "PLANT_EXCEPTION",
+   "reason": {
+    "ko": "블러드 오렌지는 과일이며 혈액 성분이 아닙니다.",
+    "en": "Blood orange is a fruit, not a blood ingredient.",
+    "uz": "Qonli apelsin meva, qon tarkibi emas."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Name-based blood term rule intentionally overridden.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "ing.bacon_flavour",
+   "title": "Bacon flavour: source not stated",
+   "matchType": "ingredient",
+   "matchValue": "bacon_flavour",
+   "status": "CHECK_REQUIRED",
+   "priority": 300,
+   "reasonCode": "FLAVOR_UNKNOWN",
+   "reason": {
+    "ko": "베이컨 맛/향은 식물성일 수도, 돼지고기 성분이 들어갈 수도 있어 출처를 확인해야 합니다.",
+    "en": "Bacon flavour can be plant-based or contain pork; the source must be checked.",
+    "uz": "Beykon ta'mi/hidi o'simlik asosida bo'lishi yoki cho'chqa tarkibini saqlashi mumkin; manbani tekshirish kerak."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. A flavour name is not proof of pork; also not proof of absence.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "ing.fish_gelatin",
+   "title": "Exception: fish gelatin (source stated)",
+   "matchType": "ingredient",
+   "matchValue": "fish_gelatin",
+   "status": "NO_FLAGGED_INGREDIENTS",
+   "priority": 300,
+   "reasonCode": "SOURCE_STATED_FISH",
+   "reason": {
+    "ko": "어류에서 얻은 젤라틴으로 출처가 명시되어 있으며, 어류는 할랄 기준에서 허용되는 원료로 널리 인정됩니다.",
+    "en": "Gelatin whose source is stated as fish; fish is widely accepted as a halal-eligible source.",
+    "uz": "Manbasi baliq deb ko'rsatilgan jelatin; baliq halol manba sifatida keng tan olingan."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Source is explicit in the ingredient text.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "ing.fish_collagen",
+   "title": "Exception: fish collagen (source stated)",
+   "matchType": "ingredient",
+   "matchValue": "fish_collagen",
+   "status": "NO_FLAGGED_INGREDIENTS",
+   "priority": 300,
+   "reasonCode": "SOURCE_STATED_FISH",
+   "reason": {
+    "ko": "어류에서 얻은 콜라겐으로 출처가 명시되어 있습니다.",
+    "en": "Collagen whose source is stated as fish.",
+    "uz": "Manbasi baliq deb ko'rsatilgan kollagen."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar. Source is explicit in the ingredient text.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "ing.pork_gelatin",
+   "title": "Pork gelatin is flagged",
+   "matchType": "ingredient",
+   "matchValue": "gelatin_pork",
+   "status": "FLAGGED_INGREDIENT",
+   "priority": 300,
+   "reasonCode": "PORK",
+   "reason": {
+    "ko": "돼지 유래 젤라틴/콜라겐으로 표시되어 있습니다.",
+    "en": "The gelatin/collagen is stated to be pork-derived.",
+    "uz": "Jelatin/kollagen cho'chqadan olingani ko'rsatilgan."
+   },
+   "evidence": "Pork and its derivatives are prohibited (Qur'an 2:173, 5:3, 6:145, 16:115).",
+   "evidenceUrl": "https://quran.com/2/173",
+   "source": "halalmap_editorial"
+  },
+  {
+   "key": "ing.tonkatsu_sauce",
+   "title": "돈가스소스 is a sauce, not pork",
+   "matchType": "ingredient",
+   "matchValue": "tonkatsu_sauce",
+   "status": "CHECK_REQUIRED",
+   "priority": 300,
+   "reasonCode": "COMPOSITE_INGREDIENT",
+   "reason": {
+    "ko": "소스류는 여러 원료의 혼합물이라 세부 원료 확인이 필요합니다(돈가스 소스는 돼지고기가 아닙니다).",
+    "en": "Composite sauce: its own ingredients must be checked (tonkatsu sauce is not pork).",
+    "uz": "Murakkab sous: uning tarkibini tekshirish kerak (tonkatsu sousi cho'chqa go'shti emas)."
+   },
+   "evidence": "HalalMap editorial screening rule (conservative). Not a fatwa or certification; consult your certifier or scholar.",
+   "evidenceUrl": null,
+   "source": "halalmap_editorial"
+  }
+ ]
+}

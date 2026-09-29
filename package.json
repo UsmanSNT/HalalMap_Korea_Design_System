@@ -11,7 +11,13 @@
     "preview": "vite preview",
     "format": "oxfmt",
     "android:sync": "vite build && npx cap sync android",
-    "android:open": "npx cap open android"
+    "android:open": "npx cap open android",
+    "test": "node --no-warnings --test server/tests/*.test.mjs",
+    "typecheck": "tsc --noEmit",
+    "import:places": "node scripts/import-places.mjs",
+    "import:products": "node scripts/import-products.mjs",
+    "import:ingredients": "node scripts/import-ingredients.mjs",
+    "mfds:probe": "node scripts/mfds-probe.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",

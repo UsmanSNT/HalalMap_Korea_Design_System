@@ -1,0 +1,21 @@
+{
+  "code": "8809999900016",
+  "status": 1,
+  "status_verbose": "product found",
+  "product": {
+    "code": "8809999900016",
+    "product_name": "테스트 초코 쿠키",
+    "product_name_en": "Test Choco Cookie",
+    "brands": "테스트푸드,TestFood",
+    "manufacturing_places": "Korea",
+    "categories": "en:snacks, en:biscuits-and-cakes",
+    "quantity": "120 g",
+    "countries_tags": ["en:south-korea"],
+    "image_front_url": "https://images.openfoodfacts.org/images/products/880/999/990/0019/front_ko.3.400.jpg",
+    "ingredients_text_ko": "밀가루(밀:미국산), 설탕, 팜유, 코코아분말, 젤라틴, 유화제(대두레시틴), 정제소금. 알레르기 유발물질: 밀, 대두 함유",
+    "lang": "ko",
+    "allergens_tags": ["en:gluten", "en:soybeans"],
+    "labels_tags": ["en:halal"],
+    "last_modified_t": 1750000000
+  }
+}
