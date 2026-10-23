@@ -1,10 +1,12 @@
 {
-  "description": "Discover halal restaurants, mosques, and prayer rooms in South Korea with ease, while enjoying seamless food delivery tailored for the Muslim community.",
+  "description": "Prayer times, Qibla, mosques and halal restaurants in South Korea.",
   "robots": {
     "index": false
   },
   "accessibility": {
     "addBypassLinks": false,
     "ignoreReducedMotion": false
-  }
+  },
+  "title": "HalalMap Korea",
+  "language": "en"
 }

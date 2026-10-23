@@ -6,17 +6,20 @@
   "scripts": {
     "dev": "node scripts/dev.mjs",
     "dev:web": "vite --host 0.0.0.0",
-    "dev:api": "node --env-file-if-exists=.env server/index.mjs",
     "build": "vite build",
     "preview": "vite preview",
     "format": "oxfmt",
     "android:sync": "vite build && npx cap sync android",
-    "android:open": "npx cap open android"
+    "android:open": "npx cap open android",
+    "check": "tsc --noEmit && node --experimental-strip-types scripts/check-i18n.mjs",
+    "import:osm": "node --experimental-strip-types scripts/import-osm.mjs --fetch",
+    "start:api": "node server/index.mjs",
+    "dev:api": "node --env-file-if-exists=.env server/index.mjs",
+    "build:osm": "node --experimental-strip-types scripts/import-osm.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",
     "@capacitor/core": "^8.5.0",
-    "pg": "^8.23.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },

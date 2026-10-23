@@ -1,0 +1,30 @@
+{
+  "importedAt": "2026-09-28T02:46:36.847Z",
+  "source": "OpenStreetMap",
+  "sourceUrl": "https://www.openstreetmap.org/copyright",
+  "sourceLicense": "ODbL-1.0",
+  "queries": [
+    "[out:json][timeout:120];\narea[\"ISO3166-1\"=\"KR\"][admin_level=2]->.kr;\n(\n  nwr[\"amenity\"=\"place_of_worship\"][\"religion\"=\"muslim\"](area.kr);\n  nwr[\"building\"=\"mosque\"](area.kr);\n  nwr[\"amenity\"=\"prayer_room\"](area.kr);\n  nwr[\"prayer_room\"=\"yes\"](area.kr);\n  nwr[\"amenity\"~\"^(restaurant|cafe|fast_food|food_court)$\"][\"diet:halal\"~\"^(yes|only)$\"](area.kr);\n  nwr[\"amenity\"~\"^(restaurant|cafe|fast_food|food_court)$\"][\"halal\"~\"^(yes|only)$\"](area.kr);\n  nwr[\"amenity\"~\"^(restaurant|cafe|fast_food|food_court)$\"][\"cuisine\"~\"halal\",i](area.kr);\n  nwr[\"amenity\"~\"^(restaurant|cafe|fast_food|food_court)$\"][\"diet:pork\"=\"no\"](area.kr);\n  nwr[\"amenity\"~\"^(restaurant|cafe|fast_food|food_court)$\"][\"pork\"=\"no\"](area.kr);\n  nwr[\"shop\"][\"diet:halal\"~\"^(yes|only)$\"](area.kr);\n  nwr[\"shop\"][\"halal\"~\"^(yes|only)$\"](area.kr);\n);\nout center tags;",
+    "[out:json][timeout:120];\narea[\"ISO3166-1\"=\"KR\"][admin_level=2]->.kr;\n(\n  nwr[\"amenity\"~\"^(place_of_worship|prayer_room)$\"][\"name\"~\"(Muslim.*Prayer|Prayer.*Muslim|Musalla|Musallah|무슬림.*기도|이슬람.*기도)\",i](area.kr);\n  nwr[\"amenity\"=\"place_of_worship\"][\"name\"~\"(Mosque|Masjid|Islamic|이슬람|성원)\",i](area.kr);\n);\nout center tags;",
+    "[out:json][timeout:120];\narea[\"ISO3166-1\"=\"KR\"][admin_level=2]->.kr;\n(\n  nwr[\"amenity\"~\"^(restaurant|cafe|fast_food|food_court)$\"][\"name\"~\"(halal|할랄)\",i](area.kr);\n  nwr[\"shop\"][\"name\"~\"(halal|할랄)\",i](area.kr);\n);\nout center tags;"
+  ],
+  "rawElements": 33,
+  "normalized": 33,
+  "unique": 33,
+  "duplicatesRemoved": 0,
+  "counts": {
+    "mosque": 11,
+    "prayer_room": 0,
+    "restaurant": 22,
+    "halal_market": 0
+  },
+  "missing": {
+    "address": 16,
+    "phone": 25,
+    "website": 32,
+    "koreanName": 12,
+    "englishName": 10,
+    "certification": 22
+  },
+  "duplicates": []
+}
