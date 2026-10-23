@@ -17,8 +17,7 @@ export type Mosque = {
   juma?: string;
 };
 
-// SAMPLE DATA. Coordinates are approximate and must be verified (and the list
-// extended) before public release. Replace with a maintained data source.
+// Curated entries. Coordinates are approximate and must be verified before public release.
 export const MOSQUES: readonly Mosque[] = [
   {
     id: "seoul-central",

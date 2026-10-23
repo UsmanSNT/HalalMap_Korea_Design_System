@@ -30,9 +30,11 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      - run: pnpm check
+
       - run: pnpm build
         env:
-          VITE_DEMO_MODE: "true"
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
 
       - uses: actions/upload-pages-artifact@v3
         with:

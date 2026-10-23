@@ -1,541 +1,356 @@
+// HalalMap Korea API: community place submissions with admin approval.
+//
+// Public:  GET /api/health, GET /api/places, POST /api/submissions
+// Admin:   GET /api/admin/submissions, POST /api/admin/submissions/:id/(approve|reject)
+//          (Authorization: Bearer <ADMIN_TOKEN>)
+//
+// Config (env): PORT, HOST, DATA_DIR, ADMIN_TOKEN (>=24 chars; admin disabled if unset),
+//               ALLOWED_ORIGINS (comma list or "*"), TRUST_PROXY=1 behind a reverse proxy.
+// Requires Node >= 22.13 (node:sqlite). DATA_DIR must be on persistent storage.
+
 import { createServer } from "node:http";
-import { randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
+import { createHash, randomUUID, timingSafeEqual } from "node:crypto";
 import { mkdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { DatabaseSync } from "node:sqlite";
-import pg from "pg";
 
-const { Pool } = pg;
-const postgres = process.env.DATABASE_URL
-  ? new Pool({
-      connectionString: process.env.DATABASE_URL,
-      ssl: { rejectUnauthorized: false },
-      max: 3,
-      connectionTimeoutMillis: 5_000,
-      idleTimeoutMillis: 30_000,
-    })
-  : null;
+const PORT = Number(process.env.PORT || process.env.API_PORT || 8787);
+const HOST = process.env.HOST || "127.0.0.1";
+const ADMIN_TOKEN = process.env.ADMIN_TOKEN || "";
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || "").split(",").map((s) => s.trim()).filter(Boolean);
+const TRUST_PROXY = process.env.TRUST_PROXY === "1";
+const DATA_DIR = resolve(process.env.DATA_DIR || resolve(dirname(fileURLToPath(import.meta.url)), "data"));
 
-const serverDir = dirname(fileURLToPath(import.meta.url));
-const dataDir = resolve(serverDir, "data");
-mkdirSync(dataDir, { recursive: true });
+const KINDS = ["mosque", "prayer-room", "restaurant"];
+const HALAL_STATUSES = ["certified", "muslim-owned", "halal-friendly", "unverified"];
+const CUISINES = ["korean", "turkish", "uzbek", "indian", "indonesian", "cafe", "other"];
+const KOREA_BOUNDS = { minLat: 33, maxLat: 39, minLng: 124, maxLng: 132 };
+const MAX_BODY_BYTES = 8 * 1024;
+const SUBMISSIONS_PER_HOUR = 5;
 
-const db = new DatabaseSync(resolve(dataDir, "halalmap.sqlite"));
+mkdirSync(DATA_DIR, { recursive: true });
+const db = new DatabaseSync(resolve(DATA_DIR, "halalmap.sqlite"));
 db.exec(`
   PRAGMA journal_mode = WAL;
   PRAGMA foreign_keys = ON;
 
-  CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    email TEXT NOT NULL UNIQUE,
+  CREATE TABLE IF NOT EXISTS submissions (
+    id TEXT PRIMARY KEY,
+    kind TEXT NOT NULL,
     name TEXT NOT NULL,
-    role TEXT NOT NULL CHECK (role IN ('user', 'owner', 'courier', 'admin')),
-    password_hash TEXT NOT NULL,
-    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    address TEXT NOT NULL,
+    lat REAL,
+    lng REAL,
+    cuisine TEXT,
+    halal TEXT,
+    place_phone TEXT,
+    notes TEXT,
+    contact_name TEXT,
+    contact_phone TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','approved','rejected')),
+    admin_note TEXT,
+    ip_hash TEXT NOT NULL,
+    created_at INTEGER NOT NULL,
+    reviewed_at INTEGER
   );
+  CREATE INDEX IF NOT EXISTS submissions_status_created ON submissions (status, created_at);
+  CREATE INDEX IF NOT EXISTS submissions_ip_created ON submissions (ip_hash, created_at);
 
-  CREATE TABLE IF NOT EXISTS sessions (
-    token TEXT PRIMARY KEY,
-    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    expires_at INTEGER NOT NULL,
-    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+  CREATE TABLE IF NOT EXISTS places (
+    id TEXT PRIMARY KEY,
+    submission_id TEXT NOT NULL UNIQUE REFERENCES submissions(id),
+    kind TEXT NOT NULL,
+    name TEXT NOT NULL,
+    name_ko TEXT,
+    address TEXT NOT NULL,
+    lat REAL NOT NULL,
+    lng REAL NOT NULL,
+    cuisine TEXT,
+    halal TEXT,
+    phone TEXT,
+    open TEXT,
+    close TEXT,
+    created_at INTEGER NOT NULL
   );
 `);
 
-const testUsers = [
-  ["user@halalmap.test", "Test User", "user", "User123!"],
-  ["owner@halalmap.test", "Test Restaurant Owner", "owner", "Owner123!"],
-  ["courier@halalmap.test", "Test Courier", "courier", "Courier123!"],
-  ["admin@halalmap.test", "Test Admin", "admin", "Admin123!"],
-];
+// ── helpers ──────────────────────────────────────────────────────
 
-const hashPassword = (password, salt = randomBytes(16).toString("hex")) =>
-  `${salt}:${scryptSync(password, salt, 64).toString("hex")}`;
+const hash = (value) => createHash("sha256").update(value).digest("hex");
 
-const verifyPassword = (password, stored) => {
-  const [salt, hash] = stored.split(":");
-  const expected = Buffer.from(hash, "hex");
-  const actual = scryptSync(password, salt, expected.length);
-  return expected.length === actual.length && timingSafeEqual(expected, actual);
-};
-
-const insertUser = db.prepare(`
-  INSERT OR IGNORE INTO users (email, name, role, password_hash)
-  VALUES (?, ?, ?, ?)
-`);
-for (const [email, name, role, password] of testUsers) {
-  insertUser.run(email, name, role, hashPassword(password));
+function corsHeaders(request) {
+  const origin = request.headers.origin;
+  if (!origin) return {};
+  const allowed = ALLOWED_ORIGINS.includes("*") || ALLOWED_ORIGINS.includes(origin);
+  return allowed
+    ? {
+        "Access-Control-Allow-Origin": ALLOWED_ORIGINS.includes("*") ? "*" : origin,
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Max-Age": "600",
+        Vary: "Origin",
+      }
+    : {};
 }
 
-const json = (response, status, body) => {
+function send(request, response, status, body) {
   response.writeHead(status, {
     "Content-Type": "application/json; charset=utf-8",
     "Cache-Control": "no-store",
+    "X-Content-Type-Options": "nosniff",
+    ...corsHeaders(request),
   });
-  response.end(JSON.stringify(body));
-};
+  response.end(body === undefined ? undefined : JSON.stringify(body));
+}
 
-const readJson = async (request) => {
+class HttpError extends Error {
+  constructor(status, message) {
+    super(message);
+    this.status = status;
+  }
+}
+
+async function readJson(request) {
   const chunks = [];
   let size = 0;
   for await (const chunk of request) {
     size += chunk.length;
-    if (size > 16_384) throw new Error("Payload too large");
+    if (size > MAX_BODY_BYTES) throw new HttpError(413, "payload_too_large");
     chunks.push(chunk);
   }
-  return JSON.parse(Buffer.concat(chunks).toString("utf8") || "{}");
+  try {
+    const parsed = JSON.parse(Buffer.concat(chunks).toString("utf8") || "{}");
+    if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error();
+    return parsed;
+  } catch {
+    throw new HttpError(400, "invalid_json");
+  }
+}
+
+function clientIp(request) {
+  if (TRUST_PROXY) {
+    const forwarded = String(request.headers["x-forwarded-for"] || "").split(",")[0].trim();
+    if (forwarded) return forwarded;
+  }
+  return request.socket.remoteAddress || "unknown";
+}
+
+// eslint-disable-next-line no-control-regex
+const CONTROL_CHARS = /[\u0000-\u001f\u007f]/g;
+const text = (value, max, { required = false, field } = {}) => {
+  const cleaned = typeof value === "string" ? value.replace(CONTROL_CHARS, " ").replace(/\s+/g, " ").trim() : "";
+  if (required && !cleaned) throw new HttpError(422, `${field}_required`);
+  if (cleaned.length > max) throw new HttpError(422, `${field}_too_long`);
+  return cleaned || null;
+};
+const PHONE_RE = /^\+?[0-9][0-9\- ()]{6,19}$/;
+const phone = (value, { required = false, field } = {}) => {
+  const cleaned = text(value, 20, { required, field });
+  if (cleaned && !PHONE_RE.test(cleaned)) throw new HttpError(422, `${field}_invalid`);
+  return cleaned;
+};
+const oneOf = (value, allowed, field, { required = false } = {}) => {
+  if (value === undefined || value === null || value === "") {
+    if (required) throw new HttpError(422, `${field}_required`);
+    return null;
+  }
+  if (!allowed.includes(value)) throw new HttpError(422, `${field}_invalid`);
+  return value;
+};
+const coordinate = (value, min, max, field) => {
+  if (value === undefined || value === null || value === "") return null;
+  const n = Number(value);
+  if (!Number.isFinite(n) || n < min || n > max) throw new HttpError(422, `${field}_invalid`);
+  return n;
+};
+const HHMM = /^([01]\d|2[0-3]):[0-5]\d$/;
+const hhmm = (value, field) => {
+  if (value === undefined || value === null || value === "") return null;
+  if (typeof value !== "string" || !HHMM.test(value)) throw new HttpError(422, `${field}_invalid`);
+  return value;
 };
 
-const publicUser = (user) => ({ id: user.id, email: user.email, name: user.name, role: user.role });
+function requireAdmin(request) {
+  if (ADMIN_TOKEN.length < 24) throw new HttpError(503, "admin_disabled");
+  const header = request.headers.authorization || "";
+  const given = header.startsWith("Bearer ") ? header.slice(7) : "";
+  const a = Buffer.from(hash(given));
+  const b = Buffer.from(hash(ADMIN_TOKEN));
+  if (!timingSafeEqual(a, b)) throw new HttpError(401, "unauthorized");
+}
 
-const authenticate = (request) => {
-  const authorization = request.headers.authorization ?? "";
-  const token = authorization.startsWith("Bearer ") ? authorization.slice(7) : "";
-  if (!token) return null;
-  const user = db.prepare(`
-    SELECT users.id, users.email, users.name, users.role
-    FROM sessions JOIN users ON users.id = sessions.user_id
-    WHERE sessions.token = ? AND sessions.expires_at > ?
-  `).get(token, Date.now());
-  return user ? { token, user } : null;
-};
+const publicPlace = (row) => ({
+  id: `c-${row.id}`,
+  kind: row.kind,
+  name: row.name,
+  nameKo: row.name_ko || row.name,
+  address: row.address,
+  lat: row.lat,
+  lng: row.lng,
+  cuisine: row.cuisine,
+  halal: row.halal,
+  phone: row.phone,
+  open: row.open,
+  close: row.close,
+});
 
-const api = createServer(async (request, response) => {
+const adminSubmission = (row) => ({
+  id: row.id,
+  kind: row.kind,
+  name: row.name,
+  address: row.address,
+  lat: row.lat,
+  lng: row.lng,
+  cuisine: row.cuisine,
+  halal: row.halal,
+  placePhone: row.place_phone,
+  notes: row.notes,
+  contactName: row.contact_name,
+  contactPhone: row.contact_phone,
+  status: row.status,
+  adminNote: row.admin_note,
+  createdAt: row.created_at,
+  reviewedAt: row.reviewed_at,
+});
+
+// ── handlers ─────────────────────────────────────────────────────
+
+function createSubmission(body, ip) {
+  // Honeypot: real users never see or fill this field; bots do. Pretend success.
+  if (typeof body.website === "string" && body.website.trim()) return { ok: true };
+
+  const ipHash = hash(ip);
+  const since = Date.now() - 60 * 60 * 1000;
+  const { count } = db.prepare("SELECT COUNT(*) AS count FROM submissions WHERE ip_hash = ? AND created_at > ?").get(ipHash, since);
+  if (count >= SUBMISSIONS_PER_HOUR) throw new HttpError(429, "rate_limited");
+
+  const kind = oneOf(body.kind, KINDS, "kind", { required: true });
+  const isRestaurant = kind === "restaurant";
+  const row = {
+    id: randomUUID(),
+    kind,
+    name: text(body.name, 120, { required: true, field: "name" }),
+    address: text(body.address, 250, { required: true, field: "address" }),
+    lat: coordinate(body.lat, KOREA_BOUNDS.minLat, KOREA_BOUNDS.maxLat, "lat"),
+    lng: coordinate(body.lng, KOREA_BOUNDS.minLng, KOREA_BOUNDS.maxLng, "lng"),
+    cuisine: isRestaurant ? oneOf(body.cuisine, CUISINES, "cuisine") : null,
+    halal: isRestaurant ? oneOf(body.halal, HALAL_STATUSES, "halal") : null,
+    place_phone: phone(body.placePhone, { field: "place_phone" }),
+    notes: text(body.notes, 500, { field: "notes" }),
+    contact_name: text(body.contactName, 80, { field: "contact_name" }),
+    contact_phone: phone(body.contactPhone, { required: true, field: "contact_phone" }),
+    ip_hash: ipHash,
+    created_at: Date.now(),
+  };
+  if ((row.lat === null) !== (row.lng === null)) throw new HttpError(422, "coordinates_incomplete");
+
+  db.prepare(`
+    INSERT INTO submissions (id, kind, name, address, lat, lng, cuisine, halal, place_phone, notes, contact_name, contact_phone, ip_hash, created_at)
+    VALUES (:id, :kind, :name, :address, :lat, :lng, :cuisine, :halal, :place_phone, :notes, :contact_name, :contact_phone, :ip_hash, :created_at)
+  `).run(row);
+  return { ok: true };
+}
+
+function approveSubmission(id, body) {
+  const sub = db.prepare("SELECT * FROM submissions WHERE id = ?").get(id);
+  if (!sub) throw new HttpError(404, "not_found");
+  if (sub.status !== "pending") throw new HttpError(409, "already_reviewed");
+
+  const lat = coordinate(body.lat ?? sub.lat, KOREA_BOUNDS.minLat, KOREA_BOUNDS.maxLat, "lat");
+  const lng = coordinate(body.lng ?? sub.lng, KOREA_BOUNDS.minLng, KOREA_BOUNDS.maxLng, "lng");
+  if (lat === null || lng === null) throw new HttpError(422, "coordinates_required");
+
+  const isRestaurant = sub.kind === "restaurant";
+  const place = {
+    id: randomUUID(),
+    submission_id: sub.id,
+    kind: sub.kind,
+    name: text(body.name ?? sub.name, 120, { required: true, field: "name" }),
+    name_ko: text(body.nameKo, 120, { field: "name_ko" }),
+    address: text(body.address ?? sub.address, 250, { required: true, field: "address" }),
+    lat,
+    lng,
+    cuisine: isRestaurant ? oneOf(body.cuisine ?? sub.cuisine, CUISINES, "cuisine") : null,
+    halal: isRestaurant ? oneOf(body.halal ?? sub.halal ?? "unverified", HALAL_STATUSES, "halal") : null,
+    phone: phone(body.phone ?? sub.place_phone, { field: "phone" }),
+    open: hhmm(body.open, "open"),
+    close: hhmm(body.close, "close"),
+    created_at: Date.now(),
+  };
+  if ((place.open === null) !== (place.close === null)) throw new HttpError(422, "hours_incomplete");
+
+  db.exec("BEGIN");
+  try {
+    db.prepare(`
+      INSERT INTO places (id, submission_id, kind, name, name_ko, address, lat, lng, cuisine, halal, phone, open, close, created_at)
+      VALUES (:id, :submission_id, :kind, :name, :name_ko, :address, :lat, :lng, :cuisine, :halal, :phone, :open, :close, :created_at)
+    `).run(place);
+    db.prepare("UPDATE submissions SET status = 'approved', reviewed_at = ?, admin_note = ? WHERE id = ?")
+      .run(Date.now(), text(body.adminNote, 500, { field: "admin_note" }), sub.id);
+    db.exec("COMMIT");
+  } catch (error) {
+    db.exec("ROLLBACK");
+    throw error;
+  }
+  return { ok: true };
+}
+
+function rejectSubmission(id, body) {
+  const result = db
+    .prepare("UPDATE submissions SET status = 'rejected', reviewed_at = ?, admin_note = ? WHERE id = ? AND status = 'pending'")
+    .run(Date.now(), text(body.adminNote, 500, { field: "admin_note" }), id);
+  if (result.changes === 0) {
+    const exists = db.prepare("SELECT 1 FROM submissions WHERE id = ?").get(id);
+    throw new HttpError(exists ? 409 : 404, exists ? "already_reviewed" : "not_found");
+  }
+  return { ok: true };
+}
+
+const ADMIN_ROUTE = /^\/api\/admin\/submissions\/([0-9a-f-]{36})\/(approve|reject)$/;
+
+const server = createServer(async (request, response) => {
   try {
     const url = new URL(request.url ?? "/", "http://localhost");
+    const { pathname } = url;
+    const method = request.method ?? "GET";
 
-    if (request.method === "GET" && url.pathname === "/api/health") {
-      if (!postgres) {
-        return json(response, 503, {
-          status: "error",
-          database: "not_configured",
-          error: "DATABASE_URL .env faylida topilmadi",
-        });
-      }
+    if (method === "OPTIONS") return send(request, response, 204);
 
-      const startedAt = Date.now();
-      const result = await postgres.query("SELECT 1 AS connected, current_database() AS database");
-      return json(response, 200, {
-        status: "ok",
-        database: "connected",
-        databaseName: result.rows[0].database,
-        latencyMs: Date.now() - startedAt,
-      });
+    if (method === "GET" && pathname === "/api/health") return send(request, response, 200, { status: "ok" });
+
+    if (method === "GET" && pathname === "/api/places") {
+      const rows = db.prepare("SELECT * FROM places ORDER BY created_at").all();
+      return send(request, response, 200, { places: rows.map(publicPlace) });
     }
 
-    if (request.method === "POST" && url.pathname === "/api/auth/login") {
+    if (method === "POST" && pathname === "/api/submissions") {
+      return send(request, response, 201, createSubmission(await readJson(request), clientIp(request)));
+    }
+
+    if (method === "GET" && pathname === "/api/admin/submissions") {
+      requireAdmin(request);
+      const status = oneOf(url.searchParams.get("status") || "pending", ["pending", "approved", "rejected"], "status");
+      const rows = db.prepare("SELECT * FROM submissions WHERE status = ? ORDER BY created_at DESC LIMIT 200").all(status);
+      return send(request, response, 200, { submissions: rows.map(adminSubmission) });
+    }
+
+    const adminMatch = method === "POST" ? ADMIN_ROUTE.exec(pathname) : null;
+    if (adminMatch) {
+      requireAdmin(request);
       const body = await readJson(request);
-      const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
-      const password = typeof body.password === "string" ? body.password : "";
-      const user = db.prepare("SELECT * FROM users WHERE email = ?").get(email);
-      if (!user || !verifyPassword(password, user.password_hash)) {
-        return json(response, 401, { error: "Email yoki parol noto‘g‘ri" });
-      }
-
-      db.prepare("DELETE FROM sessions WHERE expires_at <= ?").run(Date.now());
-      const token = randomBytes(32).toString("hex");
-      const expiresAt = Date.now() + 7 * 24 * 60 * 60 * 1000;
-      db.prepare("INSERT INTO sessions (token, user_id, expires_at) VALUES (?, ?, ?)")
-        .run(token, user.id, expiresAt);
-      return json(response, 200, { token, user: publicUser(user) });
+      const [, id, action] = adminMatch;
+      return send(request, response, 200, action === "approve" ? approveSubmission(id, body) : rejectSubmission(id, body));
     }
 
-    if (request.method === "GET" && url.pathname === "/api/auth/me") {
-      const auth = authenticate(request);
-      return auth
-        ? json(response, 200, { user: publicUser(auth.user) })
-        : json(response, 401, { error: "Session yaroqsiz yoki muddati tugagan" });
-    }
-
-    if (request.method === "POST" && url.pathname === "/api/auth/logout") {
-      const auth = authenticate(request);
-      if (auth) db.prepare("DELETE FROM sessions WHERE token = ?").run(auth.token);
-      return json(response, 200, { success: true });
-    }
-
-    // ── Restaurants ──────────────────────────────────────────────
-
-    if (request.method === "GET" && url.pathname === "/api/restaurants") {
-      const category = url.searchParams.get("category");
-      const search = url.searchParams.get("q");
-      let filtered = RESTAURANTS;
-      if (category) filtered = filtered.filter((r) => r.category === category);
-      if (search) {
-        const q = search.toLowerCase();
-        filtered = filtered.filter(
-          (r) => r.name.toLowerCase().includes(q) || r.nameKo.includes(q) || r.category.toLowerCase().includes(q),
-        );
-      }
-      return json(response, 200, { restaurants: filtered });
-    }
-
-    if (request.method === "GET" && url.pathname.startsWith("/api/restaurants/")) {
-      const id = url.pathname.split("/")[3];
-      const restaurant = RESTAURANTS.find((r) => r.id === id);
-      if (!restaurant) return json(response, 404, { error: "Restoran topilmadi" });
-
-      if (url.pathname.endsWith("/menu")) {
-        const menu = MENUS[id] ?? [];
-        return json(response, 200, { restaurant: { id, name: restaurant.name }, menu });
-      }
-      return json(response, 200, { restaurant });
-    }
-
-    // ── Mosques ──────────────────────────────────────────────────
-
-    if (request.method === "GET" && url.pathname === "/api/mosques") {
-      const type = url.searchParams.get("type");
-      let filtered = MOSQUES;
-      if (type) filtered = filtered.filter((m) => m.type === type);
-      return json(response, 200, { mosques: filtered });
-    }
-
-    if (request.method === "GET" && url.pathname.startsWith("/api/mosques/")) {
-      const id = url.pathname.split("/")[3];
-      const mosque = MOSQUES.find((m) => m.id === id);
-      return mosque
-        ? json(response, 200, { mosque })
-        : json(response, 404, { error: "Masjid topilmadi" });
-    }
-
-    // ── Prayer Times ─────────────────────────────────────────────
-
-    if (request.method === "GET" && url.pathname === "/api/prayer-times") {
-      return json(response, 200, { prayerTimes: PRAYER_TIMES, location: "이태원동, 서울" });
-    }
-
-    // ── Profile ──────────────────────────────────────────────────
-
-    if (request.method === "GET" && url.pathname === "/api/profile") {
-      const auth = authenticate(request);
-      if (!auth) return json(response, 401, { error: "Avtorizatsiya talab qilinadi" });
-      const profile = {
-        ...publicUser(auth.user),
-        initials: auth.user.name.charAt(0),
-        membership: "일반 회원",
-        points: 3200,
-        stats: { orders: 12, reviews: 8, saved: 5 },
-      };
-      return json(response, 200, { profile });
-    }
-
-    // ── Orders ──────────────────────────────────────────────────
-
-    if (request.method === "GET" && url.pathname === "/api/orders") {
-      const auth = authenticate(request);
-      if (!auth) return json(response, 401, { error: "Avtorizatsiya talab qilinadi" });
-      return json(response, 200, { orders: ORDERS });
-    }
-
-    if (request.method === "GET" && url.pathname.startsWith("/api/orders/")) {
-      const auth = authenticate(request);
-      if (!auth) return json(response, 401, { error: "Avtorizatsiya talab qilinadi" });
-      const id = url.pathname.split("/")[3];
-      const order = ORDERS.find((o) => o.id === id);
-      return order
-        ? json(response, 200, { order })
-        : json(response, 404, { error: "Buyurtma topilmadi" });
-    }
-
-    // ── Saved Places ────────────────────────────────────────────
-
-    if (request.method === "GET" && url.pathname === "/api/saved-places") {
-      const auth = authenticate(request);
-      if (!auth) return json(response, 401, { error: "Avtorizatsiya talab qilinadi" });
-      return json(response, 200, { savedPlaces: SAVED_PLACES });
-    }
-
-    return json(response, 404, { error: "Endpoint topilmadi" });
+    throw new HttpError(404, "not_found");
   } catch (error) {
+    if (error instanceof HttpError) return send(request, response, error.status, { error: error.message });
     console.error(error);
-    return json(response, 500, { error: "Server xatosi" });
+    return send(request, response, 500, { error: "server_error" });
   }
 });
 
-// ── Seed Data ──────────────────────────────────────────────────
-
-const RESTAURANTS = [
-  {
-    id: "sindang-halal",
-    name: "Sindang Halal Kitchen",
-    nameKo: "신당 할랄 키친",
-    category: "korean",
-    halalStatus: "certified",
-    certBody: "KMF",
-    rating: 4.8,
-    reviewCount: 3241,
-    distance: "2.3km",
-    deliveryTime: "25-35분",
-    deliveryFee: 2000,
-    minOrder: 15000,
-    address: "서울특별시 중구 신당동 123-4",
-    phone: "02-1234-5678",
-    hours: "09:00-22:00",
-    description: "이슬람 식품청 인증 할랄 한식 전문점. 돼지고기 및 알코올 완전 배제.",
-    photo: "https://images.unsplash.com/photo-1498654896293-37c98e7f5fe4?w=400&h=250&fit=crop&auto=format&q=80",
-  },
-  {
-    id: "itaewon-kebab",
-    name: "Itaewon Kebab House",
-    nameKo: "이태원 케밥 하우스",
-    category: "turkish",
-    halalStatus: "certified",
-    certBody: "KMF",
-    rating: 4.6,
-    reviewCount: 1872,
-    distance: "0.8km",
-    deliveryTime: "15-25분",
-    deliveryFee: 1500,
-    minOrder: 12000,
-    address: "서울특별시 용산구 이태원로 45-7",
-    phone: "02-2345-6789",
-    hours: "10:00-23:00",
-    description: "정통 터키 케밥과 그릴 요리 전문점.",
-    photo: "https://images.unsplash.com/photo-1529042410759-befb1204b468?w=400&h=250&fit=crop&auto=format&q=80",
-  },
-  {
-    id: "uzbekistan-plov",
-    name: "Uzbekistan Plov House",
-    nameKo: "우즈베키스탄 플로프 하우스",
-    category: "uzbek",
-    halalStatus: "muslim-owned",
-    certBody: null,
-    rating: 4.7,
-    reviewCount: 956,
-    distance: "3.1km",
-    deliveryTime: "30-40분",
-    deliveryFee: 1500,
-    minOrder: 13000,
-    address: "서울특별시 용산구 한남동 67-2",
-    phone: "02-3456-7890",
-    hours: "11:00-22:00",
-    description: "우즈베키스탄 전통 플로프와 중앙아시아 요리.",
-    photo: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=250&fit=crop&auto=format&q=80",
-  },
-  {
-    id: "delhi-spice",
-    name: "Delhi Spice",
-    nameKo: "델리 스파이스",
-    category: "indian",
-    halalStatus: "halal-friendly",
-    certBody: null,
-    rating: 4.3,
-    reviewCount: 687,
-    distance: "4.2km",
-    deliveryTime: "35-45분",
-    deliveryFee: 2500,
-    minOrder: 18000,
-    address: "서울특별시 강남구 역삼동 88-3",
-    phone: "02-4567-8901",
-    hours: "11:00-21:30",
-    description: "북인도 카레와 탄두리 전문점. 채식 메뉴 다수.",
-    photo: "https://images.unsplash.com/photo-1565557623262-b51ff2a27b73?w=400&h=250&fit=crop&auto=format&q=80",
-  },
-  {
-    id: "jakarta-nasigoreng",
-    name: "Jakarta Nasi Goreng",
-    nameKo: "자카르타 나시고렝",
-    category: "indonesian",
-    halalStatus: "certified",
-    certBody: "MUI",
-    rating: 4.6,
-    reviewCount: 1124,
-    distance: "2.8km",
-    deliveryTime: "30-40분",
-    deliveryFee: 2000,
-    minOrder: 14000,
-    address: "서울특별시 마포구 합정동 34-1",
-    phone: "02-5678-9012",
-    hours: "10:30-22:00",
-    description: "인도네시아 정통 나시고렝과 동남아 할랄 요리.",
-    photo: "https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=400&h=250&fit=crop&auto=format&q=80",
-  },
-  {
-    id: "masjid-seoul-cafe",
-    name: "Masjid Seoul Cafe",
-    nameKo: "마스지드 서울 카페",
-    category: "cafe",
-    halalStatus: "muslim-owned",
-    certBody: null,
-    rating: 4.9,
-    reviewCount: 2103,
-    distance: "1.1km",
-    deliveryTime: "20-30분",
-    deliveryFee: 0,
-    minOrder: 8000,
-    address: "서울특별시 용산구 우사단로 12-5",
-    phone: "02-6789-0123",
-    hours: "08:00-20:00",
-    description: "서울중앙성원 근처 무슬림 운영 카페. 할랄 디저트와 음료.",
-    photo: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=250&fit=crop&auto=format&q=80",
-  },
-];
-
-const MENUS = {
-  "sindang-halal": [
-    { id: "m1", category: "인기메뉴", name: "할랄 갈비탕", description: "사골 육수와 소갈비", price: 13500, photo: null },
-    { id: "m2", category: "인기메뉴", name: "비빔밥 (할랄)", description: "신선한 채소와 소고기", price: 11000, photo: null },
-    { id: "m3", category: "인기메뉴", name: "된장찌개 세트", description: "된장찌개 + 밥 + 반찬", price: 12000, photo: null },
-    { id: "m4", category: "인기메뉴", name: "할랄 삼계탕", description: "인삼 닭백숙", price: 16500, photo: null },
-    { id: "m5", category: "한식", name: "불고기 정식", description: "양념 소불고기 + 반찬", price: 14000, photo: null },
-    { id: "m6", category: "한식", name: "잡채밥", description: "잡채 + 밥", price: 10500, photo: null },
-    { id: "m7", category: "세트", name: "2인 세트 A", description: "갈비탕 + 비빔밥 + 음료 2잔", price: 22000, photo: null },
-    { id: "m8", category: "음료", name: "식혜", description: "전통 쌀 음료", price: 3000, photo: null },
-    { id: "m9", category: "음료", name: "유자차", description: "뜨거운 유자차", price: 3500, photo: null },
-  ],
-  "itaewon-kebab": [
-    { id: "k1", category: "인기메뉴", name: "되네르 케밥", description: "양고기 또는 닭고기 선택", price: 9500, photo: null },
-    { id: "k2", category: "인기메뉴", name: "아다나 케밥", description: "매운 양고기 꼬치", price: 14000, photo: null },
-    { id: "k3", category: "인기메뉴", name: "이스켄데르 케밥", description: "요거트 소스 케밥", price: 16000, photo: null },
-    { id: "k4", category: "사이드", name: "후무스", description: "병아리콩 딥", price: 5000, photo: null },
-    { id: "k5", category: "음료", name: "아이란", description: "터키 전통 요거트 음료", price: 3000, photo: null },
-  ],
-};
-
-const MOSQUES = [
-  {
-    id: "seoul-central",
-    name: "Seoul Central Mosque",
-    nameKo: "서울중앙성원",
-    subtitle: "이슬람 서울 센터",
-    type: "mosque",
-    address: "서울특별시 용산구 우사단로10길 39",
-    distance: "1.2km",
-    walkTime: "도보 15분",
-    phone: "02-793-6908",
-    facilities: ["우두 시설", "여성 기도실", "주차 가능", "영어 가능"],
-    juma: "매주 금요일 12:30",
-    photo: "https://images.unsplash.com/photo-1519817650134-7780eb40b2fb?w=400&h=250&fit=crop&auto=format&q=80",
-  },
-  {
-    id: "itaewon-masjid",
-    name: "Itaewon Masjid",
-    nameKo: "이태원 마스지드",
-    subtitle: null,
-    type: "mosque",
-    address: "서울특별시 용산구 이태원로 27",
-    distance: "0.3km",
-    walkTime: "도보 4분",
-    phone: "02-795-1234",
-    facilities: ["우두 시설", "주차 가능"],
-    juma: "매주 금요일 13:00",
-    photo: null,
-  },
-  {
-    id: "coex-prayer",
-    name: "COEX Prayer Room",
-    nameKo: "코엑스 기도실",
-    subtitle: null,
-    type: "prayer-room",
-    address: "서울특별시 강남구 삼성동 코엑스몰 B1",
-    distance: "3.8km",
-    walkTime: null,
-    phone: null,
-    facilities: ["우두 시설"],
-    juma: null,
-    photo: null,
-  },
-  {
-    id: "suwon-mosque",
-    name: "Suwon Islamic Center",
-    nameKo: "수원 이슬람 성원",
-    subtitle: null,
-    type: "mosque",
-    address: "경기도 수원시 팔달구 매산로 88",
-    distance: "12km",
-    walkTime: "차량 25분",
-    phone: "031-242-5678",
-    facilities: ["우두 시설", "여성 기도실", "주차 가능", "한국어 가능"],
-    juma: "매주 금요일 12:30",
-    photo: null,
-  },
-];
-
-const PRAYER_TIMES = {
-  hijriDate: "1448년 사파르 10일",
-  gregorianDate: "2026-09-03",
-  prayers: [
-    { id: "fajr", name: "파즈르", nameEn: "Fajr", time: "04:47" },
-    { id: "sunrise", name: "일출", nameEn: "Sunrise", time: "06:15" },
-    { id: "dhuhr", name: "두흐르", nameEn: "Dhuhr", time: "12:15" },
-    { id: "asr", name: "아스르", nameEn: "Asr", time: "14:32" },
-    { id: "maghrib", name: "마그립", nameEn: "Maghrib", time: "17:48" },
-    { id: "isha", name: "이샤", nameEn: "Isha", time: "19:21" },
-  ],
-};
-
-const ORDERS = [
-  {
-    id: "order-1",
-    restaurant: "신당 할랄 키친",
-    restaurantId: "sindang-halal",
-    date: "2024.11.20",
-    total: 34500,
-    items: "할랄 갈비탕 외 2개",
-    status: "delivered",
-    rated: false,
-    orderNumber: "#HMK-20241120-7731",
-    orderDate: "2024년 11월 20일 오후 2:15",
-    deliveredDate: "2024년 11월 20일 오후 3:02",
-    orderItems: [
-      { name: "할랄 갈비탕", option: "보통", price: 13500, qty: 1 },
-      { name: "비빔밥 (할랄)", option: "기본", price: 11000, qty: 2 },
-      { name: "오이무침", option: "사이드", price: 3000, qty: 1 },
-    ],
-    subtotal: 38500,
-    deliveryFee: 2000,
-    couponDiscount: 6000,
-    tip: 0,
-    paymentMethod: "신한카드 ····4521",
-    deliveryAddress: "서울특별시 용산구 이태원로 123, 501호",
-    courier: { name: "김민준", rating: 4.9, deliveries: 8241 },
-  },
-  {
-    id: "order-2",
-    restaurant: "이스탄불 케밥 & 피데",
-    restaurantId: "itaewon-kebab",
-    date: "2024.11.15",
-    total: 21000,
-    items: "케밥 세트 외 1개",
-    status: "delivered",
-    rated: true,
-  },
-  {
-    id: "order-3",
-    restaurant: "우즈베키스탄 플로프 하우스",
-    restaurantId: "uzbekistan-plov",
-    date: "2024.11.10",
-    total: 18500,
-    items: "플로프 + 라그만",
-    status: "delivered",
-    rated: true,
-  },
-  {
-    id: "order-4",
-    restaurant: "델리 스파이스 하우스",
-    restaurantId: "delhi-spice",
-    date: "2024.11.05",
-    total: 27000,
-    items: "버터 치킨 커리 외 2개",
-    status: "cancelled",
-    rated: false,
-  },
-];
-
-const SAVED_PLACES = {
-  restaurants: [
-    { id: "sindang-halal", name: "신당 할랄 키친", halalStatus: "certified", rating: 4.8, reviewCount: 3241, imageId: "1498654896293-37c98e7f5fe4" },
-    { id: "itaewon-kebab", name: "이스탄불 케밥 & 피데", halalStatus: "certified", rating: 4.5, reviewCount: 2110, imageId: "1529042410759-befb1204b468" },
-    { id: "masjid-seoul-cafe", name: "마스지드 서울 카페", halalStatus: "muslim-owned", rating: 4.9, reviewCount: 940, imageId: "1414235077428-338989a2e8c0" },
-  ],
-  mosques: [
-    { id: "seoul-central", name: "서울중앙성원", nameEn: "Seoul Central Mosque", distance: "1.2km" },
-    { id: "itaewon-masjid", name: "이태원 마스지드", nameEn: "Itaewon Masjid", distance: "0.3km" },
-  ],
-};
-
-const port = Number(process.env.API_PORT || 8787);
-api.listen(port, "127.0.0.1", () => {
-  console.log(`HalalMap API http://127.0.0.1:${port}`);
+server.listen(PORT, HOST, () => {
+  console.log(`HalalMap API http://${HOST}:${PORT} (admin ${ADMIN_TOKEN.length >= 24 ? "enabled" : "DISABLED: set ADMIN_TOKEN"})`);
 });

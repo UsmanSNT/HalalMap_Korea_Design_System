@@ -1,13 +1,15 @@
 import { useMemo, useState } from "react";
-import { MOSQUES, type MosqueKind } from "@/data/mosques";
+import type { MosqueKind } from "@/data/mosques";
 import { distanceKm, formatDistance, mapsDirectionsUrl } from "@/lib/geo";
 import { useLocation } from "@/lib/location";
+import { usePlaces } from "@/lib/PlacesContext";
 import { useLanguage } from "@/locale/LanguageContext";
+import AddPlaceCta from "./AddPlaceCta";
 import ActionButton from "@/ui/ActionButton";
 import ExpandableCard from "@/ui/ExpandableCard";
 import CopyButton from "@/ui/CopyButton";
 import { NavigateIcon, PhoneIcon } from "@/ui/icons";
-import Notice from "@/ui/Notice";
+import DataFooter from "@/ui/DataFooter";
 import PageHeader from "@/ui/PageHeader";
 import Segmented from "@/ui/Segmented";
 
@@ -16,14 +18,15 @@ type Filter = "all" | MosqueKind;
 export default function MosquesScreen() {
   const { t } = useLanguage();
   const { coords, isReal } = useLocation();
+  const { mosques } = usePlaces();
   const [filter, setFilter] = useState<Filter>("all");
 
   const items = useMemo(
     () =>
-      MOSQUES.filter((m) => filter === "all" || m.kind === filter)
+      mosques.filter((m) => filter === "all" || m.kind === filter)
         .map((m) => ({ mosque: m, km: distanceKm(coords, m.coords) }))
         .sort((a, b) => a.km - b.km),
-    [coords, filter],
+    [mosques, coords, filter],
   );
 
   return (
@@ -53,7 +56,7 @@ export default function MosquesScreen() {
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0">
                         <h2 className="font-bold leading-tight">{mosque.name}</h2>
-                        <p className="text-sm text-[var(--muted)]">{mosque.nameKo}</p>
+                        {mosque.nameKo !== mosque.name && <p className="text-sm text-[var(--muted)]">{mosque.nameKo}</p>}
                       </div>
                       <span className="shrink-0 rounded-full bg-[var(--green-light)] px-2.5 py-1 text-xs font-bold text-[var(--green)]">
                         {isReal ? formatDistance(km) : `~${formatDistance(km)}`}
@@ -63,7 +66,7 @@ export default function MosquesScreen() {
                   </>
                 }
               >
-                <p className="text-sm">{mosque.address}</p>
+                {mosque.address && <p className="text-sm">{mosque.address}</p>}
                 {mosque.juma && (
                   <p className="text-sm">
                     <span className="text-[var(--muted)]">{t("mosques.juma")}: </span>
@@ -87,14 +90,17 @@ export default function MosquesScreen() {
                     </ActionButton>
                   )}
                 </div>
-                <div className="flex">
-                  <CopyButton text={mosque.address} />
-                </div>
+                {mosque.address && (
+                  <div className="flex">
+                    <CopyButton text={mosque.address} />
+                  </div>
+                )}
               </ExpandableCard>
             ))}
           </ul>
         )}
-        <Notice>{t("data.sample")}</Notice>
+        <AddPlaceCta defaultKind="mosque" />
+        <DataFooter />
       </div>
     </>
   );

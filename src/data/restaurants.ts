@@ -1,7 +1,7 @@
 import type { Coords } from "@/lib/geo";
 
-export type HalalStatus = "certified" | "muslim-owned" | "halal-friendly";
-export type CuisineId = "korean" | "turkish" | "uzbek" | "indian" | "indonesian" | "cafe";
+export type HalalStatus = "certified" | "muslim-owned" | "halal-friendly" | "unverified";
+export type CuisineId = "korean" | "turkish" | "uzbek" | "indian" | "indonesian" | "cafe" | "other";
 
 export type Restaurant = {
   id: string;
@@ -13,13 +13,13 @@ export type Restaurant = {
   /** Korean address: usable as-is in Korean map/taxi apps. */
   address: string;
   coords: Coords;
-  phone: string;
-  /** Opening hours as "HH:MM"; `close` earlier than `open` means past midnight. */
-  open: string;
-  close: string;
+  phone?: string;
+  /** Opening hours as "HH:MM"; `close` earlier than `open` means past midnight. Both absent when unknown. */
+  open?: string;
+  close?: string;
 };
 
-// SAMPLE DATA. Coordinates are approximate and halal statuses must be verified
+// Curated entries. Coordinates are approximate and halal statuses must be verified
 // against the certifying body before public release.
 export const RESTAURANTS: readonly Restaurant[] = [
   { id: "sindang-halal", name: "Sindang Halal Kitchen", nameKo: "신당 할랄 키친", cuisine: "korean", halal: "certified", certBody: "KMF", address: "서울특별시 중구 신당동 123-4", coords: { lat: 37.5657, lng: 127.0176 }, phone: "02-1234-5678", open: "09:00", close: "22:00" },
@@ -30,8 +30,9 @@ export const RESTAURANTS: readonly Restaurant[] = [
   { id: "masjid-seoul-cafe", name: "Masjid Seoul Cafe", nameKo: "마스지드 서울 카페", cuisine: "cafe", halal: "muslim-owned", address: "서울특별시 용산구 우사단로 12-5", coords: { lat: 37.5342, lng: 126.999 }, phone: "02-6789-0123", open: "08:00", close: "20:00" },
 ];
 
-/** Whether `now` falls inside the restaurant's opening hours (handles past-midnight closing). */
-export function isOpenNow(r: Pick<Restaurant, "open" | "close">, now: Date): boolean {
+/** Whether `now` is inside the opening hours (handles past-midnight closing); null when hours are unknown. */
+export function isOpenNow(r: Pick<Restaurant, "open" | "close">, now: Date): boolean | null {
+  if (!r.open || !r.close) return null;
   const toMin = (hhmm: string) => {
     const [h, m] = hhmm.split(":").map(Number);
     return h * 60 + m;
