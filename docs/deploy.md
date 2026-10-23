@@ -20,7 +20,7 @@ pnpm install --frozen-lockfile && pnpm check && pnpm build
 powershell -ExecutionPolicy Bypass -File deploy\windows\install-task.ps1
 ```
 `.env` holds the admin token (read it in Notepad, never share it). Updates: `deploy\windows\update.cmd`.
-Back up `DATA_DIR` (it contains `halalmap.sqlite`). Logs: `logs\server.log`.
+Back up `DATA_DIR` (it contains `halalmap.sqlite`). Logs: `logs\server.out.log`, `logs\server.err.log`, `logs\supervisor.log`.
 Cut-over and rollback: stop and disable the old task, run the new one on the same port; reverse to roll back.
 
 Linux alternative: `deploy/halalmap.service`, `deploy/nginx.conf.example`, `deploy/deploy.sh`.
