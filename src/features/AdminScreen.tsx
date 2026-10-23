@@ -15,7 +15,7 @@ import Field, { INPUT_CLASS } from "@/ui/Field";
 import { LANGUAGES } from "@/locale/dictionaries";
 
 const TOKEN_KEY = "halalmap-admin-token"; // sessionStorage: cleared when the tab closes
-const HALAL: readonly HalalStatus[] = ["certified", "muslim-owned", "halal-friendly", "unverified"];
+const HALAL: readonly HalalStatus[] = ["certified", "self-certified", "muslim-owned", "halal-friendly", "pork-free", "unverified"];
 
 const readToken = () => {
   try {

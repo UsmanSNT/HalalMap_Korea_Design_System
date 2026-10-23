@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import osm from "@/data/osm.generated.json";
-import { MOSQUES, type Mosque } from "@/data/mosques";
-import { RESTAURANTS, type Restaurant } from "@/data/restaurants";
+import type { Mosque } from "@/data/mosques";
+import type { Restaurant } from "@/data/restaurants";
 import { fetchCommunityPlaces, type CommunityPlace } from "./communityApi";
 import { distanceKm, type Coords } from "./geo";
 import { readStored, writeStored } from "./storage";
@@ -23,7 +23,7 @@ function readCache(): CommunityPlace[] {
   }
 }
 
-/** Drops candidates that sit within 100 m of an already-known place (curated beats OSM). */
+/** Drops candidates that sit within 100 m of an already-known place (community-approved beats OSM). */
 function withoutDuplicates<T extends { coords: Coords }>(known: readonly T[], candidates: readonly T[]): T[] {
   return candidates.filter((c) => !known.some((k) => distanceKm(k.coords, c.coords) < DUPLICATE_RADIUS_KM));
 }
@@ -74,11 +74,9 @@ export function PlacesProvider({ children }: { children: ReactNode }) {
   const value = useMemo<PlacesValue>(() => {
     const communityMosques = community.filter((p) => p.kind !== "restaurant").map(toMosque);
     const communityRestaurants = community.filter((p) => p.kind === "restaurant").map(toRestaurant);
-    const curatedMosques = [...MOSQUES, ...communityMosques];
-    const curatedRestaurants = [...RESTAURANTS, ...communityRestaurants];
     return {
-      mosques: [...curatedMosques, ...withoutDuplicates(curatedMosques, osmData.mosques)],
-      restaurants: [...curatedRestaurants, ...withoutDuplicates(curatedRestaurants, osmData.restaurants)],
+      mosques: [...communityMosques, ...withoutDuplicates(communityMosques, osmData.mosques)],
+      restaurants: [...communityRestaurants, ...withoutDuplicates(communityRestaurants, osmData.restaurants)],
     };
   }, [community]);
 

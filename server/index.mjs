@@ -27,7 +27,7 @@ const DATA_DIR = resolve(process.env.DATA_DIR || resolve(SERVER_DIR, "data"));
 const STATIC_DIR = resolve(process.env.STATIC_DIR || resolve(SERVER_DIR, "../dist"));
 
 const KINDS = ["mosque", "prayer-room", "restaurant"];
-const HALAL_STATUSES = ["certified", "muslim-owned", "halal-friendly", "unverified"];
+const HALAL_STATUSES = ["certified", "self-certified", "muslim-owned", "halal-friendly", "pork-free", "unverified"];
 const CUISINES = ["korean", "turkish", "uzbek", "indian", "indonesian", "cafe", "other"];
 const KOREA_BOUNDS = { minLat: 33, maxLat: 39, minLng: 124, maxLng: 132 };
 const MAX_BODY_BYTES = 8 * 1024;

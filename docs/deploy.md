@@ -38,10 +38,9 @@ can serve the web app but not "Add a place" unless `VITE_API_URL` points at a se
    Contact details are never returned by the public API.
 
 ## Open data (OpenStreetMap)
-`pnpm import:osm` queries Overpass for mosques and `diet:halal` restaurants in South Korea and writes
-`src/data/osm.generated.json` (marked unverified; duplicates of curated places within 100 m are dropped).
-Data © OpenStreetMap contributors (ODbL); the attribution link is shown in the app. Rerun periodically and commit.
+See `docs/place-data.md`. `pnpm import:osm` refreshes the snapshot; `pnpm build:osm` rebuilds from it.
+Data © OpenStreetMap contributors (ODbL); the attribution link is shown in the app.
 
 ## Before public release
-- Verify the curated places in `src/data/*.ts` (coordinates are approximate) or remove them.
+- Imported places are community-maintained (many lack address/phone). Verify and enrich them via submissions.
 - `.figma/make/site.json` has `robots.index: false`; flip it when you want search engines to index the site.

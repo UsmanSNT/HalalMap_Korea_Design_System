@@ -1,0 +1,612 @@
+{
+  "version": 0.6,
+  "generator": "HalalMap Korea cached Overpass snapshot",
+  "osm3s": {
+    "copyright": "Data from OpenStreetMap, available under ODbL 1.0"
+  },
+  "elements": [
+    {
+      "type": "node",
+      "id": 11380804001,
+      "lat": 37.5705318,
+      "lon": 126.9760937,
+      "tags": {
+        "addr:city": "서울특별시",
+        "addr:district": "종로구",
+        "addr:housenumber": "103",
+        "addr:postcode": "03183",
+        "addr:street": "새문안로",
+        "addr:subdistrict": "신문로1가",
+        "amenity": "restaurant",
+        "check_date": "2023-11-28",
+        "cuisine": "indian",
+        "diet:halal": "yes",
+        "diet:vegetarian": "yes",
+        "level": "-1",
+        "name": "Om Restaurant",
+        "name:ko": "옴레스토랑",
+        "opening_hours": "11:00-22:00",
+        "wheelchair": "no"
+      }
+    },
+    {
+      "type": "node",
+      "id": 11917140125,
+      "lat": 37.5837073,
+      "lon": 127.0299077,
+      "tags": {
+        "addr:city": "서울특별시",
+        "addr:district": "성북구",
+        "addr:floor": "-1",
+        "amenity": "restaurant",
+        "check_date": "2024-05-19",
+        "cuisine": "indian",
+        "diet:halal": "yes",
+        "diet:vegetarian": "yes",
+        "internet_access": "wlan",
+        "internet_access:fee": "customers",
+        "name": "고고인디안쿠진",
+        "name:ko": "고고인디안쿠진",
+        "payment:cash": "yes",
+        "payment:credit_cards": "yes",
+        "payment:debit_cards": "yes",
+        "wheelchair": "no"
+      }
+    },
+    {
+      "type": "node",
+      "id": 12192196596,
+      "lat": 37.5551193,
+      "lon": 126.9230474,
+      "tags": {
+        "addr:city": "서울특별시",
+        "addr:district": "마포구",
+        "addr:floor": "1;2",
+        "addr:housenumber": "115",
+        "addr:postcode": "04050",
+        "addr:street": "어울마당로",
+        "addr:subdistrict": "동교동",
+        "amenity": "fast_food",
+        "check_date": "2025-03-15",
+        "diet:halal": "yes",
+        "name": "뜻밖에 양꼬치"
+      }
+    },
+    {
+      "type": "node",
+      "id": 12503893601,
+      "lat": 35.1530986,
+      "lon": 129.0594785,
+      "tags": {
+        "amenity": "restaurant",
+        "contact:tripadvisor": "https://tripadvisor.com/Restaurant_Review-g297884-d28986408-Reviews-Royal_India_Seomyeon-Busan.html",
+        "cuisine": "indian;nepalese",
+        "delivery": "yes",
+        "diet:halal": "yes",
+        "diet:vegetarian": "yes",
+        "level": "5",
+        "name": "Royal India Seomyeon",
+        "opening_hours": "Mo-Su 11:00-22:00",
+        "phone": "+82 51-802-1946",
+        "reservation": "yes"
+      }
+    },
+    {
+      "type": "node",
+      "id": 12503910201,
+      "lat": 35.1604423,
+      "lon": 129.1621791,
+      "tags": {
+        "amenity": "restaurant",
+        "cuisine": "indian;nepalese",
+        "diet:gluten_free": "yes",
+        "diet:halal": "yes",
+        "diet:vegan": "yes",
+        "diet:vegetarian": "yes",
+        "level": "0",
+        "name": "Royal India Haeundae",
+        "opening_hours": "Mo-Su 10:30-12:00",
+        "phone": "+82-51-731-1946"
+      }
+    },
+    {
+      "type": "node",
+      "id": 12595738131,
+      "lat": 35.1626667,
+      "lon": 126.8116198,
+      "tags": {
+        "addr:city": "광주광역시",
+        "addr:district": "광산구",
+        "addr:street": "풍영철길로",
+        "addr:subdistrict": "우산동",
+        "amenity": "restaurant",
+        "cuisine": "turkish",
+        "diet:halal": "yes",
+        "name": "노군꼬치",
+        "opening_hours": "Mo-Su 10:00-21:00"
+      }
+    },
+    {
+      "type": "node",
+      "id": 13242191382,
+      "lat": 37.53398,
+      "lon": 126.9894239,
+      "tags": {
+        "air_conditioning": "yes",
+        "amenity": "restaurant",
+        "cuisine": "steak_house",
+        "diet:halal": "yes",
+        "level": "2",
+        "level:ref": "3층",
+        "name": "호지보보",
+        "name:en": "Hoji Bobo Uzbek Restaurant",
+        "name:ko": "호지보보"
+      }
+    },
+    {
+      "type": "node",
+      "id": 13617795533,
+      "lat": 37.4553462,
+      "lon": 126.9519824,
+      "tags": {
+        "amenity": "restaurant",
+        "cuisine": "salad",
+        "diet:halal": "yes",
+        "diet:vegan": "yes",
+        "diet:vegetarian": "yes",
+        "name": "Poke All day",
+        "payment:credit_cards": "yes",
+        "payment:debit_cards": "yes",
+        "payment:kakaopay": "yes",
+        "payment:naver_pay": "yes",
+        "payment:payco": "yes"
+      }
+    },
+    {
+      "type": "node",
+      "id": 3370665373,
+      "lat": 37.7652794,
+      "lon": 126.7975388,
+      "tags": {
+        "addr:city": "파주시",
+        "addr:province": "경기도",
+        "amenity": "place_of_worship",
+        "name": "파주이슬람성원",
+        "nohousenumber": "yes",
+        "religion": "muslim"
+      }
+    },
+    {
+      "type": "node",
+      "id": 3598357994,
+      "lat": 36.3610434,
+      "lon": 127.3546692,
+      "tags": {
+        "addr:city": "대전광역시",
+        "addr:district": "유성구",
+        "addr:housenumber": "193",
+        "addr:street": "대학로",
+        "addr:subdistrict": "어은동",
+        "amenity": "place_of_worship",
+        "denomination": "sunni",
+        "name": "대전이슬라믹센터",
+        "name:en": "Islamic Center of Daejeon",
+        "name:ko": "대전이슬라믹센터",
+        "religion": "muslim"
+      }
+    },
+    {
+      "type": "node",
+      "id": 3598360235,
+      "lat": 37.4795281,
+      "lon": 126.7100802,
+      "tags": {
+        "addr:city": "인천광역시",
+        "addr:district": "부평구",
+        "addr:housenumber": "5",
+        "addr:street": "마장로91번길",
+        "addr:subdistrict": "십정동",
+        "amenity": "place_of_worship",
+        "name": "한국이슬람교중앙회부평지회",
+        "religion": "muslim"
+      }
+    },
+    {
+      "type": "node",
+      "id": 3600494033,
+      "lat": 37.4057581,
+      "lon": 127.2577701,
+      "tags": {
+        "addr:city": "광주시",
+        "addr:housenumber": "10",
+        "addr:province": "경기도",
+        "addr:street": "역동로34번길",
+        "amenity": "place_of_worship",
+        "name": "광주무슬림성원예배방",
+        "religion": "muslim"
+      }
+    },
+    {
+      "type": "node",
+      "id": 4721510377,
+      "lat": 35.5766318,
+      "lon": 129.1880689,
+      "tags": {
+        "air_conditioning": "yes",
+        "amenity": "restaurant",
+        "diet:gluten_free": "yes",
+        "diet:halal": "yes",
+        "diet:kosher": "no",
+        "diet:vegetarian": "no",
+        "indoor_seating": "yes",
+        "name": "기숙사식당",
+        "name:ko": "기숙사식당",
+        "opening_hours": "Mo-Fr 08:00-09:00,11:30-13:30,17:30-19:30; Sa,Su,PH 08:00-09:30,11:30-13:30,17:30-19:30",
+        "outdoor_seating": "no",
+        "payment:credit_cards": "yes",
+        "payment:debit_cards": "yes",
+        "wheelchair": "yes"
+      }
+    },
+    {
+      "type": "node",
+      "id": 5152811368,
+      "lat": 37.5395686,
+      "lon": 126.947246,
+      "tags": {
+        "amenity": "place_of_worship",
+        "denomination": "sunni",
+        "name": "Islamic catheral",
+        "religion": "muslim"
+      }
+    },
+    {
+      "type": "node",
+      "id": 5240631149,
+      "lat": 37.5631484,
+      "lon": 126.9848016,
+      "tags": {
+        "amenity": "restaurant",
+        "diet:halal": "yes",
+        "name": "할랄부산집",
+        "name:en": "Halal Busan Jib",
+        "name:ko": "할랄부산집"
+      }
+    },
+    {
+      "type": "node",
+      "id": 5997111185,
+      "lat": 36.3741457,
+      "lon": 127.3598256,
+      "tags": {
+        "amenity": "restaurant",
+        "cuisine": "beef_bowl;sandwich;mexican;arab",
+        "diet:halal": "yes",
+        "diet:vegan": "yes",
+        "name": "풀빛마루",
+        "name:en": "Pulbitmaru",
+        "opening_hours": "Mo-Fr 11:00-19:00",
+        "phone": "+82 10-6403-8805"
+      }
+    },
+    {
+      "type": "node",
+      "id": 8411370365,
+      "lat": 37.4496712,
+      "lon": 126.6565326,
+      "tags": {
+        "amenity": "place_of_worship",
+        "denomination": "sunni",
+        "name": "Room for Namaz (Islamic praying)",
+        "religion": "muslim"
+      }
+    },
+    {
+      "type": "node",
+      "id": 8441122167,
+      "lat": 37.5330873,
+      "lon": 126.9966375,
+      "tags": {
+        "addr:city": "서울특별시",
+        "addr:district": "용산구",
+        "addr:housenumber": "20",
+        "addr:postcode": "04407",
+        "addr:street": "우사단로10길",
+        "addr:subdistrict": "이태원동",
+        "amenity": "restaurant",
+        "cuisine": "pakistani",
+        "description": "할랄 고기를 쓴 한국음식점",
+        "diet:halal": "yes",
+        "name": "마리푸드",
+        "name:en": "MARREE FOOD",
+        "name:ko": "마리푸드",
+        "phone": "+82 2 3785 1436",
+        "source": "공공데이터포털"
+      }
+    },
+    {
+      "type": "node",
+      "id": 8441122170,
+      "lat": 37.533199,
+      "lon": 126.9962347,
+      "tags": {
+        "addr:city": "서울특별시",
+        "addr:district": "용산구",
+        "addr:housenumber": "11",
+        "addr:postcode": "04405",
+        "addr:street": "우사단로10길",
+        "addr:subdistrict": "이태원동",
+        "amenity": "restaurant",
+        "cuisine": "indian;pakistani",
+        "description": "탄두리 바비큐를 추천",
+        "diet:halal": "yes",
+        "level": "1",
+        "name": "봄베그릴",
+        "phone": "+82 2 792 7155",
+        "source": "공공데이터포털"
+      }
+    },
+    {
+      "type": "node",
+      "id": 8441122637,
+      "lat": 37.5347271,
+      "lon": 126.9947819,
+      "tags": {
+        "addr:city": "서울특별시",
+        "addr:district": "용산구",
+        "addr:housenumber": "187",
+        "addr:postcode": "04350",
+        "addr:street": "이태원로",
+        "addr:subdistrict": "이태원동",
+        "amenity": "restaurant",
+        "cuisine": "pakistani",
+        "description": "뉴욕 최고의 스트릿 푸드",
+        "diet:halal": "only",
+        "level": "2",
+        "name": "더 할랄 가이즈",
+        "phone": "+82 2 794 8308",
+        "source": "공공데이터포털"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9695063827,
+      "lat": 37.4531569,
+      "lon": 126.6576746,
+      "tags": {
+        "amenity": "restaurant",
+        "cuisine": "mexican",
+        "diet:halal": "yes",
+        "name": "Uzkebab"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9796470674,
+      "lat": 37.3702493,
+      "lon": 127.1062789,
+      "tags": {
+        "amenity": "restaurant",
+        "cuisine": "indian",
+        "diet:halal": "yes",
+        "diet:vegetarian": "yes",
+        "dog": "no",
+        "drink:beer": "yes",
+        "drink:wine": "yes",
+        "indoor_seating": "yes",
+        "internet_access": "wlan",
+        "level": "-1",
+        "name": "카리 분당정자카페점",
+        "name:en": "Kari",
+        "name:ko": "카리 분당정자카페점",
+        "opening_hours": "Mo-Su 11:30-22:00"
+      }
+    },
+    {
+      "type": "way",
+      "id": 1031585699,
+      "center": {
+        "lat": 37.3331626,
+        "lon": 126.7931093
+      },
+      "tags": {
+        "addr:city": "안산시",
+        "addr:district": "단원구",
+        "addr:housenumber": "16-1",
+        "addr:postcode": "15376",
+        "addr:province": "경기도",
+        "addr:street": "원곡공원로",
+        "amenity": "place_of_worship",
+        "building": "church",
+        "name": "안산이슬람센터",
+        "name:en": "ISLAMIC CENTER",
+        "name:ko": "안산이슬람센터",
+        "religion": "muslim",
+        "source": "도로명주소"
+      }
+    },
+    {
+      "type": "way",
+      "id": 330100655,
+      "center": {
+        "lat": 35.2599833,
+        "lon": 129.0922301
+      },
+      "tags": {
+        "addr:city": "부산광역시",
+        "addr:district": "금정구",
+        "addr:housenumber": "113-13",
+        "addr:street": "금단로",
+        "addr:subdistrict": "남산동",
+        "amenity": "place_of_worship",
+        "building": "yes",
+        "name": "한국 이슬람교 부산성원",
+        "name:ar": "مسجد بوسان",
+        "name:en": "Busan Al-Fatih Masjid",
+        "phone": "+82 51 518 9991",
+        "religion": "muslim",
+        "website": "http://www.busanislam.or.kr/",
+        "wikipedia": "en:Busan Al-Fatah Mosque"
+      }
+    },
+    {
+      "type": "way",
+      "id": 330101733,
+      "center": {
+        "lat": 35.8491215,
+        "lon": 127.1503826
+      },
+      "tags": {
+        "addr:city": "전주시",
+        "addr:district": "덕진구",
+        "addr:housenumber": "31",
+        "addr:province": "전북특별자치도",
+        "addr:street": "백동6길",
+        "addr:subdistrict": "인후동2가",
+        "amenity": "place_of_worship",
+        "building": "yes",
+        "name": "한국이슬람중앙회전주성원",
+        "name:ko": "한국이슬람중앙회전주성원",
+        "religion": "muslim"
+      }
+    },
+    {
+      "type": "way",
+      "id": 353023147,
+      "center": {
+        "lat": 37.5334545,
+        "lon": 126.997523
+      },
+      "tags": {
+        "addr:city": "서울특별시",
+        "addr:district": "용산구",
+        "addr:housenumber": "732-21",
+        "addr:street": "우사단로",
+        "alt_name": "서울 중앙 모스크",
+        "amenity": "place_of_worship",
+        "building": "yes",
+        "building:levels": "3",
+        "denomination": "sunni",
+        "name": "이슬람교서울중앙성원",
+        "name:en": "Seoul Central Mosque",
+        "name:ja": "ソウル中央モスク",
+        "religion": "muslim",
+        "tourism": "attraction",
+        "wikidata": "Q496515"
+      }
+    },
+    {
+      "type": "way",
+      "id": 353035341,
+      "center": {
+        "lat": 37.5332352,
+        "lon": 126.997608
+      },
+      "tags": {
+        "amenity": "restaurant",
+        "building": "yes",
+        "diet:halal": "yes",
+        "email": "zakee613@gmail.com",
+        "internet_access": "wlan",
+        "name": "Islamic Facility",
+        "name:ko": "Salam Turkish Restaurant",
+        "opening_hours": "Mo-Sa 12:00-22:00; Su 12:00-22:00",
+        "operator": "Zakee Jeong",
+        "phone": "+82 2 793 4323"
+      }
+    },
+    {
+      "type": "way",
+      "id": 429888786,
+      "center": {
+        "lat": 37.427075,
+        "lon": 126.6427078
+      },
+      "tags": {
+        "addr:city": "인천광역시",
+        "addr:district": "연수구",
+        "addr:subdistrict": "옥련동",
+        "amenity": "restaurant",
+        "building": "yes",
+        "diet:halal": "yes",
+        "name": "Turkiston Uzbek Restaurant"
+      }
+    },
+    {
+      "type": "way",
+      "id": 495241569,
+      "center": {
+        "lat": 37.4165499,
+        "lon": 126.6508033
+      },
+      "tags": {
+        "addr:city": "인천광역시",
+        "addr:district": "연수구",
+        "addr:subdistrict": "옥련동",
+        "amenity": "restaurant",
+        "building": "yes",
+        "diet:halal": "yes",
+        "name": "Samarkand Uzbek Reatauran"
+      }
+    },
+    {
+      "type": "way",
+      "id": 905755439,
+      "center": {
+        "lat": 37.4534778,
+        "lon": 126.6590947
+      },
+      "tags": {
+        "amenity": "place_of_worship",
+        "building": "yes",
+        "level": "2",
+        "name": "Ashrafia masjid",
+        "religion": "muslim"
+      }
+    },
+    {
+      "type": "way",
+      "id": 905757494,
+      "center": {
+        "lat": 37.4511103,
+        "lon": 126.6580583
+      },
+      "tags": {
+        "amenity": "restaurant",
+        "building": "yes",
+        "cuisine": "kebab",
+        "diet:halal": "yes",
+        "name": "Halal Kebab",
+        "smoking": "no"
+      }
+    },
+    {
+      "type": "way",
+      "id": 906071237,
+      "center": {
+        "lat": 37.1336961,
+        "lon": 126.9099323
+      },
+      "tags": {
+        "amenity": "restaurant",
+        "building": "yes",
+        "diet:halal": "yes",
+        "name": "Samarkand Uzbek Reataurant"
+      }
+    },
+    {
+      "type": "way",
+      "id": 906073095,
+      "center": {
+        "lat": 36.8576139,
+        "lon": 127.4423718
+      },
+      "tags": {
+        "amenity": "restaurant",
+        "building": "yes",
+        "diet:halal": "yes",
+        "name": "Uzbek Halal Restaurant"
+      }
+    }
+  ]
+}

@@ -1,1 +1,422 @@
-{ "generatedAt": null, "mosques": [], "restaurants": [] }
+{
+ "generatedAt": "2026-10-23T02:59:41.056Z",
+ "mosques": [
+  {
+   "id": "osm-node-3370665373",
+   "name": "파주이슬람성원",
+   "nameKo": "파주이슬람성원",
+   "address": "경기도 파주시",
+   "coords": {
+    "lat": 37.7652794,
+    "lng": 126.7975388
+   },
+   "kind": "mosque",
+   "facilities": []
+  },
+  {
+   "id": "osm-node-3598357994",
+   "name": "Islamic Center of Daejeon",
+   "nameKo": "대전이슬라믹센터",
+   "address": "대전광역시 유성구 대학로 193",
+   "coords": {
+    "lat": 36.3610434,
+    "lng": 127.3546692
+   },
+   "kind": "mosque",
+   "facilities": []
+  },
+  {
+   "id": "osm-node-3598360235",
+   "name": "한국이슬람교중앙회부평지회",
+   "nameKo": "한국이슬람교중앙회부평지회",
+   "address": "인천광역시 부평구 마장로91번길 5",
+   "coords": {
+    "lat": 37.4795281,
+    "lng": 126.7100802
+   },
+   "kind": "mosque",
+   "facilities": []
+  },
+  {
+   "id": "osm-node-3600494033",
+   "name": "광주무슬림성원예배방",
+   "nameKo": "광주무슬림성원예배방",
+   "address": "경기도 광주시 역동로34번길 10",
+   "coords": {
+    "lat": 37.4057581,
+    "lng": 127.2577701
+   },
+   "kind": "prayer-room",
+   "facilities": []
+  },
+  {
+   "id": "osm-node-5152811368",
+   "name": "Islamic catheral",
+   "nameKo": "Islamic catheral",
+   "address": "",
+   "coords": {
+    "lat": 37.5395686,
+    "lng": 126.947246
+   },
+   "kind": "mosque",
+   "facilities": []
+  },
+  {
+   "id": "osm-node-8411370365",
+   "name": "Room for Namaz (Islamic praying)",
+   "nameKo": "Room for Namaz (Islamic praying)",
+   "address": "",
+   "coords": {
+    "lat": 37.4496712,
+    "lng": 126.6565326
+   },
+   "kind": "prayer-room",
+   "facilities": []
+  },
+  {
+   "id": "osm-way-1031585699",
+   "name": "ISLAMIC CENTER",
+   "nameKo": "안산이슬람센터",
+   "address": "경기도 안산시 단원구 원곡공원로 16-1",
+   "coords": {
+    "lat": 37.3331626,
+    "lng": 126.7931093
+   },
+   "kind": "mosque",
+   "facilities": []
+  },
+  {
+   "id": "osm-way-330100655",
+   "name": "Busan Al-Fatih Masjid",
+   "nameKo": "한국 이슬람교 부산성원",
+   "address": "부산광역시 금정구 금단로 113-13",
+   "coords": {
+    "lat": 35.2599833,
+    "lng": 129.0922301
+   },
+   "phone": "+82 51 518 9991",
+   "website": "http://www.busanislam.or.kr/",
+   "kind": "mosque",
+   "facilities": []
+  },
+  {
+   "id": "osm-way-330101733",
+   "name": "한국이슬람중앙회전주성원",
+   "nameKo": "한국이슬람중앙회전주성원",
+   "address": "전북특별자치도 전주시 덕진구 백동6길 31",
+   "coords": {
+    "lat": 35.8491215,
+    "lng": 127.1503826
+   },
+   "kind": "mosque",
+   "facilities": []
+  },
+  {
+   "id": "osm-way-353023147",
+   "name": "Seoul Central Mosque",
+   "nameKo": "이슬람교서울중앙성원",
+   "address": "서울특별시 용산구 우사단로 732-21",
+   "coords": {
+    "lat": 37.5334545,
+    "lng": 126.997523
+   },
+   "kind": "mosque",
+   "facilities": []
+  },
+  {
+   "id": "osm-way-905755439",
+   "name": "Ashrafia masjid",
+   "nameKo": "Ashrafia masjid",
+   "address": "",
+   "coords": {
+    "lat": 37.4534778,
+    "lng": 126.6590947
+   },
+   "kind": "mosque",
+   "facilities": []
+  }
+ ],
+ "restaurants": [
+  {
+   "id": "osm-node-11380804001",
+   "name": "Om Restaurant",
+   "nameKo": "옴레스토랑",
+   "address": "서울특별시 종로구 새문안로 103",
+   "coords": {
+    "lat": 37.5705318,
+    "lng": 126.9760937
+   },
+   "cuisine": "indian",
+   "halal": "halal-friendly",
+   "open": "11:00",
+   "close": "22:00"
+  },
+  {
+   "id": "osm-node-11917140125",
+   "name": "고고인디안쿠진",
+   "nameKo": "고고인디안쿠진",
+   "address": "서울특별시 성북구",
+   "coords": {
+    "lat": 37.5837073,
+    "lng": 127.0299077
+   },
+   "cuisine": "indian",
+   "halal": "halal-friendly"
+  },
+  {
+   "id": "osm-node-12192196596",
+   "name": "뜻밖에 양꼬치",
+   "nameKo": "뜻밖에 양꼬치",
+   "address": "서울특별시 마포구 어울마당로 115",
+   "coords": {
+    "lat": 37.5551193,
+    "lng": 126.9230474
+   },
+   "cuisine": "other",
+   "halal": "halal-friendly"
+  },
+  {
+   "id": "osm-node-12503893601",
+   "name": "Royal India Seomyeon",
+   "nameKo": "Royal India Seomyeon",
+   "address": "",
+   "coords": {
+    "lat": 35.1530986,
+    "lng": 129.0594785
+   },
+   "phone": "+82 51-802-1946",
+   "cuisine": "indian",
+   "halal": "halal-friendly",
+   "open": "11:00",
+   "close": "22:00"
+  },
+  {
+   "id": "osm-node-12503910201",
+   "name": "Royal India Haeundae",
+   "nameKo": "Royal India Haeundae",
+   "address": "",
+   "coords": {
+    "lat": 35.1604423,
+    "lng": 129.1621791
+   },
+   "phone": "+82-51-731-1946",
+   "cuisine": "indian",
+   "halal": "halal-friendly",
+   "open": "10:30",
+   "close": "12:00"
+  },
+  {
+   "id": "osm-node-12595738131",
+   "name": "노군꼬치",
+   "nameKo": "노군꼬치",
+   "address": "광주광역시 광산구 풍영철길로",
+   "coords": {
+    "lat": 35.1626667,
+    "lng": 126.8116198
+   },
+   "cuisine": "turkish",
+   "halal": "halal-friendly",
+   "open": "10:00",
+   "close": "21:00"
+  },
+  {
+   "id": "osm-node-13242191382",
+   "name": "Hoji Bobo Uzbek Restaurant",
+   "nameKo": "호지보보",
+   "address": "",
+   "coords": {
+    "lat": 37.53398,
+    "lng": 126.9894239
+   },
+   "cuisine": "uzbek",
+   "halal": "halal-friendly"
+  },
+  {
+   "id": "osm-node-13617795533",
+   "name": "Poke All day",
+   "nameKo": "Poke All day",
+   "address": "",
+   "coords": {
+    "lat": 37.4553462,
+    "lng": 126.9519824
+   },
+   "cuisine": "other",
+   "halal": "halal-friendly"
+  },
+  {
+   "id": "osm-node-4721510377",
+   "name": "기숙사식당",
+   "nameKo": "기숙사식당",
+   "address": "",
+   "coords": {
+    "lat": 35.5766318,
+    "lng": 129.1880689
+   },
+   "cuisine": "other",
+   "halal": "halal-friendly"
+  },
+  {
+   "id": "osm-node-5240631149",
+   "name": "Halal Busan Jib",
+   "nameKo": "할랄부산집",
+   "address": "",
+   "coords": {
+    "lat": 37.5631484,
+    "lng": 126.9848016
+   },
+   "cuisine": "other",
+   "halal": "halal-friendly"
+  },
+  {
+   "id": "osm-node-5997111185",
+   "name": "Pulbitmaru",
+   "nameKo": "풀빛마루",
+   "address": "",
+   "coords": {
+    "lat": 36.3741457,
+    "lng": 127.3598256
+   },
+   "phone": "+82 10-6403-8805",
+   "cuisine": "other",
+   "halal": "halal-friendly"
+  },
+  {
+   "id": "osm-node-8441122167",
+   "name": "MARREE FOOD",
+   "nameKo": "마리푸드",
+   "address": "서울특별시 용산구 우사단로10길 20",
+   "coords": {
+    "lat": 37.5330873,
+    "lng": 126.9966375
+   },
+   "phone": "+82 2 3785 1436",
+   "cuisine": "indian",
+   "halal": "halal-friendly"
+  },
+  {
+   "id": "osm-node-8441122170",
+   "name": "봄베그릴",
+   "nameKo": "봄베그릴",
+   "address": "서울특별시 용산구 우사단로10길 11",
+   "coords": {
+    "lat": 37.533199,
+    "lng": 126.9962347
+   },
+   "phone": "+82 2 792 7155",
+   "cuisine": "indian",
+   "halal": "halal-friendly"
+  },
+  {
+   "id": "osm-node-8441122637",
+   "name": "더 할랄 가이즈",
+   "nameKo": "더 할랄 가이즈",
+   "address": "서울특별시 용산구 이태원로 187",
+   "coords": {
+    "lat": 37.5347271,
+    "lng": 126.9947819
+   },
+   "phone": "+82 2 794 8308",
+   "cuisine": "indian",
+   "halal": "self-certified"
+  },
+  {
+   "id": "osm-node-9695063827",
+   "name": "Uzkebab",
+   "nameKo": "Uzkebab",
+   "address": "",
+   "coords": {
+    "lat": 37.4531569,
+    "lng": 126.6576746
+   },
+   "cuisine": "turkish",
+   "halal": "halal-friendly"
+  },
+  {
+   "id": "osm-node-9796470674",
+   "name": "Kari",
+   "nameKo": "카리 분당정자카페점",
+   "address": "",
+   "coords": {
+    "lat": 37.3702493,
+    "lng": 127.1062789
+   },
+   "cuisine": "indian",
+   "halal": "halal-friendly",
+   "open": "11:30",
+   "close": "22:00"
+  },
+  {
+   "id": "osm-way-353035341",
+   "name": "Islamic Facility",
+   "nameKo": "Salam Turkish Restaurant",
+   "address": "",
+   "coords": {
+    "lat": 37.5332352,
+    "lng": 126.997608
+   },
+   "phone": "+82 2 793 4323",
+   "cuisine": "other",
+   "halal": "halal-friendly"
+  },
+  {
+   "id": "osm-way-429888786",
+   "name": "Turkiston Uzbek Restaurant",
+   "nameKo": "Turkiston Uzbek Restaurant",
+   "address": "인천광역시 연수구",
+   "coords": {
+    "lat": 37.427075,
+    "lng": 126.6427078
+   },
+   "cuisine": "turkish",
+   "halal": "halal-friendly"
+  },
+  {
+   "id": "osm-way-495241569",
+   "name": "Samarkand Uzbek Reatauran",
+   "nameKo": "Samarkand Uzbek Reatauran",
+   "address": "인천광역시 연수구",
+   "coords": {
+    "lat": 37.4165499,
+    "lng": 126.6508033
+   },
+   "cuisine": "uzbek",
+   "halal": "halal-friendly"
+  },
+  {
+   "id": "osm-way-905757494",
+   "name": "Halal Kebab",
+   "nameKo": "Halal Kebab",
+   "address": "",
+   "coords": {
+    "lat": 37.4511103,
+    "lng": 126.6580583
+   },
+   "cuisine": "turkish",
+   "halal": "halal-friendly"
+  },
+  {
+   "id": "osm-way-906071237",
+   "name": "Samarkand Uzbek Reataurant",
+   "nameKo": "Samarkand Uzbek Reataurant",
+   "address": "",
+   "coords": {
+    "lat": 37.1336961,
+    "lng": 126.9099323
+   },
+   "cuisine": "uzbek",
+   "halal": "halal-friendly"
+  },
+  {
+   "id": "osm-way-906073095",
+   "name": "Uzbek Halal Restaurant",
+   "nameKo": "Uzbek Halal Restaurant",
+   "address": "",
+   "coords": {
+    "lat": 36.8576139,
+    "lng": 127.4423718
+   },
+   "cuisine": "uzbek",
+   "halal": "halal-friendly"
+  }
+ ]
+}

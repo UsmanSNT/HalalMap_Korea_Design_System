@@ -12,9 +12,10 @@
     "android:sync": "vite build && npx cap sync android",
     "android:open": "npx cap open android",
     "check": "tsc --noEmit && node --experimental-strip-types scripts/check-i18n.mjs",
-    "import:osm": "node scripts/import-osm.mjs",
+    "import:osm": "node --experimental-strip-types scripts/import-osm.mjs --fetch",
     "start:api": "node server/index.mjs",
-    "dev:api": "node --env-file-if-exists=.env server/index.mjs"
+    "dev:api": "node --env-file-if-exists=.env server/index.mjs",
+    "build:osm": "node --experimental-strip-types scripts/import-osm.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",

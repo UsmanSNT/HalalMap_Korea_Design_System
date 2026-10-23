@@ -20,6 +20,8 @@ const STATUS_STYLE: Record<HalalStatus, string> = {
   certified: "bg-[var(--green-light)] text-[var(--green)]",
   "muslim-owned": "bg-[var(--gold-light)] text-[#7a5416]",
   "halal-friendly": "bg-[var(--cream)] text-[var(--muted)]",
+  "self-certified": "bg-[var(--green-light)] text-[var(--green)]",
+  "pork-free": "bg-[var(--cream)] text-[var(--muted)]",
   unverified: "bg-[var(--cream)] text-[var(--muted)]",
 };
 
