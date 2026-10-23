@@ -7,7 +7,7 @@
 //
 // Config (env): PORT, HOST, DATA_DIR, ADMIN_TOKEN (>=24 chars; admin disabled if unset),
 //               ALLOWED_ORIGINS (only needed if the web app is hosted on another origin),
-//               STATIC_DIR (default ../dist), TRUST_PROXY=1 behind a reverse proxy.
+//               STATIC_DIR (default ../dist), TRUST_PROXY=cloudflare|1 behind a proxy.
 // Requires Node >= 22.13 (node:sqlite). DATA_DIR must be on persistent storage.
 
 import { createServer } from "node:http";
@@ -21,7 +21,9 @@ const PORT = Number(process.env.PORT || process.env.API_PORT || 8787);
 const HOST = process.env.HOST || "127.0.0.1";
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN || "";
 const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || "").split(",").map((s) => s.trim()).filter(Boolean);
-const TRUST_PROXY = process.env.TRUST_PROXY === "1";
+// Where the client IP comes from for rate limiting: "cloudflare" = CF-Connecting-IP (behind Cloudflare/cloudflared),
+// "1" = last X-Forwarded-For hop (single trusted reverse proxy), otherwise the socket address.
+const TRUST_PROXY = process.env.TRUST_PROXY || "";
 const SERVER_DIR = dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = resolve(process.env.DATA_DIR || resolve(SERVER_DIR, "data"));
 const STATIC_DIR = resolve(process.env.STATIC_DIR || resolve(SERVER_DIR, "../dist"));
@@ -133,9 +135,13 @@ async function readJson(request) {
 }
 
 function clientIp(request) {
-  if (TRUST_PROXY) {
-    const forwarded = String(request.headers["x-forwarded-for"] || "").split(",")[0].trim();
-    if (forwarded) return forwarded;
+  if (TRUST_PROXY === "cloudflare") {
+    const ip = request.headers["cf-connecting-ip"];
+    if (typeof ip === "string" && ip.trim()) return ip.trim();
+  } else if (TRUST_PROXY === "1") {
+    // The last hop is the one our own proxy appended; earlier entries are client-controlled.
+    const hops = String(request.headers["x-forwarded-for"] || "").split(",").map((h) => h.trim()).filter(Boolean);
+    if (hops.length) return hops[hops.length - 1];
   }
   return request.socket.remoteAddress || "unknown";
 }

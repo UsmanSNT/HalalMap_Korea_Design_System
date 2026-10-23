@@ -2,22 +2,28 @@
 
 Two parts: a static web app (`dist/`) and a small API (`server/index.mjs`) for community submissions.
 
-## Self-hosted (single process): avrangzeb.uz
+## Self-hosted (single process): avrangzeb.uz on Windows + Cloudflare Tunnel
 `server/index.mjs` serves the built web app (`dist/`) and the API from one Node process, same origin
-(no CORS, no `VITE_API_URL`). Needs Node >= 22.13, pnpm, and nginx (or any reverse proxy) with HTTPS:
-geolocation and the compass only work on HTTPS.
+(no CORS, no `VITE_API_URL`). Needs Node >= 22.13 and pnpm. Public HTTPS comes from the Cloudflare Tunnel, which
+forwards the domain to `http://127.0.0.1:<PORT>` (currently 8443); keep that port and the tunnel needs no change.
 
-One-time setup on the server:
+Files in `deploy/windows/`: `supervise.ps1` (restart loop), `install-task.ps1` (boot task, runs as SYSTEM),
+`update.cmd` (pull, install, check, build, restart, health check), `env.example`.
+
+Setup (Administrator shell), in a new folder next to the old one:
 ```
-sudo useradd -r -s /usr/sbin/nologin halalmap
-sudo git clone <repo> /opt/halalmap && sudo chown -R $USER /opt/halalmap
-sudo mkdir -p /var/lib/halalmap && sudo chown halalmap /var/lib/halalmap
-sudo cp deploy/halalmap.env.example /etc/halalmap.env   # set ADMIN_TOKEN, then chmod 600
-sudo cp deploy/halalmap.service /etc/systemd/system/ && sudo systemctl enable halalmap
-sudo cp deploy/nginx.conf.example /etc/nginx/sites-available/avrangzeb.uz   # enable + certbot
+git clone --branch main https://github.com/UsmanSNT/HalalMap_Korea_Design_System.git C:\server\halalmap
+cd /d C:\server\halalmap
+copy deploy\windows\env.example .env
+node -e "require('fs').appendFileSync('.env','ADMIN_TOKEN='+require('crypto').randomBytes(24).toString('hex')+'\n')"
+pnpm install --frozen-lockfile && pnpm check && pnpm build
+powershell -ExecutionPolicy Bypass -File deploy\windows\install-task.ps1
 ```
-Every release: `./deploy/deploy.sh` (fetch, fast-forward, install, `pnpm check`, build, restart, health check).
-The API listens on 127.0.0.1 only; nginx is the single public entry. Back up `/var/lib/halalmap`.
+`.env` holds the admin token (read it in Notepad, never share it). Updates: `deploy\windows\update.cmd`.
+Back up `DATA_DIR` (it contains `halalmap.sqlite`). Logs: `logs\server.log`.
+Cut-over and rollback: stop and disable the old task, run the new one on the same port; reverse to roll back.
+
+Linux alternative: `deploy/halalmap.service`, `deploy/nginx.conf.example`, `deploy/deploy.sh`.
 
 Other hosts work too: the API alone needs a persistent disk, so static-only hosting (Pages, Figma Make)
 can serve the web app but not "Add a place" unless `VITE_API_URL` points at a separate API.
@@ -28,7 +34,7 @@ can serve the web app but not "Add a place" unless `VITE_API_URL` points at a se
 | `DATA_DIR` | Persistent directory for `halalmap.sqlite`. |
 | `STATIC_DIR` | Built web app, default `../dist`. |
 | `HOST` / `PORT` | Bind address and port (default 127.0.0.1:8787). |
-| `TRUST_PROXY=1` | Behind nginx: use `X-Forwarded-For` for per-IP rate limiting (nginx must overwrite it). |
+| `TRUST_PROXY` | `cloudflare` (CF-Connecting-IP) behind Cloudflare/cloudflared; `1` behind one reverse proxy (last `X-Forwarded-For` hop). Used for per-IP rate limiting. |
 | `ALLOWED_ORIGINS` | Only when the web app is on a different origin than the API. |
 
 ## Moderation flow
