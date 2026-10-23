@@ -2,24 +2,34 @@
 
 Two parts: a static web app (`dist/`) and a small API (`server/index.mjs`) for community submissions.
 
-## Web app
-`pnpm check && pnpm build`, then publish `dist/` (GitHub Pages workflow or `figma make deploy`).
-Set `VITE_API_URL` at build time to the public API origin (GitHub: Settings → Variables → `VITE_API_URL`).
-The app works without the API (prayer times, Qibla and bundled places are offline); only "Add a place" and
-community places need it.
+## Self-hosted (single process): avrangzeb.uz
+`server/index.mjs` serves the built web app (`dist/`) and the API from one Node process, same origin
+(no CORS, no `VITE_API_URL`). Needs Node >= 22.13, pnpm, and nginx (or any reverse proxy) with HTTPS:
+geolocation and the compass only work on HTTPS.
 
-## API
-Needs a host that runs Node >= 22.13 with a **persistent disk** for SQLite (static hosts cannot run it).
+One-time setup on the server:
+```
+sudo useradd -r -s /usr/sbin/nologin halalmap
+sudo git clone <repo> /opt/halalmap && sudo chown -R $USER /opt/halalmap
+sudo mkdir -p /var/lib/halalmap && sudo chown halalmap /var/lib/halalmap
+sudo cp deploy/halalmap.env.example /etc/halalmap.env   # set ADMIN_TOKEN, then chmod 600
+sudo cp deploy/halalmap.service /etc/systemd/system/ && sudo systemctl enable halalmap
+sudo cp deploy/nginx.conf.example /etc/nginx/sites-available/avrangzeb.uz   # enable + certbot
+```
+Every release: `./deploy/deploy.sh` (fetch, fast-forward, install, `pnpm check`, build, restart, health check).
+The API listens on 127.0.0.1 only; nginx is the single public entry. Back up `/var/lib/halalmap`.
+
+Other hosts work too: the API alone needs a persistent disk, so static-only hosting (Pages, Figma Make)
+can serve the web app but not "Add a place" unless `VITE_API_URL` points at a separate API.
 
 | Env | Purpose |
 |---|---|
 | `ADMIN_TOKEN` | >= 24 random chars (`openssl rand -hex 24`). Admin is disabled when unset. |
-| `ALLOWED_ORIGINS` | Web origins allowed to call the API, comma separated. |
-| `DATA_DIR` | Persistent directory for `halalmap.sqlite`. Back it up. |
-| `HOST` / `PORT` | Bind address (`0.0.0.0` in containers) and port. |
-| `TRUST_PROXY=1` | When behind a proxy that sets `X-Forwarded-For` (needed for per-IP rate limiting). |
-
-Run: `node server/index.mjs`. Health: `GET /api/health`. Serve it over HTTPS.
+| `DATA_DIR` | Persistent directory for `halalmap.sqlite`. |
+| `STATIC_DIR` | Built web app, default `../dist`. |
+| `HOST` / `PORT` | Bind address and port (default 127.0.0.1:8787). |
+| `TRUST_PROXY=1` | Behind nginx: use `X-Forwarded-For` for per-IP rate limiting (nginx must overwrite it). |
+| `ALLOWED_ORIGINS` | Only when the web app is on a different origin than the API. |
 
 ## Moderation flow
 1. A visitor submits a place with a private contact phone ("Add a place"). Limits: 5 per IP per hour.

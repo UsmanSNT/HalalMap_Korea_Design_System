@@ -3,15 +3,17 @@
 // Public:  GET /api/health, GET /api/places, POST /api/submissions
 // Admin:   GET /api/admin/submissions, POST /api/admin/submissions/:id/(approve|reject)
 //          (Authorization: Bearer <ADMIN_TOKEN>)
+// Also serves the built web app (dist/) so one process hosts site and API on the same origin.
 //
 // Config (env): PORT, HOST, DATA_DIR, ADMIN_TOKEN (>=24 chars; admin disabled if unset),
-//               ALLOWED_ORIGINS (comma list or "*"), TRUST_PROXY=1 behind a reverse proxy.
+//               ALLOWED_ORIGINS (only needed if the web app is hosted on another origin),
+//               STATIC_DIR (default ../dist), TRUST_PROXY=1 behind a reverse proxy.
 // Requires Node >= 22.13 (node:sqlite). DATA_DIR must be on persistent storage.
 
 import { createServer } from "node:http";
 import { createHash, randomUUID, timingSafeEqual } from "node:crypto";
-import { mkdirSync } from "node:fs";
-import { dirname, resolve } from "node:path";
+import { createReadStream, existsSync, mkdirSync, statSync } from "node:fs";
+import { dirname, extname, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { DatabaseSync } from "node:sqlite";
 
@@ -20,7 +22,9 @@ const HOST = process.env.HOST || "127.0.0.1";
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN || "";
 const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || "").split(",").map((s) => s.trim()).filter(Boolean);
 const TRUST_PROXY = process.env.TRUST_PROXY === "1";
-const DATA_DIR = resolve(process.env.DATA_DIR || resolve(dirname(fileURLToPath(import.meta.url)), "data"));
+const SERVER_DIR = dirname(fileURLToPath(import.meta.url));
+const DATA_DIR = resolve(process.env.DATA_DIR || resolve(SERVER_DIR, "data"));
+const STATIC_DIR = resolve(process.env.STATIC_DIR || resolve(SERVER_DIR, "../dist"));
 
 const KINDS = ["mosque", "prayer-room", "restaurant"];
 const HALAL_STATUSES = ["certified", "muslim-owned", "halal-friendly", "unverified"];
@@ -307,6 +311,65 @@ function rejectSubmission(id, body) {
   return { ok: true };
 }
 
+// ── static web app ───────────────────────────────────────────────
+
+const MIME = {
+  ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
+  ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml", ".png": "image/png", ".jpg": "image/jpeg",
+  ".ico": "image/x-icon", ".webp": "image/webp", ".woff2": "font/woff2", ".txt": "text/plain; charset=utf-8",
+  ".webmanifest": "application/manifest+json",
+};
+
+// Fonts come from Google Fonts (see src/index.css); everything else is same-origin.
+const CSP = [
+  "default-src 'self'",
+  "script-src 'self'",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "font-src https://fonts.gstatic.com",
+  "img-src 'self' data:",
+  "connect-src 'self'",
+  "frame-ancestors 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+].join("; ");
+
+const SECURITY_HEADERS = {
+  "Content-Security-Policy": CSP,
+  "X-Content-Type-Options": "nosniff",
+  "Referrer-Policy": "strict-origin-when-cross-origin",
+  "Permissions-Policy": "geolocation=(self), camera=(), microphone=()",
+};
+
+/** Serves a file from STATIC_DIR; unknown paths fall back to index.html (hash routing needs only "/"). */
+function serveStatic(request, response, pathname) {
+  if (!existsSync(resolve(STATIC_DIR, "index.html"))) throw new HttpError(404, "not_found");
+  let decoded;
+  try {
+    decoded = decodeURIComponent(pathname);
+  } catch {
+    throw new HttpError(400, "bad_path");
+  }
+  if (decoded.includes("\0")) throw new HttpError(400, "bad_path");
+  let target = resolve(STATIC_DIR, "." + decoded);
+  // Path traversal guard: the resolved path must stay inside STATIC_DIR.
+  if (target !== STATIC_DIR && !target.startsWith(STATIC_DIR + sep)) throw new HttpError(403, "forbidden");
+  if (!existsSync(target) || statSync(target).isDirectory()) {
+    // A missing hashed asset must 404 (not return the app shell) so stale clients fail visibly.
+    if (decoded.startsWith("/assets/")) throw new HttpError(404, "not_found");
+    target = resolve(STATIC_DIR, "index.html");
+  }
+  const type = MIME[extname(target)] ?? "application/octet-stream";
+  const immutable = target.startsWith(resolve(STATIC_DIR, "assets") + sep); // hashed filenames
+  response.writeHead(200, {
+    "Content-Type": type,
+    "Content-Length": statSync(target).size,
+    "Cache-Control": immutable ? "public, max-age=31536000, immutable" : "no-cache",
+    ...SECURITY_HEADERS,
+  });
+  if (request.method === "HEAD") return response.end();
+  createReadStream(target).pipe(response);
+}
+
 const ADMIN_ROUTE = /^\/api\/admin\/submissions\/([0-9a-f-]{36})\/(approve|reject)$/;
 
 const server = createServer(async (request, response) => {
@@ -343,6 +406,8 @@ const server = createServer(async (request, response) => {
       return send(request, response, 200, action === "approve" ? approveSubmission(id, body) : rejectSubmission(id, body));
     }
 
+    if ((method === "GET" || method === "HEAD") && !pathname.startsWith("/api/")) return serveStatic(request, response, pathname);
+
     throw new HttpError(404, "not_found");
   } catch (error) {
     if (error instanceof HttpError) return send(request, response, error.status, { error: error.message });
@@ -352,5 +417,5 @@ const server = createServer(async (request, response) => {
 });
 
 server.listen(PORT, HOST, () => {
-  console.log(`HalalMap API http://${HOST}:${PORT} (admin ${ADMIN_TOKEN.length >= 24 ? "enabled" : "DISABLED: set ADMIN_TOKEN"})`);
+  console.log(`HalalMap http://${HOST}:${PORT} (web ${existsSync(STATIC_DIR) ? "served from " + STATIC_DIR : "NOT built: run pnpm build"}; admin ${ADMIN_TOKEN.length >= 24 ? "enabled" : "DISABLED: set ADMIN_TOKEN"})`);
 });

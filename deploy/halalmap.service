@@ -1,0 +1,22 @@
+# /etc/systemd/system/halalmap.service
+[Unit]
+Description=HalalMap Korea (web + API)
+After=network.target
+
+[Service]
+Type=simple
+User=halalmap
+WorkingDirectory=/opt/halalmap
+EnvironmentFile=/etc/halalmap.env
+ExecStart=/usr/bin/node /opt/halalmap/server/index.mjs
+Restart=on-failure
+RestartSec=3
+# Hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/var/lib/halalmap
+
+[Install]
+WantedBy=multi-user.target
