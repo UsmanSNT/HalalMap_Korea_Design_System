@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import type { CuisineId, HalalStatus } from "@/data/restaurants";
-import { ApiError } from "@/lib/api";
+import { ApiError, apiUrl } from "@/lib/api";
 import {
   approveSubmission,
+  deleteReview,
+  fetchAdminReviews,
   fetchPendingSubmissions,
   rejectSubmission,
+  type AdminReview,
   type AdminSubmission,
 } from "@/lib/communityApi";
 import { mapsSearchUrl } from "@/lib/geo";
@@ -97,6 +100,7 @@ function SubmissionCard({ item, token, onDone }: { item: AdminSubmission; token:
         <p className="text-xs font-bold uppercase text-[var(--green)]">
           {item.kind === "restaurant" ? t("add.kindRestaurant") : item.kind === "mosque" ? t("mosques.kindMosque") : t("mosques.kindRoom")}
         </p>
+        {item.photoUrl && <img src={apiUrl(item.photoUrl)} alt="" className="aspect-video w-full rounded-xl object-cover" />}
         <Field label={t("add.name")}>
           <input name="name" defaultValue={item.name} className={INPUT_CLASS} />
         </Field>
@@ -176,10 +180,13 @@ export default function AdminScreen() {
   const [token, setToken] = useState(readToken);
   const [items, setItems] = useState<AdminSubmission[] | null>(null);
   const [error, setError] = useState<TranslationKey | null>(null);
+  const [reviews, setReviews] = useState<AdminReview[]>([]);
 
   const load = useCallback(async (value: string) => {
     try {
-      setItems(await fetchPendingSubmissions(value));
+      const [pending, recent] = await Promise.all([fetchPendingSubmissions(value), fetchAdminReviews(value)]);
+      setItems(pending);
+      setReviews(recent);
       setError(null);
       writeToken(value);
     } catch (e) {
@@ -245,14 +252,40 @@ export default function AdminScreen() {
               {t("admin.signIn")}
             </button>
           </form>
-        ) : items.length === 0 ? (
-          <p className="py-10 text-center text-sm text-[var(--muted)]">{t("admin.empty")}</p>
         ) : (
-          <ul className="space-y-4">
-            {items.map((item) => (
-              <SubmissionCard key={item.id} item={item} token={token} onDone={() => void load(token)} />
-            ))}
-          </ul>
+          <>
+            {items.length === 0 ? (
+              <p className="py-10 text-center text-sm text-[var(--muted)]">{t("admin.empty")}</p>
+            ) : (
+              <ul className="space-y-4">
+                {items.map((item) => (
+                  <SubmissionCard key={item.id} item={item} token={token} onDone={() => void load(token)} />
+                ))}
+              </ul>
+            )}
+            <section className="space-y-3">
+              <h2 className="font-bold">{t("admin.reviews")}</h2>
+              <ul className="space-y-2">
+                {reviews.map((review) => (
+                  <li key={review.id} className="flex items-start justify-between gap-3 rounded-xl border border-[var(--border)] bg-white p-3 text-sm">
+                    <div className="min-w-0">
+                      <p className="text-xs text-[var(--muted)]">
+                        {review.placeId} · {"★".repeat(review.rating)} · {review.name ?? t("reviews.anonymous")}
+                      </p>
+                      {review.comment && <p className="mt-1 whitespace-pre-line break-words">{review.comment}</p>}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => void deleteReview(token, review.id).then(() => load(token))}
+                      className="min-h-11 shrink-0 rounded-lg px-3 font-semibold text-[var(--danger)]"
+                    >
+                      {t("admin.delete")}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          </>
         )}
       </div>
     </>

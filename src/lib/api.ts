@@ -2,6 +2,9 @@
 const API_URL = ((import.meta.env.VITE_API_URL as string | undefined) ?? "").replace(/\/$/, "");
 const TIMEOUT_MS = 10_000;
 
+/** Absolute URL for an API-relative path (e.g. an uploaded photo). */
+export const apiUrl = (path: string) => `${API_URL}${path}`;
+
 export class ApiError extends Error {
   constructor(
     public readonly code: string,

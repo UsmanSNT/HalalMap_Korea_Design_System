@@ -11,22 +11,27 @@ import CopyButton from "@/ui/CopyButton";
 import { NavigateIcon, PhoneIcon } from "@/ui/icons";
 import DataFooter from "@/ui/DataFooter";
 import PageHeader from "@/ui/PageHeader";
+import PlacePhoto from "@/ui/PlacePhoto";
 import Segmented from "@/ui/Segmented";
+import { INPUT_CLASS } from "@/ui/Field";
 
 type Filter = "all" | MosqueKind;
+const RADII_KM = [1, 5, 20, 50] as const;
 
 export default function MosquesScreen() {
   const { t } = useLanguage();
   const { coords, isReal } = useLocation();
   const { mosques } = usePlaces();
   const [filter, setFilter] = useState<Filter>("all");
+  const [radius, setRadius] = useState<number>(0); // 0 = any distance
 
   const items = useMemo(
     () =>
       mosques.filter((m) => filter === "all" || m.kind === filter)
         .map((m) => ({ mosque: m, km: distanceKm(coords, m.coords) }))
+        .filter(({ km }) => radius === 0 || km <= radius)
         .sort((a, b) => a.km - b.km),
-    [mosques, coords, filter],
+    [mosques, coords, filter, radius],
   );
 
   return (
@@ -44,8 +49,25 @@ export default function MosquesScreen() {
           ]}
         />
 
+        <label className="flex items-center justify-between gap-3">
+          <span className="text-sm font-semibold">{t("nearby.radius")}</span>
+          <select
+            value={radius}
+            onChange={(e) => setRadius(Number(e.target.value))}
+            className={`${INPUT_CLASS} w-auto min-w-40`}
+          >
+            <option value={0}>{t("nearby.all")}</option>
+            {RADII_KM.map((km) => (
+              <option key={km} value={km}>
+                ≤ {km} km
+              </option>
+            ))}
+          </select>
+        </label>
+        {!isReal && <p className="text-xs text-[var(--muted)]">{t("nearby.gpsNeeded")}</p>}
+
         {items.length === 0 ? (
-          <p className="py-10 text-center text-sm text-[var(--muted)]">{t("mosques.empty")}</p>
+          <p className="py-10 text-center text-sm text-[var(--muted)]">{radius === 0 ? t("mosques.empty") : t("nearby.none")}</p>
         ) : (
           <ul className="space-y-3">
             {items.map(({ mosque, km }) => (
@@ -66,6 +88,7 @@ export default function MosquesScreen() {
                   </>
                 }
               >
+                <PlacePhoto src={mosque.photoUrl} alt={mosque.name} />
                 {mosque.address && <p className="text-sm">{mosque.address}</p>}
                 {mosque.juma && (
                   <p className="text-sm">

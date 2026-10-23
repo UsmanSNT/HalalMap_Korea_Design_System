@@ -1,15 +1,22 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import osm from "@/data/osm.generated.json";
 import type { Mosque } from "@/data/mosques";
 import type { Restaurant } from "@/data/restaurants";
-import { fetchCommunityPlaces, type CommunityPlace } from "./communityApi";
+import { apiUrl } from "./api";
+import { fetchCommunityPlaces, fetchRatingSummary, type CommunityPlace, type RatingSummary } from "./communityApi";
 import { distanceKm, type Coords } from "./geo";
 import { readStored, writeStored } from "./storage";
 
 const CACHE_KEY = "halalmap-community-places";
 const DUPLICATE_RADIUS_KM = 0.1;
 
-type PlacesValue = { mosques: readonly Mosque[]; restaurants: readonly Restaurant[] };
+type PlacesValue = {
+  mosques: readonly Mosque[];
+  restaurants: readonly Restaurant[];
+  /** Average rating and review count per place id. */
+  ratings: RatingSummary;
+  refreshRatings: () => void;
+};
 const PlacesContext = createContext<PlacesValue | null>(null);
 
 const osmData = osm as unknown as { mosques: Mosque[]; restaurants: Restaurant[] };
@@ -37,6 +44,7 @@ const toMosque = (p: CommunityPlace): Mosque => ({
   coords: { lat: p.lat, lng: p.lng },
   phone: p.phone ?? undefined,
   facilities: [],
+  photoUrl: p.photoUrl ? apiUrl(p.photoUrl) : undefined,
 });
 
 const toRestaurant = (p: CommunityPlace): Restaurant => ({
@@ -50,10 +58,22 @@ const toRestaurant = (p: CommunityPlace): Restaurant => ({
   phone: p.phone ?? undefined,
   open: p.open ?? undefined,
   close: p.close ?? undefined,
+  photoUrl: p.photoUrl ? apiUrl(p.photoUrl) : undefined,
 });
 
 export function PlacesProvider({ children }: { children: ReactNode }) {
   const [community, setCommunity] = useState<CommunityPlace[]>(readCache);
+  const [ratings, setRatings] = useState<RatingSummary>({});
+
+  const refreshRatings = useCallback(() => {
+    fetchRatingSummary()
+      .then(setRatings)
+      .catch(() => {
+        // Ratings are optional: lists still work without them.
+      });
+  }, []);
+
+  useEffect(refreshRatings, [refreshRatings]);
 
   useEffect(() => {
     let cancelled = false;
@@ -71,7 +91,7 @@ export function PlacesProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const value = useMemo<PlacesValue>(() => {
+  const placeLists = useMemo(() => {
     const communityMosques = community.filter((p) => p.kind !== "restaurant").map(toMosque);
     const communityRestaurants = community.filter((p) => p.kind === "restaurant").map(toRestaurant);
     return {
@@ -79,6 +99,8 @@ export function PlacesProvider({ children }: { children: ReactNode }) {
       restaurants: [...communityRestaurants, ...withoutDuplicates(communityRestaurants, osmData.restaurants)],
     };
   }, [community]);
+
+  const value = useMemo<PlacesValue>(() => ({ ...placeLists, ratings, refreshRatings }), [placeLists, ratings, refreshRatings]);
 
   return <PlacesContext.Provider value={value}>{children}</PlacesContext.Provider>;
 }

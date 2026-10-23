@@ -17,7 +17,8 @@ export type Restaurant = {
   phone?: string;
   /** Opening hours as "HH:MM"; `close` earlier than `open` means past midnight. Both absent when unknown. */
   open?: string;
-  close?: string;
+  close?: string;  /** Absolute URL of a user-submitted photo. */
+  photoUrl?: string;
 };
 
 /** Whether `now` is inside the opening hours (handles past-midnight closing); null when hours are unknown. */

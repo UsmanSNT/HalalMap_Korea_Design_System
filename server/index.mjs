@@ -1,7 +1,9 @@
 // HalalMap Korea API: community place submissions with admin approval.
 //
-// Public:  GET /api/health, GET /api/places, POST /api/submissions
-// Admin:   GET /api/admin/submissions, POST /api/admin/submissions/:id/(approve|reject)
+// Public:  GET /api/health, GET /api/places, POST /api/submissions, POST /api/uploads, GET /uploads/<id>.jpg,
+//          GET /api/reviews/summary, GET /api/reviews?placeId=, POST /api/reviews
+// Admin:   GET /api/admin/submissions, POST /api/admin/submissions/:id/(approve|reject),
+//          GET /api/admin/reviews, POST /api/admin/reviews/:id/delete
 //          (Authorization: Bearer <ADMIN_TOKEN>)
 // Also serves the built web app (dist/) so one process hosts site and API on the same origin.
 //
@@ -12,7 +14,7 @@
 
 import { createServer } from "node:http";
 import { createHash, randomUUID, timingSafeEqual } from "node:crypto";
-import { createReadStream, existsSync, mkdirSync, statSync } from "node:fs";
+import { createReadStream, existsSync, mkdirSync, statSync, writeFileSync } from "node:fs";
 import { dirname, extname, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { DatabaseSync } from "node:sqlite";
@@ -33,9 +35,14 @@ const HALAL_STATUSES = ["certified", "self-certified", "muslim-owned", "halal-fr
 const CUISINES = ["korean", "turkish", "uzbek", "indian", "indonesian", "cafe", "other"];
 const KOREA_BOUNDS = { minLat: 33, maxLat: 39, minLng: 124, maxLng: 132 };
 const MAX_BODY_BYTES = 8 * 1024;
+const MAX_UPLOAD_BYTES = 3 * 1024 * 1024;
+const UPLOADS_PER_HOUR = 10;
+const REVIEWS_PER_HOUR = 10;
 const SUBMISSIONS_PER_HOUR = 5;
 
 mkdirSync(DATA_DIR, { recursive: true });
+const UPLOAD_DIR = resolve(DATA_DIR, "uploads");
+mkdirSync(UPLOAD_DIR, { recursive: true });
 const db = new DatabaseSync(resolve(DATA_DIR, "halalmap.sqlite"));
 db.exec(`
   PRAGMA journal_mode = WAL;
@@ -79,7 +86,34 @@ db.exec(`
     close TEXT,
     created_at INTEGER NOT NULL
   );
+
+  CREATE TABLE IF NOT EXISTS uploads (
+    id TEXT PRIMARY KEY,
+    ip_hash TEXT NOT NULL,
+    created_at INTEGER NOT NULL
+  );
+  CREATE INDEX IF NOT EXISTS uploads_ip_created ON uploads (ip_hash, created_at);
+
+  CREATE TABLE IF NOT EXISTS reviews (
+    id TEXT PRIMARY KEY,
+    place_id TEXT NOT NULL,
+    rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 5),
+    comment TEXT,
+    author_name TEXT,
+    client_hash TEXT NOT NULL,
+    ip_hash TEXT NOT NULL,
+    created_at INTEGER NOT NULL,
+    UNIQUE (place_id, client_hash)
+  );
+  CREATE INDEX IF NOT EXISTS reviews_place_created ON reviews (place_id, created_at);
+  CREATE INDEX IF NOT EXISTS reviews_ip_created ON reviews (ip_hash, created_at);
 `);
+
+// Additive migrations for databases created by earlier versions.
+for (const table of ["submissions", "places"]) {
+  const columns = db.prepare(`PRAGMA table_info(${table})`).all();
+  if (!columns.some((c) => c.name === "photo_id")) db.exec(`ALTER TABLE ${table} ADD COLUMN photo_id TEXT`);
+}
 
 // ── helpers ──────────────────────────────────────────────────────
 
@@ -132,6 +166,19 @@ async function readJson(request) {
   } catch {
     throw new HttpError(400, "invalid_json");
   }
+}
+
+async function readBytes(request, maxBytes) {
+  const declared = Number(request.headers["content-length"] || 0);
+  if (declared > maxBytes) throw new HttpError(413, "payload_too_large");
+  const chunks = [];
+  let size = 0;
+  for await (const chunk of request) {
+    size += chunk.length;
+    if (size > maxBytes) throw new HttpError(413, "payload_too_large");
+    chunks.push(chunk);
+  }
+  return Buffer.concat(chunks);
 }
 
 function clientIp(request) {
@@ -203,6 +250,7 @@ const publicPlace = (row) => ({
   phone: row.phone,
   open: row.open,
   close: row.close,
+  photoUrl: row.photo_id ? `/uploads/${row.photo_id}.jpg` : null,
 });
 
 const adminSubmission = (row) => ({
@@ -220,6 +268,7 @@ const adminSubmission = (row) => ({
   contactPhone: row.contact_phone,
   status: row.status,
   adminNote: row.admin_note,
+  photoUrl: row.photo_id ? `/uploads/${row.photo_id}.jpg` : null,
   createdAt: row.created_at,
   reviewedAt: row.reviewed_at,
 });
@@ -250,14 +299,15 @@ function createSubmission(body, ip) {
     notes: text(body.notes, 500, { field: "notes" }),
     contact_name: text(body.contactName, 80, { field: "contact_name" }),
     contact_phone: phone(body.contactPhone, { required: true, field: "contact_phone" }),
+    photo_id: photoRef(body.photoId),
     ip_hash: ipHash,
     created_at: Date.now(),
   };
   if ((row.lat === null) !== (row.lng === null)) throw new HttpError(422, "coordinates_incomplete");
 
   db.prepare(`
-    INSERT INTO submissions (id, kind, name, address, lat, lng, cuisine, halal, place_phone, notes, contact_name, contact_phone, ip_hash, created_at)
-    VALUES (:id, :kind, :name, :address, :lat, :lng, :cuisine, :halal, :place_phone, :notes, :contact_name, :contact_phone, :ip_hash, :created_at)
+    INSERT INTO submissions (id, kind, name, address, lat, lng, cuisine, halal, place_phone, notes, contact_name, contact_phone, photo_id, ip_hash, created_at)
+    VALUES (:id, :kind, :name, :address, :lat, :lng, :cuisine, :halal, :place_phone, :notes, :contact_name, :contact_phone, :photo_id, :ip_hash, :created_at)
   `).run(row);
   return { ok: true };
 }
@@ -286,6 +336,7 @@ function approveSubmission(id, body) {
     phone: phone(body.phone ?? sub.place_phone, { field: "phone" }),
     open: hhmm(body.open, "open"),
     close: hhmm(body.close, "close"),
+    photo_id: sub.photo_id,
     created_at: Date.now(),
   };
   if ((place.open === null) !== (place.close === null)) throw new HttpError(422, "hours_incomplete");
@@ -293,8 +344,8 @@ function approveSubmission(id, body) {
   db.exec("BEGIN");
   try {
     db.prepare(`
-      INSERT INTO places (id, submission_id, kind, name, name_ko, address, lat, lng, cuisine, halal, phone, open, close, created_at)
-      VALUES (:id, :submission_id, :kind, :name, :name_ko, :address, :lat, :lng, :cuisine, :halal, :phone, :open, :close, :created_at)
+      INSERT INTO places (id, submission_id, kind, name, name_ko, address, lat, lng, cuisine, halal, phone, open, close, photo_id, created_at)
+      VALUES (:id, :submission_id, :kind, :name, :name_ko, :address, :lat, :lng, :cuisine, :halal, :phone, :open, :close, :photo_id, :created_at)
     `).run(place);
     db.prepare("UPDATE submissions SET status = 'approved', reviewed_at = ?, admin_note = ? WHERE id = ?")
       .run(Date.now(), text(body.adminNote, 500, { field: "admin_note" }), sub.id);
@@ -317,6 +368,112 @@ function rejectSubmission(id, body) {
   return { ok: true };
 }
 
+// ── photos ───────────────────────────────────────────────────────
+
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+
+/** Validates a photo id from a submission: it must be one of our uploads. */
+function photoRef(value) {
+  if (value === undefined || value === null || value === "") return null;
+  if (typeof value !== "string" || !UUID.test(value)) throw new HttpError(422, "photo_invalid");
+  if (!db.prepare("SELECT 1 FROM uploads WHERE id = ?").get(value)) throw new HttpError(422, "photo_invalid");
+  return value;
+}
+
+/** Accepts one JPEG (the web app re-encodes every photo to JPEG, which also strips EXIF/location data). */
+async function createUpload(request, ip) {
+  if (!String(request.headers["content-type"] || "").toLowerCase().startsWith("image/jpeg")) throw new HttpError(415, "jpeg_only");
+  const ipHash = hash(ip);
+  const since = Date.now() - 60 * 60 * 1000;
+  const { count } = db.prepare("SELECT COUNT(*) AS count FROM uploads WHERE ip_hash = ? AND created_at > ?").get(ipHash, since);
+  if (count >= UPLOADS_PER_HOUR) throw new HttpError(429, "rate_limited");
+
+  const bytes = await readBytes(request, MAX_UPLOAD_BYTES);
+  const isJpeg = bytes.length > 1024 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
+  if (!isJpeg) throw new HttpError(415, "jpeg_only");
+
+  const id = randomUUID();
+  writeFileSync(resolve(UPLOAD_DIR, `${id}.jpg`), bytes);
+  db.prepare("INSERT INTO uploads (id, ip_hash, created_at) VALUES (?, ?, ?)").run(id, ipHash, Date.now());
+  return { photoId: id };
+}
+
+const UPLOAD_PATH = /^\/uploads\/([0-9a-f-]{36})\.jpg$/;
+
+function serveUpload(request, response, id) {
+  const file = resolve(UPLOAD_DIR, `${id}.jpg`);
+  if (!UUID.test(id) || !existsSync(file)) throw new HttpError(404, "not_found");
+  response.writeHead(200, {
+    "Content-Type": "image/jpeg",
+    "Content-Length": statSync(file).size,
+    "Cache-Control": "public, max-age=31536000, immutable",
+    "X-Content-Type-Options": "nosniff",
+    "Content-Security-Policy": "default-src 'none'",
+    "Cross-Origin-Resource-Policy": "cross-origin",
+  });
+  if (request.method === "HEAD") return response.end();
+  createReadStream(file).pipe(response);
+}
+
+// ── reviews ──────────────────────────────────────────────────────
+
+// OSM-derived places only exist client-side, so their ids are validated by shape; community places must exist.
+const PLACE_ID = /^(osm-(node|way|relation)-\d{1,15}|c-[0-9a-f-]{36})$/;
+const CLIENT_ID = /^[A-Za-z0-9-]{16,64}$/;
+
+const publicReview = (row) => ({
+  id: row.id,
+  rating: row.rating,
+  comment: row.comment,
+  name: row.author_name,
+  createdAt: row.created_at,
+});
+
+function reviewSummary() {
+  const rows = db.prepare("SELECT place_id, AVG(rating) AS avg, COUNT(*) AS count FROM reviews GROUP BY place_id").all();
+  return Object.fromEntries(rows.map((r) => [r.place_id, { avg: Math.round(r.avg * 10) / 10, count: r.count }]));
+}
+
+function listReviews(placeId) {
+  if (!PLACE_ID.test(placeId)) throw new HttpError(422, "place_invalid");
+  const rows = db.prepare("SELECT * FROM reviews WHERE place_id = ? ORDER BY created_at DESC LIMIT 30").all(placeId);
+  const stats = db.prepare("SELECT AVG(rating) AS avg, COUNT(*) AS count FROM reviews WHERE place_id = ?").get(placeId);
+  return { avg: stats.count ? Math.round(stats.avg * 10) / 10 : null, count: stats.count, reviews: rows.map(publicReview) };
+}
+
+function createReview(body, ip) {
+  if (typeof body.website === "string" && body.website.trim()) return { ok: true }; // honeypot
+
+  const placeId = typeof body.placeId === "string" ? body.placeId : "";
+  if (!PLACE_ID.test(placeId)) throw new HttpError(422, "place_invalid");
+  if (placeId.startsWith("c-") && !db.prepare("SELECT 1 FROM places WHERE id = ?").get(placeId.slice(2))) throw new HttpError(404, "place_not_found");
+  const rating = Number(body.rating);
+  if (!Number.isInteger(rating) || rating < 1 || rating > 5) throw new HttpError(422, "rating_invalid");
+  if (typeof body.clientId !== "string" || !CLIENT_ID.test(body.clientId)) throw new HttpError(422, "client_invalid");
+
+  const ipHash = hash(ip);
+  const since = Date.now() - 60 * 60 * 1000;
+  const { count } = db.prepare("SELECT COUNT(*) AS count FROM reviews WHERE ip_hash = ? AND created_at > ?").get(ipHash, since);
+  if (count >= REVIEWS_PER_HOUR) throw new HttpError(429, "rate_limited");
+
+  try {
+    db.prepare("INSERT INTO reviews (id, place_id, rating, comment, author_name, client_hash, ip_hash, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)").run(
+      randomUUID(),
+      placeId,
+      rating,
+      text(body.comment, 500, { field: "comment" }),
+      text(body.name, 40, { field: "name" }),
+      hash(body.clientId),
+      ipHash,
+      Date.now(),
+    );
+  } catch (error) {
+    if (String(error?.message).includes("UNIQUE")) throw new HttpError(409, "already_reviewed");
+    throw error;
+  }
+  return { ok: true };
+}
+
 // ── static web app ───────────────────────────────────────────────
 
 const MIME = {
@@ -332,7 +489,7 @@ const CSP = [
   "script-src 'self'",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src https://fonts.gstatic.com",
-  "img-src 'self' data:",
+  "img-src 'self' data: blob:",
   "connect-src 'self'",
   "frame-ancestors 'none'",
   "base-uri 'self'",
@@ -395,6 +552,33 @@ const server = createServer(async (request, response) => {
 
     if (method === "POST" && pathname === "/api/submissions") {
       return send(request, response, 201, createSubmission(await readJson(request), clientIp(request)));
+    }
+
+    if (method === "POST" && pathname === "/api/uploads") {
+      return send(request, response, 201, await createUpload(request, clientIp(request)));
+    }
+
+    const uploadMatch = method === "GET" || method === "HEAD" ? UPLOAD_PATH.exec(pathname) : null;
+    if (uploadMatch) return serveUpload(request, response, uploadMatch[1]);
+
+    if (method === "GET" && pathname === "/api/reviews/summary") return send(request, response, 200, { summary: reviewSummary() });
+    if (method === "GET" && pathname === "/api/reviews") return send(request, response, 200, listReviews(url.searchParams.get("placeId") || ""));
+    if (method === "POST" && pathname === "/api/reviews") {
+      return send(request, response, 201, createReview(await readJson(request), clientIp(request)));
+    }
+
+    if (method === "GET" && pathname === "/api/admin/reviews") {
+      requireAdmin(request);
+      const rows = db.prepare("SELECT * FROM reviews ORDER BY created_at DESC LIMIT 100").all();
+      return send(request, response, 200, { reviews: rows.map((r) => ({ ...publicReview(r), placeId: r.place_id })) });
+    }
+
+    const reviewDelete = method === "POST" ? /^\/api\/admin\/reviews\/([0-9a-f-]{36})\/delete$/.exec(pathname) : null;
+    if (reviewDelete) {
+      requireAdmin(request);
+      const result = db.prepare("DELETE FROM reviews WHERE id = ?").run(reviewDelete[1]);
+      if (result.changes === 0) throw new HttpError(404, "not_found");
+      return send(request, response, 200, { ok: true });
     }
 
     if (method === "GET" && pathname === "/api/admin/submissions") {

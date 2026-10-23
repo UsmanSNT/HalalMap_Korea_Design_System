@@ -14,5 +14,6 @@ export type Mosque = {
   phone?: string;
   facilities: FacilityId[];
   /** Friday (Jumu'ah) prayer start, "HH:MM". */
-  juma?: string;
+  juma?: string;  /** Absolute URL of a user-submitted photo. */
+  photoUrl?: string;
 };

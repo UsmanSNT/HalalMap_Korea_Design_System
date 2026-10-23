@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import type { CuisineId, HalalStatus } from "@/data/restaurants";
 import { ApiError } from "@/lib/api";
-import { submitPlace, type PlaceKind } from "@/lib/communityApi";
+import { submitPlace, uploadPhoto, type PlaceKind } from "@/lib/communityApi";
+import { compressToJpeg } from "@/lib/image";
 import { useLocation } from "@/lib/location";
 import type { Coords } from "@/lib/geo";
 import type { TranslationKey } from "@/locale/dictionaries";
@@ -36,6 +37,18 @@ export default function AddPlaceSheet({ open, onClose, defaultKind }: Props) {
   const [kind, setKind] = useState<PlaceKind>(defaultKind);
   const [picked, setPicked] = useState<Coords | null>(null);
   const [awaitingLocation, setAwaitingLocation] = useState(false);
+  const [photo, setPhoto] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!photo) {
+      setPreview(null);
+      return;
+    }
+    const url = URL.createObjectURL(photo);
+    setPreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [photo]);
 
   useEffect(() => {
     const el = dialog.current;
@@ -45,6 +58,7 @@ export default function AddPlaceSheet({ open, onClose, defaultKind }: Props) {
       setStatus("editing");
       setError(null);
       setPicked(null);
+      setPhoto(null);
       el.showModal();
     } else if (!open && el.open) {
       el.close();
@@ -78,6 +92,17 @@ export default function AddPlaceSheet({ open, onClose, defaultKind }: Props) {
     setError(null);
     setStatus("sending");
     try {
+      let photoId: string | undefined;
+      if (photo) {
+        try {
+          photoId = await uploadPhoto(await compressToJpeg(photo));
+        } catch (photoError) {
+          if (photoError instanceof ApiError && photoError.code === "network") throw photoError;
+          setError(photoError instanceof ApiError && photoError.code === "rate_limited" ? "add.errorRate" : "add.errorPhoto");
+          setStatus("editing");
+          return;
+        }
+      }
       await submitPlace({
         kind,
         name: get("name"),
@@ -88,6 +113,7 @@ export default function AddPlaceSheet({ open, onClose, defaultKind }: Props) {
         notes: get("notes") || undefined,
         contactName: get("contactName") || undefined,
         contactPhone: get("contactPhone"),
+        photoId,
         website: get("website"),
       });
       setStatus("done");
@@ -181,6 +207,23 @@ export default function AddPlaceSheet({ open, onClose, defaultKind }: Props) {
             <Field label={t("add.placePhone")}>
               <input name="placePhone" type="tel" inputMode="tel" maxLength={20} autoComplete="off" className={INPUT_CLASS} />
             </Field>
+            <div className="space-y-1.5">
+              <span className="text-sm font-semibold">{t("add.photo")}</span>
+              {preview ? (
+                <div className="space-y-2">
+                  <img src={preview} alt="" className="aspect-video w-full rounded-xl object-cover" />
+                  <button type="button" onClick={() => setPhoto(null)} className="min-h-11 w-full rounded-xl border border-[var(--border)] bg-white font-semibold text-[var(--danger)]">
+                    {t("add.photoRemove")}
+                  </button>
+                </div>
+              ) : (
+                <label className="flex min-h-12 w-full cursor-pointer items-center justify-center rounded-xl border border-[var(--border)] bg-white font-semibold">
+                  {t("add.photoPick")}
+                  <input type="file" accept="image/*" className="sr-only" onChange={(e) => setPhoto(e.target.files?.[0] ?? null)} />
+                </label>
+              )}
+            </div>
+
             <Field label={t("add.notes")}>
               <textarea name="notes" maxLength={500} rows={2} className={`${INPUT_CLASS} py-2`} />
             </Field>

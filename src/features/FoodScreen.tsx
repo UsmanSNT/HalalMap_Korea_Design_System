@@ -10,6 +10,9 @@ import ActionButton from "@/ui/ActionButton";
 import CopyButton from "@/ui/CopyButton";
 import ExpandableCard from "@/ui/ExpandableCard";
 import { NavigateIcon, PhoneIcon, SearchIcon } from "@/ui/icons";
+import PlacePhoto from "@/ui/PlacePhoto";
+import { Stars } from "@/ui/Stars";
+import ReviewsPanel from "./ReviewsPanel";
 import DataFooter from "@/ui/DataFooter";
 import PageHeader from "@/ui/PageHeader";
 import Segmented from "@/ui/Segmented";
@@ -28,7 +31,7 @@ const STATUS_STYLE: Record<HalalStatus, string> = {
 export default function FoodScreen() {
   const { t } = useLanguage();
   const { coords, isReal } = useLocation();
-  const { restaurants } = usePlaces();
+  const { restaurants, ratings } = usePlaces();
   const now = useNow(60_000);
   const [filter, setFilter] = useState<Filter>("all");
   const [query, setQuery] = useState("");
@@ -93,6 +96,12 @@ export default function FoodScreen() {
                           {isReal ? formatDistance(km) : `~${formatDistance(km)}`}
                         </span>
                       </div>
+                      {ratings[r.id] && (
+                        <p className="mt-1.5 flex items-center gap-1.5 text-xs font-semibold">
+                          <Stars value={ratings[r.id].avg} size="h-3.5 w-3.5" />
+                          {ratings[r.id].avg.toFixed(1)} <span className="font-normal text-[var(--muted)]">({ratings[r.id].count})</span>
+                        </p>
+                      )}
                       <div className="mt-2 flex flex-wrap items-center gap-1.5 text-xs">
                         <span className={`rounded-full px-2.5 py-1 font-bold ${STATUS_STYLE[r.halal]}`}>{t(`food.${r.halal}` as const)}</span>
                         <span className="text-[var(--muted)]">{t(`cuisine.${r.cuisine}` as const)}</span>
@@ -103,6 +112,7 @@ export default function FoodScreen() {
                     </>
                   }
                 >
+                  <PlacePhoto src={r.photoUrl} alt={r.name} />
                   {r.address && <p className="text-sm">{r.address}</p>}
                   {r.open && r.close && (
                     <p className="text-sm">
@@ -133,6 +143,7 @@ export default function FoodScreen() {
                       <CopyButton text={r.address} />
                     </div>
                   )}
+                  <ReviewsPanel placeId={r.id} />
                 </ExpandableCard>
               );
             })}

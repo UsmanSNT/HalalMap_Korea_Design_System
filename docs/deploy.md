@@ -37,6 +37,14 @@ can serve the web app but not "Add a place" unless `VITE_API_URL` points at a se
 | `TRUST_PROXY` | `cloudflare` (CF-Connecting-IP) behind Cloudflare/cloudflared; `1` behind one reverse proxy (last `X-Forwarded-For` hop). Used for per-IP rate limiting. |
 | `ALLOWED_ORIGINS` | Only when the web app is on a different origin than the API. |
 
+## Photos and reviews
+- Photos: the web app re-encodes every photo to a JPEG (max 1280 px, EXIF/location stripped) and uploads it to
+  `POST /api/uploads` (JPEG only, 3 MB, 10 per IP per hour). Files live in `DATA_DIR/uploads/` and are served at
+  `/uploads/<id>.jpg`. **Back up `DATA_DIR` including `uploads/`.** Photos of rejected or abandoned submissions stay
+  on disk (small; delete manually if needed).
+- Reviews: restaurants can be rated 1-5 with an optional comment and name. No accounts: one review per place per
+  browser, 10 per IP per hour. Reviews are published immediately; delete abusive ones at `#/admin` ("Recent reviews").
+
 ## Moderation flow
 1. A visitor submits a place with a private contact phone ("Add a place"). Limits: 5 per IP per hour.
 2. Open `<web app>/#/admin`, sign in with `ADMIN_TOKEN`, call the contact, check the place on a map.

@@ -1,10 +1,14 @@
 import { useMemo, useState } from "react";
 import { formatGregorian, formatHijri } from "@/lib/dateLabels";
 import { computePrayerTimes, formatClock, formatCountdown, PRAYER_ORDER, type AsrMethod, type PrayerId } from "@/lib/prayer";
+import { distanceKm, formatDistance, mapsDirectionsUrl } from "@/lib/geo";
 import { useLocation } from "@/lib/location";
+import { usePlaces } from "@/lib/PlacesContext";
 import { readStored, writeStored } from "@/lib/storage";
 import { useNow } from "@/lib/useNow";
 import { useLanguage } from "@/locale/LanguageContext";
+import ActionButton from "@/ui/ActionButton";
+import { NavigateIcon } from "@/ui/icons";
 import Notice from "@/ui/Notice";
 import PageHeader from "@/ui/PageHeader";
 import Segmented from "@/ui/Segmented";
@@ -13,7 +17,16 @@ const ASR_KEY = "halalmap-asr-method";
 
 export default function PrayerScreen() {
   const { t, lang } = useLanguage();
-  const { coords } = useLocation();
+  const { coords, isReal } = useLocation();
+  const { mosques } = usePlaces();
+  const nearest = useMemo(
+    () =>
+      mosques.reduce<{ km: number; mosque: (typeof mosques)[number] } | null>((best, mosque) => {
+        const km = distanceKm(coords, mosque.coords);
+        return !best || km < best.km ? { km, mosque } : best;
+      }, null),
+    [mosques, coords],
+  );
   const now = useNow(1000);
   const [asr, setAsr] = useState<AsrMethod>(() => (readStored(ASR_KEY) === "hanafi" ? "hanafi" : "standard"));
 
@@ -82,6 +95,24 @@ export default function PrayerScreen() {
             );
           })}
         </ul>
+
+        {isReal && nearest && (
+          <section aria-label={t("nearby.title")} className="space-y-3 rounded-2xl border border-[var(--border)] bg-white p-4">
+            <p className="text-xs font-bold uppercase text-[var(--green)]">{t("nearby.title")}</p>
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0">
+                <p className="font-bold leading-tight">{nearest.mosque.name}</p>
+                {nearest.mosque.nameKo !== nearest.mosque.name && <p className="text-sm text-[var(--muted)]">{nearest.mosque.nameKo}</p>}
+              </div>
+              <span className="shrink-0 rounded-full bg-[var(--green-light)] px-2.5 py-1 text-xs font-bold text-[var(--green)]">{formatDistance(nearest.km)}</span>
+            </div>
+            <div className="flex">
+              <ActionButton primary icon={<NavigateIcon />} href={mapsDirectionsUrl(nearest.mosque.coords)}>
+                {t("act.directions")}
+              </ActionButton>
+            </div>
+          </section>
+        )}
 
         <div className="space-y-2">
           <p className="text-sm font-semibold">{t("prayer.asrMethod")}</p>
