@@ -10,6 +10,7 @@ import ExpandableCard from "@/ui/ExpandableCard";
 import CopyButton from "@/ui/CopyButton";
 import { NavigateIcon, PhoneIcon } from "@/ui/icons";
 import DataFooter from "@/ui/DataFooter";
+import { goBack } from "@/services/navigation";
 import PageHeader from "@/ui/PageHeader";
 import PlacePhoto from "@/ui/PlacePhoto";
 import Segmented from "@/ui/Segmented";
@@ -36,7 +37,7 @@ export default function MosquesScreen() {
 
   return (
     <>
-      <PageHeader title={t("mosques.title")} />
+      <PageHeader title={t("mosques.title")} onBack={() => goBack("home")} />
       <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-4 py-4">
         <Segmented
           label={t("mosques.title")}

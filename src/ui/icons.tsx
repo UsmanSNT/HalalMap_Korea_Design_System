@@ -19,3 +19,5 @@ export const CopyIcon = (p: IconProps) => <Svg {...p}><rect x="9" y="9" width="1
 export const CheckIcon = (p: IconProps) => <Svg {...p}><path d="m5 12.5 4.5 4.5L19 7.5" /></Svg>;
 export const ChevronIcon = (p: IconProps) => <Svg {...p}><path d="m6 9 6 6 6-6" /></Svg>;
 export const SearchIcon = (p: IconProps) => <Svg {...p}><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></Svg>;
+export const HomeIcon = (p: IconProps) => <Svg {...p}><path d="m3 11 9-8 9 8M5 10v10h14V10M10 20v-6h4v6" /></Svg>;
+export const BackIcon = (p: IconProps) => <Svg {...p}><path d="m15 5-7 7 7 7" /></Svg>;

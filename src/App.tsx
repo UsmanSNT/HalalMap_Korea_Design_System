@@ -4,16 +4,18 @@ import { LanguageProvider } from "@/locale/LanguageContext";
 import { useRouteScreen } from "@/services/navigation";
 import AdminScreen from "@/features/AdminScreen";
 import FoodScreen from "@/features/FoodScreen";
+import HomeScreen from "@/features/HomeScreen";
 import MosquesScreen from "@/features/MosquesScreen";
 import PrayerScreen from "@/features/PrayerScreen";
 import QiblaScreen from "@/features/QiblaScreen";
 import TabBar, { TABS, type TabId } from "@/ui/TabBar";
 
-type RouteId = TabId | "admin";
-const ROUTE_IDS: readonly RouteId[] = [...TABS.map((tab) => tab.id), "admin"];
+type RouteId = TabId | "mosques" | "food" | "admin";
+const ROUTE_IDS: readonly RouteId[] = [...TABS.map((tab) => tab.id), "mosques", "food", "admin"];
 
 const SCREENS: Record<RouteId, () => React.JSX.Element> = {
   admin: AdminScreen,
+  home: HomeScreen,
   prayer: PrayerScreen,
   qibla: QiblaScreen,
   mosques: MosquesScreen,
@@ -21,7 +23,7 @@ const SCREENS: Record<RouteId, () => React.JSX.Element> = {
 };
 
 function Shell() {
-  const current = useRouteScreen<RouteId>(ROUTE_IDS, "prayer");
+  const current = useRouteScreen<RouteId>(ROUTE_IDS, "home");
   const Screen = SCREENS[current];
   return (
     // One layout for every device: a full-height column that is capped at a comfortable
@@ -29,7 +31,7 @@ function Shell() {
     <div className="h-dvh bg-[#EDEAE5]">
       <div className="mx-auto flex h-full w-full max-w-lg flex-col bg-[var(--cream)] sm:shadow-xl">
         <Screen />
-        {current !== "admin" && <TabBar current={current} />}
+        {current !== "admin" && <TabBar current={current === "mosques" || current === "food" ? "home" : current} />}
       </div>
     </div>
   );

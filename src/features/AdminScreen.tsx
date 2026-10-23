@@ -232,7 +232,7 @@ export default function AdminScreen() {
               {t("admin.signOut")}
             </button>
           )}
-          <button type="button" onClick={() => navigateTo("prayer", true)} aria-label={t("add.close")} className="min-h-10 rounded-lg px-2 text-sm font-semibold text-[var(--muted)]">
+          <button type="button" onClick={() => navigateTo("home", true)} aria-label={t("add.close")} className="min-h-10 rounded-lg px-2 text-sm font-semibold text-[var(--muted)]">
             ✕
           </button>
         </div>

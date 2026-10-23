@@ -2,15 +2,14 @@ import type { ReactNode } from "react";
 import type { TranslationKey } from "@/locale/dictionaries";
 import { useLanguage } from "@/locale/LanguageContext";
 import { navigateTo } from "@/services/navigation";
-import { ClockIcon, CompassIcon, FoodIcon, MosqueIcon } from "./icons";
+import { ClockIcon, CompassIcon, HomeIcon } from "./icons";
 
-export type TabId = "prayer" | "qibla" | "mosques" | "food";
+export type TabId = "home" | "prayer" | "qibla";
 
 export const TABS: readonly { id: TabId; labelKey: TranslationKey; icon: ReactNode }[] = [
+  { id: "home", labelKey: "tab.home", icon: <HomeIcon /> },
   { id: "prayer", labelKey: "tab.prayer", icon: <ClockIcon /> },
   { id: "qibla", labelKey: "tab.qibla", icon: <CompassIcon /> },
-  { id: "mosques", labelKey: "tab.mosques", icon: <MosqueIcon /> },
-  { id: "food", labelKey: "tab.food", icon: <FoodIcon /> },
 ];
 
 /** Bottom navigation: tab switches replace history so Back never walks through tab hops. */

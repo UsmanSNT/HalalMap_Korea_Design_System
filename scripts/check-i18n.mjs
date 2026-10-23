@@ -10,6 +10,7 @@ const SAME_AS_ENGLISH_OK = new Set(["data.osm"]);
 
 const langs = Object.keys(dictionaries);
 const reference = Object.keys(dictionaries.en);
+const placeholders = (v) => [...String(v).matchAll(/\{(\w+)\}/g)].map((m) => m[1]).sort().join(",");
 const errors = [];
 const warnings = [];
 
@@ -20,6 +21,7 @@ for (const lang of langs) {
 
   for (const [key, value] of Object.entries(dict)) {
     if (typeof value !== "string" || !value.trim()) errors.push(`${lang}.${key}: empty`);
+    if (placeholders(value) !== placeholders(dictionaries.en[key])) errors.push(`${lang}.${key}: placeholders differ from English ("${value}")`);
     if (value !== value.trim() || /\s{2,}/.test(value)) errors.push(`${lang}.${key}: stray whitespace`);
     if (lang !== "ko" && HANGUL.test(value) && !key.startsWith("data.")) errors.push(`${lang}.${key}: contains Hangul ("${value}")`);
     if (lang !== "ru" && CYRILLIC.test(value)) errors.push(`${lang}.${key}: contains Cyrillic ("${value}")`);

@@ -155,6 +155,15 @@ const en = {
   "nearby.gpsNeeded": "Allow location to see distances from you.",
   "admin.reviews": "Recent reviews",
   "admin.delete": "Delete",
+  "tab.home": "Home",
+  "common.back": "Back",
+  "home.subtitle": "Halal food and places to pray near you",
+  "home.findFood": "Find a halal restaurant",
+  "home.findPrayer": "Find a place to pray",
+  "home.nearCount": "{n} places within {km} km",
+  "home.noneNear": "Nothing within {km} km yet",
+  "home.nearest": "Nearest to you",
+  "home.seeAll": "See all",
   "lang.label": "Language",
 } as const;
 
@@ -310,6 +319,15 @@ const ko: Dictionary = {
   "nearby.gpsNeeded": "내 위치 기준 거리를 보려면 위치 권한을 허용하세요.",
   "admin.reviews": "최근 리뷰",
   "admin.delete": "삭제",
+  "tab.home": "홈",
+  "common.back": "뒤로",
+  "home.subtitle": "내 주변 할랄 식당과 기도 장소",
+  "home.findFood": "할랄 식당 찾기",
+  "home.findPrayer": "기도할 곳 찾기",
+  "home.nearCount": "{km}km 이내 {n}곳",
+  "home.noneNear": "{km}km 이내에 장소가 없습니다",
+  "home.nearest": "가까운 곳",
+  "home.seeAll": "전체 보기",
   "lang.label": "언어",
 };
 
@@ -462,6 +480,15 @@ const uz: Dictionary = {
   "nearby.gpsNeeded": "Sizdan masofani ko'rish uchun joylashuvga ruxsat bering.",
   "admin.reviews": "So'nggi izohlar",
   "admin.delete": "O'chirish",
+  "tab.home": "Bosh sahifa",
+  "common.back": "Orqaga",
+  "home.subtitle": "Yaqin atrofdagi halol oshxona va namozxonalar",
+  "home.findFood": "Halol oshxona topish",
+  "home.findPrayer": "Namozxona topish",
+  "home.nearCount": "{km} km ichida {n} ta joy",
+  "home.noneNear": "{km} km ichida hali joy yo'q",
+  "home.nearest": "Sizga eng yaqin",
+  "home.seeAll": "Hammasini ko'rish",
   "lang.label": "Til",
 };
 

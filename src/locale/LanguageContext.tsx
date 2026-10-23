@@ -15,7 +15,8 @@ function initialLang(): Lang {
 type LanguageValue = {
   lang: Lang;
   setLang: (lang: Lang) => void;
-  t: (key: TranslationKey) => string;
+  /** Looks up a string; `{name}` placeholders are filled from `vars`. */
+  t: (key: TranslationKey, vars?: Record<string, string | number>) => string;
 };
 
 const LanguageContext = createContext<LanguageValue | null>(null);
@@ -30,7 +31,11 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo<LanguageValue>(
-    () => ({ lang, setLang, t: (key) => dictionaries[lang][key] }),
+    () => ({ lang, setLang, t: (key, vars) => {
+        const template = dictionaries[lang][key];
+        return vars ? template.replace(/\{(\w+)\}/g, (match, name: string) => String(vars[name] ?? match)) : template;
+      },
+    }),
     [lang, setLang],
   );
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;

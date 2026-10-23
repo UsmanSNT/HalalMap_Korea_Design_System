@@ -14,6 +14,7 @@ import PlacePhoto from "@/ui/PlacePhoto";
 import { Stars } from "@/ui/Stars";
 import ReviewsPanel from "./ReviewsPanel";
 import DataFooter from "@/ui/DataFooter";
+import { goBack } from "@/services/navigation";
 import PageHeader from "@/ui/PageHeader";
 import Segmented from "@/ui/Segmented";
 
@@ -46,7 +47,7 @@ export default function FoodScreen() {
 
   return (
     <>
-      <PageHeader title={t("food.title")} />
+      <PageHeader title={t("food.title")} onBack={() => goBack("home")} />
       <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-4 py-4">
         <label className="relative block">
           <span className="sr-only">{t("food.search")}</span>
