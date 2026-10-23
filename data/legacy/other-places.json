@@ -1,0 +1,24 @@
+{
+  "_note": "Data salvaged from the removed multi-role UI. Places have no address/coordinates yet and must be completed and verified before use in src/data.",
+  "cities": [
+    { "nameKo": "서울", "name": "Seoul", "halalPlaces": 243 },
+    { "nameKo": "부산", "name": "Busan", "halalPlaces": 48 },
+    { "nameKo": "인천", "name": "Incheon", "halalPlaces": 31 },
+    { "nameKo": "제주", "name": "Jeju", "halalPlaces": 22 },
+    { "nameKo": "대구", "name": "Daegu", "halalPlaces": 19 },
+    { "nameKo": "경주", "name": "Gyeongju", "halalPlaces": 12 },
+    { "nameKo": "광주", "name": "Gwangju", "halalPlaces": null }
+  ],
+  "busanNearby": [
+    { "type": "restaurant", "nameKo": "부산역 할랄 키친", "distance": "0.4km", "halal": "certified" },
+    { "type": "mosque", "nameKo": "부산 마스지드 알 파루크", "distance": "1.1km" },
+    { "type": "restaurant", "nameKo": "서면 케밥 & 피타", "distance": "0.9km", "halal": "certified" },
+    { "type": "restaurant", "nameKo": "범일동 할랄 분식", "distance": "1.5km", "halal": "halal-friendly" },
+    { "type": "prayer-room", "nameKo": "부산 이슬람 센터 기도실", "distance": "2.0km" }
+  ],
+  "sampleAddresses": [
+    "서울특별시 용산구 이태원로 123, 501호",
+    "서울특별시 강남구 테헤란로 456, 12층",
+    "서울특별시 용산구 우사단로10길 39"
+  ]
+}

@@ -17,27 +17,20 @@ Janubiy Koreyadagi musulmon jamiyatiga halol ovqat, masjidlar va namoz vaqtlarin
 
 ## Loyiha tuzilishi
 
+Ilova 4 bo'limli mobil-first: namoz vaqtlari, qibla, masjidlar, halol oshxonalar.
+
 ```
-├── server/
-│   └── index.mjs              # Backend API server (port 8787)
 ├── src/
-│   ├── main.tsx                # React entry point
-│   ├── App.tsx                 # Asosiy navigator (sidebar + phone frame)
-│   ├── index.css               # Global CSS + Tailwind v4
-│   ├── api/
-│   │   └── auth.ts             # Auth API moduli (login, logout, me)
-│   ├── services/
-│   │   └── apiClient.ts        # Umumiy HTTP client (token, xato boshqaruvi)
-│   ├── components/
-│   │   ├── Shared.tsx          # Umumiy UI atomlari (BottomNav, StatusBar, ...)
-│   │   └── LanguageSwitcher.tsx
-│   ├── screens/                # Customer ilovasi ekranlari (45+ ekran)
-│   ├── admin/                  # Admin paneli
-│   ├── dashboard/              # Restoran egasi paneli
-│   └── courier/                # Kuryer ilovasi
-├── plans/                      # Arxitektura va rejalar
-├── .env.example                # Muhit o'zgaruvchilari namunasi
-└── vite.config.ts              # Vite + Tailwind + proxy (/api → :8787)
+│   ├── App.tsx            # Shell: 4 tab + hash routing
+│   ├── features/          # PrayerScreen, QiblaScreen, MosquesScreen, FoodScreen
+│   ├── ui/                # TabBar, PageHeader, Segmented, ExpandableCard, ...
+│   ├── lib/               # prayer, qibla, geo, compass, location (toza, offline)
+│   ├── data/              # mosques.ts, restaurants.ts (namunaviy, tekshirilishi kerak)
+│   ├── locale/            # ko / en / uz
+│   └── services/navigation.ts
+├── data/legacy/           # Eski ilovadan saqlangan ma'lumotlar
+├── server/                # Eski API (saqlangan, hozir ishlatilmaydi)
+└── android/               # Capacitor
 ```
 
 ## API arxitekturasi
